@@ -1,7 +1,7 @@
 package main
 
-import "github.com/fuxiaohei/pugo/src/boot"
+import "pugo/src/boot"
 
-func main(){
-    boot.Run()
+func main() {
+	boot.Run()
 }
