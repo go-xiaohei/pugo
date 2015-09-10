@@ -3,6 +3,7 @@ package boot
 import (
 	"github.com/codegangsta/cli"
 	"gopkg.in/inconshreveable/log15.v2"
+	"pugo/src/controller"
 	"pugo/src/core"
 	"pugo/src/middle"
 	"pugo/src/service"
@@ -43,6 +44,8 @@ func Server(ctx *cli.Context) {
 		middle.Logger(),
 		middle.Authorizor(),
 		middle.Themer())
+
+	core.Server.Get("/", new(controller.IndexController))
 
 	// start server
 	log15.Info("Server.start." + core.Cfg.Http.Host + ":" + core.Cfg.Http.Port)

@@ -1,12 +1,14 @@
 package middle
 
 import (
+	"fmt"
 	"github.com/lunny/tango"
 	"github.com/tango-contrib/renders"
 	"path"
 	"pugo/src/core"
 	"pugo/src/model"
 	"pugo/src/service"
+	"reflect"
 	"strings"
 )
 
@@ -14,10 +16,12 @@ var (
 	ThemeErrorTemplate = "error.tmpl"
 
 	_ ITheme = (*baseTheme)(nil)
+	_ ITheme = (*ThemeRender)(nil)
+	_ ITheme = (*AdminRender)(nil)
 )
 
 type ITheme interface {
-	SetTheme(*model.Theme)
+	SetTheme(*model.Theme) error
 	GetTheme() *model.Theme
 
 	Assign(key string, value interface{})
@@ -35,9 +39,10 @@ type baseTheme struct {
 	theme          *model.Theme
 }
 
-func (bt *baseTheme) SetTheme(theme *model.Theme) {
+func (bt *baseTheme) SetTheme(theme *model.Theme) error {
 	bt.theme = theme
 	bt.themeDirectory = theme.Directory
+	return nil
 }
 
 func (bt *baseTheme) GetTheme() *model.Theme {
@@ -80,31 +85,37 @@ type ThemeRender struct {
 	baseTheme
 }
 
-func (t *ThemeRender) SetTheme(*model.Theme) {
+func (t *ThemeRender) SetTheme(*model.Theme) error {
 	var theme = new(model.Theme)
 	if err := service.Call(service.Theme.Current, nil, theme); err != nil {
-		panic(err)
+		return err
 	}
 	t.baseTheme.SetTheme(theme)
+	return nil
 }
 
 type AdminRender struct {
 	baseTheme
 }
 
-func (t *AdminRender) SetTheme(*model.Theme) {
+func (t *AdminRender) SetTheme(*model.Theme) error {
 	var theme = new(model.Theme)
 	if err := service.Call(service.Theme.Admin, nil, theme); err != nil {
-		panic(err)
+		return err
 	}
 	t.baseTheme.SetTheme(theme)
+	return nil
 }
 
 func Themer() tango.HandlerFunc {
 	return func(ctx *tango.Context) {
 		t, ok := ctx.Action().(ITheme)
 		if ok {
-			t.SetTheme(nil) // set theme, the implementions finish the method in local scope
+			if err := t.SetTheme(nil); err != nil { // set theme, the implement finish the method in local scope
+				ctx.Result = fmt.Errorf("%s %s", reflect.TypeOf(t).String(), err.Error())
+				ctx.HandleError()
+				return
+			}
 		}
 		ctx.Next()
 	}
