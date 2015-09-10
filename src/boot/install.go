@@ -18,13 +18,13 @@ var (
 )
 
 func Install(ctx *cli.Context) {
-	opt := service.BootstrapOption{true, false, false}
+	opt := service.BootstrapInitOption{true, false, false}
 	if err := service.Call(service.Bootstrap.Init, opt); err != nil {
 		log15.Crit("Install.fail", "error", err)
 	}
 	if core.Cfg.Install == "0" {
 		log15.Info("Install.start")
-		opt = service.BootstrapOption{false, true, false} // connect to database
+		opt = service.BootstrapInitOption{false, true, false} // connect to database
 		if err := service.Call(service.Bootstrap.Init, opt); err != nil {
 			log15.Crit("Install.fail", "error", err)
 		}

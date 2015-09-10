@@ -4,6 +4,7 @@ import (
 	"github.com/codegangsta/cli"
 	"gopkg.in/inconshreveable/log15.v2"
 	"pugo/src/core"
+	"pugo/src/middle"
 	"pugo/src/service"
 )
 
@@ -16,7 +17,7 @@ var (
 )
 
 func Server(ctx *cli.Context) {
-	opt := service.BootstrapOption{true, false, false}
+	opt := service.BootstrapInitOption{true, false, false}
 	if err := service.Call(service.Bootstrap.Init, opt); err != nil {
 		log15.Crit("Server.start.fail", "error", err)
 	}
@@ -26,14 +27,22 @@ func Server(ctx *cli.Context) {
 	}
 
 	// re-init all things
-	opt = service.BootstrapOption{true, true, true}
+	opt = service.BootstrapInitOption{true, true, true}
 	if err := service.Call(service.Bootstrap.Init, opt); err != nil {
+		log15.Crit("Server.start.fail", "error", err)
+	}
+	// bootstrap service, preload data
+	opt2 := service.BootstrapOption{true, true}
+	if err := service.Call(service.Bootstrap.Bootstrap, opt2); err != nil {
 		log15.Crit("Server.start.fail", "error", err)
 	}
 	log15.Info("Server.prepare")
 
-	opt2 := service.UserAuthOption{"admin", "", "123456789", 3600, "webpage"}
-	service.Call(service.User.Authorize, opt2)
+	// set middleware and routers
+	core.Server.Use(
+		middle.Logger(),
+		middle.Authorizor(),
+		middle.Themer())
 
 	// start server
 	log15.Info("Server.start." + core.Cfg.Http.Host + ":" + core.Cfg.Http.Port)

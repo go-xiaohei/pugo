@@ -10,8 +10,8 @@ import (
 	"github.com/tango-contrib/renders"
 	"github.com/tango-contrib/session"
 	"github.com/tango-contrib/xsrf"
+	"path"
 	"pugo/src/core"
-	"pugo/src/middle"
 	"pugo/src/model"
 	"time"
 )
@@ -20,7 +20,7 @@ var (
 	Bootstrap = new(BootstrapService)
 )
 
-type BootstrapOption struct {
+type BootstrapInitOption struct {
 	Config   bool
 	Database bool
 	Server   bool
@@ -29,7 +29,7 @@ type BootstrapOption struct {
 type BootstrapService struct{}
 
 func (is *BootstrapService) Init(v interface{}) (*Result, error) {
-	opt, ok := v.(BootstrapOption)
+	opt, ok := v.(BootstrapInitOption)
 	if !ok {
 		return nil, ErrServiceFuncNeedType(is.Init, opt)
 	}
@@ -49,7 +49,6 @@ func (is *BootstrapService) Init(v interface{}) (*Result, error) {
 	}
 	if core.Cfg != nil && opt.Server { // server depends on config
 		core.Server = tango.New([]tango.Handler{
-			middle.Logger(),
 			tango.Recovery(true),
 			tango.Return(),
 			tango.Param(),
@@ -88,7 +87,8 @@ func (is *BootstrapService) Init(v interface{}) (*Result, error) {
 func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 	// create tables
 	if err := core.Db.Sync2(new(model.User),
-		new(model.UserToken)); err != nil {
+		new(model.UserToken),
+		new(model.Theme)); err != nil {
 		return nil, err
 	}
 
@@ -106,10 +106,50 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 		return nil, err
 	}
 
+	// insert default themes
+	themes := []interface{}{
+		&model.Theme{
+			Name:      "admin",
+			Author:    core.PUGO_AUTHOR,
+			Version:   "1.0",
+			Directory: path.Join(core.ThemeDirectory, "admin"),
+			Status:    model.THEME_STATUS_LOCKED,
+		},
+		&model.Theme{
+			Name:      "default",
+			Author:    core.PUGO_AUTHOR,
+			Version:   "1.0",
+			Directory: path.Join(core.ThemeDirectory, "default"),
+			Status:    model.THEME_STATUS_CURRENT,
+		},
+	}
+	if _, err := core.Db.Insert(themes...); err != nil {
+		return nil, err
+	}
+
 	// assign install time to config
 	core.Cfg.Install = fmt.Sprint(time.Now().Unix())
 	if err := core.Cfg.WriteToFile(core.ConfigFile); err != nil {
 		return nil, err
+	}
+	return nil, nil
+}
+
+type BootstrapOption struct {
+	Themes bool // load themes
+	I18n   bool // load languages
+}
+
+// bootstrap means loading memory data and starting some worker in background
+func (bs *BootstrapService) Bootstrap(v interface{}) (*Result, error) {
+	opt, ok := v.(BootstrapOption)
+	if !ok {
+		return nil, ErrServiceFuncNeedType(bs.Bootstrap, opt)
+	}
+	if opt.Themes {
+		if err := Call(Theme.Load, nil); err != nil {
+			return nil, err
+		}
 	}
 	return nil, nil
 }

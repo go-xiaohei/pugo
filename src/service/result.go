@@ -39,11 +39,13 @@ type Result struct {
 	data     map[string]reflect.Value
 }
 
-func newResult(fn Func) *Result {
-	return &Result{
+func newResult(fn Func, values ...interface{}) *Result {
+	res := &Result{
 		funcName: funcName(fn),
 		data:     make(map[string]reflect.Value),
 	}
+	res.Set(values...)
+	return res
 }
 
 func (r *Result) Set(values ...interface{}) {

@@ -20,6 +20,9 @@ func init() {
 	core.App.Usage = core.PUGO_DESCRIPTION
 	core.App.Version = fmt.Sprintf("%s(%s)", core.PUGO_VERSION, core.PUGO_VERSION_STATE)
 	core.App.Compiled, _ = time.Parse("20060102", core.PUGO_VERSION_DATE)
+	core.App.Authors = []cli.Author{
+		cli.Author{core.PUGO_AUTHOR, core.PUGO_AUTHOR_EMAIL},
+	}
 	core.App.HideHelp = true
 	core.App.HideVersion = true
 	core.App.CommandNotFound = func(_ *cli.Context, command string) {
