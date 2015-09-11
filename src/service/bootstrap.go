@@ -46,10 +46,10 @@ func (is *BootstrapService) Init(v interface{}) (*Result, error) {
 			return nil, err
 		}
 		core.Db.ShowDebug = true
+		core.Db.ShowSQL = true
 	}
 	if core.Cfg != nil && opt.Server { // server depends on config
 		core.Server = tango.New([]tango.Handler{
-			tango.Recovery(true),
 			tango.Return(),
 			tango.Param(),
 			tango.Contexts(),

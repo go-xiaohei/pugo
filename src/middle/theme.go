@@ -68,6 +68,7 @@ func (bt *baseTheme) IsAssign(key string) bool {
 
 func (bt *baseTheme) Render(tpl string) {
 	tpl = path.Join(bt.themeDirectory, tpl)
+	tpl = strings.TrimPrefix(tpl, core.ThemeDirectory+"/")
 	if err := bt.Renderer.Render(tpl, bt.data); err != nil {
 		panic(err)
 	}
@@ -75,6 +76,7 @@ func (bt *baseTheme) Render(tpl string) {
 
 func (bt *baseTheme) RenderError(status int, err error) {
 	tpl := path.Join(bt.themeDirectory, ThemeErrorTemplate)
+	tpl = strings.TrimPrefix(tpl, core.ThemeDirectory+"/")
 	bt.Assign("Error", err)
 	if err := bt.StatusRender(status, tpl, bt.data); err != nil {
 		panic(err)

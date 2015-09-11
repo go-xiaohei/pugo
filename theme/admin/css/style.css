@@ -1,0 +1,49 @@
+@import url(http://fonts.googleapis.com/css?family=Raleway|Droid+Sans+Mono:600,400,300);
+
+html, body {
+    font-family: Raleway, Helvetica Neue, "Microsoft Yahei", Helvetica, Arial, sans-serif;
+}
+
+input, textarea {
+    outline: none !important;
+}
+
+pre code {
+    font-family: "Droid Sans Mono", Consolas, "Microsoft YaHei", Helvetica, Arial, sans-serif;
+}
+
+.fa {
+    width: 16px;
+    height: 16px;
+    text-align: center;
+}
+
+.fa-lg {
+    width: 24px;
+    height: 24px;
+    font-size: 24px;
+    vertical-align: bottom;
+}
+
+/*
+ login page
+*/
+
+#login-form {
+    width: 360px;
+    margin-top: 60px;
+}
+
+#login-form .input-group-lg > .form-control,
+#login-form .input-group-lg > .input-group-addon {
+    padding: 0 11px 0 10px;
+    line-height: inherit !important;
+}
+
+#login-form .form-group {
+    margin-bottom: 24px;
+}
+
+#login-forget {
+    color: #888;
+}

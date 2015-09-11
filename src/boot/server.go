@@ -2,8 +2,10 @@ package boot
 
 import (
 	"github.com/codegangsta/cli"
+	"github.com/lunny/tango"
 	"gopkg.in/inconshreveable/log15.v2"
 	"pugo/src/controller"
+	"pugo/src/controller/admin"
 	"pugo/src/core"
 	"pugo/src/middle"
 	"pugo/src/service"
@@ -41,10 +43,15 @@ func Server(ctx *cli.Context) {
 
 	// set middleware and routers
 	core.Server.Use(
+		middle.Recover(),
 		middle.Logger(),
 		middle.Authorizor(),
-		middle.Themer())
+		middle.Themer(),
+		middle.Responser())
 
+	adminGroup := tango.NewGroup()
+	adminGroup.Any("/login", new(admin.LoginController))
+	core.Server.Group("/admin", adminGroup)
 	core.Server.Get("/", new(controller.IndexController))
 
 	// start server

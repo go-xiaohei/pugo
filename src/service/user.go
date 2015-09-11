@@ -161,7 +161,7 @@ func (us *UserService) Verify(v interface{}) (*Result, error) {
 
 func (us *UserService) getToken(hash, origin string) (*model.UserToken, error) {
 	t := new(model.UserToken)
-	if _, err := core.Db.Where("'from' = ? AND hash = ?", origin, hash).Get(t); err != nil {
+	if _, err := core.Db.Where("`from` = ? AND hash = ?", origin, hash).Get(t); err != nil {
 		return nil, err
 	}
 	return t, nil
