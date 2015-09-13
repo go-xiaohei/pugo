@@ -45,12 +45,13 @@ func Server(ctx *cli.Context) {
 	core.Server.Use(
 		middle.Recover(),
 		middle.Logger(),
-		middle.Authorizor(),
 		middle.Themer(),
-		middle.Responser())
+		middle.Responser(),
+		middle.Authorizor())
 
 	adminGroup := tango.NewGroup()
 	adminGroup.Any("/login", new(admin.LoginController))
+	adminGroup.Get("/", new(admin.IndexController))
 	core.Server.Group("/admin", adminGroup)
 	core.Server.Get("/", new(controller.IndexController))
 

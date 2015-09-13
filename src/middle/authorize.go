@@ -9,10 +9,11 @@ import (
 )
 
 var (
-	AuthTokenHttpHeader = "PUGO-TOKEN"
-	AuthTokenFormField  = "pugo_token"
-	AuthTokenCookieName = AuthTokenFormField
-	AuthFailUrl         = "/login"
+	AuthTokenHttpHeader   = "PUGO-TOKEN"
+	AuthTokenFormField    = "pugo_token"
+	AuthTokenCookieName   = AuthTokenFormField
+	AuthFailUrl           = "/admin/login"
+	AuthUserTemplateField = "AuthUser"
 
 	_ IAuthorize = (*AuthorizeCheck)(nil)
 	_ IAuthorize = (*AuthorizeRequire)(nil)
@@ -112,6 +113,9 @@ func Authorizor() tango.HandlerFunc {
 				return
 			}
 			auth.SetAuthUser(user)
+			if render, ok := ctx.Action().(ITheme); ok {
+				render.Assign(AuthUserTemplateField, user)
+			}
 			ctx.Next()
 			return
 		}

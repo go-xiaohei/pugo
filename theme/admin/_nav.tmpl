@@ -1,0 +1,109 @@
+<nav class="navbar navbar-inverse navbar-fixed-top" id="nav">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/" name="home">Pugo</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/admin/" data-toggle="tooltip" title="Dashboard" data-placement="right">
+                    <i class="fa fa-dashboard"></i> Dashboard
+                </a></li>
+                <li class="dropdown" data-toggle="tooltip" title="Write New Article or Page" data-placement="right">
+                    <a href="/admin/write" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                       aria-haspopup="true"
+                       aria-expanded="true">
+                        <i class="fa fa-pencil-square-o"></i> Write
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu nav-drop" id="nav-write-dropdown">
+                        <li>
+                            <a href="/admin/write/article">
+                                <i class="fa fa-file-text"></i> Article
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/write/page">
+                                <i class="fa fa-file-o"></i> Page
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown" data-toggle="tooltip" title="Manage articles, pages etc..." data-placement="right">
+                    <a href="/admin/write" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                       aria-haspopup="true"
+                       aria-expanded="true">
+                        <i class="fa fa-th-large"></i> Manage
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu nav-drop" id="nav-manage-dropdown">
+                        <li>
+                            <a href="/admin/manage/article">
+                                <i class="fa fa-file-text"></i> Article
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/manage/page">
+                                <i class="fa fa-file-o"></i> Page
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/manage/comment">
+                                <i class="fa fa-comments-o"></i> Comment
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/manage/media">
+                                <i class="fa fa-cloud-upload"></i> Media
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown" data-toggle="tooltip" title="Options and settings" data-placement="right">
+                    <a href="/admin/write" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                       aria-haspopup="true"
+                       aria-expanded="true">
+                        <i class="fa fa-cog"></i> Option
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu nav-drop" id="nav-option-dropdown">
+                        <li>
+                            <a href="/admin/option/general">
+                                <i class="fa fa-list"></i> General
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/option/content">
+                                <i class="fa fa-file-o"></i> Content
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/option/comment">
+                                <i class="fa fa-comments-o"></i> Comment
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/option/theme">
+                                <i class="fa fa-pagelines"></i> Theme
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/admin/profile" data-toggle="tooltip" title="User Profile" data-placement="left">
+                    <i class="fa fa-user-md"></i> {{.AuthUser.Nick}}
+                </a></li>
+                <li><a href="/admin/logout" data-toggle="tooltip" title="Logout" data-placement="bottom"><i
+                        class="fa fa-sign-out"></i></a></li>
+
+            </ul>
+        </div>
+    </div>
+</nav>

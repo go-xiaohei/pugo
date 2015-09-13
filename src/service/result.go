@@ -28,10 +28,8 @@ func funcName(fn interface{}) string {
 	if len(nameData) > 2 {
 		nameData = nameData[len(nameData)-1:]
 	}
-	if runtime.GOOS == "windows" {
-		return strings.TrimSuffix(strings.Join(nameData, "."), "-fm")
-	}
-	return strings.TrimSuffix(strings.Join(nameData, "."), "·fm")
+	name = strings.TrimSuffix(strings.Join(nameData, "."), "-fm")
+	return strings.TrimSuffix(name, "·fm")
 }
 
 type Result struct {

@@ -12,6 +12,10 @@ pre code {
     font-family: "Droid Sans Mono", Consolas, "Microsoft YaHei", Helvetica, Arial, sans-serif;
 }
 
+title{
+    text-transform: uppercase;
+}
+
 .fa {
     width: 16px;
     height: 16px;
@@ -46,4 +50,22 @@ pre code {
 
 #login-forget {
     color: #888;
+}
+
+/*
+ #nav
+*/
+
+.nav-drop .fa {
+    margin-right: .4em;
+}
+
+.nav-drop > li > a {
+    margin-bottom: .6em;
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+.nav-drop > li > a:last-child {
+    margin-bottom: 0;
 }
