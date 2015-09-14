@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    {{template "admin/_meta.tmpl" .}}
+    <link rel="stylesheet" href="{{.ThemeLink}}/editor/css/editormd.min.css"/>
+    <script src="{{.ThemeLink}}/editor/editormd.min.js"></script>
+    <script src="{{.ThemeLink}}/editor/languages/en.js"></script>
+</head>
+<body>
+{{template "admin/_nav.tmpl" .}}
+<div id="main">
+    <div class="container-fluid" id="write-article-main">
+        <form id="write-article-form" class="form" action="/admin/write/article" method="post">
+            <div class="form-group">
+                <input class="form-control input-lg" id="write-article-title" type="text" name="title"
+                       placeholder="ARTICLE TITLE"/>
+            </div>
+            <div class="form-group">
+                <input class="form-control" id="write-article-link" type="text" name="link" placeholder="ARTICLE LINK"/>
+            </div>
+            <div class="form-group">
+                <div id="editormd">
+                    <textarea name="body" id="editormd-textarea" style="display: none"></textarea>
+                </div>
+            </div>
+            <div class="form-inline write-article-form-inline">
+                <div class="form-group">
+                    <label for="write-article-tag"><strong>TAGS</strong></label>
+                    <input type="text" class="form-control" id="write-article-tag" name="tag" placeholder="TAGS">
+                </div>
+                <div class="form-group">
+                    <label for="write-article-type"><strong>TYPE</strong></label>
+                    <select class="form-control" id="write-article-type" name="type">
+                        <option value="markdown">MARKDOWN</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="write-article-publish" name="draft" value="draft">
+                        <strong>AS DRAFT</strong>
+                    </label>
+                </div>
+                <div class="form-group pull-right">
+                    {{.XsrfHTML}}
+                    <button class="btn btn-primary">SAVE ARTICLE</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    var testEditor;
+    $(function () {
+        testEditor = editormd("editormd", {
+            width: "100%",
+            height: 750,
+            syncScrolling: "single",
+            path: "{{.ThemeLink}}/editor/lib/",
+            name: "body"
+        });
+    });
+</script>
+</body>
+</html>

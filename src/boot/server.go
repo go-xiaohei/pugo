@@ -51,6 +51,8 @@ func Server(ctx *cli.Context) {
 
 	adminGroup := tango.NewGroup()
 	adminGroup.Any("/login", new(admin.LoginController))
+	adminGroup.Any("/write/article", new(admin.ArticleWriteController))
+	adminGroup.Get("/manage/article", new(admin.ArticleManageController))
 	adminGroup.Get("/", new(admin.IndexController))
 	core.Server.Group("/admin", adminGroup)
 	core.Server.Get("/", new(controller.IndexController))

@@ -88,7 +88,9 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 	// create tables
 	if err := core.Db.Sync2(new(model.User),
 		new(model.UserToken),
-		new(model.Theme)); err != nil {
+		new(model.Theme),
+		new(model.Article),
+		new(model.ArticleTag)); err != nil {
 		return nil, err
 	}
 

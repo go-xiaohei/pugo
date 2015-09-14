@@ -21,7 +21,7 @@ func (lc *LoginController) Get() {
 		lc.Redirect("/admin")
 		return
 	}
-	lc.Title("Login to Pugo")
+	lc.Title("LOGIN - PUGO")
 	lc.Render("login.tmpl")
 }
 

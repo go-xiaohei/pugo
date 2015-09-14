@@ -108,16 +108,14 @@ func Authorizor() tango.HandlerFunc {
 				}
 				user = new(model.User)
 			)
-			if err := service.Call(service.User.Verify, opt, user); err != nil {
+			if err := service.Call(service.User.Verify, opt, user); err == nil {
+				auth.SetAuthUser(user)
+				if render, ok := ctx.Action().(ITheme); ok {
+					render.Assign(AuthUserTemplateField, user)
+				}
 				ctx.Next()
 				return
 			}
-			auth.SetAuthUser(user)
-			if render, ok := ctx.Action().(ITheme); ok {
-				render.Assign(AuthUserTemplateField, user)
-			}
-			ctx.Next()
-			return
 		}
 
 		if auth.OnAuthFail(ctx) {

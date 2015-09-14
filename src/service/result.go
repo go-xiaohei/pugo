@@ -85,6 +85,10 @@ func Call(fn Func, v interface{}, values ...interface{}) error {
 	}
 	if res != nil {
 		res.SetTo(values...)
+	} else {
+		if len(values) > 0 {
+			panic(ErrResultSetUnknownPointer(reflect.ValueOf(values[0])))
+		}
 	}
 	return nil
 }

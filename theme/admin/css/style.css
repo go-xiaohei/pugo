@@ -12,7 +12,7 @@ pre code {
     font-family: "Droid Sans Mono", Consolas, "Microsoft YaHei", Helvetica, Arial, sans-serif;
 }
 
-title{
+title {
     text-transform: uppercase;
 }
 
@@ -52,6 +52,10 @@ title{
     color: #888;
 }
 
+#login-error {
+    display: none;
+}
+
 /*
  #nav
 */
@@ -68,4 +72,84 @@ title{
 
 .nav-drop > li > a:last-child {
     margin-bottom: 0;
+}
+
+/*
+ #main
+*/
+
+#main {
+    margin-top: 70px;
+}
+
+/*
+ #editormd
+*/
+
+#editormd .editormd-menu > li .fa {
+    width: auto !important;
+    height: auto !important;
+}
+
+.editormd-fullscreen {
+    z-index: 1099;
+}
+
+/*
+ #write-article
+*/
+
+#write-article-form .write-article-form-inline label {
+    padding-right: 1em;
+}
+
+#write-article-form .write-article-form-inline .form-control {
+    margin-right: 2em;
+}
+
+#write-article-tag {
+    width: 560px;
+}
+
+/*
+#manage-article-list
+*/
+
+#manage-article-list .article {
+    line-height: 30px;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed #DDD;
+}
+
+#manage-article-list .article:hover .opt{
+    display: block;
+}
+
+#manage-article-list .article .date {
+    font-size: 16px;
+    color: #999;
+    margin-right: 12px;
+}
+
+#manage-article-list .article .title {
+    font-size: 20px;
+    margin-right: 12px;
+}
+
+#manage-article-list .article .status {
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 6px;
+    padding: .3em .6em;
+}
+
+#manage-article-list .article .opt{
+    margin-top: 6px;
+    display: none;
+}
+
+#manage-article-list .article .opt a{
+    font-size: 14px;
+    margin-left: 8px;
 }
