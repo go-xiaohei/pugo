@@ -57,6 +57,7 @@ func Server(ctx *cli.Context) {
 	adminGroup.Get("/public/article", new(admin.ArticlePublicController))
 	adminGroup.Any("/profile", new(admin.ProfileController))
 	adminGroup.Route([]string{"POST:Password"}, "/password", new(admin.ProfileController))
+	adminGroup.Get("/manage/media", new(admin.MediaController))
 	adminGroup.Get("/", new(admin.IndexController))
 	core.Server.Group("/admin", adminGroup)
 	core.Server.Get("/", new(controller.IndexController))
