@@ -122,7 +122,7 @@ title {
     border-bottom: 1px dashed #DDD;
 }
 
-#manage-article-list .article:hover .opt{
+#manage-article-list .article:hover .opt {
     display: block;
 }
 
@@ -142,14 +142,36 @@ title {
     vertical-align: top;
     margin-top: 6px;
     padding: .3em .6em;
+    margin-right: 12px;
 }
 
-#manage-article-list .article .opt{
+#manage-article-list .article .opt {
     margin-top: 6px;
     display: none;
 }
 
-#manage-article-list .article .opt a{
+#manage-article-list .article .opt a {
     font-size: 14px;
     margin-left: 8px;
+}
+
+#manage-article-list .article .link {
+    font-size: 14px;
+    color: #999;
+}
+
+#manage-article-list .pager a {
+    padding: 3px 9px !important;
+    background-color: #EEE;
+}
+
+/*
+#profile-form
+*/
+
+#profile-success,
+#profile-error,
+#password-success,
+#password-error {
+    display: none;
 }

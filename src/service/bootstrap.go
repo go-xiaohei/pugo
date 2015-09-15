@@ -10,9 +10,11 @@ import (
 	"github.com/tango-contrib/renders"
 	"github.com/tango-contrib/session"
 	"github.com/tango-contrib/xsrf"
+	"html/template"
 	"path"
 	"pugo/src/core"
 	"pugo/src/model"
+	"pugo/src/utils"
 	"time"
 )
 
@@ -66,12 +68,9 @@ func (is *BootstrapService) Init(v interface{}) (*Result, error) {
 			Reload:     true,
 			Directory:  core.ThemeDirectory,
 			Extensions: []string{".tmpl"},
-			/*Funcs: template.FuncMap{
-			    "Str2HTML":             utils.Str2HTML,
-			    "TimeUnixFormat":       utils.TimeUnixFormat,
-			    "TimeUnixFormatFriend": utils.FriendTimeUnixFormat,
-			    "FriendBytesSize":      utils.FriendBytesSize,
-			},*/
+			Funcs: template.FuncMap{
+				"TimeUnixFormat": utils.TimeUnixFormat,
+			},
 		}))
 		sessions := session.New(session.Options{
 			SessionIdName: core.SessionName,

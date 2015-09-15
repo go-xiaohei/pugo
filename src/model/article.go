@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"pugo/src/core"
 	"time"
 )
@@ -48,6 +49,11 @@ type ArticleTag struct {
 	Tag       string `xorm:"VARCHAR(50) notnull"`
 }
 
+// is article draft
+func (a *Article) IsDraft() bool {
+	return a.Status == ARTICLE_STATUS_DRAFT
+}
+
 // article comment enable or not
 func (a *Article) IsCommentable() bool {
 	if a.CommentStatus == ARTICLE_COMMENT_OPEN {
@@ -76,6 +82,14 @@ func (a *Article) User() *User {
 		}
 	}
 	return a.userData
+}
+
+// create link for article
+func (a *Article) Href() string {
+	if a.IsDraft() {
+		return "#"
+	}
+	return fmt.Sprintf("/article/%d/%s.html", a.Id, a.Link)
 }
 
 func getArticleUser(id int64) (*User, error) {

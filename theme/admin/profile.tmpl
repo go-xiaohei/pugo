@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    {{template "admin/_meta.tmpl" .}}
+</head>
+<body>
+{{template "admin/_nav.tmpl" .}}
+<div id="main">
+    <div class="container" id="profile-main">
+        <h3 class="main-title">PROFILE</h3>
+        <hr/>
+        <form class="form-horizontal" id="profile-form" action="/admin/profile/" method="post">
+            <div class="form-group alert alert-success" id="profile-success"></div>
+            <div class="form-group alert alert-danger" id="profile-error"></div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="name">Name</label>
+
+                <div class="col-md-10">
+                    <input class="form-control" id="name" type="text" name="name" value="{{.AuthUser.Name}}"
+                           required="required" placeholder="USER NAME"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="nick">NickName</label>
+
+                <div class="col-md-10">
+                    <input class="form-control" id="nick" type="text" name="nick" value="{{.AuthUser.Nick}}"
+                           required="required" placeholder="USER NICK"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="email">Email</label>
+
+                <div class="col-md-10">
+                    <input class="form-control" id="email" type="email" name="email" value="{{.AuthUser.Email}}"
+                           required="required" placeholder="USER EMAIL"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="url">Personal Url</label>
+
+                <div class="col-md-10">
+                    <input class="form-control" id="url" type="url" name="url" value="{{.AuthUser.Url}}"
+                           placeholder="USER URL"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="bio">User Bio</label>
+
+                <div class="col-md-10">
+                    <textarea class="form-control" name="bio" id="bio" rows="8">{{.AuthUser.Profile}}</textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    {{.XsrfHTML}}
+                    <button type="submit" class="btn btn-primary">UPDATE PROFILE</button>
+                </div>
+            </div>
+        </form>
+        <hr/>
+        <h3 class="main-title">PASSWORD</h3>
+
+        <form class="form-horizontal" id="password-form" action="/admin/password/" method="post">
+            <div class="form-group alert alert-success" id="password-success"></div>
+            <div class="form-group alert alert-danger" id="password-error"></div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="old-password">Old Password</label>
+
+                <div class="col-md-10">
+                    <input class="form-control" id="old-password" type="password" name="old" required="required"
+                           placeholder="OLD PASSWORD"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="new-password">New Password</label>
+
+                <div class="col-md-10">
+                    <input class="form-control" id="new-password" type="password" name="new" required="required"
+                           placeholder="NEW PASSWORD"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="confirm-password">Confirm Password</label>
+
+                <div class="col-md-10">
+                    <input class="form-control" id="confirm-password" type="password" name="confirm" required="required"
+                           placeholder="CONFIRM PASSWORD"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    {{.XsrfHTML}}
+                    <button type="submit" class="btn btn-danger">UPDATE PASSWORD</button>
+                </div>
+            </div>
+        </form>
+        <hr/>
+    </div>
+</div>
+<script>
+    $(function () {
+        $('#profile-form').ajaxForm({
+            dataType: "json",
+            success: function (json) {
+                $('#profile-success,#profile-error').hide();
+                if (json.status) {
+                    $('#profile-success').text("UPDATE SUCCESS !").show();
+                    return;
+                }
+                $("#profile-error").text(json.error).show();
+            }
+        });
+        $('#password-form').ajaxForm({
+            dataType: "json",
+            success: function (json) {
+                $('#password-success,#password-error').hide();
+                if (json.status) {
+                    $('#password-success').text("UPDATE SUCCESS !").show();
+                    return;
+                }
+                $("#password-error").text(json.error).show();
+            }
+        })
+    });
+</script>
+</body>
+</html>

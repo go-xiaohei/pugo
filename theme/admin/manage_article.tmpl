@@ -10,41 +10,25 @@
         <h3 class="main-title">ARTICLES</h3>
         <hr/>
         <div id="manage-article-list">
+            {{range .Articles}}
             <div class="article clear">
-                <span class="date">06.12</span>
-                <a class="title" href="#">Building Your Own Data Diode with Open Source Solutions</a>
+                <span class="date">{{TimeUnixFormat .CreateTime "01.02"}}</span>
+                <a class="title" href="{{.Href}}" target="_blank" name="{{.Title}}">{{.Title}}</a>
+                {{if .IsDraft}}
                 <a class="status label label-warning" href="#">DRAFT</a>
+                {{end}}
+                <span class="link">({{.Link}})</span>
                  <span class="opt pull-right">
-                      <a href="#" class="text-default"><i class="fa fa-eye"></i> PUBLIC</a>
-                    <a href="#" class="text-success"><i class="fa fa-edit"></i> EDIT</a>
-                    <a href="#" class="text-danger"><i class="fa fa-remove"></i> DELETE</a>
+                     {{if .IsDraft}}
+                     <a href="/admin/public/article?id={{.Id}}" class="text-default"><i class="fa fa-eye"></i>
+                         PUBLIC</a>
+                     {{end}}
+                    <a href="/admin/write/article?id={{.Id}}" class="text-success"><i class="fa fa-edit"></i> EDIT</a>
+                    <a href="/admin/delete/article?id={{.Id}}" class="text-danger"><i class="fa fa-remove"></i> DELETE</a>
                 </span>
             </div>
-            <div class="article clear">
-                <span class="date">06.12</span>
-                <a class="title" href="#">Building Your Own Data Diode with Open Source Solutions</a>
-                <span class="opt pull-right">
-                    <a href="#" class="text-success"><i class="fa fa-edit"></i> EDIT</a>
-                    <a href="#" class="text-danger"><i class="fa fa-remove"></i> DELETE</a>
-                </span>
-            </div>
-            <div class="article clear">
-                <span class="date">06.11</span>
-                <a class="title" href="#">Join PersistIQ as our customer success lead – Impact how millions of people
-                    work</a>
-                <span class="opt pull-right">
-                    <a href="#" class="text-success"><i class="fa fa-edit"></i> EDIT</a>
-                    <a href="#" class="text-danger"><i class="fa fa-remove"></i> DELETE</a>
-                </span>
-            </div>
-            <div class="article clear">
-                <span class="date">06.09</span>
-                <a class="title" href="#">Application Architecture with React: Rethinking Flux</a>
-                <span class="opt pull-right">
-                    <a href="#" class="text-success"><i class="fa fa-edit"></i> EDIT</a>
-                    <a href="#" class="text-danger"><i class="fa fa-remove"></i> DELETE</a>
-                </span>
-            </div>
+            {{end}}
+            {{.Pager.HTML "/admin/manage/article?page=%d"}}
         </div>
     </div>
 </div>

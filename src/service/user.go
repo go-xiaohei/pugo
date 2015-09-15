@@ -16,6 +16,7 @@ var (
 	ErrUserWrongPassword = errors.New("user-wrong-password")
 	ErrTokenNotFound     = errors.New("token-not-found")
 	ErrTokenExpired      = errors.New("token-expired")
+	ErrPasswordConfirm   = errors.New("password-confirm-error")
 )
 
 type UserService struct{}
@@ -172,4 +173,53 @@ func (us *UserService) extendToken(id, newExpire int64) error {
 		return err
 	}
 	return nil
+}
+
+func (us *UserService) Unauthorize(v interface{}) (*Result, error) {
+	token, ok := v.(*string)
+	if !ok {
+		return nil, ErrServiceFuncNeedType(us.Unauthorize, token)
+	}
+	if _, err := core.Db.Where("hash = ?", *token).Delete(new(model.UserToken)); err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+func (us *UserService) Profile(v interface{}) (*Result, error) {
+	u, ok := v.(*model.User)
+	if !ok {
+		return nil, ErrServiceFuncNeedType(us.Profile, u)
+	}
+	if _, err := core.Db.Where("id = ?", u.Id).Cols("name,email,profile,nick,url").Update(u); err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+type UserPasswordOption struct {
+	Old     string
+	New     string
+	Confirm string
+	User    *model.User
+}
+
+func (us *UserService) Password(v interface{}) (*Result, error) {
+	opt, ok := v.(UserPasswordOption)
+	if !ok {
+		return nil, ErrServiceFuncNeedType(us.Password, opt)
+	}
+	if opt.New != opt.Confirm {
+		return nil, ErrPasswordConfirm
+	}
+	if !opt.User.IsPassword(opt.Old) {
+		return nil, ErrUserWrongPassword
+	}
+	oldPwd := opt.User.Password
+	opt.User.SetPassword(opt.New)
+	if _, err := core.Db.Where("id = ?", opt.User.Id).Cols("password").Update(opt.User); err != nil {
+		opt.User.Password = oldPwd
+		return nil, err
+	}
+	return nil, nil
 }

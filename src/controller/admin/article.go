@@ -1,14 +1,17 @@
 package admin
 
 import (
+	"github.com/lunny/tango"
 	"github.com/tango-contrib/xsrf"
 	"pugo/src/middle"
 	"pugo/src/model"
 	"pugo/src/service"
+	"pugo/src/utils"
 	"strings"
 )
 
 type ArticleWriteController struct {
+	tango.Ctx
 	xsrf.Checker
 
 	middle.AuthorizeRequire
@@ -20,6 +23,17 @@ type ArticleWriteController struct {
 func (awc *ArticleWriteController) Get() {
 	awc.Title("WRITE ARTICLE - PUGO")
 	awc.Assign("XsrfHTML", awc.XsrfFormHtml())
+	if id := awc.FormInt64("id"); id > 0 {
+		var (
+			opt     = service.ArticleReadOption{Id: id}
+			article = new(model.Article)
+		)
+		if err := service.Call(service.Article.Read, opt, article); err != nil {
+			awc.RenderError(500, err)
+			return
+		}
+		awc.Assign("Article", article)
+	}
 	awc.Render("write_article.tmpl")
 }
 
@@ -80,11 +94,41 @@ func (awc *ArticleWriteController) Post() {
 }
 
 type ArticleManageController struct {
+	tango.Ctx
 	middle.AuthorizeRequire
 	middle.AdminRender
 }
 
 func (amc *ArticleManageController) Get() {
 	amc.Title("ARTICLES - PUGO")
+	var (
+		opt      = service.ArticleListOption{IsCount: true}
+		articles = make([]*model.Article, 0)
+		pager    = new(utils.Pager)
+	)
+	opt.Page = amc.FormInt("page", 1)
+	if err := service.Call(service.Article.List, opt, &articles, pager); err != nil {
+		amc.RenderError(500, err)
+		return
+	}
+	amc.Assign("Articles", articles)
+	amc.Assign("Pager", pager)
 	amc.Render("manage_article.tmpl")
+}
+
+type ArticlePublicController struct {
+	tango.Ctx
+	middle.AuthorizeRequire
+	middle.Responsor
+	middle.AdminRender
+}
+
+func (apc *ArticlePublicController) Get() {
+	if id := apc.FormInt64("id"); id > 0 {
+		if err := service.Call(service.Article.ToPublish, &id); err != nil {
+			apc.RenderError(500, err)
+			return
+		}
+	}
+	apc.Redirect(apc.Req().Referer())
 }

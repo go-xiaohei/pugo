@@ -10,7 +10,7 @@ import (
 
 var (
 	AuthTokenHttpHeader   = "PUGO-TOKEN"
-	AuthTokenFormField    = "pugo_token"
+	AuthTokenFormField    = "PUGO_TOKEN"
 	AuthTokenCookieName   = AuthTokenFormField
 	AuthFailUrl           = "/admin/login"
 	AuthUserTemplateField = "AuthUser"
@@ -45,6 +45,16 @@ func (_ *AuthorizeCheck) ReadToken(ctx *tango.Context) string {
 
 // write token to response
 func (_ *AuthorizeCheck) WriteToken(ctx *tango.Context, token *model.UserToken) {
+	if token == nil {
+		ctx.Cookies().Set(&http.Cookie{
+			Name:    AuthTokenCookieName,
+			Value:   "",
+			Path:    "/",
+			MaxAge:  -3600,
+			Expires: time.Now().Add(-1 * time.Hour),
+		})
+		return
+	}
 	ctx.Cookies().Set(&http.Cookie{
 		Name:     AuthTokenCookieName,
 		Value:    token.Hash,
