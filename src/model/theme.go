@@ -28,6 +28,10 @@ func (t *Theme) IsCurrent() bool {
 	return t.Status == THEME_STATUS_CURRENT // current theme
 }
 
+func (t *Theme) IsCurrentable() bool {
+	return !t.IsLocked() && !t.IsCurrent()
+}
+
 func (t *Theme) IsValid() bool {
 	return com.IsDir(t.Directory)
 }

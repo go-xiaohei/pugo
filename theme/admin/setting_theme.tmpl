@@ -21,7 +21,20 @@
                     {{if .IsLocked}}
                     <span class="label label-danger">LOCKED</span>
                     {{end}}
+                    {{if .IsCurrent}}
+                    <span class="label label-primary">CURRENT</span>
+                    {{end}}
                 </span>
+                {{if .IsCurrentable}}
+                <span class="to-current pull-right">
+                    <a href="#">
+                        <button class="btn btn-info">
+                            <i class="fa fa-chevron-circle-right"></i>
+                            SET CURRENT
+                        </button>
+                    </a>
+                </span>
+                {{end}}
             </div>
             {{end}}
         </div>
