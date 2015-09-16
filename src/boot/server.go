@@ -62,6 +62,7 @@ func Server(ctx *cli.Context) {
 
 	adminGroup.Any("/option/general", new(admin.SettingGeneralController))
 	adminGroup.Route([]string{"POST:PostMedia"}, "/option/media", new(admin.SettingGeneralController))
+	adminGroup.Get("/option/theme", new(admin.SettingThemeController))
 
 	adminGroup.Get("/manage/media", new(admin.MediaController))
 	adminGroup.Get("/", new(admin.IndexController))

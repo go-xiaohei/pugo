@@ -98,3 +98,19 @@ func (sc *SettingGeneralController) PostMedia() {
 	service.Setting.Media = form.toSettingMedia()
 	sc.JSON(nil)
 }
+
+type SettingThemeController struct {
+	middle.AuthorizeRequire
+	middle.AdminRender
+}
+
+func (stc *SettingThemeController) Get() {
+	themes := make([]*model.Theme, 0)
+	if err := service.Call(service.Theme.All, nil, &themes); err != nil {
+		stc.RenderError(500, err)
+		return
+	}
+	stc.Title("THEME - PUGO")
+	stc.Assign("Themes", themes)
+	stc.Render("setting_theme.tmpl")
+}

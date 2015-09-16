@@ -179,3 +179,23 @@ title {
 #setting-media-error {
     display: none;
 }
+
+/*
+#theme-main
+*/
+
+#theme-main .theme {
+    line-height: 30px;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed #DDD;
+}
+
+#theme-main .theme .dir{
+    color: #999;
+}
+
+#theme-main .theme .dir,
+#theme-main .theme .status{
+    margin-top: 7px;
+}

@@ -14,6 +14,7 @@ var (
 
 type ThemeService struct {
 	cacheThemes  map[string]*model.Theme
+	themeSlice   []*model.Theme
 	currentTheme *model.Theme
 }
 
@@ -25,7 +26,7 @@ func newThemeService() *ThemeService {
 
 func (ts *ThemeService) Load(_ interface{}) (*Result, error) {
 	themes := make([]*model.Theme, 0)
-	if err := core.Db.OrderBy("status DESC").Find(&themes); err != nil {
+	if err := core.Db.OrderBy("status ASC").Find(&themes); err != nil {
 		return nil, err
 	}
 	for _, t := range themes {
@@ -34,6 +35,7 @@ func (ts *ThemeService) Load(_ interface{}) (*Result, error) {
 			ts.currentTheme = t
 		}
 	}
+	ts.themeSlice = themes
 	res := newResult(ts.Load, &themes)
 	return res, nil
 }
@@ -61,4 +63,13 @@ func (ts *ThemeService) Admin(_ interface{}) (*Result, error) {
 		return nil, ErrThemeInvalid
 	}
 	return newResult(ts.Admin, theme), nil
+}
+
+func (ts *ThemeService) All(_ interface{}) (*Result, error) {
+	if len(ts.themeSlice) == 0 {
+		if _, err := ts.Load(nil); err != nil {
+			return nil, err
+		}
+	}
+	return newResult(ts.All, &ts.themeSlice), nil
 }
