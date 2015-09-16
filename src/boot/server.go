@@ -35,7 +35,7 @@ func Server(ctx *cli.Context) {
 		log15.Crit("Server.start.fail", "error", err)
 	}
 	// bootstrap service, preload data
-	opt2 := service.BootstrapOption{true, true}
+	opt2 := service.BootstrapOption{true, true, true}
 	if err := service.Call(service.Bootstrap.Bootstrap, opt2); err != nil {
 		log15.Crit("Server.start.fail", "error", err)
 	}
@@ -52,11 +52,17 @@ func Server(ctx *cli.Context) {
 	adminGroup := tango.NewGroup()
 	adminGroup.Any("/login", new(admin.LoginController))
 	adminGroup.Route([]string{"GET:Logout"}, "/logout", new(admin.LoginController))
+
 	adminGroup.Any("/write/article", new(admin.ArticleWriteController))
 	adminGroup.Get("/manage/article", new(admin.ArticleManageController))
 	adminGroup.Get("/public/article", new(admin.ArticlePublicController))
+
 	adminGroup.Any("/profile", new(admin.ProfileController))
 	adminGroup.Route([]string{"POST:Password"}, "/password", new(admin.ProfileController))
+
+	adminGroup.Any("/option/general", new(admin.SettingGeneralController))
+	adminGroup.Route([]string{"POST:PostMedia"}, "/option/media", new(admin.SettingGeneralController))
+
 	adminGroup.Get("/manage/media", new(admin.MediaController))
 	adminGroup.Get("/", new(admin.IndexController))
 	core.Server.Group("/admin", adminGroup)

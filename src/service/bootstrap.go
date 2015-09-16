@@ -89,7 +89,8 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 		new(model.UserToken),
 		new(model.Theme),
 		new(model.Article),
-		new(model.ArticleTag)); err != nil {
+		new(model.ArticleTag),
+		new(model.Setting)); err != nil {
 		return nil, err
 	}
 
@@ -128,6 +129,39 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 		return nil, err
 	}
 
+	// insert settings
+	generalSetting := &model.SettingGeneral{
+		Title:       "PUGO",
+		SubTitle:    "Simple Blog Engine",
+		Keyword:     "pugo,blog,go,golang",
+		Description: "PUGO is a simple blog engine by golang",
+		HostName:    "http://localhost/",
+	}
+	setting := &model.Setting{
+		Name:   "general",
+		UserId: 0,
+		Type:   model.SETTING_TYPE_GENERAL,
+	}
+	setting.Encode(generalSetting)
+	if _, err := core.Db.Insert(setting); err != nil {
+		return nil, err
+	}
+	mediaSetting := &model.SettingMedia{
+		MaxFileSize: 10 * 1024,
+		ImageFile:   []string{"jpg", "jpeg", "png", "gif", "bmp", "vbmp"},
+		DocFile:     []string{"txt", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "pdf"},
+		CommonFile:  []string{"zip", "rar"},
+	}
+	setting = &model.Setting{
+		Name:   "media",
+		UserId: 0,
+		Type:   model.SETTING_TYPE_MEDIA,
+	}
+	setting.Encode(mediaSetting)
+	if _, err := core.Db.Insert(setting); err != nil {
+		return nil, err
+	}
+
 	// assign install time to config
 	core.Cfg.Install = fmt.Sprint(time.Now().Unix())
 	if err := core.Cfg.WriteToFile(core.ConfigFile); err != nil {
@@ -137,8 +171,9 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 }
 
 type BootstrapOption struct {
-	Themes bool // load themes
-	I18n   bool // load languages
+	Themes  bool // load themes
+	I18n    bool // load languages
+	Setting bool // load settings to SettingService
 }
 
 // bootstrap means loading memory data and starting some worker in background
@@ -151,6 +186,23 @@ func (bs *BootstrapService) Bootstrap(v interface{}) (*Result, error) {
 		if err := Call(Theme.Load, nil); err != nil {
 			return nil, err
 		}
+	}
+	if opt.Setting {
+		var (
+			sOpt    = SettingReadOption{model.SETTING_TYPE_GENERAL, 0, false}
+			setting = new(model.Setting)
+		)
+		if err := Call(Setting.Read, sOpt, setting); err != nil {
+			return nil, err
+		}
+		Setting.General = setting.ToGeneral()
+
+		sOpt = SettingReadOption{model.SETTING_TYPE_MEDIA, 0, false}
+		setting = new(model.Setting)
+		if err := Call(Setting.Read, sOpt, setting); err != nil {
+			return nil, err
+		}
+		Setting.Media = setting.ToMedia()
 	}
 	return nil, nil
 }

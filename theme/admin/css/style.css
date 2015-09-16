@@ -172,6 +172,10 @@ title {
 #profile-success,
 #profile-error,
 #password-success,
-#password-error {
+#password-error,
+#setting-general-success,
+#setting-general-error,
+#setting-media-success,
+#setting-media-error {
     display: none;
 }
