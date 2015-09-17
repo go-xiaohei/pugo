@@ -102,11 +102,13 @@ type ArticleManageController struct {
 func (amc *ArticleManageController) Get() {
 	amc.Title("ARTICLES - PUGO")
 	var (
-		opt      = service.ArticleListOption{IsCount: true}
+		opt = service.ArticleListOption{
+			IsCount: true,
+			Page:    amc.FormInt("page", 0),
+		}
 		articles = make([]*model.Article, 0)
 		pager    = new(utils.Pager)
 	)
-	opt.Page = amc.FormInt("page", 1)
 	if err := service.Call(service.Article.List, opt, &articles, pager); err != nil {
 		amc.RenderError(500, err)
 		return

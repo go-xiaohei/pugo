@@ -66,11 +66,12 @@ func (as *ArticleService) RemoveTags(id int64) error {
 }
 
 type ArticleListOption struct {
-	Status  int8
-	Order   string
-	Page    int
-	Size    int
-	IsCount bool
+	Status   int8
+	Order    string
+	Page     int
+	Size     int
+	IsCount  bool
+	ReadTime int64
 }
 
 func prepareArticleListOption(opt ArticleListOption) ArticleListOption {
@@ -105,8 +106,19 @@ func (as *ArticleService) List(v interface{}) (*Result, error) {
 	if err := sess.Find(&articles); err != nil {
 		return nil, err
 	}
+	if opt.ReadTime > 0 {
+		for _, a := range articles {
+			a.IsNewRead = (opt.ReadTime - a.UpdateTime) > 3600*12
+		}
+	}
 	res := newResult(as.List, &articles)
 	if opt.IsCount {
+		// the session had been used, reset condition to count
+		if opt.Status == 0 {
+			sess.Where("status != ?", model.ARTICLE_STATUS_DELETE)
+		} else {
+			sess.Where("status = ?", opt.Status)
+		}
 		count, err := sess.Count(new(model.Article))
 		if err != nil {
 			return nil, err

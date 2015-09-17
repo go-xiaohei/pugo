@@ -38,8 +38,9 @@ type Article struct {
 	Status        int8  `xorm:"INT(8)"`
 	CommentStatus int8  `xorm:"INT(8)"`
 
-	tagData  []*ArticleTag `xorm:"-"`
-	userData *User         `xorm:"-"`
+	tagData   []*ArticleTag `xorm:"-"`
+	userData  *User         `xorm:"-"`
+	IsNewRead bool          `xorm:"-"`
 }
 
 // tag struct
