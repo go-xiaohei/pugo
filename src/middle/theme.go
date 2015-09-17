@@ -96,6 +96,20 @@ func (t *ThemeRender) SetTheme(*model.Theme) error {
 	return nil
 }
 
+func (t *ThemeRender) Render(tpl string) {
+	if !t.IsAssign("General") {
+		t.Assign("General", service.Setting.General)
+	}
+	t.baseTheme.Render(tpl)
+}
+
+func (t *ThemeRender) RenderError(status int, err error) {
+	if !t.IsAssign("General") {
+		t.Assign("General", service.Setting.General)
+	}
+	t.baseTheme.RenderError(status, err)
+}
+
 type AdminRender struct {
 	baseTheme
 }

@@ -4,8 +4,8 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/lunny/tango"
 	"gopkg.in/inconshreveable/log15.v2"
-	"pugo/src/controller"
 	"pugo/src/controller/admin"
+	"pugo/src/controller/public"
 	"pugo/src/core"
 	"pugo/src/middle"
 	"pugo/src/service"
@@ -67,7 +67,7 @@ func Server(ctx *cli.Context) {
 	adminGroup.Get("/manage/media", new(admin.MediaController))
 	adminGroup.Get("/", new(admin.IndexController))
 	core.Server.Group("/admin", adminGroup)
-	core.Server.Get("/", new(controller.IndexController))
+	core.Server.Get("/", new(public.IndexController))
 
 	// start server
 	log15.Info("Server.start." + core.Cfg.Http.Host + ":" + core.Cfg.Http.Port)

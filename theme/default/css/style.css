@@ -1,0 +1,137 @@
+@import url(http://fonts.googleapis.com/css?family=Raleway|Droid+Sans+Mono:600,400,300);
+
+html,
+body {
+    font-family: Raleway, Helvetica Neue, "Microsoft Yahei", Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: #F6F6F6;
+}
+
+input,
+textarea {
+    outline: none !important;
+}
+
+pre code {
+    font-family: "Droid Sans Mono", Consolas, "Microsoft YaHei", Helvetica, Arial, sans-serif;
+}
+
+/*
+#site-title
+*/
+
+#site-sub-title {
+    font-size: 14px;
+    vertical-align: top;
+    margin-left: 12px;
+}
+
+/*
+#index-banner
+*/
+
+#index-banner {
+    min-height: 400px;
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+}
+
+#index-avatar {
+    background: #FFF;
+    width: 180px;
+    height: 180px;
+    padding: 10px;
+    margin: 80px 0;
+}
+
+/*
+#main-container
+*/
+
+#main-container {
+    margin-bottom: 120px;
+}
+
+#main-container .article-section {
+    margin-bottom: 80px;
+}
+
+#main-container .article-section:first-child {
+    margin-top: -120px;
+}
+
+#main-container .article-section:first-child .content {
+    font-size: 1.2em;
+    line-height: 1.75;
+}
+
+#main-container .article-section .content {
+    font-size: 1.1em;
+    line-height: 1.6;
+}
+
+.article-section .meta {
+    margin: 2rem 0 1.5rem 0;
+}
+
+.article-section .main {
+    margin-top: .36rem;
+    margin-bottom: 1.5rem;
+    padding: .5rem 1.5rem .5rem 0;
+    position: relative;
+}
+
+.article-section .main2 {
+    padding: .5rem 1.5rem;
+}
+
+.article-section .meta > * {
+    display: block;
+    margin-bottom: 1.14rem;
+    position: relative;
+}
+
+.article-section .meta2 > * {
+    margin-right: 12px;
+}
+
+.article-section .meta2 i {
+    margin-right: 4px;
+}
+
+.article-section .date,
+.article-section .comments,
+.article-section .views {
+    text-transform: uppercase;
+}
+
+.article-section .title,
+.article-section .content,
+.article-section .meta2 {
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px dashed #EEE;
+}
+
+.article-section .title {
+    padding-right: 60px;
+}
+
+.article-section .badge.new {
+    top: 1.5rem
+}
+
+.article-page .btn{
+    margin: 0 1.5rem;
+}
+
+/*
+#footer-container
+*/
+
+#footer-container .footer-copyright {
+    text-transform: uppercase;
+}

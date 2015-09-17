@@ -2,6 +2,7 @@ package model
 
 import (
 	"encoding/json"
+	"fmt"
 	"strings"
 )
 
@@ -49,6 +50,10 @@ type SettingGeneral struct {
 	Keyword     string `json:"keyword_meta"`
 	Description string `json:"description_meta"`
 	HostName    string `json:"host_name"`
+}
+
+func (sg SettingGeneral) FullTitle() string {
+	return fmt.Sprintf("%s - %s", sg.Title, sg.SubTitle)
 }
 
 type SettingMedia struct {
