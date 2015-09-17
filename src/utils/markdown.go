@@ -9,7 +9,7 @@ func Markdown2Bytes(str string) []byte {
 	return blackfriday.MarkdownCommon([]byte(str))
 }
 
-func Markdown2String(str string) []byte {
+func Markdown2String(str string) string {
 	return string(blackfriday.MarkdownCommon([]byte(str)))
 }
 
