@@ -70,6 +70,9 @@ func (is *BootstrapService) Init(v interface{}) (*Result, error) {
 			Extensions: []string{".tmpl"},
 			Funcs: template.FuncMap{
 				"TimeUnixFormat": utils.TimeUnixFormat,
+				"TimeUnixFriend": utils.TimeUnixFriend,
+				"Mardown2Str":    utils.Markdown2String,
+				"Markdown2HTML":  utils.Markdown2HTML,
 			},
 		}))
 		sessions := session.New(session.Options{
