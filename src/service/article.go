@@ -19,7 +19,7 @@ type ArticleService struct{}
 func (as *ArticleService) Write(v interface{}) (*Result, error) {
 	article, ok := v.(*model.Article)
 	if !ok {
-		return nil, ErrServiceFuncNeedType(article, as.Write)
+		return nil, ErrServiceFuncNeedType(as.Write, article)
 	}
 	if article.Id > 0 {
 		if _, err := core.Db.Where("id = ?", article.Id).
@@ -38,6 +38,17 @@ func (as *ArticleService) Write(v interface{}) (*Result, error) {
 		}
 	}
 	return newResult(as.Write, article), nil
+}
+
+func (as *ArticleService) Delete(v interface{}) (*Result, error) {
+	id, ok := v.(int64)
+	if !ok {
+		return nil, ErrServiceFuncNeedType(as.Delete, id)
+	}
+	if _, err := core.Db.Exec("UPDATE article SET status = ? WHERE id = ?", model.ARTICLE_STATUS_DELETE, id); err != nil {
+		return nil, err
+	}
+	return nil, nil
 }
 
 func (as *ArticleService) SaveTags(id int64, tagStr string) error {
@@ -108,7 +119,12 @@ func (as *ArticleService) List(v interface{}) (*Result, error) {
 	}
 	if opt.ReadTime > 0 {
 		for _, a := range articles {
-			a.IsNewRead = (opt.ReadTime - a.UpdateTime) > 3600*12
+			a.IsNewRead = (a.UpdateTime - opt.ReadTime) >= -3600
+		}
+	} else {
+		// set first one as new article
+		if len(articles) > 0 {
+			articles[0].IsNewRead = true
 		}
 	}
 	res := newResult(as.List, &articles)

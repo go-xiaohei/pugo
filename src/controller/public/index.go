@@ -42,8 +42,8 @@ func (ic *IndexController) Get() {
 		opt = service.ArticleListOption{
 			Status:   model.ARTICLE_STATUS_PUBLISH,
 			Order:    "create_time DESC",
-			Page:     1,
-			Size:     5,
+			Page:     ic.ParamInt(":page", 1),
+			Size:     2,
 			IsCount:  true,
 			ReadTime: ic.getReadTime(),
 		}
@@ -55,5 +55,7 @@ func (ic *IndexController) Get() {
 		return
 	}
 	ic.setReadTime()
+	ic.Assign("Articles", articles)
+	ic.Assign("Pager", pager)
 	ic.Render("index.tmpl")
 }

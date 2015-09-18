@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    {{template "default/_meta.tmpl" .}}
+</head>
+<body>
+{{template "default/_header.tmpl" .}}
+<div id="main-container">
+    <div class="container row">
+        {{with .Article}}
+        <div class="section article-section" id="article-{{.Id}}">
+            <div class="row">
+                <div class="col l12 m12 s12 white z-depth-2">
+                    <article class="article">
+                        <div class="main main2">
+                            <h4 class="title truncate"><a href="{{.Href}}" title="{{.Title}}">{{.Title}}</a></h4>
+                            <div class="meta2">
+                                <span class="date grey-text"><i class="mdi-action-schedule"></i> {{TimeUnixFriend .CreateTime}}</span>
+                                <a href="{{.Href}}#comments" class="comments grey-text">
+                                    <i class="mdi-editor-mode-comment"></i>comment&nbsp;&nbsp;&nbsp;{{.Comments}}
+                                </a>
+                                <a href="{{.Href}}" class="views grey-text">
+                                    <i class="mdi-action-visibility"></i>read&nbsp;&nbsp;&nbsp;{{.Hits}}
+                                </a>
+                            </div>
+                            <div class="content entry-content">{{Markdown2HTML .Body}}</div>
+                            <!--<div class="more right-align">
+                                <a class="waves-effect waves-teal btn-flat" href="{{.Href}}" title="read more">Read More</a>
+                            </div>-->
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+        {{end}}
+    </div>
+</div>
+{{template "default/_footer.tmpl" .}}
+</body>
+</html>

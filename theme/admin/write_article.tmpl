@@ -11,6 +11,7 @@
 <div id="main">
     <div class="container-fluid" id="write-article-main">
         <form id="write-article-form" class="form" action="/admin/write/article" method="post">
+            <div id="write-article-success" style="display: none;" class="alert alert-success form-group"></div>
             <div id="write-article-error" style="display: none;" class="alert alert-danger form-group"></div>
             <div class="form-group">
                 <input class="form-control input-lg" id="write-article-title" type="text" name="title"
@@ -39,7 +40,7 @@
                 </div>
                 <div class="form-group">
                     <label class="checkbox-inline">
-                        <input type="checkbox" id="write-article-publish" name="draft" value="draft"{{if .Article.IsDraft}} checked{{end}}>
+                        <input type="checkbox" id="write-article-publish" name="draft" value="draft" {{if .Article.IsDraft}} checked{{end}}>
                         <strong>AS DRAFT</strong>
                     </label>
                 </div>
@@ -47,6 +48,8 @@
                     {{.XsrfHTML}}
                     {{if .Article}}
                     <input id="write-article-id" type="hidden" name="id" value="{{.Article.Id}}"/>
+                    {{else}}
+                    <input id="write-article-id" type="hidden" name="id" value="0"/>
                     {{end}}
                     <button class="btn btn-primary">SAVE ARTICLE</button>
                 </div>
@@ -67,14 +70,15 @@
         $('#write-article-form').ajaxForm({
             dataType: "json",
             success: function (json) {
-                console.log(json);
-                var $error = $('#write-article-error');
+                $('#write-article-error,#write-article-success').hide();
                 if (json.status) {
-                    $error.hide();
-                    $('#write-article-id').val(json.data.article.Id);
+                    var $id = $('#write-article-id'),
+                            msg = "SAVE ARTICLE DONE, YOU CAN CONTINUE TO EDIT";
+                    $('#write-article-success').text(msg).show();
+                    $id.val(json.data.article.Id);
                     return;
                 }
-                $error.text(json.error).show();
+                $('#write-article-error').text(json.error).show();
             }
         })
     });

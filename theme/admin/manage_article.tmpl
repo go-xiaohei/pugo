@@ -20,11 +20,13 @@
                 <span class="link">({{.Link}})</span>
                  <span class="opt pull-right">
                      {{if .IsDraft}}
-                     <a href="/admin/public/article?id={{.Id}}" class="text-default"><i class="fa fa-eye"></i>
-                         PUBLIC</a>
+                     <a href="/admin/public/article?id={{.Id}}" class="text-default to-publish"><i
+                             class="fa fa-eye"></i>
+                         PUBLISH</a>
                      {{end}}
-                    <a href="/admin/write/article?id={{.Id}}" class="text-success"><i class="fa fa-edit"></i> EDIT</a>
-                    <a href="/admin/delete/article?id={{.Id}}" class="text-danger"><i class="fa fa-remove"></i> DELETE</a>
+                    <a href="/admin/write/article?id={{.Id}}" class="text-success edit"><i class="fa fa-edit"></i> EDIT</a>
+                    <a href="/admin/delete/article?id={{.Id}}" class="text-danger delete"><i class="fa fa-remove"></i>
+                        DELETE</a>
                 </span>
             </div>
             {{end}}
@@ -32,5 +34,12 @@
         </div>
     </div>
 </div>
+<script>
+    $(function () {
+        $('.delete').on("click", function () {
+            return confirm("ARE YOU SURE TO DELETE THE ARTICLE ?")
+        })
+    })
+</script>
 </body>
 </html>

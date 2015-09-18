@@ -28,6 +28,22 @@ func CreatePager(page, size, all int) *Pager {
 	return p
 }
 
+func (p *Pager) IsPrev() bool {
+	return p.Current > 1
+}
+
+func (p *Pager) Prev() int {
+	return p.Current - 1
+}
+
+func (p *Pager) IsNext() bool {
+	return p.Current < p.Pages
+}
+
+func (p *Pager) Next() int {
+	return p.Current + 1
+}
+
 // pager to HTML with number elements
 func (p *Pager) HTML(layout string) template.HTML {
 	tpl := ` <ul class="pager">`

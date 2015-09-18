@@ -15,6 +15,9 @@ func TimeUnixFormat(unix int64, layout string) string {
 func TimeUnixFriend(unixStamp int64) string {
 	t := time.Unix(unixStamp, 0)
 	seconds := int64(time.Since(t).Seconds())
+	if seconds < 0 {
+		return "FUTURE"
+	}
 	if seconds < 60 {
 		return fmt.Sprintf("%d Seconds Ago", seconds)
 	}

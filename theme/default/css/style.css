@@ -1,4 +1,5 @@
 @import url(http://fonts.googleapis.com/css?family=Raleway|Droid+Sans+Mono:600,400,300);
+@import "content.css";
 
 html,
 body {
@@ -60,7 +61,7 @@ pre code {
 }
 
 #main-container .article-section:first-child {
-    margin-top: -140px;
+    margin-top: -160px;
 }
 
 #main-container .article-section:first-child .content {
@@ -128,6 +129,11 @@ pre code {
     margin: 0 1.5rem;
 }
 
+.article-section .no-preview{
+    font-size: 1.2em;
+    padding: 1em 0;
+}
+
 /*
 #footer-container
 */
@@ -135,3 +141,4 @@ pre code {
 #footer-container .footer-copyright {
     text-transform: uppercase;
 }
+

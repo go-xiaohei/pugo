@@ -1,105 +1,82 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
-    <meta charset="UTF-8">
-    <title>{{.Title}}</title>
-    <link rel="shortcut icon" type="image/png" href="{{.ThemeLink}}/img/logo.jpeg"/>
-    <link type="text/css" rel="stylesheet" href="{{.ThemeLink}}/css/materialize.min.css" media="screen,projection"/>
-    <link type="text/css" rel="stylesheet" href="{{.ThemeLink}}/css/style.css"/>
-    <script src="{{.ThemeLink}}/js/jquery-2.1.4.min.js"></script>
-    <script src="{{.ThemeLink}}/js/materialize.min.js"></script>
+    {{template "default/_meta.tmpl" .}}
 </head>
 <body>
-<nav id="nav" class="blue lighten-1">
-    <div class="nav-wrapper container">
-        <a id="site-title" class="brand-logo" href="/" title="{{.General.FullTitle}}">{{.General.Title}}<span id="site-sub-title" class="lime-text text-lighten-3">{{.General.SubTitle}}</span></a>
-        <ul class="right hide-on-med-and-down">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Archives</a></li>
-            <li><a href="#">About</a></li>
-        </ul>
-    </div>
-</nav>
-<div id="index-banner" class="parallax-container" style="background-image: url('{{.ThemeLink}}/img/bg.png');">
-    <div class="section no-pad-bot">
-        <div class="container center-align">
-            <img class="circle z-depth-1" src="http://tp1.sinaimg.cn/1865987544/180/5697090972/1" alt="logo" id="index-avatar"/>
-        </div>
-    </div>
-</div>
+{{template "default/_header.tmpl" .}}
 <div id="main-container">
     <div class="container row">
-        <div class="section article-section">
+        {{range .Articles}}
+        {{if .IsNewRead}}
+        <div class="section article-section" id="article-{{.Id}}">
             <div class="row">
-                <div class="col l12 m12 s12 white z-depth-1">
+                <div class="col l12 m12 s12 white z-depth-2">
                     <article class="article">
                         <div class="col l2 m3 s12 meta">
-                            <span class="date"><i class="mdi-action-schedule"></i> 3 Days Ago</span>
-                            <a href="#" class="comments">
-                                <i class="mdi-editor-mode-comment"></i><span class="badge">12</span> comment
+                            <span class="date"><i class="mdi-action-schedule"></i> {{TimeUnixFriend .CreateTime}}</span>
+                            <a href="{{.Href}}#comments" class="comments">
+                                <i class="mdi-editor-mode-comment"></i><span class="badge">{{.Comments}}</span> comment
                             </a>
-                            <a href="#" class="views grey-text">
-                                <i class="mdi-action-visibility"></i><span class="badge">888</span> read
+                            <a href="{{.Href}}" class="views grey-text">
+                                <i class="mdi-action-visibility"></i><span class="badge">{{.Hits}}</span> read
                             </a>
                         </div>
                         <div class="col l10 m9 s12 main">
                             <span class="badge new red lighten-1"></span>
-                            <h4 class="title truncate"><a href="#"><strong>Strap enables actionable human data to inform and improve marketing and engagement programs</strong></a></h4>
-                            <div class="content">
-                                Strap enables actionable human data to inform and improve marketing and engagement programs. We believe the consumer centered journey must be personalized because a more personal world is a better world. Through powerful analytics and segmentation from smartphones, wearables and health data applications, Strap empowers some of the world’s largest brands and retailers to securely engage consumers at the right time while building brand loyalty and gaining valuable consumer insights.
+                            <h4 class="title truncate"><a href="{{.Href}}" title="{{.Title}}">{{.Title}}</a></h4>
+                            <div class="content entry-content">
+                                {{if .Preview}}
+                                {{Markdown2HTML .Preview}}
+                                {{else}}
+                                <p class="no-preview grey-text text-lighten center-align">No Preview Content</p>
+                                {{end}}
                             </div>
                             <div class="more">
-                                <a class="waves-effect waves-light btn">Read More</a>
+                                <a class="waves-effect waves-light btn" href="{{.Href}}" title="read more">Read More</a>
                             </div>
                         </div>
                     </article>
                 </div>
             </div>
         </div>
-        <div class="section article-section">
+        {{else}}
+        <div class="section article-section" id="article-{{.Id}}">
             <div class="row">
                 <div class="col l12 m12 s12 white z-depth-1">
                     <article class="article">
                         <div class="main main2">
-                            <h4 class="title truncate"><a href="#"><strong>Strap enables actionable human data to inform and improve marketing and engagement programs</strong></a></h4>
+                            <h4 class="title truncate"><a href="{{.Href}}" title="{{.Title}}">{{.Title}}</a></h4>
                             <div class="meta2">
-                                <span class="date grey-text"><i class="mdi-action-schedule"></i> 3 Days Ago</span>
-                                <a href="#" class="comments grey-text">
-                                    <i class="mdi-editor-mode-comment"></i>comment 12
+                                <span class="date grey-text"><i class="mdi-action-schedule"></i> {{TimeUnixFriend .CreateTime}}</span>
+                                <a href="{{.Href}}#comments" class="comments grey-text">
+                                    <i class="mdi-editor-mode-comment"></i>comment&nbsp;&nbsp;&nbsp;{{.Comments}}
                                 </a>
-                                <a href="#" class="views grey-text">
-                                    <i class="mdi-action-visibility"></i>read 999
+                                <a href="{{.Href}}" class="views grey-text">
+                                    <i class="mdi-action-visibility"></i>read&nbsp;&nbsp;&nbsp;{{.Hits}}
                                 </a>
                             </div>
-                            <div class="content">
-                                Strap enables actionable human data to inform and improve marketing and engagement programs. We believe the consumer centered journey must be personalized because a more personal world is a better world. Through powerful analytics and segmentation from smartphones, wearables and health data applications, Strap empowers some of the world’s largest brands and retailers to securely engage consumers at the right time while building brand loyalty and gaining valuable consumer insights.
-                            </div>
+                            <div class="content entry-content">{{Markdown2HTML .Preview}}</div>
                             <div class="more right-align">
-                                <a class="waves-effect waves-teal btn-flat">Read More</a>
+                                <a class="waves-effect waves-teal btn-flat" href="{{.Href}}" title="read more">Read More</a>
                             </div>
                         </div>
                     </article>
                 </div>
             </div>
         </div>
+        {{end}}
+        {{end}}
         <div class="section article-page center-align">
-            <a class="waves-effect waves-light btn btn-large blue lighten-2">prev</a>
-            <a class="waves-effect waves-light btn btn-large blue lighten-2">next</a>
+            {{if .Pager.IsPrev}}
+            <a class="waves-effect waves-light btn btn-large blue lighten-2" href="/article/page/{{.Pager.Prev}}">prev</a>
+            {{end}}
+            {{if .Pager.IsNext}}
+            <a class="waves-effect waves-light btn btn-large blue lighten-2" href="/article/page/{{.Pager.Next}}">next</a>
+            {{end}}
         </div>
     </div>
 </div>
-<footer class="page-footer green darken-1" id="footer-container">
-    <div class="container">
-        <div class="row center-align white-text">
-           THIS IS DEFAULT THEME
-        </div>
-    </div>
-    <div class="footer-copyright">
-        <div class="container">
-            <span>© 1990 - ? <a href="#" class="white-text" target="_blank">fuxiaohei</a></span>
-            <a class="white-text right" href="#">Powered By Pugo</a>
-        </div>
-    </div>
-</footer>
+{{template "default/_footer.tmpl" .}}
 </body>
 </html>

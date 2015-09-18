@@ -59,6 +59,7 @@ func (f ArticleForm) toArticle() *model.Article {
 		TagString:     f.Tag,
 		Status:        model.ARTICLE_STATUS_PUBLISH,
 		CommentStatus: model.ARTICLE_COMMENT_OPEN,
+		Hits:          1,
 	}
 	if strings.Contains(f.Body, "<!--more-->") {
 		article.Preview = strings.Split(f.Body, "<!--more-->")[0]
@@ -133,4 +134,21 @@ func (apc *ArticlePublicController) Get() {
 		}
 	}
 	apc.Redirect(apc.Req().Referer())
+}
+
+type ArticleDeleteController struct {
+	tango.Ctx
+	middle.AuthorizeRequire
+	middle.AdminRender
+}
+
+func (adc *ArticleDeleteController) Get() {
+	id := adc.FormInt64("id")
+	if id > 0 {
+		if err := service.Call(service.Article.Delete, id); err != nil {
+			adc.RenderError(500, err)
+			return
+		}
+	}
+	adc.Redirect(adc.Req().Referer())
 }

@@ -1,0 +1,615 @@
+.entry-content {
+    overflow: hidden;
+    line-height: 1.6;
+    word-wrap: break-word;
+}
+
+.entry-content > *:first-child {
+    margin-top: 0 !important;
+}
+
+.entry-content > *:last-child {
+    margin-bottom: 0 !important;
+}
+
+.entry-content a:not([href]) {
+    color: inherit;
+    text-decoration: none;
+}
+
+.entry-content .absent {
+    color: #c00;
+}
+
+.entry-content .anchor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    padding-right: 6px;
+    padding-left: 30px;
+    margin-left: -30px;
+}
+
+.entry-content .anchor:focus {
+    outline: none;
+}
+
+.entry-content h1,
+.entry-content h2,
+.entry-content h3,
+.entry-content h4,
+.entry-content h5,
+.entry-content h6 {
+    position: relative;
+    margin-top: 1em;
+    margin-bottom: 16px;
+    font-weight: bold;
+    line-height: 1.4;
+}
+
+.entry-content h1 .octicon-link,
+.entry-content h2 .octicon-link,
+.entry-content h3 .octicon-link,
+.entry-content h4 .octicon-link,
+.entry-content h5 .octicon-link,
+.entry-content h6 .octicon-link {
+    display: none;
+    color: #000;
+    vertical-align: middle;
+}
+
+.entry-content h1:hover .anchor,
+.entry-content h2:hover .anchor,
+.entry-content h3:hover .anchor,
+.entry-content h4:hover .anchor,
+.entry-content h5:hover .anchor,
+.entry-content h6:hover .anchor {
+    padding-left: 8px;
+    margin-left: -30px;
+    text-decoration: none;
+}
+
+.entry-content h1:hover .anchor .octicon-link,
+.entry-content h2:hover .anchor .octicon-link,
+.entry-content h3:hover .anchor .octicon-link,
+.entry-content h4:hover .anchor .octicon-link,
+.entry-content h5:hover .anchor .octicon-link,
+.entry-content h6:hover .anchor .octicon-link {
+    display: inline-block;
+}
+
+.entry-content h1 tt,
+.entry-content h1 code,
+.entry-content h2 tt,
+.entry-content h2 code,
+.entry-content h3 tt,
+.entry-content h3 code,
+.entry-content h4 tt,
+.entry-content h4 code,
+.entry-content h5 tt,
+.entry-content h5 code,
+.entry-content h6 tt,
+.entry-content h6 code {
+    font-size: inherit;
+}
+
+.entry-content h1 {
+    padding-bottom: 0.3em;
+    font-size: 2.25em;
+    line-height: 1.2;
+    border-bottom: 1px solid #eee;
+}
+
+.entry-content h1 .anchor {
+    line-height: 1;
+}
+
+.entry-content h2 {
+    padding-bottom: 0.3em;
+    font-size: 1.75em;
+    line-height: 1.225;
+    border-bottom: 1px solid #eee;
+}
+
+.entry-content h2 .anchor {
+    line-height: 1;
+}
+
+.entry-content h3 {
+    font-size: 1.5em;
+    line-height: 1.43;
+}
+
+.entry-content h3 .anchor {
+    line-height: 1.2;
+}
+
+.entry-content h4 {
+    font-size: 1.25em;
+}
+
+.entry-content h4 .anchor {
+    line-height: 1.2;
+}
+
+.entry-content h5 {
+    font-size: 1em;
+}
+
+.entry-content h5 .anchor {
+    line-height: 1.1;
+}
+
+.entry-content h6 {
+    font-size: 1em;
+    color: #777;
+}
+
+.entry-content h6 .anchor {
+    line-height: 1.1;
+}
+
+.entry-content p,
+.entry-content blockquote,
+.entry-content ul,
+.entry-content ol,
+.entry-content dl,
+.entry-content table,
+.entry-content pre {
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.entry-content hr {
+    height: 4px;
+    padding: 0;
+    margin: 16px 0;
+    background-color: #e7e7e7;
+    border: 0 none;
+}
+
+.entry-content ul li {
+    list-style: disc;
+}
+
+.entry-content ul,
+.entry-content ol {
+    padding-left: 2em;
+}
+
+.entry-content ul.no-list,
+.entry-content ol.no-list {
+    padding: 0;
+    list-style-type: none;
+}
+
+.entry-content ul ul,
+.entry-content ul ol,
+.entry-content ol ol,
+.entry-content ol ul {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.entry-content ol ol,
+.entry-content ul ol {
+    list-style-type: lower-roman;
+}
+
+.entry-content li > p {
+    margin-top: 16px;
+}
+
+.entry-content dl {
+    padding: 0;
+}
+
+.entry-content dl dt {
+    padding: 0;
+    margin-top: 16px;
+    font-size: 1em;
+    font-style: italic;
+    font-weight: bold;
+}
+
+.entry-content dl dd {
+    padding: 0 16px;
+    margin-bottom: 16px;
+}
+
+.entry-content blockquote {
+    padding: 0 15px;
+    color: #777;
+    border-left: 4px solid #ddd;
+}
+
+.entry-content blockquote > :first-child {
+    margin-top: 0;
+}
+
+.entry-content blockquote > :last-child {
+    margin-bottom: 0;
+}
+
+.entry-content table {
+    display: block;
+    width: 100%;
+    overflow: auto;
+    word-break: normal;
+    word-break: keep-all;
+}
+
+.entry-content table th {
+    font-weight: bold;
+}
+
+.entry-content table th,
+.entry-content table td {
+    padding: 6px 13px !important;
+    border: 1px solid #ddd;
+}
+
+.entry-content table tr {
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+}
+
+.entry-content table tr:nth-child(2n) {
+    background-color: #f8f8f8;
+}
+
+.entry-content img {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.entry-content .emoji {
+    max-width: none;
+}
+
+.entry-content span.frame {
+    display: block;
+    overflow: hidden;
+}
+
+.entry-content span.frame > span {
+    display: block;
+    float: left;
+    width: auto;
+    padding: 7px;
+    margin: 13px 0 0;
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+
+.entry-content span.frame span img {
+    display: block;
+    float: left;
+}
+
+.entry-content span.frame span span {
+    display: block;
+    padding: 5px 0 0;
+    clear: both;
+    color: #333;
+}
+
+.entry-content span.align-center {
+    display: block;
+    overflow: hidden;
+    clear: both;
+}
+
+.entry-content span.align-center > span {
+    display: block;
+    margin: 13px auto 0;
+    overflow: hidden;
+    text-align: center;
+}
+
+.entry-content span.align-center span img {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.entry-content span.align-right {
+    display: block;
+    overflow: hidden;
+    clear: both;
+}
+
+.entry-content span.align-right > span {
+    display: block;
+    margin: 13px 0 0;
+    overflow: hidden;
+    text-align: right;
+}
+
+.entry-content span.align-right span img {
+    margin: 0;
+    text-align: right;
+}
+
+.entry-content span.float-left {
+    display: block;
+    float: left;
+    margin-right: 13px;
+    overflow: hidden;
+}
+
+.entry-content span.float-left span {
+    margin: 13px 0 0;
+}
+
+.entry-content span.float-right {
+    display: block;
+    float: right;
+    margin-left: 13px;
+    overflow: hidden;
+}
+
+.entry-content span.float-right > span {
+    display: block;
+    margin: 13px auto 0;
+    overflow: hidden;
+    text-align: right;
+}
+
+.entry-content code,
+.entry-content tt {
+    padding: 0.2em 0 0.2em 0;
+    margin: 0;
+    font-size: 80%;
+    background-color: rgba(0, 0, 0, 0.05);
+    font-family: "Droid Sans Mono", "Microsoft YaHei", "Courier New", Arial, monospace;
+    color: #ef5350;
+}
+
+.entry-content code:before,
+.entry-content code:after,
+.entry-content tt:before,
+.entry-content tt:after {
+    letter-spacing: -0.2em;
+    content: "\00a0";
+}
+
+.entry-content code br,
+.entry-content tt br {
+    display: none;
+}
+
+.entry-content del code {
+    text-decoration: inherit;
+}
+
+.entry-content pre > code {
+    padding: 0;
+    margin: 0;
+    font-size: 100%;
+    word-break: normal;
+    white-space: pre;
+    background: transparent;
+    border: 0;
+}
+
+.entry-content .highlight {
+    margin-bottom: 16px;
+}
+
+.entry-content .highlight pre,
+.entry-content pre {
+    padding: 16px;
+    overflow: auto;
+    font-size: 85%;
+    line-height: 1.45;
+    background-color: #f7f7f7;
+    border-radius: 3px;
+}
+
+.entry-content .highlight pre {
+    margin-bottom: 0;
+    word-break: normal;
+}
+
+.entry-content pre {
+    word-wrap: normal;
+}
+
+.entry-content pre code,
+.entry-content pre tt {
+    display: inline;
+    max-width: initial;
+    padding: 0;
+    margin: 0;
+    overflow: initial;
+    line-height: inherit;
+    word-wrap: normal;
+    background-color: transparent;
+    border: 0;
+}
+
+.entry-content pre code:before,
+.entry-content pre code:after,
+.entry-content pre tt:before,
+.entry-content pre tt:after {
+    content: normal;
+}
+
+.entry-content kbd {
+    display: inline-block;
+    padding: 3px 5px;
+    font-size: 11px;
+    line-height: 10px;
+    color: #555;
+    vertical-align: middle;
+    background-color: #fcfcfc;
+    border: solid 1px #ccc;
+    border-bottom-color: #bbb;
+    border-radius: 3px;
+    box-shadow: inset 0 -1px 0 #bbbbbb;
+}
+
+.entry-content .csv-data td,
+.entry-content .csv-data th {
+    padding: 5px;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 1;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.entry-content .csv-data .blob-num {
+    padding: 10px 8px 9px;
+    text-align: right;
+    background: #fff;
+    border: 0;
+}
+
+.entry-content .csv-data tr {
+    border-top: 0;
+}
+
+.entry-content .csv-data th {
+    font-weight: bold;
+    background: #f8f8f8;
+    border-top: 0;
+}
+
+/* Author: jmblog */
+/* Project: https://github.com/jmblog/color-themes-for-google-code-prettify */
+/* GitHub Theme */
+/* Pretty printing styles. Used with prettify.js. */
+/* SPAN elements with the classes below are added by prettyprint. */
+/* plain text */
+
+.pln {
+    color: #333333;
+}
+
+@media screen {
+    /* string content */
+    .str {
+        color: #dd1144;
+    }
+
+    /* a keyword */
+    .kwd {
+        color: #333333;
+    }
+
+    /* a comment */
+    .com {
+        color: #999988;
+        font-style: italic;
+    }
+
+    /* a type name */
+    .typ {
+        color: #445588;
+    }
+
+    /* a literal value */
+    .lit {
+        color: #445588;
+    }
+
+    /* punctuation */
+    .pun {
+        color: #333333;
+    }
+
+    /* lisp open bracket */
+    .opn {
+        color: #333333;
+    }
+
+    /* lisp close bracket */
+    .clo {
+        color: #333333;
+    }
+
+    /* a markup tag name */
+    .tag {
+        color: navy;
+    }
+
+    /* a markup attribute name */
+    .atn {
+        color: teal;
+    }
+
+    /* a markup attribute value */
+    .atv {
+        color: #dd1144;
+    }
+
+    /* a declaration */
+    .dec {
+        color: #333333;
+    }
+
+    /* a variable name */
+    .var {
+        color: teal;
+    }
+
+    /* a function name */
+    .fun {
+        color: #990000;
+    }
+}
+
+/* Use higher contrast and text-weight for printable form. */
+
+@media print, projection {
+    .str {
+        color: #006600;
+    }
+
+    .kwd {
+        color: #006;
+        font-weight: bold;
+    }
+
+    .com {
+        color: #600;
+        font-style: italic;
+    }
+
+    .typ {
+        color: #404;
+        font-weight: bold;
+    }
+
+    .lit {
+        color: #004444;
+    }
+
+    .pun,
+    .opn,
+    .clo {
+        color: #444400;
+    }
+
+    .tag {
+        color: #006;
+        font-weight: bold;
+    }
+
+    .atn {
+        color: #440044;
+    }
+
+    .atv {
+        color: #006600;
+    }
+}
+
+/* Specify class=linenums on a pre to get line numbering */
+
+ol.linenums {
+    margin-top: 0;
+    margin-bottom: 0;
+}
