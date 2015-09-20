@@ -145,9 +145,11 @@ func (as *ArticleService) List(v interface{}) (*Result, error) {
 }
 
 type ArticleReadOption struct {
-	Id     int64
-	Link   string
-	Status int8
+	Id        int64
+	Link      string
+	Status    int8
+	IsHit     bool
+	IsPublish bool
 }
 
 func (a ArticleReadOption) toWhereString() (string, []interface{}) {
@@ -183,6 +185,14 @@ func (as *ArticleService) Read(v interface{}) (*Result, error) {
 	}
 	if a.Id == 0 {
 		return nil, ErrArticleNotFound
+	}
+	if opt.IsPublish && !a.IsPublish() {
+		return nil, ErrArticleNotFound
+	}
+	if opt.IsHit {
+		if _, err := core.Db.Exec("UPDATE article SET hits = hits + 1 WHERE id = ?", a.Id); err != nil {
+			return nil, err
+		}
 	}
 	return newResult(as.Read, a), nil
 }

@@ -66,6 +66,9 @@ func Server(ctx *cli.Context) {
 	adminGroup.Get("/option/theme", new(admin.SettingThemeController))
 
 	adminGroup.Get("/manage/media", new(admin.MediaController))
+	adminGroup.Route([]string{"POST:Upload"}, "/upload/media", new(admin.MediaController))
+	adminGroup.Get("/delete/media", new(admin.MediaDeleteController))
+
 	adminGroup.Get("/", new(admin.IndexController))
 	core.Server.Group("/admin", adminGroup)
 

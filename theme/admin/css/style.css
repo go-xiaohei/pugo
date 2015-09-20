@@ -1,4 +1,5 @@
 @import url(http://fonts.googleapis.com/css?family=Raleway|Droid+Sans+Mono:600,400,300);
+@import "dropzone.css";
 
 html, body {
     font-family: Raleway, Helvetica Neue, "Microsoft Yahei", Helvetica, Arial, sans-serif;
@@ -160,7 +161,8 @@ title {
     color: #999;
 }
 
-#manage-article-list .pager a {
+#manage-article-list .pager a,
+#media-list .pager a{
     padding: 3px 9px !important;
     background-color: #EEE;
 }
@@ -198,4 +200,40 @@ title {
 #theme-main .theme .dir,
 #theme-main .theme .status{
     margin-top: 7px;
+}
+
+/*
+#media-main
+*/
+
+#media-list .media{
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px dashed #DDD;
+}
+
+#media-list .media .type{
+    padding-right: 1em;
+    color: #999;
+}
+
+#media-list .media .time{
+    display: inline-block;
+    min-width: 120px;
+    color: #999;
+    text-transform: uppercase;
+}
+
+#media-list .media .hash{
+    padding-left: 1em;
+    color: #999;
+    font-size: 80%;
+}
+
+#media-list .media .opt{
+    display: none;
+}
+
+#media-list .media:hover .opt{
+    display: inline-block;
 }

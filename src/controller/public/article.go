@@ -17,9 +17,11 @@ func (ac *ArticleController) Get() {
 	var (
 		article = new(model.Article)
 		opt     = service.ArticleReadOption{
-			Id:     ac.ParamInt64(":id"),
-			Link:   ac.Param(":link"),
-			Status: model.ARTICLE_STATUS_PUBLISH,
+			Id:        ac.ParamInt64(":id"),
+			Link:      ac.Param(":link"),
+			Status:    model.ARTICLE_STATUS_PUBLISH,
+			IsHit:     true,
+			IsPublish: true,
 		}
 	)
 	if err := service.Call(service.Article.Read, opt, article); err != nil {

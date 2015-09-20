@@ -13,25 +13,80 @@
                 <i class="fa fa-upload"></i> Upload
             </button>
         </h3>
-        <hr/>
         <div class="modal fade" id="upload-modal" tabindex="-1" role="dialog" aria-labelledby="upload-modal-label">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title" id="upload-modal-title">Upload Media</h4>
                     </div>
                     <div class="modal-body">
-                        ...
+                        <form action="/admin/upload/media?from=admin&js=dropzone"
+                              class="dropzone"
+                              id="media-dropzone">
+                            <div class="fallback">
+                                <input type="file" name="file" multiple/>
+                            </div>
+                            <div class="dz-message">
+                                Drop files here or click to upload.<br/>
+                                <span class="note">(or Click)</span>
+                            </div>
+                        </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i> CLOSE</button>
+                        <button class="btn btn-info" type="button" id="media-dropzone-clean"><i class="fa fa-trash-o"></i>
+                            CLEAN FILES
+                        </button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i>
+                            CLOSE
+                        </button>
                         <!--<button type="button" class="btn btn-primary">Save changes</button>-->
                     </div>
                 </div>
             </div>
         </div>
+        <hr/>
+        <div id="media-list">
+            {{range .MediaFiles}}
+            <div class="media">
+                <span class="type">
+                    {{if eq .Type "image"}}<i class="fa fa-image-o"></i>{{end}}
+                    {{if eq .Type "doc"}}<i class="fa fa-text-o"></i>{{end}}
+                    <i class="fa fa-file-o"></i>
+                </span>
+                <span class="time">{{TimeUnixFriend .CreateTime}}</span>
+                <span class="name"><strong>{{.Name}}</strong></span>
+                <span class="hash">({{.FileName}})</span>
+                <span class="opt pull-right">
+                    <a href="/admin/delete/media?id={{.Id}}" class="text-danger delete"><i class="fa fa-remove"></i>
+                        DELETE</a>
+                </span>
+            </div>
+            {{end}}
+            {{.Pager.HTML "/admin/manage/media?page=%d"}}
+        </div>
     </div>
 </div>
+<script src="{{.ThemeLink}}/js/dropzone.js"></script>
+<script>
+    $(function () {
+        Dropzone.autoDiscover = false;
+        var dz = new Dropzone("#media-dropzone", {
+            filesizeBase: 1024,
+            maxFilesize: parseInt("{{.MaxSize}}"),
+            accept: function (file, done) {
+                console.log(file, done);
+                done();
+            }
+        });
+        $("#media-dropzone-clean").on("click", function () {
+            dz.removeAllFiles(true);
+        });
+        $('.delete').on("click", function () {
+            return confirm("ARE YOU SURE TO DELETE THE FILE ?")
+        })
+    })
+</script>
 </body>
 </html>

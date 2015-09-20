@@ -50,6 +50,11 @@ type ArticleTag struct {
 	Tag       string `xorm:"VARCHAR(50) notnull"`
 }
 
+// is article publish
+func (a *Article) IsPublish() bool {
+	return a.Status == ARTICLE_STATUS_PUBLISH
+}
+
 // is article draft
 func (a *Article) IsDraft() bool {
 	return a.Status == ARTICLE_STATUS_DRAFT

@@ -68,6 +68,7 @@ type SettingMediaForm struct {
 	ImageFile   string `form:"image"`
 	DocFile     string `form:"doc"`
 	CommonFile  string `form:"common"`
+	DynamicLink string `form:"dync"`
 }
 
 func (f SettingMediaForm) toSettingMedia() *model.SettingMedia {
@@ -76,6 +77,7 @@ func (f SettingMediaForm) toSettingMedia() *model.SettingMedia {
 		ImageFile:   strings.Split(f.ImageFile, " "),
 		DocFile:     strings.Split(f.DocFile, " "),
 		CommonFile:  strings.Split(f.CommonFile, " "),
+		DynamicLink: f.DynamicLink == "true",
 	}
 }
 

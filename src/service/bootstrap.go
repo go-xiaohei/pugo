@@ -93,7 +93,8 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 		new(model.Theme),
 		new(model.Article),
 		new(model.ArticleTag),
-		new(model.Setting)); err != nil {
+		new(model.Setting),
+		new(model.Media)); err != nil {
 		return nil, err
 	}
 
@@ -154,6 +155,7 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 		ImageFile:   []string{"jpg", "jpeg", "png", "gif", "bmp", "vbmp"},
 		DocFile:     []string{"txt", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "pdf"},
 		CommonFile:  []string{"zip", "rar"},
+		DynamicLink: false,
 	}
 	setting = &model.Setting{
 		Name:   "media",

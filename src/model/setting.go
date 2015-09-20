@@ -61,6 +61,7 @@ type SettingMedia struct {
 	ImageFile   []string `json:"image_file"`
 	DocFile     []string `json:"doc_file"`
 	CommonFile  []string `json:"common_file"`
+	DynamicLink bool     `json:"dync_link`
 }
 
 func (sm SettingMedia) Image() string {
@@ -73,4 +74,23 @@ func (sm SettingMedia) Doc() string {
 
 func (sm SettingMedia) Common() string {
 	return strings.Join(sm.CommonFile, " ")
+}
+
+func (sm SettingMedia) GetType(ext string) int {
+	for _, e := range sm.ImageFile {
+		if ext == "."+e {
+			return MEDIA_TYPE_IMAGE
+		}
+	}
+	for _, e := range sm.DocFile {
+		if ext == "."+e {
+			return MEDIA_TYPE_DOC
+		}
+	}
+	for _, e := range sm.CommonFile {
+		if ext == "."+e {
+			return MEDIA_TYPE_COMMON
+		}
+	}
+	return 0
 }

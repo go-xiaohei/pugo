@@ -9,4 +9,11 @@
 <script src="{{.ThemeLink}}/js/jquery-2.1.4.min.js"></script>
 <script src="{{.ThemeLink}}/js/bootstrap.min.js"></script>
 <script src="{{.ThemeLink}}/js/jquery.form.min.js"></script>
-<script src="{{.ThemeLink}}/js/app.js"></script>
+<script>
+    $(function () {
+        // bootstrap element init
+        (function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })();
+    });
+</script>
