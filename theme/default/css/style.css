@@ -1,5 +1,6 @@
 @import url(http://fonts.googleapis.com/css?family=Raleway|Droid+Sans+Mono:600,400,300);
 @import "content.css";
+@import "prism.css";
 
 html,
 body {

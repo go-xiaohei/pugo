@@ -94,3 +94,8 @@ func (sm SettingMedia) GetType(ext string) int {
 	}
 	return 0
 }
+
+type SettingContent struct {
+	PageSize    int  `json:"content_page_size"`
+	RSSFullText bool `json:"rss_full_text"`
+}

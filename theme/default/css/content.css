@@ -363,6 +363,11 @@
     font-size: 80%;
     background-color: rgba(0, 0, 0, 0.05);
     font-family: "Droid Sans Mono", "Microsoft YaHei", "Courier New", Arial, monospace;
+    color: #111;
+}
+
+.entry-content p code,
+.entry-content p tt{
     color: #ef5350;
 }
 
@@ -389,7 +394,6 @@
     font-size: 100%;
     word-break: normal;
     white-space: pre;
-    background: transparent;
     border: 0;
 }
 
@@ -399,9 +403,7 @@
 
 .entry-content .highlight pre,
 .entry-content pre {
-    padding: 16px;
     overflow: auto;
-    font-size: 85%;
     line-height: 1.45;
     background-color: #f7f7f7;
     border-radius: 3px;
@@ -414,18 +416,17 @@
 
 .entry-content pre {
     word-wrap: normal;
+    font-size: 90%;
 }
 
 .entry-content pre code,
 .entry-content pre tt {
-    display: inline;
+    display: block;
     max-width: initial;
-    padding: 0;
     margin: 0;
-    overflow: initial;
+    overflow: auto;
     line-height: inherit;
     word-wrap: normal;
-    background-color: transparent;
     border: 0;
 }
 
