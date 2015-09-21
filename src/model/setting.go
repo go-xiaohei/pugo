@@ -96,6 +96,20 @@ func (sm SettingMedia) GetType(ext string) int {
 }
 
 type SettingContent struct {
-	PageSize    int  `json:"content_page_size"`
-	RSSFullText bool `json:"rss_full_text"`
+	PageSize    int   `json:"content_page_size"`
+	RSSFullText bool  `json:"rss_full_text"`
+	TopPage     int64 `json:"top_page"`
+}
+
+type SettingComment struct {
+	IsPager  bool   `json:"comment_is_pager"`
+	PageSize int    `json:"comment_page_size"`
+	Order    string `json:"comment_order"`
+
+	CheckAll    bool `json:"comment_check_all"`
+	CheckNoPass bool `json:"comment_check_no_pass"`
+	CheckRefer  bool `json:"comment_check_refer"`
+
+	AutoCloseDay   int   `json:"comment_auto_close_day"`
+	SubmitDuration int64 `json:"comment_submit_duration"`
 }
