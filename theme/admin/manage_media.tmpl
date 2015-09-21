@@ -51,12 +51,12 @@
             {{range .MediaFiles}}
             <div class="media">
                 <span class="type">
-                    {{if eq .Type "image"}}<i class="fa fa-image-o"></i>{{end}}
-                    {{if eq .Type "doc"}}<i class="fa fa-text-o"></i>{{end}}
-                    <i class="fa fa-file-o"></i>
+                    {{if eq .Type "image"}}<i class="fa fa-picture-o"></i>{{end}}
+                    {{if eq .Type "doc"}}<i class="fa fa-file-text-o"></i>{{end}}
+                    {{if eq .Type "common"}}<i class="fa fa-file-o"></i>{{end}}
                 </span>
                 <span class="time">{{TimeUnixFriend .CreateTime}}</span>
-                <span class="name"><strong>{{.Name}}</strong></span>
+                <span class="name"><strong><a href="#" title="{{.Name}}">{{.Name}}</a></strong></span>
                 <span class="hash">({{.FileName}})</span>
                 <span class="opt pull-right">
                     <a href="/admin/delete/media?id={{.Id}}" class="text-danger delete"><i class="fa fa-remove"></i>

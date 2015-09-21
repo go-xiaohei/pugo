@@ -212,6 +212,15 @@ title {
     border-bottom: 1px dashed #DDD;
 }
 
+#media-list .name{
+    max-width: 30em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: middle;
+}
+
 #media-list .media .type{
     padding-right: 1em;
     color: #999;
