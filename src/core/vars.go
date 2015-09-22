@@ -4,6 +4,7 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/go-xorm/xorm"
 	"github.com/lunny/tango"
+	"gopkg.in/inconshreveable/log15.v2"
 )
 
 const (
@@ -23,6 +24,7 @@ var (
 	Cfg    *Config
 	Db     *xorm.Engine
 	Server *tango.Tango
+	Crash  log15.Logger
 
 	ConfigFile      string = "config.ini"
 	StaticPrefix    string = "/static"
@@ -30,4 +32,5 @@ var (
 	ThemePrefix     string = "/theme"
 	ThemeDirectory  string = "theme"
 	SessionName     string = "PUGO_SESSION"
+	CrashLogFile    string = "crash.log"
 )

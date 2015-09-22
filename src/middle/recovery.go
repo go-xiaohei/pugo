@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/lunny/tango"
 	"gopkg.in/inconshreveable/log15.v2"
+	"pugo/src/core"
 	"runtime"
 )
 
@@ -34,6 +35,12 @@ func Recover() tango.HandlerFunc {
 				}
 
 				log15.Error(
+					fmt.Sprintf(logFormat, ctx.Req().Method, ctx.Status(), ctx.Req().URL.Path),
+					"path", p,
+					"remote", ctx.Req().RemoteAddr,
+					"error", header,
+				)
+				core.Crash.Error(
 					fmt.Sprintf(logFormat, ctx.Req().Method, ctx.Status(), ctx.Req().URL.Path),
 					"path", p,
 					"remote", ctx.Req().RemoteAddr,

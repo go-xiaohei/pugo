@@ -6,6 +6,7 @@ import (
 	"github.com/codegangsta/cli"
 	"gopkg.in/inconshreveable/log15.v2"
 	"gopkg.in/inconshreveable/log15.v2/ext"
+	"os"
 	"pugo/src/core"
 	"time"
 )
@@ -32,6 +33,14 @@ func init() {
 		installCommand,
 		serverCommand,
 	}
+
+	// set crash log
+	file, err := os.OpenFile(core.CrashLogFile, os.O_CREATE|os.O_APPEND|os.O_WRONLY, os.ModePerm)
+	if err != nil {
+		log15.Crit("create crash log file error : " + err.Error())
+	}
+	core.Crash = log15.New()
+	core.Crash.SetHandler(log15.StreamHandler(file, log15.JsonFormat()))
 }
 
 func Run() {
