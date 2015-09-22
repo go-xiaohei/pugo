@@ -94,7 +94,8 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 		new(model.Article),
 		new(model.ArticleTag),
 		new(model.Setting),
-		new(model.Media)); err != nil {
+		new(model.Media),
+		new(model.Page)); err != nil {
 		return nil, err
 	}
 
@@ -169,10 +170,11 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 	}
 
 	contentSetting := &model.SettingContent{
-		PageSize:       5,
-		RSSFullText:    true,
-		RSSNumberLimit: 0,
-		TopPage:        0,
+		PageSize:         5,
+		RSSFullText:      true,
+		RSSNumberLimit:   0,
+		TopPage:          0,
+		PageDisallowLink: []string{"article", "archive", "feed", "comment", "admin", "sitemap"},
 	}
 	setting = &model.Setting{
 		Name:   "content",

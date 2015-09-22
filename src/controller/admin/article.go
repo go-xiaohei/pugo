@@ -39,14 +39,15 @@ func (awc *ArticleWriteController) Get() {
 
 // article post form
 type ArticleForm struct {
-	Title  string `form:"title" binding:"Required"`
-	Link   string `form:"link" binding:"Required;AlphaDashDot"`
-	Body   string `form:"body" binding:"Required"`
-	Type   string `form:"type"`
-	Tag    string `form:"tag"`
-	Draft  string `form:"draft"`
-	Id     int64  `form:"id"`
-	UserId int64
+	Title   string `form:"title" binding:"Required"`
+	Link    string `form:"link" binding:"Required;AlphaDashDot"`
+	Body    string `form:"body" binding:"Required"`
+	Type    string `form:"type"`
+	Tag     string `form:"tag"`
+	Draft   string `form:"draft"`
+	Id      int64  `form:"id"`
+	UserId  int64
+	Comment string `form:"comment"`
 }
 
 func (f ArticleForm) toArticle() *model.Article {
@@ -68,11 +69,15 @@ func (f ArticleForm) toArticle() *model.Article {
 	case "html":
 		article.BodyType = model.ARTICLE_BODY_HTML
 	case "markdown":
+		article.BodyType = model.ARTICLE_BODY_MARKDOWN
 	default:
 		article.BodyType = model.ARTICLE_BODY_MARKDOWN
 	}
 	if f.Draft == "draft" {
 		article.Status = model.ARTICLE_STATUS_DRAFT
+	}
+	if f.Comment == "close" {
+		article.CommentStatus = model.ARTICLE_COMMENT_CLOSE
 	}
 	return article
 }

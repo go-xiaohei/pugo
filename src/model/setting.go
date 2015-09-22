@@ -114,10 +114,11 @@ func (sm SettingMedia) GetType(ext string) int {
 }
 
 type SettingContent struct {
-	PageSize       int   `json:"content_page_size"`
-	RSSFullText    bool  `json:"rss_full_text"`
-	RSSNumberLimit int   `json:"rss_number_limit"`
-	TopPage        int64 `json:"top_page"`
+	PageSize         int      `json:"content_page_size"`
+	RSSFullText      bool     `json:"rss_full_text"`
+	RSSNumberLimit   int      `json:"rss_number_limit"`
+	TopPage          int64    `json:"top_page"`
+	PageDisallowLink []string `json:"page_disallow_link"`
 }
 
 type SettingComment struct {

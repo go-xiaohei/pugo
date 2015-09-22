@@ -23,7 +23,7 @@ func (as *ArticleService) Write(v interface{}) (*Result, error) {
 	}
 	if article.Id > 0 {
 		if _, err := core.Db.Where("id = ?", article.Id).
-			Cols("title,link,update_time,preview,body,topic,tag_string,status,comment_status").
+			Cols("title,link,update_time,preview,body,body_type,topic,tag_string,status,comment_status").
 			Update(article); err != nil {
 			return nil, err
 		}

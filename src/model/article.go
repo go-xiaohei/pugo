@@ -60,6 +60,11 @@ func (a *Article) IsDraft() bool {
 	return a.Status == ARTICLE_STATUS_DRAFT
 }
 
+// article comment is closed
+func (a *Article) IsCommentClosed() bool {
+	return a.CommentStatus == ARTICLE_COMMENT_CLOSE
+}
+
 // article comment enable or not
 func (a *Article) IsCommentable() bool {
 	if a.CommentStatus == ARTICLE_COMMENT_OPEN {

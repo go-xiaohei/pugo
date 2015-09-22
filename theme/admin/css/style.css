@@ -159,6 +159,11 @@ title {
 #manage-article-list .article .link {
     font-size: 14px;
     color: #999;
+    margin-right: 12px;
+}
+
+#manage-article-list .article .comment{
+    color: #999;
 }
 
 #manage-article-list .pager a,

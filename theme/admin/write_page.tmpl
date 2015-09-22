@@ -10,16 +10,24 @@
 {{template "admin/_nav.tmpl" .}}
 <div id="main">
     <div class="container-fluid" id="write-article-main">
-        <form id="write-article-form" class="form" action="/admin/write/article" method="post">
+        <form id="write-article-form" class="form" action="/admin/write/page" method="post">
             <div id="write-article-success" style="display: none;" class="alert alert-success form-group"></div>
             <div id="write-article-error" style="display: none;" class="alert alert-danger form-group"></div>
             <div class="form-group">
                 <input class="form-control input-lg" id="write-article-title" type="text" name="title"
-                       placeholder="ARTICLE TITLE" value="{{.Article.Title}}"/>
+                       placeholder="PAGE TITLE" value="{{.Article.Title}}"/>
             </div>
-            <div class="form-group">
-                <input class="form-control" id="write-article-link" type="text" name="link" placeholder="ARTICLE LINK"
-                       value="{{.Article.Link}}"/>
+            <div class="form-group clearfix">
+                <div class="col-md-11" style="padding-left: 0">
+                    <input class="form-control" id="write-article-link" type="text" name="link" placeholder="PAGE LINK"
+                           value="{{.PAGE.Link}}"/>
+                </div>
+                <div class="col-md-1">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="write-page-top-link" name="top" value="true" {{if .Article.IsCommentClosed}} checked{{end}}>
+                        <strong>AS TOP LINK</strong>
+                    </label>
+                </div>
             </div>
             <div class="form-group">
                 <div id="editormd">
@@ -28,9 +36,10 @@
             </div>
             <div class="form-inline write-article-form-inline">
                 <div class="form-group">
-                    <label for="write-article-tag"><strong>TAGS</strong></label>
-                    <input type="text" class="form-control" id="write-article-tag" name="tag" placeholder="TAGS"
-                           value="{{.Article.TagString}}">
+                    <label for="write-page-tpl"><strong>TEMPLATE</strong></label>
+                    <select class="form-control" id="write-page-tpl" name="template">
+                        <option value="page.tmpl">page.tmpl</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="write-article-type"><strong>TYPE</strong></label>
@@ -57,7 +66,7 @@
                     {{else}}
                     <input id="write-article-id" type="hidden" name="id" value="0"/>
                     {{end}}
-                    <button class="btn btn-primary">SAVE ARTICLE</button>
+                    <button class="btn btn-primary">SAVE PAGE</button>
                 </div>
             </div>
         </form>
@@ -81,7 +90,7 @@
                     var $id = $('#write-article-id'),
                             msg = "SAVE ARTICLE DONE, YOU CAN CONTINUE TO EDIT";
                     $('#write-article-success').text(msg).show();
-                    $id.val(json.data.article.Id);
+                    $id.val(json.data.page.Id);
                     return;
                 }
                 $('#write-article-error').text(json.error).show();
