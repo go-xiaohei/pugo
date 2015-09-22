@@ -43,7 +43,7 @@ func (ic *IndexController) Get() {
 			Status:   model.ARTICLE_STATUS_PUBLISH,
 			Order:    "create_time DESC",
 			Page:     ic.ParamInt(":page", 1),
-			Size:     2,
+			Size:     service.Setting.Content.PageSize,
 			IsCount:  true,
 			ReadTime: ic.getReadTime(),
 		}

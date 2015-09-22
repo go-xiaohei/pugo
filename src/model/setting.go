@@ -9,6 +9,8 @@ import (
 const (
 	SETTING_TYPE_GENERAL = iota + 1
 	SETTING_TYPE_MEDIA
+	SETTING_TYPE_CONTENT
+	SETTING_TYPE_COMMENT
 )
 
 type Setting struct {
@@ -42,6 +44,22 @@ func (s *Setting) ToMedia() *SettingMedia {
 		panic(err)
 	}
 	return media
+}
+
+func (s *Setting) ToContent() *SettingContent {
+	cnt := new(SettingContent)
+	if err := json.Unmarshal([]byte(s.Value), cnt); err != nil {
+		panic(err)
+	}
+	return cnt
+}
+
+func (s *Setting) ToComment() *SettingComment {
+	cmt := new(SettingComment)
+	if err := json.Unmarshal([]byte(s.Value), cmt); err != nil {
+		panic(err)
+	}
+	return cmt
 }
 
 type SettingGeneral struct {
@@ -96,9 +114,10 @@ func (sm SettingMedia) GetType(ext string) int {
 }
 
 type SettingContent struct {
-	PageSize    int   `json:"content_page_size"`
-	RSSFullText bool  `json:"rss_full_text"`
-	TopPage     int64 `json:"top_page"`
+	PageSize       int   `json:"content_page_size"`
+	RSSFullText    bool  `json:"rss_full_text"`
+	RSSNumberLimit int   `json:"rss_number_limit"`
+	TopPage        int64 `json:"top_page"`
 }
 
 type SettingComment struct {

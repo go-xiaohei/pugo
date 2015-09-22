@@ -74,6 +74,7 @@ func Server(ctx *cli.Context) {
 
 	core.Server.Get("/article/page/:page", new(public.IndexController))
 	core.Server.Get("/article/:id/:link.html", new(public.ArticleController))
+	core.Server.Get("/feed.xml", new(public.RssController))
 	core.Server.Get("/", new(public.IndexController))
 
 	// start server

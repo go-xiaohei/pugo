@@ -150,6 +150,7 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 	if _, err := core.Db.Insert(setting); err != nil {
 		return nil, err
 	}
+
 	mediaSetting := &model.SettingMedia{
 		MaxFileSize: 10 * 1024,
 		ImageFile:   []string{"jpg", "jpeg", "png", "gif", "bmp", "vbmp"},
@@ -163,6 +164,42 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 		Type:   model.SETTING_TYPE_MEDIA,
 	}
 	setting.Encode(mediaSetting)
+	if _, err := core.Db.Insert(setting); err != nil {
+		return nil, err
+	}
+
+	contentSetting := &model.SettingContent{
+		PageSize:       5,
+		RSSFullText:    true,
+		RSSNumberLimit: 0,
+		TopPage:        0,
+	}
+	setting = &model.Setting{
+		Name:   "content",
+		UserId: 0,
+		Type:   model.SETTING_TYPE_CONTENT,
+	}
+	setting.Encode(contentSetting)
+	if _, err := core.Db.Insert(setting); err != nil {
+		return nil, err
+	}
+
+	commentSetting := &model.SettingComment{
+		IsPager:        false,
+		PageSize:       10,
+		Order:          "create_time DESC",
+		CheckAll:       false,
+		CheckNoPass:    true,
+		CheckRefer:     true,
+		AutoCloseDay:   30,
+		SubmitDuration: 60,
+	}
+	setting = &model.Setting{
+		Name:   "comment",
+		UserId: 0,
+		Type:   model.SETTING_TYPE_COMMENT,
+	}
+	setting.Encode(commentSetting)
 	if _, err := core.Db.Insert(setting); err != nil {
 		return nil, err
 	}
@@ -208,6 +245,20 @@ func (bs *BootstrapService) Bootstrap(v interface{}) (*Result, error) {
 			return nil, err
 		}
 		Setting.Media = setting.ToMedia()
+
+		sOpt = SettingReadOption{model.SETTING_TYPE_CONTENT, 0, false}
+		setting = new(model.Setting)
+		if err := Call(Setting.Read, sOpt, setting); err != nil {
+			return nil, err
+		}
+		Setting.Content = setting.ToContent()
+
+		sOpt = SettingReadOption{model.SETTING_TYPE_COMMENT, 0, false}
+		setting = new(model.Setting)
+		if err := Call(Setting.Read, sOpt, setting); err != nil {
+			return nil, err
+		}
+		Setting.Comment = setting.ToComment()
 	}
 	return nil, nil
 }

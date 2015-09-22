@@ -16,6 +16,7 @@ var (
 	ThemeErrorTemplate = "error.tmpl"
 
 	_ ITheme = (*baseTheme)(nil)
+	_ ITheme = (*TemplateRender)(nil)
 	_ ITheme = (*ThemeRender)(nil)
 	_ ITheme = (*AdminRender)(nil)
 )
@@ -40,6 +41,11 @@ type baseTheme struct {
 }
 
 func (bt *baseTheme) SetTheme(theme *model.Theme) error {
+	if theme == nil {
+		bt.theme = nil
+		bt.themeDirectory = ""
+		return nil
+	}
 	bt.theme = theme
 	bt.themeDirectory = theme.Directory
 	return nil
@@ -81,6 +87,10 @@ func (bt *baseTheme) RenderError(status int, err error) {
 	if err := bt.StatusRender(status, tpl, bt.data); err != nil {
 		panic(err)
 	}
+}
+
+type TemplateRender struct {
+	baseTheme
 }
 
 type ThemeRender struct {

@@ -15,6 +15,8 @@ var (
 type SettingService struct {
 	General *model.SettingGeneral
 	Media   *model.SettingMedia
+	Content *model.SettingContent
+	Comment *model.SettingComment
 }
 
 type SettingReadOption struct {
