@@ -59,6 +59,7 @@ func Server(ctx *cli.Context) {
 	adminGroup.Get("/delete/article", new(admin.ArticleDeleteController))
 
 	adminGroup.Any("/write/page", new(admin.PageWriteController))
+	adminGroup.Get("/manage/page", new(admin.PageManageController))
 
 	adminGroup.Any("/profile", new(admin.ProfileController))
 	adminGroup.Route([]string{"POST:Password"}, "/password", new(admin.ProfileController))
@@ -66,6 +67,7 @@ func Server(ctx *cli.Context) {
 	adminGroup.Any("/option/general", new(admin.SettingGeneralController))
 	adminGroup.Route([]string{"POST:PostMedia"}, "/option/media", new(admin.SettingGeneralController))
 	adminGroup.Get("/option/theme", new(admin.SettingThemeController))
+	adminGroup.Get("/option/content", new(admin.SettingContentController))
 
 	adminGroup.Get("/manage/media", new(admin.MediaController))
 	adminGroup.Route([]string{"POST:Upload"}, "/upload/media", new(admin.MediaController))

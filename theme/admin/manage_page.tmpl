@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    {{template "admin/_meta.tmpl" .}}
+</head>
+<body>
+{{template "admin/_nav.tmpl" .}}
+<div id="main">
+    <div class="container" id="manage-article-main">
+        <h3 class="main-title">PAGES</h3>
+        <hr/>
+        <div id="manage-article-list">
+            {{range .Pages}}
+            <div class="article clear">
+                <span class="date">{{TimeUnixFormat .CreateTime "01.02"}}</span>
+                <a class="title" href="{{.Href}}" target="_blank" name="{{.Title}}">{{.Title}}</a>
+                {{if .IsDraft}}
+                <a class="status label label-warning" href="#">DRAFT</a>
+                {{end}}
+                <span class="link">({{.Link}}) {{if .TopLink}}<i class="fa fa-external-link"></i>{{end}}</span>
+                {{if .IsCommentClosed}}
+                <span class="comment"><i class="fa fa-ban"></i></span>
+                {{end}}
+                <span class="opt pull-right">
+                     {{if .IsDraft}}
+                     <a href="/admin/public/page?id={{.Id}}" class="text-default to-publish"><i
+                             class="fa fa-eye"></i>
+                         PUBLISH</a>
+                     {{end}}
+                    <a href="/admin/write/page?id={{.Id}}" class="text-success edit"><i class="fa fa-edit"></i> EDIT</a>
+                    <a href="/admin/delete/page?id={{.Id}}" class="text-danger delete"><i class="fa fa-remove"></i>
+                        DELETE</a>
+                </span>
+            </div>
+            {{end}}
+            {{.Pager.HTML "/admin/manage/page?page=%d"}}
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $('.delete').on("click", function () {
+            return confirm("ARE YOU SURE TO DELETE THE PAGE ?")
+        })
+    })
+</script>
+</body>
+</html>

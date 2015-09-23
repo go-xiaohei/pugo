@@ -1,14 +1,17 @@
 package admin
 
 import (
+	"github.com/lunny/tango"
 	"github.com/tango-contrib/xsrf"
 	"pugo/src/middle"
 	"pugo/src/model"
 	"pugo/src/service"
+	"pugo/src/utils"
 	"strings"
 )
 
 type PageWriteController struct {
+	tango.Ctx
 	xsrf.Checker
 
 	middle.AuthorizeRequire
@@ -20,6 +23,17 @@ type PageWriteController struct {
 func (pwc *PageWriteController) Get() {
 	pwc.Title("WRITE PAGE - PUGO")
 	pwc.Assign("XsrfHTML", pwc.XsrfFormHtml())
+	if id := pwc.FormInt64("id"); id > 0 {
+		var (
+			opt  = service.PageReadOption{Id: id}
+			page = new(model.Page)
+		)
+		if err := service.Call(service.Page.Read, opt, page); err != nil {
+			pwc.RenderError(500, err)
+			return
+		}
+		pwc.Assign("Page", page)
+	}
 	pwc.Render("write_page.tmpl")
 }
 
@@ -84,4 +98,29 @@ func (pwc *PageWriteController) Post() {
 	pwc.JSON(map[string]interface{}{
 		"page": page,
 	})
+}
+
+type PageManageController struct {
+	tango.Ctx
+	middle.AuthorizeRequire
+	middle.AdminRender
+}
+
+func (pmc *PageManageController) Get() {
+	pmc.Title("PAGES - PUGO")
+	var (
+		opt = service.PageListOption{
+			IsCount: true,
+			Page:    pmc.FormInt("page", 0),
+		}
+		pages = make([]*model.Page, 0)
+		pager = new(utils.Pager)
+	)
+	if err := service.Call(service.Page.List, opt, &pages, pager); err != nil {
+		pmc.RenderError(500, err)
+		return
+	}
+	pmc.Assign("Pages", pages)
+	pmc.Assign("Pager", pager)
+	pmc.Render("manage_page.tmpl")
 }

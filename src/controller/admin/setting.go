@@ -116,3 +116,37 @@ func (stc *SettingThemeController) Get() {
 	stc.Assign("Themes", themes)
 	stc.Render("setting_theme.tmpl")
 }
+
+type SettingContentForm struct {
+	PageSize         int    `form:"page_size"`
+	RSSFullText      bool   `form:"rss_full_text"`
+	RSSNumberLimit   int    `form:"rss_number"`
+	TopPage          int64  `form:"top_page"`
+	PageDisallowLink string `form:"disallow_link"`
+}
+
+func (scf SettingContentForm) toSettingContent() *model.SettingContent {
+	return &model.SettingContent{
+		PageSize:         scf.PageSize,
+		RSSFullText:      scf.RSSFullText,
+		RSSNumberLimit:   scf.RSSNumberLimit,
+		TopPage:          scf.TopPage,
+		PageDisallowLink: strings.Split(scf.PageDisallowLink, " "),
+	}
+}
+
+type SettingContentController struct {
+	xsrf.Checker
+
+	middle.AuthorizeRequire
+	middle.AdminRender
+	middle.Validator
+	middle.Responsor
+}
+
+func (sc *SettingContentController) Get() {
+	sc.Title("GENERAL CONTENT - PUGO")
+	sc.Assign("XsrfHTML", sc.XsrfFormHtml())
+	sc.Assign("ContentSetting", service.Setting.Content)
+	sc.Render("setting_content.tmpl")
+}

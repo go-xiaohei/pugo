@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 const (
 	PAGE_STATUS_PUBLISH = 1
@@ -33,6 +36,16 @@ type Page struct {
 	CommentStatus int8  `xorm:"INT(8)"`
 
 	userData *User `xorm:"-"`
+}
+
+func (p *Page) Href() string {
+	if p.IsDraft() {
+		return "#"
+	}
+	if p.TopLink {
+		return "/" + p.Link + ".html"
+	}
+	return fmt.Sprintf("/page/%d/%s.html", p.Id, p.Link)
 }
 
 // is article publish

@@ -121,6 +121,10 @@ type SettingContent struct {
 	PageDisallowLink []string `json:"page_disallow_link"`
 }
 
+func (sc SettingContent) DisallowLink() string {
+	return strings.Join(sc.PageDisallowLink, " ")
+}
+
 type SettingComment struct {
 	IsPager  bool   `json:"comment_is_pager"`
 	PageSize int    `json:"comment_page_size"`

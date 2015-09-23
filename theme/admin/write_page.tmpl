@@ -15,23 +15,23 @@
             <div id="write-article-error" style="display: none;" class="alert alert-danger form-group"></div>
             <div class="form-group">
                 <input class="form-control input-lg" id="write-article-title" type="text" name="title"
-                       placeholder="PAGE TITLE" value="{{.Article.Title}}"/>
+                       placeholder="PAGE TITLE" value="{{.Page.Title}}"/>
             </div>
             <div class="form-group clearfix">
                 <div class="col-md-11" style="padding-left: 0">
                     <input class="form-control" id="write-article-link" type="text" name="link" placeholder="PAGE LINK"
-                           value="{{.PAGE.Link}}"/>
+                           value="{{.Page.Link}}"/>
                 </div>
                 <div class="col-md-1">
                     <label class="checkbox-inline">
-                        <input type="checkbox" id="write-page-top-link" name="top" value="true" {{if .Article.IsCommentClosed}} checked{{end}}>
+                        <input type="checkbox" id="write-page-top-link" name="top" value="true" {{if .Page.TopLink}} checked{{end}}>
                         <strong>AS TOP LINK</strong>
                     </label>
                 </div>
             </div>
             <div class="form-group">
                 <div id="editormd">
-                    <textarea name="body" id="editormd-textarea" style="display: none">{{.Article.Body}}</textarea>
+                    <textarea name="body" id="editormd-textarea" style="display: none">{{.Page.Body}}</textarea>
                 </div>
             </div>
             <div class="form-inline write-article-form-inline">
@@ -49,20 +49,20 @@
                 </div>
                 <div class="form-group">
                     <label class="checkbox-inline">
-                        <input type="checkbox" id="write-article-publish" name="draft" value="draft" {{if .Article.IsDraft}} checked{{end}}>
+                        <input type="checkbox" id="write-article-publish" name="draft" value="draft" {{if .Page.IsDraft}} checked{{end}}>
                         <strong>AS DRAFT</strong>
                     </label>
                 </div>
                 <div class="form-group">
                     <label class="checkbox-inline">
-                        <input type="checkbox" id="write-article-comment" name="comment" value="close" {{if .Article.IsCommentClosed}} checked{{end}}>
+                        <input type="checkbox" id="write-article-comment" name="comment" value="close" {{if .Page.IsCommentClosed}} checked{{end}}>
                         <strong>CLOSE COMMENT</strong>
                     </label>
                 </div>
                 <div class="form-group pull-right">
                     {{.XsrfHTML}}
-                    {{if .Article}}
-                    <input id="write-article-id" type="hidden" name="id" value="{{.Article.Id}}"/>
+                    {{if .Page}}
+                    <input id="write-article-id" type="hidden" name="id" value="{{.Page.Id}}"/>
                     {{else}}
                     <input id="write-article-id" type="hidden" name="id" value="0"/>
                     {{end}}
@@ -88,7 +88,7 @@
                 $('#write-article-error,#write-article-success').hide();
                 if (json.status) {
                     var $id = $('#write-article-id'),
-                            msg = "SAVE ARTICLE DONE, YOU CAN CONTINUE TO EDIT";
+                            msg = "SAVE PAGE DONE, YOU CAN CONTINUE TO EDIT";
                     $('#write-article-success').text(msg).show();
                     $id.val(json.data.page.Id);
                     return;

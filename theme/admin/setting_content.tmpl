@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    {{template "admin/_meta.tmpl" .}}
+</head>
+<body>
+{{template "admin/_nav.tmpl" .}}
+<div id="main">
+    <div class="container" id="setting-content-main">
+        <h3 class="main-title">SETTING CONTENT</h3>
+        <hr/>
+        <form id="setting-content-form" class="form-horizontal" action="/admin/option/content" method="post">
+            <div class="form-group alert alert-success" id="setting-content-success"></div>
+            <div class="form-group alert alert-danger" id="setting-content-error"></div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="page-size">Articles Page Size</label>
+
+                <div class="col-md-9">
+                    <input class="form-control" id="page-size" name="page-size" type="number" required="required"
+                           min="2" max="10" placeholder="NUMBER OF ARTICLES PER PAGE"
+                           value="{{.ContentSetting.PageSize}}"/>
+                </div>
+                <span class="col-sm-offset-2 col-sm-9 help-text">the number of articles per page in homepage</span>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="rss-page-size">RSS Page Size</label>
+
+                <div class="col-md-9">
+                    <input class="form-control" id="rss-page-size" name="rss_number" type="number"
+                           required="required" placeholder="NUMBER OF ARTICLES IN RSS" max="100"
+                           value="{{.ContentSetting.RSSNumberLimit}}"/></div>
+                <span class="col-sm-offset-2 col-sm-9 help-text">the number of articles in RSS. maxium 100, 0 means MAX</span>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="rss-full-text">Full Text in RSS</label>
+
+                <div class="col-md-9">
+                    <div class="checkbox">
+                        <input id="rss-full-text" name="rss_full_text" type="checkbox" value="true"
+                               style="margin-left: 0"
+                               {{if .ContentSetting.RSSFullText}}checked{{end}}/>
+                        <span class="col-sm-offset-1 help-text">output full content instead of description content in RSS</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="top-page">HomePage Setting</label>
+
+                <div class="col-md-9">
+                    <div class="checkbox">
+                        <input id="top-page" name="top_page" type="checkbox" value="0"
+                               style="margin-left: 0" disabled
+                               {{if eq .ContentSetting.TopPage 0}}checked{{end}}/>
+                        <span class="col-sm-offset-1 help-text">use DEFAULT articles list page AS HomePage</span>
+                    </div>
+                    <!--<div class="checkbox">
+                        select others
+                    </div>-->
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="disallow-link">Host Name</label>
+
+                <div class="col-md-9">
+                    <input id="disallow-link" class="form-control" name="disallow_link" type="text" required="required"
+                           readonly="readonly"
+                           placeholder="DISALLOWD PAGE LINKS" value="{{.ContentSetting.DisallowLink}}"/>
+
+                </div>
+                <span class="col-sm-offset-2 col-sm-9 help-text">these links can't be used to page link</span>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-9">
+                    {{.XsrfHTML}}
+                    <button type="submit" class="btn btn-primary">UPDATE SETTING</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+<script>
+    $(function () {
+        $('#setting-content-form').ajaxForm({
+            dataType: "json",
+            success: function (json) {
+                console.log(json);
+                $('#setting-content-success,#setting-content-error').hide();
+                if (json.status) {
+                    $('#setting-content-success').text("UPDATE SUCCESS !").show();
+                    return;
+                }
+                $("#setting-content-error").text(json.error).show();
+            }
+        });
+    })
+</script>
+</html>

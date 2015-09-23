@@ -83,6 +83,12 @@ title {
     margin-top: 70px;
 }
 
+.container .help-text{
+    color: #666;
+    font-size: 95%;
+    margin-top: .5em;
+}
+
 /*
  #editormd
 */
@@ -183,7 +189,9 @@ title {
 #setting-general-success,
 #setting-general-error,
 #setting-media-success,
-#setting-media-error {
+#setting-media-error,
+#setting-content-success,
+#setting-content-error {
     display: none;
 }
 
