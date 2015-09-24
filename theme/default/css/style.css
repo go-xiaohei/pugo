@@ -153,11 +153,19 @@ pre code {
 }
 
 .comment-section .comment-header,
-.comment-section .comment{
+.comment-section .comment-main > .comment{
     padding-bottom: 1rem;
     margin-bottom: 1rem;
     border-bottom: 1px dashed #EEE;
 }
+
+.comment-section .comment .children > .comment{
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px dashed #EEE;
+    margin-left: 8%;
+}
+
 
 .comment-section .avatar{
     padding-right: 1.5rem;
@@ -167,7 +175,7 @@ pre code {
     line-height: 36px;
 }
 
-.comment-section .comment{
+.comment-section .comment-main > .comment{
     min-height: 90px;
 }
 
@@ -195,4 +203,12 @@ pre code {
 
 .comment-section .reply i{
     vertical-align: middle;
+}
+
+.comment-section .comment .reply{
+    display: none;
+}
+
+.comment-section .comment .body:hover .reply{
+    display: block;
 }
