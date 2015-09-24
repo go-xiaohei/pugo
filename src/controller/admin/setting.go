@@ -150,3 +150,23 @@ func (sc *SettingContentController) Get() {
 	sc.Assign("ContentSetting", service.Setting.Content)
 	sc.Render("setting_content.tmpl")
 }
+
+func (sc *SettingContentController) Post() {
+	form := new(SettingContentForm)
+	if err := sc.Validator.Validate(form, sc); err != nil {
+		sc.JSONError(200, err)
+		return
+	}
+	setting := &model.Setting{
+		Name:   "content",
+		UserId: 0,
+		Type:   model.SETTING_TYPE_CONTENT,
+	}
+	setting.Encode(form.toSettingContent())
+	if err := service.Call(service.Setting.Write, setting); err != nil {
+		sc.JSONError(200, err)
+		return
+	}
+	service.Setting.Content = form.toSettingContent()
+	sc.JSON(nil)
+}

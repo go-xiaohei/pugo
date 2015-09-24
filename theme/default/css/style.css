@@ -143,3 +143,56 @@ pre code {
     text-transform: uppercase;
 }
 
+/*
+.comment-section
+*/
+
+.comment-section .comment-main,
+.comment-section .comment-form{
+    padding: .5rem 1.5rem;
+}
+
+.comment-section .comment-header,
+.comment-section .comment{
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px dashed #EEE;
+}
+
+.comment-section .avatar{
+    padding-right: 1.5rem;
+}
+
+.comment-section .meta{
+    line-height: 36px;
+}
+
+.comment-section .comment{
+    min-height: 90px;
+}
+
+.comment-section .comment .author{
+    font-size: 1.25em;
+    color: #444;
+}
+
+.comment-section .comment .date,
+.comment-section .comment .floor{
+    padding-left: 1.5rem;
+    color: #999;
+    text-transform: uppercase;
+}
+
+.comment-section .meta2{
+    line-height: 36px;
+    margin-top: -18px;
+}
+
+.comment-section .comment .content{
+    margin-top: .5rem;
+    padding-right: 3em;
+}
+
+.comment-section .reply i{
+    vertical-align: middle;
+}

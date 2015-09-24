@@ -34,6 +34,7 @@
                     <input id="keyword" class="form-control" name="keyword" type="text" placeholder="SITE KEYWORD META"
                            value="{{.GeneralSetting.Keyword}}"/>
                 </div>
+                <span class="col-sm-offset-2 col-sm-9 help-text">&lt;meta content="keyword"&gt; in header</span>
             </div>
             <div class="form-group">
                 <label class="col-md-2 control-label" for="desc">Description Meta</label>
@@ -42,6 +43,7 @@
                     <input id="desc" class="form-control" name="desc" type="text" placeholder="SITE DESCRIPTION META"
                            value="{{.GeneralSetting.Description}}"/>
                 </div>
+                <span class="col-sm-offset-2 col-sm-9 help-text">&lt;meta content="description"&gt; in header</span>
             </div>
             <div class="form-group">
                 <label class="col-md-2 control-label" for="host">Host Name</label>
@@ -50,6 +52,7 @@
                     <input id="host" class="form-control" name="host" type="url" required="required"
                            placeholder="SITE HOST NAME" value="{{.GeneralSetting.HostName}}"/>
                 </div>
+                <span class="col-sm-offset-2 col-sm-9 help-text">used to build full url link</span>
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-9">
@@ -84,7 +87,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-md-2 control-label" for="doc-file">Image File Types</label>
+                <label class="col-md-2 control-label" for="doc-file">Document File Types</label>
 
                 <div class="col-md-9">
                     <input id="doc-file" class="form-control" type="text" name="doc"
@@ -92,7 +95,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-md-2 control-label" for="common-file">Image File Types</label>
+                <label class="col-md-2 control-label" for="common-file">Common File Types</label>
 
                 <div class="col-md-9">
                     <input id="common-file" class="form-control" type="text" name="common"

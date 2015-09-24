@@ -16,7 +16,7 @@
                             <h4 class="title truncate"><a href="{{.Href}}" title="{{.Title}}">{{.Title}}</a></h4>
                             <div class="meta2">
                                 <span class="date grey-text"><i class="mdi-action-schedule"></i> {{TimeUnixFriend .CreateTime}}</span>
-                                <a href="{{.Href}}#comments" class="comments grey-text">
+                                <a href="#comments" class="comments grey-text scroll-to">
                                     <i class="mdi-editor-mode-comment"></i>comment&nbsp;&nbsp;&nbsp;{{.Comments}}
                                 </a>
                                 <a href="{{.Href}}" class="views grey-text">
@@ -33,6 +33,7 @@
             </div>
         </div>
         {{end}}
+        {{template "default/comment.tmpl" .}}
     </div>
 </div>
 {{template "default/_footer.tmpl" .}}
