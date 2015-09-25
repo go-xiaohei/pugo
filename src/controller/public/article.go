@@ -59,6 +59,11 @@ func (ac *ArticleController) Get() {
 		shouldShowComments = false
 	}
 
+	if ac.AuthUser != nil {
+		ac.Assign(middle.AuthUserTemplateField, nil) // set auth user nil instead of middleware assignment
+		ac.Assign("FrontUser", model.NewFrontUser(ac.AuthUser))
+	}
+
 	ac.Title(article.Title + " - " + service.Setting.General.Title)
 	ac.Assign("Article", article)
 	ac.Assign("Comments", comments)

@@ -8,21 +8,21 @@
                 <div class="comment">
                     <div class="avatar left">
                         <img class="responsive-img circle z-depth-1"
-                             src="http://1.gravatar.com/avatar/d57d179fe317be14fb167aa8bbe9a5f3"
-                             alt=""/>
+                             src="{{.AvatarUrl}}" alt="{{.Name}}"/>
                     </div>
                     <div class="body">
                         <div class="meta">
                             <a class="waves-effect waves-orange orange-text btn-flat right reply"><i
                                     class="mdi-content-reply"></i>&nbsp;&nbsp;REPLY</a>
-                            <a class="author" href="#"><strong>Xinzens</strong></a>
-                            <span class="date">12 DAYS AGO</span>
+                            <a class="author" href="#"><strong>{{.Name}}</strong></a>
+                            <span class="date">{{TimeUnixFriend .CreateTime}}</span>
                         </div>
-                        <div class="content entry-content">要说 C++ 从 C 继承到的最大优点是什么的话，大抵是指针级别的抽象零开销。</div>
-                        <div class="meta2 right-align">
+                        <div class="content entry-content">{{Nl2BrHTML .Body}}</div>
+                        <!--<div class="meta2 right-align">
                             <span class="floor">#12</span>
-                        </div>
+                        </div>-->
                     </div>
+                    <div class="children"></div>
                 </div>
                 {{end}}
                 {{else}}

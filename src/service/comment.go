@@ -182,16 +182,17 @@ func (cs *CommentService) List(v interface{}) (*Result, error) {
 	if !ok {
 		return nil, ErrServiceFuncNeedType(cs.List, opt)
 	}
+	opt = prepareCommentListOption(opt)
 	sess := core.Db.NewSession().Limit(opt.Size, (opt.Page-1)*opt.Size).OrderBy(opt.Order)
 	defer sess.Close()
 	if opt.Status > 0 {
-		sess.Where("status = ?", opt.Status)
+		sess.Where("status = ? AND `from` = ? AND from_id = ?", opt.Status, opt.From, opt.FromId)
 	} else {
 		if opt.AllApproved {
-			sess.Where("status = ?", model.COMMENT_STATUS_APPROVED)
+			sess.Where("status = ? AND `from` = ? AND from_id = ?", model.COMMENT_STATUS_APPROVED, opt.From, opt.FromId)
 		}
 		if opt.AllAccessible {
-			sess.Where("status < ?", model.COMMENT_STATUS_SPAM)
+			sess.Where("status < ? AND `from` = ? AND from_id = ?", model.COMMENT_STATUS_SPAM, opt.From, opt.FromId)
 		}
 	}
 	comments := make([]*model.Comment, 0)

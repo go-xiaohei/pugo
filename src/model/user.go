@@ -5,7 +5,8 @@ import "golang.org/x/crypto/bcrypt"
 const (
 	USER_ROLE_NORMAL = 2 << iota // normal user
 	USER_ROLE_ADMIN              //admin user
-
+)
+const (
 	USER_STATUS_ACTIVE  = 2 << iota // active user
 	USER_STATUS_FRESH               // fresh user, means need activate
 	USER_STATUS_BLOCKED             // blocked user
@@ -46,4 +47,19 @@ func (u *User) IsPassword(raw string) bool {
 func (u *User) SetPassword(pwd string) {
 	bytes, _ := bcrypt.GenerateFromPassword([]byte(pwd), 10)
 	u.Password = string(bytes)
+}
+
+type FrontUser struct {
+	Id        int64
+	Name      string
+	Email     string
+	Nick      string
+	AvatarUrl string
+	Role      int8
+}
+
+func NewFrontUser(u *User) *FrontUser {
+	return &FrontUser{
+		u.Id, u.Name, u.Email, u.Nick, u.AvatarUrl, u.Role,
+	}
 }

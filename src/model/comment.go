@@ -3,7 +3,9 @@ package model
 const (
 	COMMENT_FROM_ARTICLE = iota + 1
 	COMMENT_FROM_PAGE
+)
 
+const (
 	COMMENT_STATUS_APPROVED = iota + 1
 	COMMENT_STATUS_WAIT
 	COMMENT_STATUS_SPAM

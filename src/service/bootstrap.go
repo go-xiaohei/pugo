@@ -73,6 +73,8 @@ func (is *BootstrapService) Init(v interface{}) (*Result, error) {
 				"TimeUnixFriend": utils.TimeUnixFriend,
 				"Mardown2Str":    utils.Markdown2String,
 				"Markdown2HTML":  utils.Markdown2HTML,
+				"Nl2BrHTML":      utils.Nl2Br,
+				"Nl2BrString":    utils.Nl2BrString,
 			},
 		}))
 		sessions := session.New(session.Options{
@@ -102,12 +104,13 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 
 	// insert default user
 	user := &model.User{
-		Name:    "admin",
-		Email:   "admin@admin.com",
-		Nick:    "admin",
-		Profile: "this is administrator",
-		Role:    model.USER_ROLE_ADMIN,
-		Status:  model.USER_STATUS_ACTIVE,
+		Name:      "admin",
+		Email:     "admin@admin.com",
+		Nick:      "admin",
+		Profile:   "this is administrator",
+		Role:      model.USER_ROLE_ADMIN,
+		Status:    model.USER_STATUS_ACTIVE,
+		AvatarUrl: utils.Gravatar("admin@admin.com"),
 	}
 	user.SetPassword("123456789")
 	if _, err := core.Db.Insert(user); err != nil {

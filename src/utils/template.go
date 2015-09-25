@@ -2,6 +2,8 @@ package utils
 
 import (
 	"fmt"
+	"html/template"
+	"strings"
 	"time"
 )
 
@@ -31,4 +33,14 @@ func TimeUnixFriend(unixStamp int64) string {
 		return fmt.Sprintf("%d Days Ago", seconds/86400)
 	}
 	return t.Format("01.02")
+}
+
+// newline 2 break
+func Nl2Br(str string) template.HTML {
+	return template.HTML(Nl2BrString(str))
+}
+
+// newline 2 break, return string
+func Nl2BrString(str string) string {
+	return strings.Replace(str, "\n", "<br/>", -1)
 }
