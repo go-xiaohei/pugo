@@ -66,13 +66,13 @@ func (a *Article) IsCommentClosed() bool {
 }
 
 // article comment enable or not
-func (a *Article) IsCommentable() bool {
+func (a *Article) IsCommentable(duration int64) bool {
 	if a.CommentStatus == ARTICLE_COMMENT_OPEN {
 		return true
 	}
 	if a.CommentStatus == ARTICLE_COMMENT_WAIT {
 		// open comment in 30 days
-		if time.Now().Unix()-a.CreateTime <= 3600*24*30 {
+		if time.Now().Unix()-a.CreateTime <= 3600*24*duration {
 			return true
 		}
 	}

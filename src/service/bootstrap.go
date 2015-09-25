@@ -95,7 +95,8 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 		new(model.ArticleTag),
 		new(model.Setting),
 		new(model.Media),
-		new(model.Page)); err != nil {
+		new(model.Page),
+		new(model.Comment)); err != nil {
 		return nil, err
 	}
 
@@ -195,6 +196,8 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 		CheckRefer:     true,
 		AutoCloseDay:   30,
 		SubmitDuration: 60,
+		MaxLength:      512,
+		MinLength:      2,
 	}
 	setting = &model.Setting{
 		Name:   "comment",

@@ -2,8 +2,9 @@
     <div class="row">
         <div class="col l12 m12 s12 white z-depth-2">
             <div class="comment-main">
+                {{if .Comments}}
                 <h4 class="comment-header">Comments</h4>
-
+                {{range .Comments}}
                 <div class="comment">
                     <div class="avatar left">
                         <img class="responsive-img circle z-depth-1"
@@ -12,7 +13,31 @@
                     </div>
                     <div class="body">
                         <div class="meta">
-                            <a class="waves-effect orange-text btn-flat right reply"><i class="mdi-content-reply"></i>&nbsp;&nbsp;REPLY</a>
+                            <a class="waves-effect waves-orange orange-text btn-flat right reply"><i
+                                    class="mdi-content-reply"></i>&nbsp;&nbsp;REPLY</a>
+                            <a class="author" href="#"><strong>Xinzens</strong></a>
+                            <span class="date">12 DAYS AGO</span>
+                        </div>
+                        <div class="content entry-content">要说 C++ 从 C 继承到的最大优点是什么的话，大抵是指针级别的抽象零开销。</div>
+                        <div class="meta2 right-align">
+                            <span class="floor">#12</span>
+                        </div>
+                    </div>
+                </div>
+                {{end}}
+                {{else}}
+                <h4 class="comment-header">No Comment Yet !</h4>
+                {{end}}
+                <!--<div class="comment">
+                    <div class="avatar left">
+                        <img class="responsive-img circle z-depth-1"
+                             src="http://1.gravatar.com/avatar/d57d179fe317be14fb167aa8bbe9a5f3"
+                             alt=""/>
+                    </div>
+                    <div class="body">
+                        <div class="meta">
+                            <a class="waves-effect waves-orange orange-text btn-flat right reply"><i
+                                    class="mdi-content-reply"></i>&nbsp;&nbsp;REPLY</a>
                             <a class="author" href="#"><strong>Xinzens</strong></a>
                             <span class="date">12 DAYS AGO</span>
                         </div>
@@ -24,12 +49,14 @@
                     <div class="children">
                         <div class="comment">
                             <div class="avatar left">
-                                <img class="responsive-img circle z-depth-1" src="http://1.gravatar.com/avatar/d57d179fe317be14fb167aa8bbe9a5f3"
+                                <img class="responsive-img circle z-depth-1"
+                                     src="http://1.gravatar.com/avatar/d57d179fe317be14fb167aa8bbe9a5f3"
                                      alt=""/>
                             </div>
                             <div class="body">
                                 <div class="meta">
-                                    <a class="waves-effect orange-text btn-flat right reply"><i class="mdi-content-reply"></i>&nbsp;&nbsp;REPLY</a>
+                                    <a class="waves-effect waves-orange orange-text btn-flat right reply"><i
+                                            class="mdi-content-reply"></i>&nbsp;&nbsp;REPLY</a>
                                     <a class="author" href="#"><strong>Xinzens</strong></a>
                                     <span class="date">12 DAYS AGO</span>
                                 </div>
@@ -40,31 +67,16 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="comment">
-                    <div class="avatar left">
-                        <img class="responsive-img circle z-depth-1" src="http://1.gravatar.com/avatar/d57d179fe317be14fb167aa8bbe9a5f3"
-                             alt=""/>
-                    </div>
-                    <div class="body">
-                        <div class="meta">
-                            <a class="waves-effect orange-text btn-flat right reply"><i class="mdi-content-reply"></i>&nbsp;&nbsp;REPLY</a>
-                            <a class="author" href="#"><strong>Xinzens</strong></a>
-                            <span class="date">12 DAYS AGO</span>
-                        </div>
-                        <div class="content entry-content">要说 C++ 从 C 继承到的最大优点是什么的话，大抵是指针级别的抽象零开销。</div>
-                        <div class="meta2 right-align">
-                            <span class="floor">#12</span>
-                        </div>
-                    </div>
-                </div>
+                </div>-->
             </div>
+            {{if .IsCommentEnable}}
             <div class="comment-form">
                 <div class="row">
-                    <form class="col l8 m10 offset-l2 offset-m1 s12" method="post" id="comment-form">
+                    <form class="col l8 m10 offset-l2 offset-m1 s12" method="post" id="comment-form"
+                          action="{{.CommentUrl}}">
                         <div class="row">
                             <div class="input-field col s3">
-                                <input id="user" type="text" class="validate" name="username" required="required">
+                                <input id="user" type="text" class="validate" name="name" required="required">
                                 <label for="user">Name</label>
                             </div>
                             <div class="input-field col s4">
@@ -78,16 +90,33 @@
                         </div>
                         <div class="row">
                             <div class="input-field col s12">
-                                <textarea id="content" class="materialize-textarea"></textarea>
+                                <textarea id="content" class="materialize-textarea" name="content"></textarea>
                                 <label for="content">Content</label>
                             </div>
                         </div>
                         <div class="row center-align">
+                            {{.XsrfHTML}}
                             <button class="btn">SUBMIT</button>
                         </div>
                     </form>
                 </div>
             </div>
+            <script type="text/template">
+                <div class="comment">
+                    <div class="avatar left">
+                        <img class="responsive-img circle z-depth-1" src="{avatar_url}" alt="{name}"/>
+                    </div>
+                    <div class="body">
+                        <div class="meta">
+                            <a class="waves-effect waves-orange orange-text btn-flat right reply"><i class="mdi-content-reply"></i>&nbsp;&nbsp;REPLY</a>
+                            <a class="author" href="{url}"><strong>{name}</strong></a>
+                            <span class="date">{created}</span>
+                        </div>
+                        <div class="content entry-content">{content}</div>
+                    </div>
+                </div>
+            </script>
+            {{end}}
         </div>
     </div>
 </div>

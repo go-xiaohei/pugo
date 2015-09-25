@@ -33,7 +33,9 @@
             </div>
         </div>
         {{end}}
-        {{template "default/comment.tmpl" .}}
+        {{if not .Article.IsCommentClosed}}
+            {{template "default/comment.tmpl" .}}
+        {{end}}
     </div>
 </div>
 {{template "default/_footer.tmpl" .}}

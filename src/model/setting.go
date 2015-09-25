@@ -126,14 +126,17 @@ func (sc SettingContent) DisallowLink() string {
 }
 
 type SettingComment struct {
-	IsPager  bool   `json:"comment_is_pager"`
-	PageSize int    `json:"comment_page_size"`
-	Order    string `json:"comment_order"`
+	IsPager   bool   `json:"comment_is_pager"`
+	PageSize  int    `json:"comment_page_size"`
+	Order     string `json:"comment_order"`
+	MaxLength int    `json:"comment_max_length"`
+	MinLength int    `json:"comment_min_length"`
 
 	CheckAll    bool `json:"comment_check_all"`
 	CheckNoPass bool `json:"comment_check_no_pass"`
 	CheckRefer  bool `json:"comment_check_refer"`
 
-	AutoCloseDay   int   `json:"comment_auto_close_day"`
-	SubmitDuration int64 `json:"comment_submit_duration"`
+	AutoCloseDay    int64 `json:"comment_auto_close_day"`
+	SubmitDuration  int64 `json:"comment_submit_duration"`
+	ShowWaitComment bool  `json:"comment_show_wait"`
 }
