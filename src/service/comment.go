@@ -79,7 +79,7 @@ func (cs *CommentService) Create(v interface{}) (*Result, error) {
 	// try to read user
 	if opt.UserId == 0 && opt.Email != "" {
 		if user, _ := User.getUserBy("email", opt.Email); user != nil && user.Id > 0 {
-			opt.UserId = user.Id
+			c.UserId = user.Id
 		}
 	}
 
@@ -96,6 +96,9 @@ func (cs *CommentService) Create(v interface{}) (*Result, error) {
 		if count > 0 {
 			c.Status = model.COMMENT_STATUS_APPROVED
 		}
+	}
+	if c.UserId != 0 { // known user should approve
+		c.Status = model.COMMENT_STATUS_APPROVED
 	}
 
 	return newResult(cs.Create, c), nil
@@ -125,7 +128,7 @@ func (cs *CommentService) Save(v interface{}) (*Result, error) {
 }
 
 func (cs *CommentService) updateCommentCount(from int, id int64) error {
-	count, err := core.Db.Where("from = ? AND from_id = ? AND status = ? AND parent_id = ?", from, id, model.COMMENT_STATUS_APPROVED, 0).Count(new(model.Comment))
+	count, err := core.Db.Where("`from` = ? AND from_id = ? AND status = ? AND parent_id = ?", from, id, model.COMMENT_STATUS_APPROVED, 0).Count(new(model.Comment))
 	if err != nil {
 		return err
 	}
@@ -143,14 +146,15 @@ func (cs *CommentService) updateCommentCount(from int, id int64) error {
 }
 
 type CommentListOption struct {
-	From          int
-	FromId        int64
+	From          int   // ignore in CommentService.List
+	FromId        int64 // ignore in CommentService.List
 	Page          int
 	Size          int
 	Order         string
 	Status        int
-	AllApproved   bool
-	AllAccessible bool
+	AllApproved   bool // ignore in CommentService.List
+	AllAccessible bool // ignore in CommentService.List
+	IsCount       bool // ignore in CommentService.ListForContent
 }
 
 func prepareCommentListOption(opt CommentListOption) CommentListOption {
@@ -177,10 +181,10 @@ func prepareCommentListOption(opt CommentListOption) CommentListOption {
 	return opt
 }
 
-func (cs *CommentService) List(v interface{}) (*Result, error) {
+func (cs *CommentService) ListForContent(v interface{}) (*Result, error) {
 	opt, ok := v.(CommentListOption)
 	if !ok {
-		return nil, ErrServiceFuncNeedType(cs.List, opt)
+		return nil, ErrServiceFuncNeedType(cs.ListForContent, opt)
 	}
 	opt = prepareCommentListOption(opt)
 	sess := core.Db.NewSession().Limit(opt.Size, (opt.Page-1)*opt.Size).OrderBy(opt.Order)
@@ -199,5 +203,39 @@ func (cs *CommentService) List(v interface{}) (*Result, error) {
 	if err := sess.Find(&comments); err != nil {
 		return nil, err
 	}
-	return newResult(cs.List, &comments), nil
+	return newResult(cs.ListForContent, &comments), nil
+}
+
+func (cs *CommentService) List(v interface{}) (*Result, error) {
+	opt, ok := v.(CommentListOption)
+	if !ok {
+		return nil, ErrServiceFuncNeedType(cs.List, opt)
+	}
+	opt = prepareCommentListOption(opt)
+	sess := core.Db.NewSession().Limit(opt.Size, (opt.Page-1)*opt.Size).OrderBy(opt.Order)
+	defer sess.Close()
+	if opt.Status > 0 {
+		sess.Where("status = ?", opt.Status)
+	} else {
+		sess.Where("status != ?", model.COMMENT_STATUS_DELETED)
+	}
+	comments := make([]*model.Comment, 0)
+	if err := sess.Find(&comments); err != nil {
+		return nil, err
+	}
+
+	res := newResult(cs.List, &comments)
+	if opt.IsCount {
+		if opt.Status > 0 {
+			sess.Where("status = ?", opt.Status)
+		} else {
+			sess.Where("status != ?", model.COMMENT_STATUS_DELETED)
+		}
+		count, err := sess.Count(new(model.Comment))
+		if err != nil {
+			return nil, err
+		}
+		res.Set(utils.CreatePager(opt.Page, opt.Size, int(count)))
+	}
+	return res, nil
 }

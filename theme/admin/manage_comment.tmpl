@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    {{template "admin/_meta.tmpl" .}}
+</head>
+<body>
+{{template "admin/_nav.tmpl" .}}
+<div id="main">
+    <div class="container" id="comment-main">
+        <div class="main-title">
+            <h3>COMMENT</h3>
+            <a class="btn btn-primary btn-sm active" href="?status=all">All</a>
+            <a class="btn btn-sm btn-warning" href="?status=wait">Wait</a>
+            <a class="btn btn-sm btn-danger" href="?status=spam">Spam</a>
+        </div>
+        <hr/>
+        <div id="manage-comment-list">
+            {{range .Comments}}
+            <div class="comment clear">
+                <div class="avatar pull-left">
+                    <img src="{{.AvatarUrl}}" alt="{{.Name}}"/>
+                </div>
+                <div class="meta">
+                    <a class="name" href="{{.AuthorUrl}}"><strong>{{.Name}}</strong></a>
+                    <span class="date">{{TimeUnixFormat .CreateTime "01.02 15:04:05"}}</span>
+                    <a class="from">{{.FromTitle}}</a>
+                    {{if .IsWait}}
+                    <a class="status label label-warning">wait</a>
+                    {{end}}
+                    {{if .IsSpam}}
+                    <a class="status label label-danger">wait</a>
+                    {{end}}
+                </div>
+                <div class="body">
+                    <div class="content">{{Nl2BrHTML .Body}}</div>
+                    <div class="parent"></div>
+                </div>
+            </div>
+            {{end}}
+        </div>
+    </div>
+</div>
+</body>
+</html>

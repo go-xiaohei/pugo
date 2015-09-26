@@ -1,5 +1,7 @@
 package model
 
+import "pugo/src/core"
+
 const (
 	COMMENT_FROM_ARTICLE = iota + 1
 	COMMENT_FROM_PAGE
@@ -30,11 +32,64 @@ type Comment struct {
 	FromId   int64 `xorm:"index(from)" json:"-"`
 	ParentId int64 `xorm:"index(parent)" json:"parent"`
 
-	article *Article `xorm:"-"`
-	page    *Page    `xorm:"-"`
-	parent  *Comment `xorm:"-"`
+	parent *Comment `xorm:"-"`
 }
 
 func (c *Comment) IsTopApproved() bool {
 	return c.Status == COMMENT_STATUS_APPROVED && c.ParentId == 0
+}
+
+func (c *Comment) AuthorUrl() string {
+	if c.Url == "" {
+		return "#"
+	}
+	return c.Url
+}
+
+func (c *Comment) IsApproved() bool {
+	return c.Status == COMMENT_STATUS_APPROVED
+}
+
+func (c *Comment) IsWait() bool {
+	return c.Status == COMMENT_STATUS_WAIT
+}
+
+func (c *Comment) IsSpam() bool {
+	return c.Status == COMMENT_STATUS_SPAM
+}
+
+func (c *Comment) FromTitle() string {
+	if c.From == COMMENT_FROM_ARTICLE {
+		if article := getArticleById(c.FromId); article != nil {
+			return article.Title
+		}
+	}
+	if c.From == COMMENT_FROM_PAGE {
+		if page := getPageById(c.FromId); page != nil {
+			return page.Title
+		}
+	}
+	return ""
+}
+
+func getArticleById(id int64) *Article {
+	a := new(Article)
+	if _, err := core.Db.Where("id = ?", id).Get(a); err != nil {
+		return nil
+	}
+	if a.Id != id {
+		return nil
+	}
+	return a
+}
+
+func getPageById(id int64) *Page {
+	a := new(Page)
+	if _, err := core.Db.Where("id = ?", id).Get(a); err != nil {
+		return nil
+	}
+	if a.Id != id {
+		return nil
+	}
+	return a
 }

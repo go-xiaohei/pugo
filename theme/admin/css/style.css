@@ -83,7 +83,7 @@ title {
     margin-top: 70px;
 }
 
-.container .help-text{
+.container .help-text {
     color: #666;
     font-size: 95%;
     margin-top: .5em;
@@ -168,12 +168,12 @@ title {
     margin-right: 12px;
 }
 
-#manage-article-list .article .comment{
+#manage-article-list .article .comment {
     color: #999;
 }
 
 #manage-article-list .pager a,
-#media-list .pager a{
+#media-list .pager a {
     padding: 3px 9px !important;
     background-color: #EEE;
 }
@@ -206,12 +206,12 @@ title {
     border-bottom: 1px dashed #DDD;
 }
 
-#theme-main .theme .dir{
+#theme-main .theme .dir {
     color: #999;
 }
 
 #theme-main .theme .dir,
-#theme-main .theme .status{
+#theme-main .theme .status {
     margin-top: 7px;
 }
 
@@ -219,13 +219,13 @@ title {
 #media-main
 */
 
-#media-list .media{
+#media-list .media {
     padding-bottom: 12px;
     margin-bottom: 12px;
     border-bottom: 1px dashed #DDD;
 }
 
-#media-list .name{
+#media-list .name {
     max-width: 30em;
     white-space: nowrap;
     overflow: hidden;
@@ -234,28 +234,70 @@ title {
     vertical-align: middle;
 }
 
-#media-list .media .type{
+#media-list .media .type {
     padding-right: 1em;
     color: #999;
 }
 
-#media-list .media .time{
+#media-list .media .time {
     display: inline-block;
     min-width: 120px;
     color: #999;
     text-transform: uppercase;
 }
 
-#media-list .media .hash{
+#media-list .media .hash {
     padding-left: 1em;
     color: #999;
     font-size: 80%;
 }
 
-#media-list .media .opt{
+#media-list .media .opt {
     display: none;
 }
 
-#media-list .media:hover .opt{
+#media-list .media:hover .opt {
     display: inline-block;
+}
+
+/*
+#comment-main
+*/
+
+#comment-main .main-title h3 {
+    display: inline-block;
+}
+
+#comment-main .main-title a {
+    vertical-align: middle;
+    margin-left: 1em;
+    text-transform: uppercase;
+    margin-top: -9px;
+}
+
+#comment-main .comment .avatar img {
+    width: 30px;
+    height: 30px;
+    margin-right: 12px;
+}
+
+#comment-main .comment .meta {
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    border-bottom: 1px #EEE dashed;
+}
+
+#comment-main .comment .meta > *{
+    margin-right: 1em;
+}
+
+#comment-main .comment .meta,
+#comment-main .comment .body {
+    margin-left: 44px;
+}
+
+#comment-main .comment {
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #DDD;
 }
