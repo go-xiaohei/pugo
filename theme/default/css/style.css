@@ -224,6 +224,14 @@ pre code {
     display: inline;
 }
 
-#comment-error{
+#comment-error,
+#comment-reply-view,
+#comment-reply-btn{
     display: none;
+}
+
+#comment-reply-view blockquote{
+    padding: .6em 1em;
+    border-left: 1px solid #DDD;
+    background-color: #FAFAFA;
 }

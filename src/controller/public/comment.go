@@ -23,7 +23,7 @@ type CommentForm struct {
 	Email    string `form:"email" binding:"Required;Email"`
 	Url      string `form:"url" binding:"Url"`
 	Content  string `form:"content" binding:"Required"`
-	ParentId int64  `form:"pid"`
+	ParentId int64  `form:"parent"`
 	UserId   int64  `form:"uid"`
 	Type     string `form:"-"`
 	Id       int64  `form:"-"`

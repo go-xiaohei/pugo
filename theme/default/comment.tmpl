@@ -5,7 +5,7 @@
                 {{if .Comments}}
                 <h4 class="comment-header">Comments</h4>
                 {{range .Comments}}
-                <div class="comment" id="comment-{{.Id}}">
+                <div class="comment" id="comment-{{.Id}}" data-parent="{{.ParentId}}">
                     <div class="avatar left">
                         <img class="responsive-img circle z-depth-1"
                              src="{{.AvatarUrl}}" alt="{{.Name}}"/>
@@ -13,7 +13,7 @@
                     <div class="body">
                         <div class="meta">
                             <a class="waves-effect waves-orange orange-text btn-flat right reply"
-                               data-id="{{.Id}}">
+                               href="#comment-{{.Id}}">
                                 <i class="mdi-content-reply"></i>&nbsp;&nbsp;REPLY
                             </a>
                             <a class="author" href="#"><strong>{{.Name}}</strong></a>
@@ -37,6 +37,12 @@
                     <form class="col l8 m10 offset-l2 offset-m1 s12" method="post" id="comment-form"
                           action="{{.CommentUrl}}">
                         <div class="card-panel red lighten-2 white-text" id="comment-error">ERROR comment fail</div>
+                        <div class="card-panel" id="comment-reply-view">
+                            <div class="name">@傅小黑</div>
+                            <blockqoute>
+                                abababababa
+                            </blockqoute>
+                        </div>
                         <div class="row">
                             <div class="input-field col s3">
                                 <input id="user" type="text" class="validate" name="name" required="required">
@@ -58,8 +64,10 @@
                             </div>
                         </div>
                         <div class="row center-align">
+                            <input type="hidden" name="parent" id="comment-parent"/>
                             {{.XsrfHTML}}
                             <button class="btn">SUBMIT</button>
+                            <button class="btn grey" type="button" id="comment-reply-btn">CANCEL REPLY</button>
                         </div>
                     </form>
                 </div>
@@ -71,8 +79,9 @@
                     </div>
                     <div class="body">
                         <div class="meta">
-                            <a class="author" href="{url}"><strong>{name}</strong></a>
-                            <span class="new badge red"></span>
+                            <a class="author" href="{url}"><strong>{name}</strong>
+                                <span class="red-text">(new)</span>
+                            </a>
                             <span class="date">{created}</span>
                             <span class="status {status}">{status}</span>
                         </div>
