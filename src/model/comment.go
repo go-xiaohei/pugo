@@ -1,6 +1,6 @@
 package model
 
-import "pugo/src/core"
+import "github.com/fuxiaohei/pugo/src/core"
 
 const (
 	COMMENT_FROM_ARTICLE = iota + 1

@@ -1,12 +1,12 @@
 package admin
 
 import (
+	"github.com/fuxiaohei/pugo/src/core"
+	"github.com/fuxiaohei/pugo/src/middle"
+	"github.com/fuxiaohei/pugo/src/model"
+	"github.com/fuxiaohei/pugo/src/service"
+	"github.com/fuxiaohei/pugo/src/utils"
 	"github.com/lunny/tango"
-	"pugo/src/core"
-	"pugo/src/middle"
-	"pugo/src/model"
-	"pugo/src/service"
-	"pugo/src/utils"
 	"strings"
 )
 
@@ -28,6 +28,7 @@ func (cc *CommentController) Get() {
 		pager    = new(utils.Pager)
 	)
 
+	// load comment
 	switch cc.Form("status") {
 	case "all":
 		opt.Status = 0
@@ -44,7 +45,47 @@ func (cc *CommentController) Get() {
 		cc.RenderError(500, err)
 		return
 	}
+
+	// build pager url
+	query := cc.Req().URL.Query()
+	query.Del("page")
+	queryStr := query.Encode()
+	if len(queryStr) == 0 {
+		queryStr = "/admin/manage/comment?page=%d"
+	} else {
+		queryStr = "/admin/manage/comment?" + queryStr + "&page=%d"
+	}
+
+	cc.Assign("PageUrl", queryStr)
 	cc.Assign("Comments", comments)
 	cc.Assign("Pager", pager)
 	cc.Render("manage_comment.tmpl")
+}
+
+func (cc *CommentController) Approve() {
+	if id := cc.FormInt64("id"); id > 0 {
+		opt := service.CommentSwitchOption{
+			Id:     id,
+			Status: model.COMMENT_STATUS_APPROVED,
+		}
+		if err := service.Call(service.Comment.SwitchStatus, opt); err != nil {
+			cc.RenderError(500, err)
+			return
+		}
+	}
+	cc.Redirect(cc.Req().Referer())
+}
+
+func (cc *CommentController) Delete() {
+	if id := cc.FormInt64("id"); id > 0 {
+		opt := service.CommentSwitchOption{
+			Id:     id,
+			Status: model.COMMENT_STATUS_DELETED,
+		}
+		if err := service.Call(service.Comment.SwitchStatus, opt); err != nil {
+			cc.RenderError(500, err)
+			return
+		}
+	}
+	cc.Redirect(cc.Req().Referer())
 }

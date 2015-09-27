@@ -2,7 +2,7 @@ package model
 
 import (
 	"fmt"
-	"pugo/src/core"
+	"github.com/fuxiaohei/pugo/src/core"
 	"time"
 )
 

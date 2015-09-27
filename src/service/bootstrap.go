@@ -2,6 +2,9 @@ package service
 
 import (
 	"fmt"
+	"github.com/fuxiaohei/pugo/src/core"
+	"github.com/fuxiaohei/pugo/src/model"
+	"github.com/fuxiaohei/pugo/src/utils"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
 	"github.com/lunny/tango"
@@ -12,9 +15,6 @@ import (
 	"github.com/tango-contrib/xsrf"
 	"html/template"
 	"path"
-	"pugo/src/core"
-	"pugo/src/model"
-	"pugo/src/utils"
 	"time"
 )
 

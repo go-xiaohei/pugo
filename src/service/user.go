@@ -3,8 +3,8 @@ package service
 import (
 	"errors"
 	"fmt"
-	"pugo/src/core"
-	"pugo/src/model"
+	"github.com/fuxiaohei/pugo/src/core"
+	"github.com/fuxiaohei/pugo/src/model"
 	"time"
 )
 

@@ -1,11 +1,11 @@
 package admin
 
 import (
+	"github.com/fuxiaohei/pugo/src/middle"
+	"github.com/fuxiaohei/pugo/src/model"
+	"github.com/fuxiaohei/pugo/src/service"
 	"github.com/lunny/tango"
 	"github.com/tango-contrib/xsrf"
-	"pugo/src/middle"
-	"pugo/src/model"
-	"pugo/src/service"
 )
 
 type LoginController struct {

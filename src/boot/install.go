@@ -2,9 +2,9 @@ package boot
 
 import (
 	"github.com/codegangsta/cli"
+	"github.com/fuxiaohei/pugo/src/core"
+	"github.com/fuxiaohei/pugo/src/service"
 	"gopkg.in/inconshreveable/log15.v2"
-	"pugo/src/core"
-	"pugo/src/service"
 	"strconv"
 	"time"
 )

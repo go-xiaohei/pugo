@@ -1,8 +1,8 @@
-@import url(http://fonts.googleapis.com/css?family=Raleway|Droid+Sans+Mono:600,400,300);
+@import url(http://fonts.googleapis.com/css?family=Roboto|Droid+Sans+Mono:600,400,300);
 @import "dropzone.css";
 
 html, body {
-    font-family: Raleway, Helvetica Neue, "Microsoft Yahei", Helvetica, Arial, sans-serif;
+    font-family: Roboto, Helvetica Neue, "Microsoft Yahei", Helvetica, Arial, sans-serif;
 }
 
 input, textarea {
@@ -173,7 +173,8 @@ title {
 }
 
 #manage-article-list .pager a,
-#media-list .pager a {
+#media-list .pager a,
+#comment-main .pager a{
     padding: 3px 9px !important;
     background-color: #EEE;
 }
@@ -300,4 +301,8 @@ title {
     padding-bottom: 12px;
     margin-bottom: 12px;
     border-bottom: 1px solid #DDD;
+}
+
+#comment-main .comment .meta .status{
+    text-transform: uppercase;
 }

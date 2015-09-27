@@ -1,8 +1,8 @@
 package admin
 
 import (
-	"pugo/src/core"
-	"pugo/src/middle"
+	"github.com/fuxiaohei/pugo/src/core"
+	"github.com/fuxiaohei/pugo/src/middle"
 	"strings"
 )
 

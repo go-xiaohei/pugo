@@ -1,12 +1,12 @@
 package public
 
 import (
+	"github.com/fuxiaohei/pugo/src/middle"
+	"github.com/fuxiaohei/pugo/src/model"
+	"github.com/fuxiaohei/pugo/src/service"
 	"github.com/lunny/tango"
 	"github.com/tango-contrib/session"
 	"github.com/tango-contrib/xsrf"
-	"pugo/src/middle"
-	"pugo/src/model"
-	"pugo/src/service"
 )
 
 type CommentController struct {

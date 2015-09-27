@@ -2,8 +2,8 @@ package service
 
 import (
 	"errors"
-	"pugo/src/core"
-	"pugo/src/model"
+	"github.com/fuxiaohei/pugo/src/core"
+	"github.com/fuxiaohei/pugo/src/model"
 )
 
 var (

@@ -26,10 +26,13 @@
                     <a class="from">{{.FromTitle}}</a>
                     {{if .IsWait}}
                     <a class="status label label-warning">wait</a>
+                    <a class="opt approve label label-success" href="/admin/approve/comment?id={{.Id}}"><i class="fa fa-check" title="approve this comment"></i></a>
                     {{end}}
                     {{if .IsSpam}}
-                    <a class="status label label-danger">wait</a>
+                    <a class="status label label-danger">spam</a>
+                    <a class="opt approve label label-success" href="/admin/approve/comment?id={{.Id}}"><i class="fa fa-check" title="approve this comment"></i></a>
                     {{end}}
+                    <a class="opt remove label label-danger" href="/admin/delete/comment?id={{.Id}}"><i class="fa fa-times" title="delete this comment"></i></a>
                 </div>
                 <div class="body">
                     <div class="content">{{Nl2BrHTML .Body}}</div>
@@ -37,8 +40,19 @@
                 </div>
             </div>
             {{end}}
+            {{.Pager.HTML .PageUrl}}
         </div>
     </div>
 </div>
+<script>
+    $(function () {
+        $('.opt.remove').on("click", function () {
+            return confirm("ARE YOU SURE TO DELETE THE COMMENT ?")
+        });
+        $('.opt.approve').on("click", function () {
+            return confirm("ARE YOU SURE TO ACCEPT THE COMMENT ?")
+        })
+    })
+</script>
 </body>
 </html>

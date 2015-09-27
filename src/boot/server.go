@@ -2,13 +2,13 @@ package boot
 
 import (
 	"github.com/codegangsta/cli"
+	"github.com/fuxiaohei/pugo/src/controller/admin"
+	"github.com/fuxiaohei/pugo/src/controller/public"
+	"github.com/fuxiaohei/pugo/src/core"
+	"github.com/fuxiaohei/pugo/src/middle"
+	"github.com/fuxiaohei/pugo/src/service"
 	"github.com/lunny/tango"
 	"gopkg.in/inconshreveable/log15.v2"
-	"pugo/src/controller/admin"
-	"pugo/src/controller/public"
-	"pugo/src/core"
-	"pugo/src/middle"
-	"pugo/src/service"
 )
 
 var (
@@ -62,6 +62,8 @@ func Server(ctx *cli.Context) {
 	adminGroup.Get("/manage/page", new(admin.PageManageController))
 
 	adminGroup.Get("/manage/comment", new(admin.CommentController))
+	adminGroup.Route([]string{"GET:Approve"}, "/approve/comment", new(admin.CommentController))
+	adminGroup.Route([]string{"GET:Delete"}, "/delete/comment", new(admin.CommentController))
 
 	adminGroup.Any("/profile", new(admin.ProfileController))
 	adminGroup.Route([]string{"POST:Password"}, "/password", new(admin.ProfileController))

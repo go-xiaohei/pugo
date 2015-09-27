@@ -2,9 +2,9 @@ package service
 
 import (
 	"errors"
-	"pugo/src/core"
-	"pugo/src/model"
-	"pugo/src/utils"
+	"github.com/fuxiaohei/pugo/src/core"
+	"github.com/fuxiaohei/pugo/src/model"
+	"github.com/fuxiaohei/pugo/src/utils"
 	"strings"
 )
 
@@ -16,6 +16,7 @@ var (
 	ErrCommentContentTooShort = errors.New("comment-content-too-short")
 	ErrCommentContentTooLong  = errors.New("comment-content-too-long")
 	ErrCommentContentHref     = errors.New("comment-content-contains-href")
+	ErrCommentSwitchFail      = errors.New("comment-switch-error")
 )
 
 type CommentService struct{}
@@ -238,4 +239,61 @@ func (cs *CommentService) List(v interface{}) (*Result, error) {
 		res.Set(utils.CreatePager(opt.Page, opt.Size, int(count)))
 	}
 	return res, nil
+}
+
+type CommentSwitchOption struct {
+	Id     int64
+	Status int
+	From   int
+	FromId int64
+	IsTop  bool
+}
+
+func prepareCommentSwitchOption(opt CommentSwitchOption) CommentSwitchOption {
+	if opt.From == 0 || opt.FromId == 0 {
+		if c := getCommentBy("id", opt.Id); c != nil && c.Id == opt.Id {
+			opt.From = c.From
+			opt.FromId = c.FromId
+			if c.ParentId == 0 && opt.Status == model.COMMENT_STATUS_APPROVED {
+				opt.IsTop = true
+			}
+			if c.ParentId == 0 && opt.Status == model.COMMENT_STATUS_DELETED {
+				opt.IsTop = true
+			}
+		}
+	}
+	return opt
+}
+
+func getCommentBy(col string, value interface{}) *model.Comment {
+	c := new(model.Comment)
+	if _, err := core.Db.Where(col+" = ?", value).Get(c); err != nil {
+		return nil
+	}
+	return c
+}
+
+func (cs *CommentService) SwitchStatus(v interface{}) (*Result, error) {
+	opt, ok := v.(CommentSwitchOption)
+	if !ok {
+		return nil, ErrServiceFuncNeedType(cs.SwitchStatus, opt)
+	}
+	opt = prepareCommentSwitchOption(opt)
+	if opt.From == 0 || opt.FromId == 0 {
+		return nil, ErrCommentSwitchFail
+	}
+
+	// change status
+	if _, err := core.Db.Exec("UPDATE comment SET status = ? WHERE id = ?", opt.Status, opt.Id); err != nil {
+		return nil, err
+	}
+
+	// update approve count
+	if opt.IsTop {
+		if err := cs.updateCommentCount(opt.From, opt.FromId); err != nil {
+			return nil, err
+		}
+	}
+
+	return nil, nil
 }
