@@ -1,6 +1,9 @@
 package model
 
-import "github.com/fuxiaohei/pugo/src/core"
+import (
+	"github.com/fuxiaohei/pugo/src/core"
+	"github.com/fuxiaohei/pugo/src/utils"
+)
 
 const (
 	COMMENT_FROM_ARTICLE = iota + 1
@@ -92,4 +95,36 @@ func getPageById(id int64) *Page {
 		return nil
 	}
 	return a
+}
+
+type FrontComment struct {
+	Id         int64  `json:"id"`
+	Name       string `xorm:"VARCHAR(100) notnull" json:"name"`
+	UserId     int64  `json:"user_id"`
+	Url        string `xorm:"VARCHAR(200)" json:"url"`
+	AvatarUrl  string `xorm:"VARCHAR(200)" json:"avatar"`
+	Body       string `xorm:"TEXT notnull" json:"body"`
+	CreateTime string `xorm:"created" json:"created"`
+	Status     int    `xorm:"INT(8) index(status)" json:"status"`
+
+	UserIp    string `xorm:"VARCHAR(200)" json:"ip"`
+	UserAgent string `xorm:"VARCHAR(200)" json:"user_agent"`
+	ParentId  int64  `xorm:"index(parent)" json:"parent"`
+}
+
+func NewFrontComment(c *Comment) *FrontComment {
+	fc := &FrontComment{
+		Id:         c.Id,
+		Name:       c.Name,
+		UserId:     c.UserId,
+		Url:        c.Url,
+		AvatarUrl:  c.AvatarUrl,
+		Body:       utils.Nl2BrString(c.Body),
+		CreateTime: utils.TimeUnixFriend(c.CreateTime),
+		Status:     c.Status,
+		UserIp:     c.UserIp,
+		UserAgent:  c.UserAgent,
+		ParentId:   c.ParentId,
+	}
+	return fc
 }

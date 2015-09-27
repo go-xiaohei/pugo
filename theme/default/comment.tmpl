@@ -12,8 +12,10 @@
                     </div>
                     <div class="body">
                         <div class="meta">
-                            <a class="waves-effect waves-orange orange-text btn-flat right reply"><i
-                                    class="mdi-content-reply" data-id="{{.Id}}"></i>&nbsp;&nbsp;REPLY</a>
+                            <a class="waves-effect waves-orange orange-text btn-flat right reply"
+                               data-id="{{.Id}}">
+                                <i class="mdi-content-reply"></i>&nbsp;&nbsp;REPLY
+                            </a>
                             <a class="author" href="#"><strong>{{.Name}}</strong></a>
                             <span class="date">{{TimeUnixFriend .CreateTime}}</span>
                         </div>
@@ -28,52 +30,13 @@
                 {{else}}
                 <h4 class="comment-header">No Comment Yet !</h4>
                 {{end}}
-                <!--<div class="comment">
-                    <div class="avatar left">
-                        <img class="responsive-img circle z-depth-1"
-                             src="http://1.gravatar.com/avatar/d57d179fe317be14fb167aa8bbe9a5f3"
-                             alt=""/>
-                    </div>
-                    <div class="body">
-                        <div class="meta">
-                            <a class="waves-effect waves-orange orange-text btn-flat right reply"><i
-                                    class="mdi-content-reply"></i>&nbsp;&nbsp;REPLY</a>
-                            <a class="author" href="#"><strong>Xinzens</strong></a>
-                            <span class="date">12 DAYS AGO</span>
-                        </div>
-                        <div class="content entry-content">要说 C++ 从 C 继承到的最大优点是什么的话，大抵是指针级别的抽象零开销。</div>
-                        <div class="meta2 right-align">
-                            <span class="floor">#12</span>
-                        </div>
-                    </div>
-                    <div class="children">
-                        <div class="comment">
-                            <div class="avatar left">
-                                <img class="responsive-img circle z-depth-1"
-                                     src="http://1.gravatar.com/avatar/d57d179fe317be14fb167aa8bbe9a5f3"
-                                     alt=""/>
-                            </div>
-                            <div class="body">
-                                <div class="meta">
-                                    <a class="waves-effect waves-orange orange-text btn-flat right reply"><i
-                                            class="mdi-content-reply"></i>&nbsp;&nbsp;REPLY</a>
-                                    <a class="author" href="#"><strong>Xinzens</strong></a>
-                                    <span class="date">12 DAYS AGO</span>
-                                </div>
-                                <div class="content entry-content">要说 C++ 从 C 继承到的最大优点是什么的话，大抵是指针级别的抽象零开销。</div>
-                                <div class="meta2 right-align">
-                                    <span class="floor">#12</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>-->
             </div>
             {{if .IsCommentEnable}}
             <div class="comment-form">
                 <div class="row">
                     <form class="col l8 m10 offset-l2 offset-m1 s12" method="post" id="comment-form"
                           action="{{.CommentUrl}}">
+                        <div class="card-panel red lighten-2 white-text" id="comment-error">ERROR comment fail</div>
                         <div class="row">
                             <div class="input-field col s3">
                                 <input id="user" type="text" class="validate" name="name" required="required">
@@ -101,16 +64,17 @@
                     </form>
                 </div>
             </div>
-            <script type="text/template">
+            <script type="text/template" id="comment-template">
                 <div class="comment">
                     <div class="avatar left">
                         <img class="responsive-img circle z-depth-1" src="{avatar_url}" alt="{name}"/>
                     </div>
                     <div class="body">
                         <div class="meta">
-                            <a class="waves-effect waves-orange orange-text btn-flat right reply"><i class="mdi-content-reply"></i>&nbsp;&nbsp;REPLY</a>
                             <a class="author" href="{url}"><strong>{name}</strong></a>
+                            <span class="new badge red"></span>
                             <span class="date">{created}</span>
+                            <span class="status {status}">{status}</span>
                         </div>
                         <div class="content entry-content">{content}</div>
                     </div>
@@ -120,3 +84,4 @@
         </div>
     </div>
 </div>
+<script src="{{.ThemeLink}}/js/jquery.form.min.js"></script>

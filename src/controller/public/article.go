@@ -49,7 +49,7 @@ func (ac *ArticleController) Get() {
 	} else {
 		opt2.AllApproved = true
 	}
-	if err := service.Call(service.Comment.List, opt2, &comments); err != nil {
+	if err := service.Call(service.Comment.ListForContent, opt2, &comments); err != nil {
 		ac.RenderError(500, err)
 		return
 	}

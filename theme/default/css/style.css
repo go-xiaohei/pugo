@@ -185,7 +185,9 @@ pre code {
 }
 
 .comment-section .comment .date,
-.comment-section .comment .floor{
+.comment-section .comment .floor,
+.comment-section .comment .status,
+.comment-section .comment .badge{
     padding-left: 1.5rem;
     color: #999;
     text-transform: uppercase;
@@ -211,4 +213,17 @@ pre code {
 
 .comment-section .comment .body:hover .reply{
     display: block;
+}
+
+.comment-section .comment .status{
+    display: none;
+    text-transform: uppercase;
+}
+
+.comment-section .comment .status.disapproved{
+    display: inline;
+}
+
+#comment-error{
+    display: none;
 }

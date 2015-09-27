@@ -62,6 +62,6 @@ func (cc *CommentController) Post() {
 	}
 
 	cc.JSON(map[string]interface{}{
-		"comment": c,
+		"comment": model.NewFrontComment(c),
 	})
 }
