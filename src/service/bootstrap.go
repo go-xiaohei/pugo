@@ -99,7 +99,8 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 		new(model.Setting),
 		new(model.Media),
 		new(model.Page),
-		new(model.Comment)); err != nil {
+		new(model.Comment),
+		new(model.Message)); err != nil {
 		return nil, err
 	}
 

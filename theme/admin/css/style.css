@@ -322,3 +322,52 @@ title {
 #reply-error {
     display: none;
 }
+
+/*
+#message-list
+*/
+
+#message-list .message{
+    font-size: 1.1em;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed #EEE;
+}
+
+#message-list .fa{
+    font-size: 18px;
+    margin-right: 12px;
+}
+
+#message-list .author{
+    font-size: 1.1em;
+    color: #337ab7;
+    padding-right: 4px;
+}
+
+#message-list .time{
+    float: right;
+    color: #999;
+    text-transform: uppercase;
+}
+
+#message-list .page-link,
+#message-list .email-link{
+    padding-left: 6px;
+    font-size: 85%;
+    color: #888;
+}
+
+#message-list .email-link{
+    font-style: italic;
+}
+
+#message-list .content{
+    font-size: 80%;
+    margin-left: 20px;
+    margin-top: 12px;
+}
+
+#message-list .quote{
+    margin-top: 12px;
+}

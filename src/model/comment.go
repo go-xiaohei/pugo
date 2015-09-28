@@ -25,7 +25,7 @@ type Comment struct {
 	Url        string `xorm:"VARCHAR(200)" json:"url"`
 	AvatarUrl  string `xorm:"VARCHAR(200)" json:"avatar"`
 	Body       string `xorm:"TEXT notnull" json:"body"`
-	CreateTime int64  `xorm:"created" json:"created"`
+	CreateTime int64  `xorm:"INT(12) created" json:"created"`
 	Status     int    `xorm:"INT(8) index(status)" json:"status"`
 
 	UserIp    string `xorm:"VARCHAR(200)" json:"ip"`
