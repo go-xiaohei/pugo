@@ -40,8 +40,8 @@ func NewConfig() *Config {
 			Domain: "localhost",
 		},
 		Db: configDb{
-			Driver: "mysql",
-			DSN:    "root:fuxiaohei@tcp/pugo?charset=utf8",
+			Driver: "tidb",
+			DSN:    "goleveldb://./data/tidb",
 		},
 		Created: fmt.Sprint(time.Now().Unix()),
 		Install: "0",

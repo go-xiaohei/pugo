@@ -14,6 +14,9 @@ $(document).ready(function () {
         $('html, body').animate({scrollTop: target_top}, 500, 'easeInSine');
     });
 
+    $('#comment-user').val(localStorage.getItem("comment-user"));
+    $('#comment-email').val(localStorage.getItem("comment-email"));
+    $('#comment-url').val(localStorage.getItem("comment-url"));
     $('#comment-form').ajaxForm({
         dataType: "json",
         success: function (json) {
@@ -36,6 +39,10 @@ $(document).ready(function () {
                 html = html.replace("{status}", "disapproved", -1);
             }
             $('.comment-header').after(html);
+            $('#comment-content').val("");
+            localStorage.setItem("comment-user", $('#comment-user').val());
+            localStorage.setItem("comment-email", $('#comment-email').val());
+            localStorage.setItem("comment-url", $('#comment-url').val());
         }
     });
 
@@ -57,14 +64,14 @@ $(document).ready(function () {
         $(this).hide();
     });
 
-    $(".comment").each(function(i,item){
-       var $item = $(item);
+    $(".comment").each(function (i, item) {
+        var $item = $(item);
         var p = $item.data("parent");
-        if(p>0){
-            var $pComment = $('#comment-'+p);
-            if($pComment.length){
+        if (p > 0) {
+            var $pComment = $('#comment-' + p);
+            if ($pComment.length) {
                 $pComment.find(".children").append($item);
-            }else{
+            } else {
                 $item.remove();
             }
         }

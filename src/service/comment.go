@@ -17,6 +17,7 @@ var (
 	ErrCommentContentTooLong  = errors.New("comment-content-too-long")
 	ErrCommentContentHref     = errors.New("comment-content-contains-href")
 	ErrCommentSwitchFail      = errors.New("comment-switch-error")
+	ErrCommentParentMissing   = errors.New("comment-parent-missing")
 )
 
 type CommentService struct{}
@@ -296,4 +297,32 @@ func (cs *CommentService) SwitchStatus(v interface{}) (*Result, error) {
 	}
 
 	return nil, nil
+}
+
+func (cs *CommentService) Reply(v interface{}) (*Result, error) {
+	c, ok := v.(*model.Comment)
+	if !ok {
+		return nil, ErrServiceFuncNeedType(cs.Reply, c)
+	}
+	user, err := User.getUserBy("id", c.UserId)
+	if err != nil {
+		return nil, err
+	}
+	c.Name = user.Name
+	c.Email = user.Email
+	c.AvatarUrl = user.AvatarUrl
+	c.Url = user.Url
+
+	pc := getCommentBy("id", c.ParentId)
+	if pc == nil || pc.Id != c.ParentId {
+		return nil, ErrCommentParentMissing
+	}
+	c.From = pc.From
+	c.FromId = pc.FromId
+	c.Status = model.COMMENT_STATUS_APPROVED
+
+	if _, err := core.Db.Insert(c); err != nil {
+		return nil, err
+	}
+	return newResult(cs.Reply, c), nil
 }

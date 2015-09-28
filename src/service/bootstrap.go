@@ -5,9 +5,10 @@ import (
 	"github.com/fuxiaohei/pugo/src/core"
 	"github.com/fuxiaohei/pugo/src/model"
 	"github.com/fuxiaohei/pugo/src/utils"
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/go-xorm/tidb"
 	"github.com/go-xorm/xorm"
 	"github.com/lunny/tango"
+	_ "github.com/pingcap/tidb"
 	"github.com/tango-contrib/binding"
 	"github.com/tango-contrib/flash"
 	"github.com/tango-contrib/renders"
@@ -47,7 +48,7 @@ func (is *BootstrapService) Init(v interface{}) (*Result, error) {
 		if err != nil {
 			return nil, err
 		}
-		core.Db.ShowDebug = true
+		// core.Db.ShowDebug = true
 		core.Db.ShowSQL = true
 	}
 	if core.Cfg != nil && opt.Server { // server depends on config
@@ -212,6 +213,40 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 		return nil, err
 	}
 
+	// first article
+	article := &model.Article{
+		UserId:        user.Id,
+		Title:         firstArticleTitle,
+		Link:          firstArticleLink,
+		Body:          firstArticleContent,
+		TagString:     firstArticleTag,
+		Status:        model.ARTICLE_STATUS_PUBLISH,
+		CommentStatus: model.ARTICLE_COMMENT_OPEN,
+		Hits:          1,
+		Preview:       firstArticleContent,
+		BodyType:      model.ARTICLE_BODY_MARKDOWN,
+	}
+	if _, err := Article.Write(article); err != nil {
+		return nil, err
+	}
+
+	// first comment
+	cmt := &model.Comment{
+		Name:      user.Name,
+		UserId:    user.Id,
+		Email:     user.Email,
+		Url:       user.Url,
+		AvatarUrl: user.AvatarUrl,
+		Body:      firstCommentContent,
+		Status:    model.COMMENT_STATUS_APPROVED,
+		From:      model.COMMENT_FROM_ARTICLE,
+		FromId:    article.Id,
+		ParentId:  0,
+	}
+	if _, err := Comment.Save(cmt); err != nil {
+		return nil, err
+	}
+
 	// assign install time to config
 	core.Cfg.Install = fmt.Sprint(time.Now().Unix())
 	if err := core.Cfg.WriteToFile(core.ConfigFile); err != nil {
@@ -270,3 +305,28 @@ func (bs *BootstrapService) Bootstrap(v interface{}) (*Result, error) {
 	}
 	return nil, nil
 }
+
+var (
+	firstArticleTitle   = "Hello World"
+	firstArticleLink    = "hello-world"
+	firstArticleTag     = "hello"
+	firstArticleContent = `# Hello World
+
+Welcome to [Pugo](http://github.com/fuxiaohei/pugo)! This is your very first article. Read the [Wiki](http://github.com/fuxiaohei/pugo/wiki) for more infomation. If you get any problems when trying Pugo, you can find the answer or make a question in [issues](http://github.com/fuxiaohei/issue).
+
+### Usage
+
+You can sign in [admin panel](/admin/) with ` + "`admin`" + ` & ` + "`123456789`" + ` to change settings, write new article or page and upload media file.
+
+**You'd better change default user and password setting to your own when first run.**
+
+### Thanks
+
+ - [xorm](https://github.com/go-xorm/xorm)
+ - [tango](https://github.com/lunny/tango)
+ - [tidb](https://github.com/pingcap/tidb)
+ - [editor.md](https://github.com/pandao/editor.md)
+
+`
+	firstCommentContent = "this is first comment from administrator"
+)

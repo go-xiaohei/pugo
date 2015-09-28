@@ -174,7 +174,7 @@ title {
 
 #manage-article-list .pager a,
 #media-list .pager a,
-#comment-main .pager a{
+#comment-main .pager a {
     padding: 3px 9px !important;
     background-color: #EEE;
 }
@@ -288,7 +288,7 @@ title {
     border-bottom: 1px #EEE dashed;
 }
 
-#comment-main .comment .meta > *{
+#comment-main .comment .meta > * {
     margin-right: 1em;
 }
 
@@ -303,6 +303,22 @@ title {
     border-bottom: 1px solid #DDD;
 }
 
-#comment-main .comment .meta .status{
+#comment-main .comment .meta .status {
     text-transform: uppercase;
+}
+
+#comment-main .comment .date,
+#comment-main .comment .email,
+#comment-main .comment .from {
+    color: #999;
+    font-size: 85%;
+}
+
+#reply-form {
+    margin-top: 1rem;
+    display: none;
+}
+
+#reply-error {
+    display: none;
 }

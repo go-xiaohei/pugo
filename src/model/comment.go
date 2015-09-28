@@ -75,6 +75,20 @@ func (c *Comment) FromTitle() string {
 	return ""
 }
 
+func (c *Comment) GetParent() *Comment {
+	if c.ParentId == 0 {
+		return nil
+	}
+	co := new(Comment)
+	if _, err := core.Db.Where("id = ?", c.ParentId).Get(co); err != nil {
+		return nil
+	}
+	if c.ParentId != co.ParentId {
+		return nil
+	}
+	return co
+}
+
 func getArticleById(id int64) *Article {
 	a := new(Article)
 	if _, err := core.Db.Where("id = ?", id).Get(a); err != nil {

@@ -5,7 +5,7 @@
                 {{if .Comments}}
                 <h4 class="comment-header">Comments</h4>
                 {{range .Comments}}
-                <div class="comment" id="comment-{{.Id}}" data-parent="{{.ParentId}}">
+                <div class="comment" id="comment-{{.Id}}" data-id="{{.Id}}" data-parent="{{.ParentId}}">
                     <div class="avatar left">
                         <img class="responsive-img circle z-depth-1"
                              src="{{.AvatarUrl}}" alt="{{.Name}}"/>
@@ -45,26 +45,27 @@
                         </div>
                         <div class="row">
                             <div class="input-field col s3">
-                                <input id="user" type="text" class="validate" name="name" required="required">
-                                <label for="user">Name</label>
+                                <input id="comment-user" type="text" class="validate" name="name" required="required">
+                                <label for="comment-user">Name</label>
                             </div>
                             <div class="input-field col s4">
-                                <input id="email" type="email" class="validate" name="email" required="required">
-                                <label for="email">Email</label>
+                                <input id="comment-email" type="email" class="validate" name="email"
+                                       required="required">
+                                <label for="comment-email">Email</label>
                             </div>
                             <div class="input-field col s5">
-                                <input id="url" type="url" class="validate" name="url">
-                                <label for="url">Url</label>
+                                <input id="comment-url" type="url" class="validate" name="url">
+                                <label for="comment-url">Url</label>
                             </div>
                         </div>
                         <div class="row">
                             <div class="input-field col s12">
-                                <textarea id="content" class="materialize-textarea" name="content"></textarea>
-                                <label for="content">Content</label>
+                                <textarea id="comment-content" class="materialize-textarea" name="content"></textarea>
+                                <label for="comment-content">Content</label>
                             </div>
                         </div>
                         <div class="row center-align">
-                            <input type="hidden" name="parent" id="comment-parent"/>
+                            <input type="hidden" name="parent" id="comment-parent" value="0"/>
                             {{.XsrfHTML}}
                             <button class="btn">SUBMIT</button>
                             <button class="btn grey" type="button" id="comment-reply-btn">CANCEL REPLY</button>
@@ -93,4 +94,3 @@
         </div>
     </div>
 </div>
-<script src="{{.ThemeLink}}/js/jquery.form.min.js"></script>

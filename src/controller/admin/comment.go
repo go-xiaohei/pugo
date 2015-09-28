@@ -89,3 +89,16 @@ func (cc *CommentController) Delete() {
 	}
 	cc.Redirect(cc.Req().Referer())
 }
+
+func (cc *CommentController) Reply() {
+	c := &model.Comment{
+		UserId:   cc.AuthUser.Id,
+		Body:     cc.Form("content"),
+		ParentId: cc.FormInt64("pid"),
+	}
+	if err := service.Call(service.Comment.Reply, c); err != nil {
+		cc.RenderError(500, err)
+		return
+	}
+	cc.Redirect("/admin/manage/comment")
+}

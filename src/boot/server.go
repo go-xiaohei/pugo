@@ -64,6 +64,7 @@ func Server(ctx *cli.Context) {
 	adminGroup.Get("/manage/comment", new(admin.CommentController))
 	adminGroup.Route([]string{"GET:Approve"}, "/approve/comment", new(admin.CommentController))
 	adminGroup.Route([]string{"GET:Delete"}, "/delete/comment", new(admin.CommentController))
+	adminGroup.Route([]string{"POST:Reply"}, "/reply/comment", new(admin.CommentController))
 
 	adminGroup.Any("/profile", new(admin.ProfileController))
 	adminGroup.Route([]string{"POST:Password"}, "/password", new(admin.ProfileController))
