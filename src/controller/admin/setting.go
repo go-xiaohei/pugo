@@ -170,3 +170,72 @@ func (sc *SettingContentController) Post() {
 	service.Setting.Content = form.toSettingContent()
 	sc.JSON(nil)
 }
+
+type SettingCommentController struct {
+	xsrf.Checker
+
+	middle.AuthorizeRequire
+	middle.AdminRender
+	middle.Validator
+	middle.Responsor
+}
+
+func (sc *SettingCommentController) Get() {
+	sc.Title("GENERAL COMMENT - PUGO")
+	sc.Assign("XsrfHTML", sc.XsrfFormHtml())
+	sc.Assign("CommentSetting", service.Setting.Comment)
+	sc.Render("setting_comment.tmpl")
+}
+
+type SettingCommentForm struct {
+	IsPager        bool   `form:"is_pager"`
+	PageSize       int    `form:"page_size"`
+	Order          string `form:"order"`
+	MinLength      int    `form:"min"`
+	MaxLength      int    `form:"max"`
+	CheckStrategy  string `form:"check"`
+	AutoClose      int64  `form:"auto_close"`
+	SubmitDuration int64  `form:"duration"`
+	ShowWait       bool   `form:"show_wait"`
+}
+
+func (f SettingCommentForm) toSettingComment() *model.SettingComment {
+	sc := &model.SettingComment{
+		IsPager:         f.IsPager,
+		PageSize:        f.PageSize,
+		Order:           f.Order,
+		MaxLength:       f.MaxLength,
+		MinLength:       f.MinLength,
+		CheckAll:        false,
+		CheckNoPass:     true,
+		CheckRefer:      true,
+		AutoCloseDay:    f.AutoClose,
+		SubmitDuration:  f.SubmitDuration,
+		ShowWaitComment: f.ShowWait,
+	}
+	if f.CheckStrategy == "all" {
+		sc.CheckAll = false
+		sc.CheckNoPass = true
+	}
+	return sc
+}
+
+func (sc *SettingCommentController) Post() {
+	form := new(SettingCommentForm)
+	if err := sc.Validator.Validate(form, sc); err != nil {
+		sc.JSONError(200, err)
+		return
+	}
+	setting := &model.Setting{
+		Name:   "comment",
+		UserId: 0,
+		Type:   model.SETTING_TYPE_COMMENT,
+	}
+	setting.Encode(form.toSettingComment())
+	if err := service.Call(service.Setting.Write, setting); err != nil {
+		sc.JSONError(200, err)
+		return
+	}
+	service.Setting.Comment = form.toSettingComment()
+	sc.JSON(nil)
+}

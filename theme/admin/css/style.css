@@ -192,7 +192,9 @@ title {
 #setting-media-success,
 #setting-media-error,
 #setting-content-success,
-#setting-content-error {
+#setting-content-error,
+#setting-comment-success,
+#setting-comment-error{
     display: none;
 }
 
