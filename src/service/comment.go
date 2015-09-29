@@ -2,6 +2,8 @@ package service
 
 import (
 	"errors"
+	"fmt"
+	"github.com/Unknwon/com"
 	"github.com/fuxiaohei/pugo/src/core"
 	"github.com/fuxiaohei/pugo/src/model"
 	"github.com/fuxiaohei/pugo/src/utils"
@@ -126,7 +128,42 @@ func (cs *CommentService) Save(v interface{}) (*Result, error) {
 			return nil, err
 		}
 	}
+
+	defer cs.msgSave(c)
+
 	return newResult(cs.Save, c), nil
+}
+
+func (cs *CommentService) msgSave(cmt *model.Comment) {
+	data := map[string]string{
+		"type":   fmt.Sprint(model.MESSAGE_TYPE_COMMENT_CREATE),
+		"time":   utils.TimeUnixFormat(cmt.CreateTime, "01/02 15:04:05"),
+		"author": cmt.Name,
+		"site":   cmt.AuthorUrl(),
+		"body":   cmt.Body,
+		"title":  cmt.FromTitle(),
+	}
+
+	message := &model.Message{
+		UserId:     cmt.UserId,
+		From:       model.MESSAGE_FROM_COMMENT,
+		FromId:     cmt.Id,
+		Type:       model.MESSAGE_TYPE_COMMENT_CREATE,
+		CreateTime: cmt.CreateTime,
+	}
+
+	if cmt.ParentId > 0 {
+		if p := cmt.GetParent(); p != nil {
+			data["parent"] = p.Name
+			data["parent_content"] = p.Body
+		}
+		message.Type = model.MESSAGE_TYPE_COMMENT_REPLY
+		message.Body = com.Expand(MessageCommentReplyTemplate, data)
+		Message.Save(message)
+		return
+	}
+	message.Body = com.Expand(MessageCommentLeaveTemplate, data)
+	Message.Save(message)
 }
 
 func (cs *CommentService) updateCommentCount(from int, id int64) error {
@@ -324,5 +361,8 @@ func (cs *CommentService) Reply(v interface{}) (*Result, error) {
 	if _, err := core.Db.Insert(c); err != nil {
 		return nil, err
 	}
+
+	defer cs.msgSave(c)
+
 	return newResult(cs.Reply, c), nil
 }

@@ -2,6 +2,8 @@ package service
 
 import (
 	"errors"
+	"fmt"
+	"github.com/Unknwon/com"
 	"github.com/fuxiaohei/pugo/src/core"
 	"github.com/fuxiaohei/pugo/src/model"
 	"github.com/fuxiaohei/pugo/src/utils"
@@ -27,7 +29,8 @@ func (ps *PageService) Write(v interface{}) (*Result, error) {
 			return nil, ErrPageDisallowLink
 		}
 	}
-	if page.Id > 0 {
+	var isUpdate = page.Id > 0
+	if isUpdate {
 		if _, err := core.Db.Where("id = ?", page.Id).
 			Cols("title,link,update_time,body,body_type,status,comment_status,top_link,template").
 			Update(page); err != nil {
@@ -38,7 +41,37 @@ func (ps *PageService) Write(v interface{}) (*Result, error) {
 			return nil, err
 		}
 	}
+	defer ps.msgWrite(isUpdate, page)
 	return newResult(ps.Write, page), nil
+}
+
+func (ps *PageService) msgWrite(isUpdate bool, page *model.Page) {
+	data := map[string]string{
+		"type":   fmt.Sprint(model.MESSAGE_TYPE_PAGE_CREATE),
+		"author": page.User().Name,
+		"link":   page.Href(),
+		"title":  page.Title,
+		"time":   utils.TimeUnixFormat(page.CreateTime, "01/02 15:04:05"),
+	}
+	var body string
+	if isUpdate {
+		data["type"] = fmt.Sprint(model.MESSAGE_TYPE_PAGE_UPDATE)
+		body = com.Expand(MessagePageUpdateTemplate, data)
+	} else {
+		body = com.Expand(MessagePageCreateTemplate, data)
+	}
+	message := &model.Message{
+		UserId:     page.UserId,
+		From:       model.MESSAGE_FROM_PAGE,
+		FromId:     page.Id,
+		Type:       model.MESSAGE_TYPE_PAGE_CREATE,
+		Body:       body,
+		CreateTime: page.CreateTime,
+	}
+	if isUpdate {
+		message.Type = model.MESSAGE_TYPE_PAGE_UPDATE
+	}
+	Message.Save(message)
 }
 
 type PageReadOption struct {
@@ -149,4 +182,45 @@ func (ps *PageService) List(v interface{}) (*Result, error) {
 		res.Set(utils.CreatePager(opt.Page, opt.Size, int(count)))
 	}
 	return res, nil
+}
+
+func (ps *PageService) Delete(v interface{}) (*Result, error) {
+	id, ok := v.(int64)
+	if !ok {
+		return nil, ErrServiceFuncNeedType(ps.Delete, id)
+	}
+
+	if _, err := core.Db.Exec("UPDATE page SET status = ? WHERE id = ?", model.PAGE_STATUS_DELETE, id); err != nil {
+		return nil, err
+	}
+
+	defer ps.msgDelete(id)
+
+	return nil, nil
+}
+
+func (ps *PageService) msgDelete(id int64) {
+	page := new(model.Page)
+	if _, err := core.Db.Where("id = ?", id).Get(page); err != nil {
+		return
+	}
+	if page == nil || page.Id != id {
+		return
+	}
+	data := map[string]string{
+		"type":   fmt.Sprint(model.MESSAGE_TYPE_PAGE_REMOVE),
+		"author": page.User().Name,
+		"title":  page.Title,
+		"time":   utils.TimeUnixFormat(page.CreateTime, "01/02 15:04:05"),
+	}
+	body := com.Expand(MessagePageRemoveTemplate, data)
+	message := &model.Message{
+		UserId:     page.UserId,
+		From:       model.MESSAGE_FROM_PAGE,
+		FromId:     page.Id,
+		Type:       model.MESSAGE_TYPE_PAGE_REMOVE,
+		Body:       body,
+		CreateTime: page.CreateTime,
+	}
+	Message.Save(message)
 }

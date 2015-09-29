@@ -2,6 +2,8 @@ package service
 
 import (
 	"errors"
+	"fmt"
+	"github.com/Unknwon/com"
 	"github.com/fuxiaohei/pugo/src/core"
 	"github.com/fuxiaohei/pugo/src/model"
 	"github.com/fuxiaohei/pugo/src/utils"
@@ -21,7 +23,9 @@ func (as *ArticleService) Write(v interface{}) (*Result, error) {
 	if !ok {
 		return nil, ErrServiceFuncNeedType(as.Write, article)
 	}
-	if article.Id > 0 {
+
+	var isUpdate = article.Id > 0
+	if isUpdate {
 		if _, err := core.Db.Where("id = ?", article.Id).
 			Cols("title,link,update_time,preview,body,body_type,topic,tag_string,status,comment_status").
 			Update(article); err != nil {
@@ -37,7 +41,39 @@ func (as *ArticleService) Write(v interface{}) (*Result, error) {
 			return nil, err
 		}
 	}
+
+	defer as.msgWrite(isUpdate, article)
+
 	return newResult(as.Write, article), nil
+}
+
+func (as *ArticleService) msgWrite(isUpdate bool, article *model.Article) {
+	data := map[string]string{
+		"type":   fmt.Sprint(model.MESSAGE_TYPE_ARTICLE_CREATE),
+		"author": article.User().Name,
+		"link":   article.Href(),
+		"title":  article.Title,
+		"time":   utils.TimeUnixFormat(article.CreateTime, "01/02 15:04:05"),
+	}
+	var body string
+	if isUpdate {
+		data["type"] = fmt.Sprint(model.MESSAGE_TYPE_ARTICLE_UPDATE)
+		body = com.Expand(MessageArticleUpdateTemplate, data)
+	} else {
+		body = com.Expand(MessageArticleCreateTemplate, data)
+	}
+	message := &model.Message{
+		UserId:     article.UserId,
+		From:       model.MESSAGE_FROM_ARTICLE,
+		FromId:     article.Id,
+		Type:       model.MESSAGE_TYPE_ARTICLE_CREATE,
+		Body:       body,
+		CreateTime: article.CreateTime,
+	}
+	if isUpdate {
+		message.Type = model.MESSAGE_TYPE_ARTICLE_UPDATE
+	}
+	Message.Save(message)
 }
 
 func (as *ArticleService) Delete(v interface{}) (*Result, error) {
@@ -45,10 +81,40 @@ func (as *ArticleService) Delete(v interface{}) (*Result, error) {
 	if !ok {
 		return nil, ErrServiceFuncNeedType(as.Delete, id)
 	}
+
 	if _, err := core.Db.Exec("UPDATE article SET status = ? WHERE id = ?", model.ARTICLE_STATUS_DELETE, id); err != nil {
 		return nil, err
 	}
+
+	defer as.msgDelete(id)
+
 	return nil, nil
+}
+
+func (as *ArticleService) msgDelete(id int64) {
+	article := new(model.Article)
+	if _, err := core.Db.Where("id = ?", id).Get(article); err != nil {
+		return
+	}
+	if article == nil || article.Id != id {
+		return
+	}
+	data := map[string]string{
+		"type":   fmt.Sprint(model.MESSAGE_TYPE_ARTICLE_REMOVE),
+		"author": article.User().Name,
+		"title":  article.Title,
+		"time":   utils.TimeUnixFormat(article.CreateTime, "01/02 15:04:05"),
+	}
+	body := com.Expand(MessageArticleRemoveTemplate, data)
+	message := &model.Message{
+		UserId:     article.UserId,
+		From:       model.MESSAGE_FROM_ARTICLE,
+		FromId:     article.Id,
+		Type:       model.MESSAGE_TYPE_ARTICLE_REMOVE,
+		Body:       body,
+		CreateTime: article.CreateTime,
+	}
+	Message.Save(message)
 }
 
 func (as *ArticleService) SaveTags(id int64, tagStr string) error {

@@ -24,7 +24,7 @@ type Message struct {
 	UserId     int64  `xorm:"notnull"`
 	From       int    `xorm:"INT(8) notnull"`
 	FromId     int64  `xorm:"notnull"`
-	Type       int8   `xorm:"INT(8) notnull"`
+	Type       int    `xorm:"INT(8) notnull"`
 	Body       string `xorm:"TEXT"`
 	CreateTime int64  `xorm:"INT(12) created`
 }

@@ -79,14 +79,17 @@ func (c *Comment) GetParent() *Comment {
 	if c.ParentId == 0 {
 		return nil
 	}
-	co := new(Comment)
-	if _, err := core.Db.Where("id = ?", c.ParentId).Get(co); err != nil {
-		return nil
+	if c.parent == nil {
+		co := new(Comment)
+		if _, err := core.Db.Where("id = ?", c.ParentId).Get(co); err != nil {
+			return nil
+		}
+		if c.ParentId != co.ParentId {
+			return nil
+		}
+		c.parent = co
 	}
-	if c.ParentId != co.ParentId {
-		return nil
-	}
-	return co
+	return c.parent
 }
 
 func getArticleById(id int64) *Article {
