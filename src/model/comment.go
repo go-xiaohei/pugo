@@ -84,7 +84,7 @@ func (c *Comment) GetParent() *Comment {
 		if _, err := core.Db.Where("id = ?", c.ParentId).Get(co); err != nil {
 			return nil
 		}
-		if c.ParentId != co.ParentId {
+		if c.ParentId != co.Id {
 			return nil
 		}
 		c.parent = co

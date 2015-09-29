@@ -1,9 +1,12 @@
 package model
 
+import "html/template"
+
 const (
 	MESSAGE_FROM_ARTICLE = iota + 1
 	MESSAGE_FROM_PAGE
 	MESSAGE_FROM_COMMENT
+	MESSAGE_FROM_MEDIA
 )
 
 const (
@@ -17,6 +20,7 @@ const (
 	MESSAGE_TYPE_COMMENT_REMOVE   = 302
 	MESSAGE_TYPE_COMMENT_REPLY    = 303
 	MESSAGE_TYPE_COMMENT_FEEDBACK = 304 // means reply from admin panel
+	MESSAGE_TYPE_MEDIA_UPLOAD     = 401
 )
 
 type Message struct {
@@ -27,4 +31,8 @@ type Message struct {
 	Type       int    `xorm:"INT(8) notnull"`
 	Body       string `xorm:"TEXT"`
 	CreateTime int64  `xorm:"INT(12) created`
+}
+
+func (m *Message) HTML() template.HTML {
+	return template.HTML(m.Body)
 }

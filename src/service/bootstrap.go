@@ -5,9 +5,11 @@ import (
 	"github.com/fuxiaohei/pugo/src/core"
 	"github.com/fuxiaohei/pugo/src/model"
 	"github.com/fuxiaohei/pugo/src/utils"
+	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/go-xorm/tidb"
 	"github.com/go-xorm/xorm"
 	"github.com/lunny/tango"
+	"github.com/ngaut/log"
 	_ "github.com/pingcap/tidb"
 	"github.com/tango-contrib/binding"
 	"github.com/tango-contrib/flash"
@@ -44,6 +46,7 @@ func (is *BootstrapService) Init(v interface{}) (*Result, error) {
 		}
 	}
 	if core.Cfg != nil && opt.Database { // database depends on config
+		log.SetLevelByString("warn")
 		core.Db, err = xorm.NewEngine(core.Cfg.Db.Driver, core.Cfg.Db.DSN)
 		if err != nil {
 			return nil, err

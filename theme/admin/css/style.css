@@ -362,12 +362,9 @@ title {
     font-style: italic;
 }
 
-#message-list .content{
+#message-list .content,
+#message-list .quote{
     font-size: 80%;
     margin-left: 20px;
-    margin-top: 12px;
-}
-
-#message-list .quote{
     margin-top: 12px;
 }

@@ -58,6 +58,7 @@ func (as *ArticleService) msgWrite(isUpdate bool, article *model.Article) {
 	var body string
 	if isUpdate {
 		data["type"] = fmt.Sprint(model.MESSAGE_TYPE_ARTICLE_UPDATE)
+		data["time"] = utils.TimeUnixFormat(article.UpdateTime, "01/02 15:04:05")
 		body = com.Expand(MessageArticleUpdateTemplate, data)
 	} else {
 		body = com.Expand(MessageArticleCreateTemplate, data)

@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/fuxiaohei/pugo/src/core"
 	"github.com/fuxiaohei/pugo/src/model"
+	"github.com/fuxiaohei/pugo/src/utils"
 )
 
 var (
@@ -86,14 +87,12 @@ var (
                     <span class="content">{parent_content}</span>
                 </div>
             </div>`
-	MessageCommentRemoveTemplate = ` <div class="message msg-{type}">
-                <i class="fa fa-comments"></i>
+	MessageMediaUploadTemplate = ` <div class="message msg-{type}">
+                <i class="fa fa-file-image-o"></i>
                 <span class="time">{time}</span>
-                <span class="author"><strong>{author}'s</strong>
-                    <span class="email-link">({site})</span>
-                </span>
-                comment is removed in
-                <a><i>{title}</i></a>
+                <span class="author"><strong>{author}</strong></span>
+                upload file
+                <a><i>{file}</i></a>
             </div>`
 )
 
@@ -108,4 +107,44 @@ func (ms *MessageService) Save(v interface{}) (*Result, error) {
 		return nil, err
 	}
 	return newResult(ms.Save, m), nil
+}
+
+type MessageListOption struct {
+	Page, Size int
+	Order      string
+	IsCount    bool
+}
+
+func prepareMessageListOption(opt MessageListOption) MessageListOption {
+	if opt.Order == "" {
+		opt.Order = "create_time DESC"
+	}
+	if opt.Page < 1 {
+		opt.Page = 1
+	}
+	if opt.Size == 0 {
+		opt.Size = 10
+	}
+	return opt
+}
+
+func (ms *MessageService) List(v interface{}) (*Result, error) {
+	opt, ok := v.(MessageListOption)
+	if !ok {
+		return nil, ErrServiceFuncNeedType(ms.List, opt)
+	}
+	opt = prepareMessageListOption(opt)
+	msgs := make([]*model.Message, 0)
+	if err := core.Db.Limit(opt.Size, (opt.Page-1)*opt.Size).OrderBy(opt.Order).Find(&msgs); err != nil {
+		return nil, err
+	}
+	res := newResult(ms.List, &msgs)
+	if opt.IsCount {
+		count, err := core.Db.Count(new(model.Message))
+		if err != nil {
+			return nil, err
+		}
+		res.Set(utils.CreatePager(opt.Page, opt.Size, int(count)))
+	}
+	return res, nil
 }

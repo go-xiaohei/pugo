@@ -10,73 +10,9 @@
         <h3 class="main-title">MESSAGES</h3>
         <hr/>
         <div id="message-list">
-            <div class="message msg-101">
-                <i class="fa fa-file-text"></i>
-                <span class="author"><strong>傅小黑</strong></span>
-                write a new article
-                <a href="#" class="article"><i>SQLite Guide to Start
-                    <span class="page-link">(article/1/sqlite.html)</span>
-                </i>
-                </a>
-                <span class="time">3 days ago</span>
-            </div>
-            <div class="message msg-102">
-                <i class="fa fa-file-text"></i>
-                <span class="author"><strong>傅小黑</strong></span>
-                update article
-                <a href="#" class="article"><i>SQLite Guide to Start<span class="page-link">(article/1/sqlite.html)</span></i></a>
-                <span class="time">3 days ago</span>
-            </div>
-            <div class="message msg-103">
-                <i class="fa fa-file-text"></i>
-                <span class="author"><strong>傅小黑</strong></span>
-                remove article
-                <a href="#"><i>SQLite Guide to Start<span class="page-link">(article/1/sqlite.html)</span></i></a>
-                <span class="time">3 days ago</span>
-            </div>
-            <div class="message msg-201">
-                <i class="fa fa-file-o"></i>
-                <span class="author"><strong>傅小黑</strong></span>
-                create a new page
-                <a href="#" class="page"><i>SQLite Guide to Start
-                    <span class="page-link">(page/1/sqlite.html)</span>
-                </i></a>
-                <span class="time">3 days ago</span>
-            </div>
-            <div class="message msg-301">
-                <i class="fa fa-comments"></i>
-                <span class="time">3 days ago</span>
-                <span class="author"><strong>傅小黑</strong>
-                    <span class="email-link">(fuxiaohei@vip.qq.com)</span>
-                </span>
-                leaves a comment to
-                <a href="#"><i>SQLite Guide to Start<span class="page-link">(article/1/sqlite.html)</span></i></a>
-                <div class="content">
-                    aaaa
-                    bbb
-                    ccccc
-                </div>
-            </div>
-            <div class="message msg-301">
-                <i class="fa fa-comments"></i>
-                <span class="time">3 days ago</span>
-                <span class="author"><strong>傅小黑</strong>
-                    <span class="email-link">(fuxiaohei@vip.qq.com)</span>
-                </span>
-                leaves a reply to
-                <a href="#"><i>SQLite Guide to Start<span class="page-link">(article/1/sqlite.html)</span></i></a>
-                <div class="content">
-                    aaaa
-                    bbb
-                    ccccc
-                </div>
-                <div class="quote">
-                    <span class="user">@ fuxiaohei</span>
-                    <span class="content">
-                        aakjkdjfkdjfdk
-                    </span>
-                </div>
-            </div>
+            {{range .Messages}}
+            {{.HTML}}
+            {{end}}
         </div>
     </div>
 </div>

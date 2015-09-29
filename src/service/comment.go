@@ -82,7 +82,7 @@ func (cs *CommentService) Create(v interface{}) (*Result, error) {
 
 	// try to read user
 	if opt.UserId == 0 && opt.Email != "" {
-		if user, _ := User.getUserBy("email", opt.Email); user != nil && user.Id > 0 {
+		if user, _ := getUserBy("email", opt.Email); user != nil && user.Id > 0 {
 			c.UserId = user.Id
 		}
 	}
@@ -156,11 +156,12 @@ func (cs *CommentService) msgSave(cmt *model.Comment) {
 		if p := cmt.GetParent(); p != nil {
 			data["parent"] = p.Name
 			data["parent_content"] = p.Body
+			fmt.Println("--------------", p)
+			message.Type = model.MESSAGE_TYPE_COMMENT_REPLY
+			message.Body = com.Expand(MessageCommentReplyTemplate, data)
+			Message.Save(message)
+			return
 		}
-		message.Type = model.MESSAGE_TYPE_COMMENT_REPLY
-		message.Body = com.Expand(MessageCommentReplyTemplate, data)
-		Message.Save(message)
-		return
 	}
 	message.Body = com.Expand(MessageCommentLeaveTemplate, data)
 	Message.Save(message)
@@ -341,7 +342,7 @@ func (cs *CommentService) Reply(v interface{}) (*Result, error) {
 	if !ok {
 		return nil, ErrServiceFuncNeedType(cs.Reply, c)
 	}
-	user, err := User.getUserBy("id", c.UserId)
+	user, err := getUserBy("id", c.UserId)
 	if err != nil {
 		return nil, err
 	}

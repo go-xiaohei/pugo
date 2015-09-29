@@ -42,11 +42,11 @@ func (us *UserService) Authorize(v interface{}) (*Result, error) {
 
 	// get user
 	if opt.Name != "" {
-		if user, err = us.getUserBy("name", opt.Name); err != nil {
+		if user, err = getUserBy("name", opt.Name); err != nil {
 			return nil, err
 		}
 	} else if opt.Email != "" {
-		if user, err = us.getUserBy("email", opt.Email); err != nil {
+		if user, err = getUserBy("email", opt.Email); err != nil {
 			return nil, err
 		}
 	}
@@ -76,8 +76,7 @@ func (us *UserService) Authorize(v interface{}) (*Result, error) {
 	return res, nil
 }
 
-// get user by column and value
-func (us *UserService) getUserBy(col string, value interface{}) (*model.User, error) {
+func getUserBy(col string, value interface{}) (*model.User, error) {
 	u := new(model.User)
 	if _, err := core.Db.Where(col+" = ?", value).Get(u); err != nil {
 		return nil, err
@@ -137,7 +136,7 @@ func (us *UserService) Verify(v interface{}) (*Result, error) {
 	}
 
 	// get token's owner
-	user, err := us.getUserBy("id", token.UserId)
+	user, err := getUserBy("id", token.UserId)
 	if err != nil {
 		return nil, err
 	}

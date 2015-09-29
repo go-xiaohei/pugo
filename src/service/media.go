@@ -86,7 +86,31 @@ func (ms *MediaService) Upload(v interface{}) (*Result, error) {
 		return nil, err
 	}
 
+	defer ms.msgUpload(media)
+
 	return newResult(ms.Upload, media), nil
+}
+
+func (ms *MediaService) msgUpload(m *model.Media) {
+	user, err := getUserBy("id", m.UserId)
+	if err != nil {
+		return
+	}
+	data := map[string]string{
+		"type":   fmt.Sprint(model.MESSAGE_TYPE_MEDIA_UPLOAD),
+		"time":   utils.TimeUnixFormat(m.CreateTime, "01/02 15:04:05"),
+		"author": user.Name,
+		"file":   m.Name,
+	}
+	message := &model.Message{
+		UserId:     m.UserId,
+		From:       model.MESSAGE_FROM_MEDIA,
+		FromId:     m.Id,
+		Type:       model.MESSAGE_TYPE_MEDIA_UPLOAD,
+		CreateTime: m.CreateTime,
+		Body:       com.Expand(MessageMediaUploadTemplate, data),
+	}
+	Message.Save(message)
 }
 
 // an interface to check Size() method
