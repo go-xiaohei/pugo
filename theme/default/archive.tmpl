@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    {{template "default/_meta.tmpl" .}}
+</head>
+<body>
+{{template "default/_header.tmpl" .}}
+<div id="main-container">
+    <div class="container row">
+        <div class="section archive-section article-section">
+            <div class="row">
+                <div class="col l12 m12 s12 white z-depth-2">
+                    <div class="main main2">
+                        <h4 class="title">Archives</h4>
+                        <div id="archive-list">
+                            {{range .Archives}}
+                            <div class="archive">
+                                <span class="time">{{TimeUnixFormat .CreateTime "01.02"}}</span>
+                                <h5><a href="{{.Href}}" title="{{.Title}}">{{.Title}}</a></h5>
+                            </div>
+                            {{end}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{template "default/_footer.tmpl" .}}
+</body>
+</html>

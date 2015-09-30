@@ -73,3 +73,26 @@ func (ac *ArticleController) Get() {
 	ac.Assign("XsrfHTML", ac.XsrfFormHtml())
 	ac.Render("single.tmpl")
 }
+
+type ArchiveController struct {
+	tango.Ctx
+	xsrf.Checker
+	session.Session
+
+	middle.AuthorizeCheck
+	middle.ThemeRender
+}
+
+func (ac *ArchiveController) Get() {
+	ac.Title("Archive - " + service.Setting.General.Title)
+	var (
+		opt      = service.ArchiveListOption{}
+		archives = make([]*model.ArticleArchive, 0)
+	)
+	if err := service.Call(service.Article.Archive, opt, &archives); err != nil {
+		ac.RenderError(500, err)
+		return
+	}
+	ac.Assign("Archives", archives)
+	ac.Render("archive.tmpl")
+}

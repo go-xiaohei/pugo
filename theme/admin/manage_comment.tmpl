@@ -42,7 +42,9 @@
                 </div>
                 <div class="body">
                     <div class="content">{{Nl2BrHTML .Body}}</div>
-                    <div class="parent"></div>
+                    {{if .GetParent}}
+                    <div class="parent">@{{.GetParent.Name}}:{{.GetParent.Body}}</div>
+                    {{end}}
                 </div>
             </div>
             {{end}}

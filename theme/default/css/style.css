@@ -126,13 +126,30 @@ pre code {
     top: 1.5rem
 }
 
-.article-page .btn{
+.article-page .btn {
     margin: 0 1.5rem;
 }
 
-.article-section .no-preview{
+.article-section .no-preview {
     font-size: 1.2em;
     padding: 1em 0;
+}
+
+.archive-section .archive h5,
+.archive-section .archive .time {
+    display: inline-block;
+}
+
+.archive-section .archive .time {
+    min-width: 6em;
+}
+
+.archive-section .archive {
+    line-height: 60px;
+}
+
+.archive-section .main {
+    min-height: 360px;
 }
 
 /*
@@ -148,38 +165,37 @@ pre code {
 */
 
 .comment-section .comment-main,
-.comment-section .comment-form{
+.comment-section .comment-form {
     padding: .5rem 1.5rem;
 }
 
 .comment-section .comment-header,
-.comment-section .comment-main > .comment{
+.comment-section .comment-main > .comment {
     padding-bottom: 1rem;
     margin-bottom: 1rem;
     border-bottom: 1px dashed #EEE;
 }
 
-.comment-section .comment .children > .comment{
+.comment-section .comment .children > .comment {
     padding-top: 1rem;
     margin-top: 1rem;
     border-top: 1px dashed #EEE;
     margin-left: 8%;
 }
 
-
-.comment-section .avatar{
+.comment-section .avatar {
     padding-right: 1.5rem;
 }
 
-.comment-section .meta{
+.comment-section .meta {
     line-height: 36px;
 }
 
-.comment-section .comment-main > .comment{
+.comment-section .comment-main > .comment {
     min-height: 90px;
 }
 
-.comment-section .comment .author{
+.comment-section .comment .author {
     font-size: 1.25em;
     color: #444;
 }
@@ -187,50 +203,50 @@ pre code {
 .comment-section .comment .date,
 .comment-section .comment .floor,
 .comment-section .comment .status,
-.comment-section .comment .badge{
+.comment-section .comment .badge {
     padding-left: 1.5rem;
     color: #999;
     text-transform: uppercase;
 }
 
-.comment-section .meta2{
+.comment-section .meta2 {
     line-height: 36px;
     margin-top: -18px;
 }
 
-.comment-section .comment .content{
+.comment-section .comment .content {
     margin-top: .5rem;
     padding-right: 3em;
 }
 
-.comment-section .reply i{
+.comment-section .reply i {
     vertical-align: middle;
 }
 
-.comment-section .comment .reply{
+.comment-section .comment .reply {
     display: none;
 }
 
-.comment-section .comment .body:hover .reply{
+.comment-section .comment .body:hover .reply {
     display: block;
 }
 
-.comment-section .comment .status{
+.comment-section .comment .status {
     display: none;
     text-transform: uppercase;
 }
 
-.comment-section .comment .status.disapproved{
+.comment-section .comment .status.disapproved {
     display: inline;
 }
 
 #comment-error,
 #comment-reply-view,
-#comment-reply-btn{
+#comment-reply-btn {
     display: none;
 }
 
-#comment-reply-view blockquote{
+#comment-reply-view blockquote {
     padding: .6em 1em;
     border-left: 1px solid #DDD;
     background-color: #FAFAFA;

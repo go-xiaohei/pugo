@@ -113,3 +113,18 @@ func getArticleUser(id int64) (*User, error) {
 	}
 	return u, nil
 }
+
+type ArticleArchive struct {
+	Id         int64
+	Title      string
+	Link       string
+	CreateTime int64
+}
+
+func (aa *ArticleArchive) TableName() string {
+	return "article"
+}
+
+func (aa *ArticleArchive) Href() string {
+	return fmt.Sprintf("/article/%d/%s.html", aa.Id, aa.Link)
+}

@@ -274,3 +274,31 @@ func (as *ArticleService) ToPublish(v interface{}) (*Result, error) {
 	}
 	return nil, nil
 }
+
+type ArchiveListOption struct {
+	Order string
+	Limit int
+}
+
+func prepareArchiveListOption(opt ArchiveListOption) ArchiveListOption {
+	if opt.Order == "" {
+		opt.Order = "create_time DESC"
+	}
+	if opt.Limit < 1 {
+		opt.Limit = 100
+	}
+	return opt
+}
+
+func (as *ArticleService) Archive(v interface{}) (*Result, error) {
+	opt, ok := v.(ArchiveListOption)
+	if !ok {
+		return nil, ErrServiceFuncNeedType(as.Archive, opt)
+	}
+	opt = prepareArchiveListOption(opt)
+	archives := make([]*model.ArticleArchive, 0)
+	if err := core.Db.Where("status = ?", model.ARTICLE_STATUS_PUBLISH).Find(&archives); err != nil {
+		return nil, err
+	}
+	return newResult(as.Archive, &archives), nil
+}

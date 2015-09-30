@@ -46,13 +46,14 @@ func (is *BootstrapService) Init(v interface{}) (*Result, error) {
 		}
 	}
 	if core.Cfg != nil && opt.Database { // database depends on config
-		log.SetLevelByString("warn")
+		log.SetLevelByString("error")
 		core.Db, err = xorm.NewEngine(core.Cfg.Db.Driver, core.Cfg.Db.DSN)
 		if err != nil {
 			return nil, err
 		}
+		core.Db.SetLogger(nil)
 		// core.Db.ShowDebug = true
-		core.Db.ShowSQL = true
+		// core.Db.ShowSQL = true
 	}
 	if core.Cfg != nil && opt.Server { // server depends on config
 		core.Server = tango.New([]tango.Handler{
@@ -160,6 +161,7 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 	if _, err := core.Db.Insert(setting); err != nil {
 		return nil, err
 	}
+	Setting.General = generalSetting
 
 	mediaSetting := &model.SettingMedia{
 		MaxFileSize: 10 * 1024,
@@ -177,6 +179,7 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 	if _, err := core.Db.Insert(setting); err != nil {
 		return nil, err
 	}
+	Setting.Media = mediaSetting
 
 	contentSetting := &model.SettingContent{
 		PageSize:         5,
@@ -194,6 +197,7 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 	if _, err := core.Db.Insert(setting); err != nil {
 		return nil, err
 	}
+	Setting.Content = contentSetting
 
 	commentSetting := &model.SettingComment{
 		IsPager:        false,
@@ -216,6 +220,7 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 	if _, err := core.Db.Insert(setting); err != nil {
 		return nil, err
 	}
+	Setting.Comment = commentSetting
 
 	// first article
 	article := &model.Article{
@@ -248,6 +253,23 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 		ParentId:  0,
 	}
 	if _, err := Comment.Save(cmt); err != nil {
+		return nil, err
+	}
+
+	// first page
+	page := &model.Page{
+		UserId:        user.Id,
+		Title:         firstPageTitle,
+		Link:          firstPageLink,
+		Body:          firstPageContent,
+		Status:        model.PAGE_STATUS_PUBLISH,
+		CommentStatus: model.PAGE_COMMENT_OPEN,
+		Hits:          1,
+		Template:      "page.tmpl",
+		BodyType:      model.PAGE_BODY_MARKDOWN,
+		TopLink:       true,
+	}
+	if _, err := Page.Write(page); err != nil {
 		return nil, err
 	}
 
@@ -333,4 +355,22 @@ You can sign in [admin panel](/admin/) with ` + "`admin`" + ` & ` + "`123456789`
 
 `
 	firstCommentContent = "this is first comment from administrator"
+
+	firstPageTitle   = "About Pugo"
+	firstPageLink    = "about"
+	firstPageContent = "`Pugo`" + ` is a pure go blog engine to make new site. It works on ` + "`NewSQL`" + ` [tidb](https://github.com/pingcap/tidb) as an experiment. You write [Markdown]() content as an article or page with beautiful theme.
+
+
+### Usage
+
+You can download binary file from [Github Releases](https://github.com/fuxiaohei/pugo/releases) in your operation system.
+
+Then unzip compressed file and run ` + "`pugo[.exe] server`" + ` to install and run site in ` + "`http://localhost:9899`" + `.
+
+You need change ` + "`admin`" + ` settings to keep more safe.
+
+### Contribute
+
+Please feedback any question to [Github Issue](https://github.com/fuxiaohei/pugo/issues).
+`
 )

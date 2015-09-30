@@ -67,10 +67,11 @@ $(document).ready(function () {
     $(".comment").each(function (i, item) {
         var $item = $(item);
         var p = $item.data("parent");
+        console.log(p);
         if (p > 0) {
             var $pComment = $('#comment-' + p);
             if ($pComment.length) {
-                $pComment.find(".children").append($item);
+                $pComment.find("> .children").append($item);
             } else {
                 $item.remove();
             }
