@@ -146,11 +146,13 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 
 	// insert settings
 	generalSetting := &model.SettingGeneral{
-		Title:       "PUGO",
-		SubTitle:    "Simple Blog Engine",
-		Keyword:     "pugo,blog,go,golang",
-		Description: "PUGO is a simple blog engine by golang",
-		HostName:    "http://localhost/",
+		Title:          "PUGO",
+		SubTitle:       "Simple Blog Engine",
+		Keyword:        "pugo,blog,go,golang",
+		Description:    "PUGO is a simple blog engine by golang",
+		HostName:       "http://localhost/",
+		HeroImage:      "/img/bg.png",
+		TopAvatarImage: "/img/logo.png",
 	}
 	setting := &model.Setting{
 		Name:   "general",

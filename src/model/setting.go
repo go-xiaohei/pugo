@@ -63,15 +63,25 @@ func (s *Setting) ToComment() *SettingComment {
 }
 
 type SettingGeneral struct {
-	Title       string `json:"title"`
-	SubTitle    string `json:"sub_title"`
-	Keyword     string `json:"keyword_meta"`
-	Description string `json:"description_meta"`
-	HostName    string `json:"host_name"`
+	Title               string `json:"title"`
+	SubTitle            string `json:"sub_title"`
+	Keyword             string `json:"keyword_meta"`
+	Description         string `json:"description_meta"`
+	HostName            string `json:"host_name"`
+	HeroImage           string `json:"hero_image"`
+	TopAvatarImage      string `json:"top_avatar_image"`
+	TopAvatarIsExternal bool   `json:"top_avatar_extern"`
 }
 
 func (sg SettingGeneral) FullTitle() string {
 	return fmt.Sprintf("%s - %s", sg.Title, sg.SubTitle)
+}
+
+func (sg SettingGeneral) TopAvatarUrl(themeLink string) string {
+	if sg.TopAvatarIsExternal {
+		return sg.TopAvatarImage
+	}
+	return themeLink + sg.TopAvatarImage
 }
 
 type SettingMedia struct {
