@@ -1,14 +1,21 @@
 <nav id="nav" class="blue lighten-1">
     <div class="nav-wrapper container">
-        <a id="site-title" class="brand-logo" href="/" title="{{.General.FullTitle}}">{{.General.Title}}<span id="site-sub-title" class="lime-text text-lighten-3">{{.General.SubTitle}}</span></a>
+        <a id="site-title" class="brand-logo" href="/" title="{{.General.FullTitle}}">{{.General.Title}}
+            <span id="site-sub-title" class="lime-text text-lighten-3">{{.General.SubTitle}}</span>
+        </a>
         <ul class="right hide-on-med-and-down">
-            <li><a href="/">Home</a></li>
-            <li><a href="/archives">Archives</a></li>
-            <li><a href="/about.html">About</a></li>
+            {{range .Menu}}
+            {{if .IsNewPage}}
+            <li><a href="{{.Link}}" name="{{.Title}}" target="_blank">{{.Name}}</a></li>
+            {{else}}
+            <li><a href="{{.Link}}" name="{{.Title}}">{{.Name}}</a></li>
+            {{end}}
+            {{end}}
         </ul>
     </div>
 </nav>
-<div id="index-banner" class="parallax-container" style="background-image: url('{{.ThemeLink}}{{.General.HeroImage}}');">
+<div id="index-banner" class="parallax-container"
+     style="background-image: url('{{.ThemeLink}}{{.General.HeroImage}}');">
     <div class="section no-pad-bot">
         <div class="container center-align">
             <img class="circle z-depth-1" src="{{.General.TopAvatarUrl .ThemeLink}}/" alt="logo" id="index-avatar"/>

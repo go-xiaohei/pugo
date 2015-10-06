@@ -74,6 +74,7 @@ func Server(ctx *cli.Context) {
 	adminGroup.Get("/option/theme", new(admin.SettingThemeController))
 	adminGroup.Any("/option/content", new(admin.SettingContentController))
 	adminGroup.Any("/option/comment", new(admin.SettingCommentController))
+	adminGroup.Any("/option/menu", new(admin.SettingMenuController))
 
 	adminGroup.Get("/manage/media", new(admin.MediaController))
 	adminGroup.Route([]string{"POST:Upload"}, "/upload/media", new(admin.MediaController))
@@ -87,7 +88,7 @@ func Server(ctx *cli.Context) {
 	core.Server.Get("/page/:id/:link.html", new(public.PageController))
 	core.Server.Post("/comment/:type/:id", new(public.CommentController))
 	core.Server.Get("/feed.xml", new(public.RssController))
-	core.Server.Get("/archives", new(public.ArchiveController))
+	core.Server.Get("/archive", new(public.ArchiveController))
 	core.Server.Get("/:link.html", new(public.PageController))
 	core.Server.Get("/", new(public.IndexController))
 

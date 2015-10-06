@@ -194,7 +194,9 @@ title {
 #setting-content-success,
 #setting-content-error,
 #setting-comment-success,
-#setting-comment-error {
+#setting-comment-error,
+#setting-menu-success,
+#setting-menu-error{
     display: none;
 }
 

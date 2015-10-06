@@ -109,6 +109,7 @@ func (t *ThemeRender) SetTheme(*model.Theme) error {
 func (t *ThemeRender) Render(tpl string) {
 	if !t.IsAssign("General") {
 		t.Assign("General", service.Setting.General)
+		t.Assign("Menu", service.Setting.Menu)
 	}
 	t.baseTheme.Render(tpl)
 }
@@ -116,6 +117,7 @@ func (t *ThemeRender) Render(tpl string) {
 func (t *ThemeRender) RenderError(status int, err error) {
 	if !t.IsAssign("General") {
 		t.Assign("General", service.Setting.General)
+		t.Assign("Menu", service.Setting.Menu)
 	}
 	t.baseTheme.RenderError(status, err)
 }

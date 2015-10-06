@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    {{template "admin/_meta.tmpl" .}}
+</head>
+<body>
+{{template "admin/_nav.tmpl" .}}
+<div id="main">
+    <div class="container" id="setting-menu-main">
+        <h3 class="main-title">SETTING MENU</h3>
+        <hr/>
+        <form id="setting-menu-form" class="form-inline" action="/admin/option/menu" method="post">
+            <div class="form-horizontal">
+                <div class="form-group alert alert-success" id="setting-menu-success"></div>
+                <div class="form-group alert alert-danger" id="setting-menu-error"></div>
+            </div>
+            <table class="table" id="setting-menu-table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Link</th>
+                    <th>Title</th>
+                    <th><i class="fa fa-external-link"></i></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {{range .MenuSetting}}
+                <tr>
+                    <td>
+                        <input class="form-control" type="text" name="name" placeholder="MENU NAME" required="required"
+                               value="{{.Name}}"/>
+                    </td>
+                    <td><input class="form-control" type="text" name="link" placeholder="MENU LINK" required="required"
+                               value="{{.Link}}"/></td>
+                    <td><input class="form-control" type="text" name="title" placeholder="MENU TITLE"
+                               required="required" value="{{.Title}}"/></td>
+                    <td>
+                        <select class="form-control" name="new">
+                            <option value="false">NO</option>
+                            <option value="true" {{if .IsNewPage}} selected{{end}}>YES</option>
+                        </select>
+                    </td>
+                    <td>
+                        <a href="#" class="delete text-danger"><i class="fa fa-remove"></i></a>
+                    </td>
+                </tr>
+                {{end}}
+                <tr id="setting-menu-add-column">
+                    <td colspan="4"></td>
+                    <td>
+                        <a href="#" class="add"><i class="fa fa-plus text-success"></i></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5" class="text-center">
+                        {{.XsrfHTML}}
+                        <button type="submit" class="btn btn-primary">UPDATE SETTING</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+        <script type="text/template" id="setting-menu-template">
+            <tr>
+                <td>
+                    <input class="form-control" type="text" name="name" placeholder="MENU NAME" required="required"/>
+                </td>
+                <td><input class="form-control" type="text" name="link" placeholder="MENU LINK" required="required"/>
+                </td>
+                <td><input class="form-control" type="text" name="title" placeholder="MENU TITLE" required="required"/>
+                </td>
+                <td>
+                    <select class="form-control" name="new">
+                        <option value="false">NO</option>
+                        <option value="true">YES</option>
+                    </select>
+                </td>
+                <td>
+                    <a href="#" class="delete text-danger"><i class="fa fa-remove"></i></a>
+                </td>
+            </tr>
+        </script>
+    </div>
+</div>
+</body>
+<script>
+    $(function () {
+        $('.delete').on("click",function(e){
+            e.preventDefault();
+            $(this).parents("tr").remove();
+        });
+        $('.add').on("click",function(e){
+            e.preventDefault();
+            $(this).parents("tr").before($("#setting-menu-template").html());
+        });
+        $('#setting-menu-form').ajaxForm({
+            dataType: "json",
+            success: function (json) {
+                console.log(json);
+                $('#setting-menu-success,#setting-menu-error').hide();
+                if (json.status) {
+                    $('#setting-menu-success').text("UPDATE SUCCESS !").show();
+                    return;
+                }
+                $("#setting-menu-error").text(json.error).show();
+            }
+        });
+    })
+</script>
+</html>

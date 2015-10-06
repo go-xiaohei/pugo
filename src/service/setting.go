@@ -4,12 +4,15 @@ import (
 	"errors"
 	"github.com/fuxiaohei/pugo/src/core"
 	"github.com/fuxiaohei/pugo/src/model"
+	"net/url"
+	"strings"
 )
 
 var (
 	Setting *SettingService = new(SettingService)
 
-	ErrSettingNotFound = errors.New("setting-not-found")
+	ErrSettingNotFound    = errors.New("setting-not-found")
+	ErrSettingMenuBadData = errors.New("setting-menu-bad-data")
 )
 
 type SettingService struct {
@@ -17,6 +20,7 @@ type SettingService struct {
 	Media   *model.SettingMedia
 	Content *model.SettingContent
 	Comment *model.SettingComment
+	Menu    []*model.SettingMenu
 }
 
 type SettingReadOption struct {
@@ -58,4 +62,29 @@ func (ss *SettingService) Write(v interface{}) (*Result, error) {
 		return nil, err
 	}
 	return nil, nil
+}
+
+func (ss *SettingService) CreateMenu(v interface{}) (*Result, error) {
+	form, ok := v.(url.Values)
+	if !ok {
+		return nil, ErrServiceFuncNeedType(ss.CreateMenu, form)
+	}
+	if len(form["name"]) != len(form["link"]) {
+		return nil, ErrSettingMenuBadData
+	}
+	if len(form["name"]) != len(form["title"]) {
+		return nil, ErrSettingMenuBadData
+	}
+	if len(form["name"]) != len(form["new"]) {
+		return nil, ErrSettingMenuBadData
+	}
+	menuSettings := make([]*model.SettingMenu, len(form["name"]))
+	for i, v := range form["name"] {
+		s := &model.SettingMenu{
+			v, form["link"][i], form["title"][i],
+			form["new"][i] == "true", strings.ToLower(v),
+		}
+		menuSettings[i] = s
+	}
+	return newResult(ss.CreateMenu, &menuSettings), nil
 }

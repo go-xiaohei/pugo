@@ -4,6 +4,7 @@ import (
 	"github.com/fuxiaohei/pugo/src/middle"
 	"github.com/fuxiaohei/pugo/src/model"
 	"github.com/fuxiaohei/pugo/src/service"
+	"github.com/lunny/tango"
 	"github.com/tango-contrib/xsrf"
 	"strings"
 )
@@ -238,4 +239,42 @@ func (sc *SettingCommentController) Post() {
 	}
 	service.Setting.Comment = form.toSettingComment()
 	sc.JSON(nil)
+}
+
+type SettingMenuController struct {
+	xsrf.Checker
+	tango.Ctx
+
+	middle.AuthorizeRequire
+	middle.AdminRender
+	middle.Validator
+	middle.Responsor
+}
+
+func (sm *SettingMenuController) Get() {
+	sm.Title("GENERAL MENU - PUGO")
+	sm.Assign("XsrfHTML", sm.XsrfFormHtml())
+	sm.Assign("MenuSetting", service.Setting.Menu)
+	sm.Render("setting_menu.tmpl")
+}
+
+func (sm *SettingMenuController) Post() {
+	menuSettings := []*model.SettingMenu{}
+	form := sm.Req().Form
+	if err := service.Call(service.Setting.CreateMenu, form, &menuSettings); err != nil {
+		sm.JSONError(200, err)
+		return
+	}
+	setting := &model.Setting{
+		Name:   "menu",
+		UserId: 0,
+		Type:   model.SETTING_TYPE_MENU,
+	}
+	setting.Encode(menuSettings)
+	if err := service.Call(service.Setting.Write, setting); err != nil {
+		sm.JSONError(200, err)
+		return
+	}
+	service.Setting.Menu = menuSettings
+	sm.JSON(nil)
 }

@@ -224,6 +224,31 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 	}
 	Setting.Comment = commentSetting
 
+	menuSettings := []*model.SettingMenu{
+		&model.SettingMenu{
+			"Home", "/", "Home",
+			false, "home",
+		},
+		&model.SettingMenu{
+			"Archive", "/archive", "Archive",
+			false, "archive",
+		},
+		&model.SettingMenu{
+			"About", "/about.html", "About",
+			false, "about",
+		},
+	}
+	setting = &model.Setting{
+		Name:   "menu",
+		UserId: 0,
+		Type:   model.SETTING_TYPE_MENU,
+	}
+	setting.Encode(menuSettings)
+	if _, err := core.Db.Insert(setting); err != nil {
+		return nil, err
+	}
+	Setting.Menu = menuSettings
+
 	// first article
 	article := &model.Article{
 		UserId:        user.Id,
@@ -330,6 +355,13 @@ func (bs *BootstrapService) Bootstrap(v interface{}) (*Result, error) {
 			return nil, err
 		}
 		Setting.Comment = setting.ToComment()
+
+		sOpt = SettingReadOption{model.SETTING_TYPE_MENU, 0, false}
+		setting = new(model.Setting)
+		if err := Call(Setting.Read, sOpt, setting); err != nil {
+			return nil, err
+		}
+		Setting.Menu = setting.ToMenu()
 	}
 	return nil, nil
 }

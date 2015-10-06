@@ -11,6 +11,7 @@ const (
 	SETTING_TYPE_MEDIA
 	SETTING_TYPE_CONTENT
 	SETTING_TYPE_COMMENT
+	SETTING_TYPE_MENU
 )
 
 type Setting struct {
@@ -60,6 +61,14 @@ func (s *Setting) ToComment() *SettingComment {
 		panic(err)
 	}
 	return cmt
+}
+
+func (s *Setting) ToMenu() []*SettingMenu {
+	menus := make([]*SettingMenu, 0)
+	if err := json.Unmarshal([]byte(s.Value), &menus); err != nil {
+		panic(err)
+	}
+	return menus
 }
 
 type SettingGeneral struct {
@@ -149,4 +158,12 @@ type SettingComment struct {
 	AutoCloseDay    int64 `json:"comment_auto_close_day"`
 	SubmitDuration  int64 `json:"comment_submit_duration"`
 	ShowWaitComment bool  `json:"comment_show_wait"`
+}
+
+type SettingMenu struct {
+	Name      string `json:"menu_name"`
+	Link      string `json:"menu_link"`
+	Title     string `json:"menu_title"`
+	IsNewPage bool   `json:"menu_new_page"`
+	I18nTr    string `json:"menu_i18n"`
 }
