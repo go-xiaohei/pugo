@@ -80,6 +80,9 @@ func Server(ctx *cli.Context) {
 	adminGroup.Route([]string{"POST:Upload"}, "/upload/media", new(admin.MediaController))
 	adminGroup.Get("/delete/media", new(admin.MediaDeleteController))
 
+	adminGroup.Get("/advance/backup", new(admin.AdvBackupController))
+	adminGroup.Route([]string{"POST:Backup"}, "/advance/backup", new(admin.AdvBackupController))
+
 	adminGroup.Get("/", new(admin.IndexController))
 	core.Server.Group("/admin", adminGroup)
 

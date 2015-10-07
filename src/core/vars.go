@@ -33,4 +33,5 @@ var (
 	ThemeDirectory  string = "theme"
 	SessionName     string = "PUGO_SESSION"
 	CrashLogFile    string = "crash.log"
+	BackupDirectory string = "backup"
 )

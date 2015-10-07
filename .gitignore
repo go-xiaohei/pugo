@@ -7,8 +7,10 @@
 # Folders
 _obj
 _test
+_temp
 data
 static
+backup
 
 # Architecture specific extensions/prefixes
 *.[568vq]

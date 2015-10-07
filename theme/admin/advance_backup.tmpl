@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    {{template "admin/_meta.tmpl" .}}
+</head>
+<body>
+{{template "admin/_nav.tmpl" .}}
+<div id="main">
+    <div class="container" id="index-main">
+        <h3 class="main-title">BACKUP
+            <button type="button" class="btn btn-primary pull-right" id="backup-button">
+                <i class="fa fa-archive"></i> New Zip Archive
+            </button>
+        </h3>
+        <hr/>
+        <div id="backup-files">
+            <div class="backup-file">
+                <i class="fa fa-file-zip-o"></i>
+                <a href="#" target="_blank" class="name"><strong>938488474.zip</strong></a>
+                <span class="size">124.6 KB</span>
+                <span class="time">09.12 23:44</span>
+                <a class="delete text-danger" href="#"><i class="fa fa-times"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function(){
+        $('#backup-button').on("click",function(){
+            $.post("/admin/advance/backup",function(json){
+                console.log(json);
+            })
+        });
+    })
+</script>
+</body>
+</html>
