@@ -32,15 +32,21 @@ type SettingGeneralForm struct {
 	Keyword     string `form:"keyword"`
 	Description string `form:"desc"`
 	HostName    string `form:"host"`
+	HeroImage   string `form:"hero"`
+	AvatarImage string `form:"avatar"`
+	AvatarExt   string `form:"avatar_ext"`
 }
 
 func (f SettingGeneralForm) toSettingGeneral() *model.SettingGeneral {
 	return &model.SettingGeneral{
-		Title:       f.Title,
-		SubTitle:    f.SubTitle,
-		Keyword:     f.Keyword,
-		Description: f.Description,
-		HostName:    f.HostName,
+		Title:               f.Title,
+		SubTitle:            f.SubTitle,
+		Keyword:             f.Keyword,
+		Description:         f.Description,
+		HostName:            f.HostName,
+		HeroImage:           f.HeroImage,
+		TopAvatarImage:      f.AvatarImage,
+		TopAvatarIsExternal: f.AvatarExt != "",
 	}
 }
 
