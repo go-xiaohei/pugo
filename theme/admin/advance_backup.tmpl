@@ -14,22 +14,42 @@
         </h3>
         <hr/>
         <div id="backup-files">
+            <div class="alert alert-info" id="backup-doing">BACKUP FILE IS WORKING ......</div>
+            <div class="alert alert-success" id="backup-success"></div>
+            <div class="alert alert-danger" id="backup-error"></div>
+            {{range .BackupFiles}}
             <div class="backup-file">
                 <i class="fa fa-file-zip-o"></i>
-                <a href="#" target="_blank" class="name"><strong>938488474.zip</strong></a>
-                <span class="size">124.6 KB</span>
-                <span class="time">09.12 23:44</span>
-                <a class="delete text-danger" href="#"><i class="fa fa-times"></i></a>
+                <a href="#" target="_blank" class="name"><strong>{{.Name}}</strong></a>
+                <span class="size">{{BytesSizeFriend .Size}}</span>
+                <span class="time">{{TimeUnixFormat .CreateTime "01.02 15:04:05"}}</span>
+                <a class="delete text-danger" href="/admin/delete/backup?file={{.FullPath}}"><i class="fa fa-times"></i></a>
             </div>
+            {{end}}
         </div>
     </div>
 </div>
 <script>
-    $(function(){
-        $('#backup-button').on("click",function(){
-            $.post("/admin/advance/backup",function(json){
-                console.log(json);
-            })
+    $(function () {
+        $('#backup-button').on("click", function () {
+            $.ajax({
+                url: "/admin/advance/backup",
+                beforeSend: function () {
+                    $('#backup-button,#backup-success,#backup-error').hide();
+                    $('#backup-doing').show();
+                },
+                type: "post",
+                success: function (json) {
+                    $('#backup-button').show();
+                    $('#backup-doing').hide();
+                    if (json.status) {
+                        $('#backup-success').html("BACKUP to file <strong>" + json.data.file + "</strong>").show();
+                    } else {
+                        $('#backup-error').html(json.error).show();
+                    }
+
+                }
+            });
         });
     })
 </script>

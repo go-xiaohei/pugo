@@ -44,3 +44,14 @@ func Nl2Br(str string) template.HTML {
 func Nl2BrString(str string) string {
 	return strings.Replace(str, "\n", "<br/>", -1)
 }
+
+func FriendBytesSize(size int64) string {
+	sFloat := float64(size)
+	if sFloat >= 1024*1024 {
+		return fmt.Sprintf("%.1f MB", sFloat/1024/1024)
+	}
+	if sFloat > 1024 {
+		return fmt.Sprintf("%.1f KB", sFloat/1024)
+	}
+	return fmt.Sprintf("%.1f B", sFloat)
+}

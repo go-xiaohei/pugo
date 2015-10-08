@@ -74,12 +74,13 @@ func (is *BootstrapService) Init(v interface{}) (*Result, error) {
 			Directory:  core.ThemeDirectory,
 			Extensions: []string{".tmpl"},
 			Funcs: template.FuncMap{
-				"TimeUnixFormat": utils.TimeUnixFormat,
-				"TimeUnixFriend": utils.TimeUnixFriend,
-				"Mardown2Str":    utils.Markdown2String,
-				"Markdown2HTML":  utils.Markdown2HTML,
-				"Nl2BrHTML":      utils.Nl2Br,
-				"Nl2BrString":    utils.Nl2BrString,
+				"TimeUnixFormat":  utils.TimeUnixFormat,
+				"TimeUnixFriend":  utils.TimeUnixFriend,
+				"Mardown2Str":     utils.Markdown2String,
+				"Markdown2HTML":   utils.Markdown2HTML,
+				"Nl2BrHTML":       utils.Nl2Br,
+				"Nl2BrString":     utils.Nl2BrString,
+				"BytesSizeFriend": utils.FriendBytesSize,
 			},
 		}))
 		sessions := session.New(session.Options{

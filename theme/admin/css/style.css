@@ -398,3 +398,9 @@ title {
 .backup-file .time{
     color: #999;
 }
+
+#backup-doing,
+#backup-success,
+#backup-error{
+    display: none;
+}

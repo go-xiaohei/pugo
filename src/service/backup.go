@@ -6,8 +6,11 @@ import (
 	"github.com/Unknwon/cae/zip"
 	"github.com/Unknwon/com"
 	"github.com/fuxiaohei/pugo/src/core"
+	"github.com/fuxiaohei/pugo/src/model"
 	"os"
 	"path"
+	"path/filepath"
+	"sort"
 	"time"
 )
 
@@ -67,4 +70,28 @@ func (bs *BackupService) Backup(v interface{}) (*Result, error) {
 		return nil, err
 	}
 	return newResult(bs.Backup, &fileName), nil
+}
+
+func (bs *BackupService) Files(_ interface{}) (*Result, error) {
+	files := make([]*model.BackupFile, 0)
+	if err := filepath.Walk(core.BackupDirectory, func(path string, info os.FileInfo, err error) error {
+		if info.IsDir() {
+			return nil
+		}
+		if filepath.Ext(path) != ".zip" {
+			return nil
+		}
+		m := &model.BackupFile{
+			Name:       filepath.Base(path),
+			FullPath:   path,
+			Size:       info.Size(),
+			CreateTime: info.ModTime().Unix(),
+		}
+		files = append(files, m)
+		return nil
+	}); err != nil {
+		return nil, err
+	}
+	sort.Sort(model.BackupFiles(files))
+	return newResult(bs.Files, &files), nil
 }
