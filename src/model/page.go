@@ -2,6 +2,8 @@ package model
 
 import (
 	"fmt"
+	"github.com/fuxiaohei/pugo/src/utils"
+	"strings"
 	"time"
 )
 
@@ -91,4 +93,13 @@ func (p *Page) User() *User {
 		}
 	}
 	return p.userData
+}
+
+func (p *Page) Content() string {
+	if p.BodyType == PAGE_BODY_MARKDOWN {
+		body := strings.Replace(p.Body, "<!--more-->", "\n", -1)
+		body = strings.Replace(body, "[more]", "\n", -1)
+		return utils.Markdown2String(body)
+	}
+	return p.Body
 }

@@ -15,6 +15,6 @@ func (rc *RssController) Get() {
 	if err := service.Call(service.RSS.RSS, nil, &buf); err != nil {
 		panic(err)
 	}
-	rc.Req().Header.Add("Content-Type", "application/rss+xml;charset=UTF-8")
+	rc.Header().Add("Content-Type", "application/rss+xml;charset=UTF-8")
 	rc.Write(buf.Bytes())
 }

@@ -3,6 +3,9 @@ package model
 import (
 	"fmt"
 	"github.com/fuxiaohei/pugo/src/core"
+	"github.com/fuxiaohei/pugo/src/utils"
+	"html/template"
+	"strings"
 	"time"
 )
 
@@ -101,6 +104,22 @@ func (a *Article) Href() string {
 		return "#"
 	}
 	return fmt.Sprintf("/article/%d/%s.html", a.Id, a.Link)
+}
+
+func (a *Article) PreviewContent() template.HTML {
+	if a.BodyType == PAGE_BODY_MARKDOWN {
+		return utils.Markdown2HTML(a.Preview)
+	}
+	return template.HTML(a.Preview)
+}
+
+func (a *Article) Content() template.HTML {
+	if a.BodyType == PAGE_BODY_MARKDOWN {
+		body := strings.Replace(a.Body, "<!--more-->", "\n", -1)
+		body = strings.Replace(body, "[more]", "\n", -1)
+		return utils.Markdown2HTML(body)
+	}
+	return template.HTML(a.Body)
 }
 
 func getArticleUser(id int64) (*User, error) {

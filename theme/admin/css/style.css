@@ -404,3 +404,27 @@ title {
 #backup-error{
     display: none;
 }
+
+/*
+#import-forms
+*/
+
+#import-forms > form{
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed #EEE;
+}
+
+#import-forms input[type=file]{
+    min-width: 300px;
+}
+
+#import-forms form .help-text{
+    line-height: 1.8em;
+}
+
+#import-doing,
+#import-success,
+#import-error{
+    display: none;
+}

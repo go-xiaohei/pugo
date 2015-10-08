@@ -22,7 +22,7 @@ var (
 )
 
 type BackupService struct {
-	IsDoingBackup bool
+	IsBackupDoing bool
 }
 
 type BackupOption struct {
@@ -33,13 +33,19 @@ type BackupOption struct {
 }
 
 func (bs *BackupService) Backup(v interface{}) (*Result, error) {
-	if bs.IsDoingBackup {
+	if bs.IsBackupDoing {
 		return nil, ErrBackupDoing
 	}
 	opt, ok := v.(BackupOption)
 	if !ok {
 		return nil, ErrServiceFuncNeedType(bs.Backup, opt)
 	}
+
+	bs.IsBackupDoing = true
+	defer func() {
+		bs.IsBackupDoing = false
+	}()
+
 	fileName := fmt.Sprintf("%s/%s.zip", core.BackupDirectory, time.Now().Format("20060102150405"))
 	dirName := path.Dir(fileName)
 	if !com.IsDir(dirName) {
@@ -77,7 +83,7 @@ func (bs *BackupService) Backup(v interface{}) (*Result, error) {
 func (bs *BackupService) Files(_ interface{}) (*Result, error) {
 	files := make([]*model.BackupFile, 0)
 	if err := filepath.Walk(core.BackupDirectory, func(path string, info os.FileInfo, err error) error {
-		if info.IsDir() {
+		if info == nil || info.IsDir() {
 			return nil
 		}
 		if filepath.Ext(path) != ".zip" {

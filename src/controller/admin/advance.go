@@ -1,11 +1,14 @@
 package admin
 
 import (
+	"fmt"
 	"github.com/fuxiaohei/pugo/src/middle"
 	"github.com/fuxiaohei/pugo/src/model"
 	"github.com/fuxiaohei/pugo/src/service"
 	"github.com/lunny/tango"
 	"os"
+	"path"
+	"strings"
 )
 
 type AdvBackupController struct {
@@ -61,5 +64,40 @@ type AdvImportController struct {
 
 func (aic *AdvImportController) Get() {
 	aic.Title("IMPORT - PUGO")
+	if service.Import.IsImporting {
+		aic.Assign("IsImporting", "true")
+	}
 	aic.Render("advance_import.tmpl")
+}
+
+func (aic *AdvImportController) Post() {
+	opt := service.ImportOption{
+		User: aic.AuthUser,
+	}
+	t := strings.ToLower(aic.Param("type"))
+	if t == "goblog" {
+		opt.Type = service.IMPORT_TYPE_GOBLOG
+
+		_, h, err := aic.Req().FormFile("file")
+		if err != nil {
+			aic.JSONError(500, err)
+			return
+		}
+
+		savePath := fmt.Sprintf("_temp/%s", h.Filename)
+		if err := os.MkdirAll(path.Dir(savePath), os.ModePerm); err != nil {
+			aic.JSONError(500, err)
+			return
+		}
+		if err := aic.SaveToFile("file", savePath); err != nil {
+			aic.JSONError(500, err)
+			return
+		}
+		opt.TempFile = savePath
+		if err := service.Call(service.Import.Import, opt); err != nil {
+			aic.JSONError(500, err)
+			return
+		}
+	}
+	aic.JSON(nil)
 }

@@ -27,7 +27,7 @@
                             <h4 class="title truncate"><a href="{{.Href}}" title="{{.Title}}">{{.Title}}</a></h4>
                             <div class="content entry-content">
                                 {{if .Preview}}
-                                {{Markdown2HTML .Preview}}
+                                {{.PreviewContent}}
                                 {{else}}
                                 <p class="no-preview grey-text text-lighten center-align">No Preview Content</p>
                                 {{end}}
@@ -58,7 +58,7 @@
                             </div>
                             <div class="content entry-content">
                                 {{if .Preview}}
-                                {{Markdown2HTML .Preview}}
+                                {{.PreviewContent}}
                                 {{else}}
                                 <p class="no-preview grey-text text-lighten center-align">No Preview Content</p>
                                 {{end}}
