@@ -50,3 +50,16 @@ func (abc *AdvBackupController) Delete() {
 	}
 	abc.Redirect(abc.Req().Referer())
 }
+
+type AdvImportController struct {
+	tango.Ctx
+
+	middle.AuthorizeRequire
+	middle.AdminRender
+	middle.Responsor
+}
+
+func (aic *AdvImportController) Get() {
+	aic.Title("IMPORT - PUGO")
+	aic.Render("advance_import.tmpl")
+}

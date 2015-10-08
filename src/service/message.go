@@ -94,6 +94,12 @@ var (
                 upload file
                 <a><i>{file}</i></a>
             </div>`
+	MessageBackupCreateTemplate = `<div class="message msg-{type}">
+                <i class="fa fa-file-zip-o"></i>
+                all site data are backup to
+                <a href="#"><i>{file}</i></a>
+                <span class="time">{time}</span>
+            </div>`
 )
 
 type MessageService struct{}
