@@ -9,6 +9,7 @@ import (
 	"github.com/fuxiaohei/pugo/src/service"
 	"github.com/lunny/tango"
 	"gopkg.in/inconshreveable/log15.v2"
+	"gopkg.in/inconshreveable/log15.v2/ext"
 )
 
 var (
@@ -16,10 +17,20 @@ var (
 		Name:   "server",
 		Usage:  "start pugo blog web server",
 		Action: Server,
+		Flags: []cli.Flag{
+			cli.BoolFlag{Name: "debug",
+				Usage: "show more debug info when running server",
+			},
+		},
 	}
 )
 
 func Server(ctx *cli.Context) {
+	// change logger level
+	if ctx.Bool("debug") {
+		log15.Root().SetHandler(ext.FatalHandler(log15.StderrHandler))
+	}
+
 	opt := service.BootstrapInitOption{true, false, false}
 	if err := service.Call(service.Bootstrap.Init, opt); err != nil {
 		log15.Crit("Server.start.fail", "error", err)

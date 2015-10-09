@@ -9,7 +9,7 @@
 <body>
 {{template "admin/_nav.tmpl" .}}
 <div id="main">
-    <div class="container-fluid" id="write-article-main">
+    <div class="container-fluid col-md-10 col-md-offset-1" id="write-article-main">
         <form id="write-article-form" class="form" action="/admin/write/page" method="post">
             <div id="write-article-success" style="display: none;" class="alert alert-success form-group"></div>
             <div id="write-article-error" style="display: none;" class="alert alert-danger form-group"></div>
@@ -18,11 +18,11 @@
                        placeholder="PAGE TITLE" value="{{.Page.Title}}"/>
             </div>
             <div class="form-group clearfix">
-                <div class="col-md-11" style="padding-left: 0">
+                <div class="col-md-10" style="padding-left: 0">
                     <input class="form-control" id="write-article-link" type="text" name="link" placeholder="PAGE LINK"
                            value="{{.Page.Link}}"/>
                 </div>
-                <div class="col-md-1">
+                <div class="col-md-2">
                     <label class="checkbox-inline">
                         <input type="checkbox" id="write-page-top-link" name="top" value="true" {{if .Page.TopLink}} checked{{end}}>
                         <strong>AS TOP LINK</strong>

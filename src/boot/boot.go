@@ -13,7 +13,7 @@ import (
 
 func init() {
 	// set log settings
-	log15.Root().SetHandler(ext.FatalHandler(log15.StderrHandler))
+	log15.Root().SetHandler(log15.LvlFilterHandler(log15.LvlInfo, ext.FatalHandler(log15.StderrHandler)))
 
 	// set cli app
 	core.App = cli.NewApp()

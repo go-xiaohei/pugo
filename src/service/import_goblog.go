@@ -83,6 +83,10 @@ func (is *ImportService) importGoBlog(u *model.User, filePath string) error {
 	if err := importGoBlogMedia(u, dirPath); err != nil {
 		return err
 	}
+
+	// try to remove temp data
+	// os.RemoveAll(dirPath)
+	// os.RemoveAll(filePath)
 	return nil
 }
 

@@ -41,6 +41,11 @@ func (bs *BackupService) Backup(v interface{}) (*Result, error) {
 		return nil, ErrServiceFuncNeedType(bs.Backup, opt)
 	}
 
+	root, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+
 	bs.IsBackupDoing = true
 	defer func() {
 		bs.IsBackupDoing = false
@@ -62,16 +67,16 @@ func (bs *BackupService) Backup(v interface{}) (*Result, error) {
 	zipWriter := zip.New(fileWriter)
 	defer zipWriter.Close()
 	if opt.WithBasic {
-		zipWriter.AddFile("config.ini", "./config.ini")
+		zipWriter.AddFile("config.ini", path.Join(root, "config.ini"))
 	}
 	if opt.WithData {
-		zipWriter.AddDir("data", "./data")
+		zipWriter.AddDir("data", path.Join(root, "data"))
 	}
 	if opt.WithStatic {
-		zipWriter.AddDir("static", "./static")
+		zipWriter.AddDir("static", path.Join(root, "static"))
 	}
 	if opt.WithTheme {
-		zipWriter.AddDir("theme", "./theme")
+		zipWriter.AddDir("theme", path.Join(root, "theme"))
 	}
 	if err := zipWriter.Flush(); err != nil {
 		return nil, err
