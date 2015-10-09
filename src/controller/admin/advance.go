@@ -20,6 +20,11 @@ type AdvBackupController struct {
 }
 
 func (abc *AdvBackupController) Get() {
+	if file := abc.Form("file"); file != "" {
+		abc.ServeFile(file)
+		return
+	}
+
 	files := make([]*model.BackupFile, 0)
 	if err := service.Call(service.Backup.Files, nil, &files); err != nil {
 		abc.RenderError(500, err)

@@ -80,7 +80,7 @@ title {
 */
 
 #main {
-    margin-top: 70px;
+    margin:70px 0;
 }
 
 .container .help-text {
@@ -175,8 +175,14 @@ title {
 #manage-article-list .pager a,
 #media-list .pager a,
 #comment-main .pager a {
-    padding: 3px 9px !important;
+    padding: 3px 5px 0 5px !important;
     background-color: #EEE;
+    margin: 3px;
+}
+
+.pager .current{
+    color: #444;
+    font-weight: bold;
 }
 
 /*
@@ -246,7 +252,7 @@ title {
 
 #media-list .media .time {
     display: inline-block;
-    min-width: 120px;
+    min-width: 100px;
     color: #999;
     text-transform: uppercase;
 }

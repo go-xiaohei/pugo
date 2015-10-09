@@ -12,7 +12,7 @@
         <div id="manage-article-list">
             {{range .Articles}}
             <div class="article clear">
-                <span class="date">{{TimeUnixFormat .CreateTime "01.02"}}</span>
+                <span class="date">{{TimeUnixFormat .CreateTime "06.01.02"}}</span>
                 <a class="title" href="{{.Href}}" target="_blank" name="{{.Title}}">{{.Title}}</a>
                 {{if .IsDraft}}
                 <a class="status label label-warning" href="#">DRAFT</a>
@@ -20,6 +20,8 @@
                 <span class="link">({{.Link}})</span>
                 {{if .IsCommentClosed}}
                 <span class="comment"><i class="fa fa-ban"></i></span>
+                {{else if .Comments}}
+                <span class="comment"><i class="fa fa-comments"></i> {{.Comments}}</span>
                 {{end}}
                 <span class="opt pull-right">
                      {{if .IsDraft}}

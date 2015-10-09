@@ -12,7 +12,7 @@
         <div id="manage-article-list">
             {{range .Pages}}
             <div class="article clear">
-                <span class="date">{{TimeUnixFormat .CreateTime "01.02"}}</span>
+                <span class="date">{{TimeUnixFormat .CreateTime "06.01.02"}}</span>
                 <a class="title" href="{{.Href}}" target="_blank" name="{{.Title}}">{{.Title}}</a>
                 {{if .IsDraft}}
                 <a class="status label label-warning" href="#">DRAFT</a>
@@ -22,11 +22,6 @@
                 <span class="comment"><i class="fa fa-ban"></i></span>
                 {{end}}
                 <span class="opt pull-right">
-                     {{if .IsDraft}}
-                     <a href="/admin/public/page?id={{.Id}}" class="text-default to-publish"><i
-                             class="fa fa-eye"></i>
-                         PUBLISH</a>
-                     {{end}}
                     <a href="/admin/write/page?id={{.Id}}" class="text-success edit"><i class="fa fa-edit"></i> EDIT</a>
                     <a href="/admin/delete/page?id={{.Id}}" class="text-danger delete"><i class="fa fa-remove"></i>
                         DELETE</a>

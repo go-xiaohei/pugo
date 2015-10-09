@@ -20,7 +20,7 @@
             {{range .BackupFiles}}
             <div class="backup-file">
                 <i class="fa fa-file-zip-o"></i>
-                <a href="#" target="_blank" class="name"><strong>{{.Name}}</strong></a>
+                <a href="/admin/advance/backup?file={{.FullPath}}" target="_blank" class="name"><strong>{{.Name}}</strong></a>
                 <span class="size">{{BytesSizeFriend .Size}}</span>
                 <span class="time">{{TimeUnixFormat .CreateTime "01.02 15:04:05"}}</span>
                 <a class="delete text-danger" href="/admin/delete/backup?file={{.FullPath}}"><i class="fa fa-times"></i></a>

@@ -21,10 +21,10 @@
                     <img src="{{.AvatarUrl}}" alt="{{.Name}}"/>
                 </div>
                 <div class="meta">
-                    <a class="name" href="{{.AuthorUrl}}"><strong>{{.Name}}</strong></a>
+                    <a class="name" href="{{.AuthorUrl}}" target="_blank"><strong>{{.Name}}</strong></a>
                     <span class="email">({{.Email}})</span>
                     <span class="date">{{TimeUnixFormat .CreateTime "01.02 15:04:05"}}</span>
-                    <span class="from">{{.FromTitle}}</span>
+                    <span class="from">&lt;{{.FromTitle}}&gt;</span>
                     {{if .IsWait}}
                     <a class="status text-warning">wait</a>
                     <a class="opt approve text-danger" href="/admin/approve/comment?id={{.Id}}"><i class="fa fa-check"
