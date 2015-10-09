@@ -60,6 +60,7 @@ func Server(ctx *cli.Context) {
 
 	adminGroup.Any("/write/page", new(admin.PageWriteController))
 	adminGroup.Get("/manage/page", new(admin.PageManageController))
+	adminGroup.Get("/delete/page", new(admin.PageDeleteController))
 
 	adminGroup.Get("/manage/comment", new(admin.CommentController))
 	adminGroup.Route([]string{"GET:Approve"}, "/approve/comment", new(admin.CommentController))

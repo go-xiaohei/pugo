@@ -8,42 +8,9 @@
 <div id="main-container">
     <div class="container row">
         {{range .Articles}}
-        {{if .IsNewRead}}
         <div class="section article-section" id="article-{{.Id}}">
             <div class="row">
-                <div class="col l12 m12 s12 white z-depth-2">
-                    <article class="article">
-                        <div class="col l2 m3 s12 meta">
-                            <span class="date"><i class="mdi-action-schedule"></i> {{TimeUnixFriend .CreateTime}}</span>
-                            <a href="{{.Href}}#comments" class="comments">
-                                <i class="mdi-editor-mode-comment"></i><span class="badge">{{.Comments}}</span> comment
-                            </a>
-                            <a href="{{.Href}}" class="views grey-text">
-                                <i class="mdi-action-visibility"></i><span class="badge">{{.Hits}}</span> read
-                            </a>
-                        </div>
-                        <div class="col l10 m9 s12 main">
-                            <span class="badge new red lighten-1"></span>
-                            <h4 class="title truncate"><a href="{{.Href}}" title="{{.Title}}">{{.Title}}</a></h4>
-                            <div class="content entry-content">
-                                {{if .Preview}}
-                                {{.PreviewContent}}
-                                {{else}}
-                                <p class="no-preview grey-text text-lighten center-align">No Preview Content</p>
-                                {{end}}
-                            </div>
-                            <div class="more">
-                                <a class="waves-effect waves-light btn" href="{{.Href}}" title="read more">Read More</a>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-            </div>
-        </div>
-        {{else}}
-        <div class="section article-section" id="article-{{.Id}}">
-            <div class="row">
-                <div class="col l12 m12 s12 white z-depth-1">
+                <div class="col l10 offset-l1 m12 s12 white z-depth-1">
                     <article class="article">
                         <div class="main main2">
                             <h4 class="title truncate"><a href="{{.Href}}" title="{{.Title}}">{{.Title}}</a></h4>
@@ -55,6 +22,9 @@
                                 <a href="{{.Href}}" class="views grey-text">
                                     <i class="mdi-action-visibility"></i>read&nbsp;&nbsp;&nbsp;{{.Hits}}
                                 </a>
+                                {{if .IsNewRead}}
+                                <span class="badge new red lighten-1"></span>
+                                {{end}}
                             </div>
                             <div class="content entry-content">
                                 {{if .Preview}}
@@ -71,7 +41,6 @@
                 </div>
             </div>
         </div>
-        {{end}}
         {{end}}
         <div class="section article-page center-align">
             {{if .Pager.IsPrev}}

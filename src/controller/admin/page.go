@@ -124,3 +124,20 @@ func (pmc *PageManageController) Get() {
 	pmc.Assign("Pager", pager)
 	pmc.Render("manage_page.tmpl")
 }
+
+type PageDeleteController struct {
+	tango.Ctx
+	middle.AuthorizeRequire
+	middle.AdminRender
+}
+
+func (pdc *PageDeleteController) Get() {
+	id := pdc.FormInt64("id")
+	if id > 0 {
+		if err := service.Call(service.Page.Delete, id); err != nil {
+			pdc.RenderError(500, err)
+			return
+		}
+	}
+	pdc.Redirect(pdc.Req().Referer())
+}
