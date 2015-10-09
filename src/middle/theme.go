@@ -7,6 +7,7 @@ import (
 	"github.com/fuxiaohei/pugo/src/service"
 	"github.com/lunny/tango"
 	"github.com/tango-contrib/renders"
+	"net/http"
 	"path"
 	"reflect"
 	"strings"
@@ -83,6 +84,7 @@ func (bt *baseTheme) Render(tpl string) {
 func (bt *baseTheme) RenderError(status int, err error) {
 	tpl := path.Join(bt.themeDirectory, ThemeErrorTemplate)
 	tpl = strings.TrimPrefix(tpl, core.ThemeDirectory+"/")
+	bt.Assign("Title", http.StatusText(status))
 	bt.Assign("Error", err)
 	if err := bt.StatusRender(status, tpl, bt.data); err != nil {
 		panic(err)

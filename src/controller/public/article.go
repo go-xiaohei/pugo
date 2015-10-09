@@ -36,7 +36,11 @@ func (ac *ArticleController) Get() {
 		comments = make([]*model.Comment, 0)
 	)
 	if err := service.Call(service.Article.Read, opt, article); err != nil {
-		ac.RenderError(500, err)
+		status := 500
+		if err == service.ErrArticleNotFound {
+			status = 404
+		}
+		ac.RenderError(status, err)
 		return
 	}
 	if article.Id != opt.Id || article.Link != opt.Link {

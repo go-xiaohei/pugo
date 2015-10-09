@@ -30,7 +30,11 @@ func (pc *PageController) Get() {
 		}
 	)
 	if err := service.Call(service.Page.Read, opt, page); err != nil {
-		pc.RenderError(500, nil)
+		status := 500
+		if err == service.ErrPageNotFound {
+			status = 404
+		}
+		pc.RenderError(status, err)
 		return
 	}
 	if page.Link != pageLink {
