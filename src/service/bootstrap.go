@@ -10,7 +10,7 @@ import (
 	"github.com/go-xorm/xorm"
 	"github.com/lunny/tango"
 	"github.com/ngaut/log"
-	_ "github.com/pingcap/tidb"
+	"github.com/pingcap/tidb"
 	"github.com/tango-contrib/binding"
 	"github.com/tango-contrib/flash"
 	"github.com/tango-contrib/renders"
@@ -47,6 +47,7 @@ func (is *BootstrapService) Init(v interface{}) (*Result, error) {
 	}
 	if core.Cfg != nil && opt.Database { // database depends on config
 		log.SetLevelByString("error")
+        tidb.Debug = false // close tidb debug
 		core.Db, err = xorm.NewEngine(core.Cfg.Db.Driver, core.Cfg.Db.DSN)
 		if err != nil {
 			return nil, err
