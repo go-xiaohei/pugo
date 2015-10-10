@@ -24,7 +24,8 @@
                 </div>
                 <div class="col-md-2">
                     <label class="checkbox-inline">
-                        <input type="checkbox" id="write-page-top-link" name="top" value="true" {{if .Page.TopLink}} checked{{end}}>
+                        <input type="checkbox" id="write-page-top-link" name="top" value="true" {{if .Page.TopLink}}
+                               checked{{end}}>
                         <strong>AS TOP LINK</strong>
                     </label>
                 </div>
@@ -80,7 +81,10 @@
             height: 700,
             syncScrolling: "single",
             path: "{{.ThemeLink}}/editor/lib/",
-            name: "body"
+            name: "body",
+            imageUpload: true,
+            imageFormats: ["jpg", "jpeg", "gif", "png"],
+            imageUploadURL: "/admin/upload/media?type=image&from=editor&field=editormd-image-file"
         });
         $('#write-article-form').ajaxForm({
             dataType: "json",

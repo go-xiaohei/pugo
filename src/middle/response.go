@@ -10,6 +10,7 @@ type IResponse interface {
 	setContext(ctx *tango.Context)
 
 	JSON(data interface{})
+	JSONRaw(data interface{})
 	JSONError(status int, err error)
 }
 
@@ -29,6 +30,12 @@ type jsonResult struct {
 
 func (r *Responsor) JSON(data interface{}) {
 	if err := r.ctx.ServeJson(jsonResult{true, data, ""}); err != nil {
+		panic(err)
+	}
+}
+
+func (r *Responsor) JSONRaw(data interface{}) {
+	if err := r.ctx.ServeJson(data); err != nil {
 		panic(err)
 	}
 }

@@ -92,7 +92,7 @@ var (
                 <span class="time">{time}</span>
                 <span class="author"><strong>{author}</strong></span>
                 upload file
-                <a><i>{file}</i></a>
+                <a href="/admin/manage/media"><i>{file}</i></a>
             </div>`
 	MessageBackupCreateTemplate = `<div class="message msg-{type}">
                 <i class="fa fa-file-zip-o"></i>

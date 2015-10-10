@@ -38,11 +38,30 @@ func (mc *MediaController) Upload() {
 		User:     mc.AuthUser.Id,           // media's owner int
 		FormName: mc.Form("field", "file"), // form field name
 	}
+	if mc.Form("from") == "editor" {
+		mc.uploadFormEditor(opt)
+		return
+	}
 	if err := service.Call(service.Media.Upload, opt); err != nil {
 		mc.JSONError(500, err)
 		return
 	}
 	mc.JSON(nil)
+}
+
+func (mc *MediaController) uploadFormEditor(opt service.MediaUploadOption) {
+	m := new(model.Media)
+	if err := service.Call(service.Media.Upload, opt, m); err != nil {
+		mc.JSONRaw(map[string]interface{}{
+			"success": 0,
+			"message": err.Error(),
+		})
+		return
+	}
+	mc.JSONRaw(map[string]interface{}{
+		"success": 1,
+		"url":     "/" + m.FilePath,
+	})
 }
 
 type MediaDeleteController struct {

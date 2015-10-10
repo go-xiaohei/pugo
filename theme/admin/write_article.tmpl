@@ -71,7 +71,10 @@
             height: 700,
             syncScrolling: "single",
             path: "{{.ThemeLink}}/editor/lib/",
-            name: "body"
+            name: "body",
+            imageUpload: true,
+            imageFormats: ["jpg", "jpeg", "gif", "png"],
+            imageUploadURL: "/admin/upload/media?type=image&from=editor&field=editormd-image-file"
         });
         $('#write-article-form').ajaxForm({
             dataType: "json",
