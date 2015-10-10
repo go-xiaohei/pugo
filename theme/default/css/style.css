@@ -250,3 +250,11 @@ pre code {
     border-left: 1px solid #DDD;
     background-color: #FAFAFA;
 }
+
+/*
+#error-container
+*/
+
+#error-container{
+    margin: 100px auto;
+}

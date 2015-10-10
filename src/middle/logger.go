@@ -25,7 +25,9 @@ func Logger() tango.HandlerFunc {
 				l.SetLogger(ctx.Logger)
 			}
 		}
+
 		ctx.Next()
+
 		if !ctx.Written() {
 			if ctx.Result == nil {
 				ctx.Result = tango.NotFound()
@@ -47,6 +49,14 @@ func Logger() tango.HandlerFunc {
 				"path", p,
 				"remote", ctx.Req().RemoteAddr,
 				"duration", time.Since(start).Seconds()*1000,
+			)
+		} else if statusCode < 500 {
+			log15.Warn(
+				fmt.Sprintf(logFormat, ctx.Req().Method, ctx.Status(), ctx.Req().URL.Path),
+				"path", p,
+				"remote", ctx.Req().RemoteAddr,
+				"duration", time.Since(start).Seconds()*1000,
+				"error", ctx.Result,
 			)
 		} else {
 			log15.Error(

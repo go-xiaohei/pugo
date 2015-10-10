@@ -84,7 +84,8 @@ func (bt *baseTheme) Render(tpl string) {
 func (bt *baseTheme) RenderError(status int, err error) {
 	tpl := path.Join(bt.themeDirectory, ThemeErrorTemplate)
 	tpl = strings.TrimPrefix(tpl, core.ThemeDirectory+"/")
-	bt.Assign("Title", http.StatusText(status))
+	bt.Assign("Title", fmt.Sprintf("%d - %s", status, strings.ToUpper(http.StatusText(status))))
+	bt.Assign("Status", status)
 	bt.Assign("Error", err)
 	if err := bt.StatusRender(status, tpl, bt.data); err != nil {
 		panic(err)

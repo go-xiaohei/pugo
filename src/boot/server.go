@@ -53,6 +53,7 @@ func Server(ctx *cli.Context) {
 	log15.Info("Server.prepare")
 
 	// set middleware and routers
+	core.Server.ErrHandler = new(middle.RecoveryHandler)
 	core.Server.Use(
 		middle.Recover(),
 		middle.Logger(),

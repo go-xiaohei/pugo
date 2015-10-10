@@ -12,8 +12,8 @@ func Recover() tango.HandlerFunc {
 	return func(ctx *tango.Context) {
 		defer func() {
 			if e := recover(); e != nil {
-				header := fmt.Sprintf("Handler crashed with error: %v", e)
-				content := header
+				header := fmt.Sprintf("%v", e)
+				content := "Handler crashed with error:" + header
 				for i := 1; ; i += 1 {
 					_, file, line, ok := runtime.Caller(i)
 					if !ok {
@@ -51,4 +51,34 @@ func Recover() tango.HandlerFunc {
 
 		ctx.Next()
 	}
+}
+
+type RecoveryHandler struct{}
+
+func (rh *RecoveryHandler) Handle(ctx *tango.Context) {
+	// capture render-controller error
+	if render, ok := ctx.Action().(ITheme); ok {
+		if err, ok := ctx.Result.(tango.AbortError); ok {
+			render.RenderError(err.Code(), err)
+			return
+		}
+		if err, ok := ctx.Result.(error); ok {
+			ctx.WriteHeader(500)
+			render.RenderError(ctx.Status(), err)
+			return
+		}
+	}
+
+	// capture abort error
+	/*
+		if err, ok := ctx.Result.(tango.AbortError); ok {
+			ctx.WriteHeader(err.Code())
+			theme := new(ThemeRender)
+			theme.SetTheme(nil)
+			theme.RenderError(err.Code(), err)
+			return
+		}*/
+
+	// unexpected error
+	tango.Errors()(ctx)
 }
