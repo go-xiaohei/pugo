@@ -47,7 +47,7 @@ func (is *BootstrapService) Init(v interface{}) (*Result, error) {
 	}
 	if core.Cfg != nil && opt.Database { // database depends on config
 		log.SetLevelByString("error")
-        tidb.Debug = false // close tidb debug
+		tidb.Debug = false // close tidb debug
 		core.Db, err = xorm.NewEngine(core.Cfg.Db.Driver, core.Cfg.Db.DSN)
 		if err != nil {
 			return nil, err
@@ -95,7 +95,21 @@ func (is *BootstrapService) Init(v interface{}) (*Result, error) {
 	return nil, nil
 }
 
-func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
+type BootstrapInstallOption struct {
+	Port          string
+	Domain        string
+	DbDSN         string
+	AdminUser     string
+	AdminEmail    string
+	AdminPassword string
+}
+
+func (bs *BootstrapService) Install(v interface{}) (*Result, error) {
+	opt, ok := v.(BootstrapInstallOption)
+	if !ok {
+		return nil, ErrServiceFuncNeedType(bs.Install, opt)
+	}
+
 	// create tables
 	if err := core.Db.Sync2(new(model.User),
 		new(model.UserToken),
@@ -112,15 +126,15 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 
 	// insert default user
 	user := &model.User{
-		Name:      "admin",
-		Email:     "admin@admin.com",
-		Nick:      "admin",
+		Name:      opt.AdminUser,
+		Email:     opt.AdminEmail,
+		Nick:      opt.AdminUser,
 		Profile:   "this is administrator",
 		Role:      model.USER_ROLE_ADMIN,
 		Status:    model.USER_STATUS_ACTIVE,
 		AvatarUrl: utils.Gravatar("admin@admin.com"),
 	}
-	user.SetPassword("123456789")
+	user.SetPassword(opt.AdminPassword)
 	if _, err := core.Db.Insert(user); err != nil {
 		return nil, err
 	}
@@ -152,7 +166,7 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 		SubTitle:       "Simple Blog Engine",
 		Keyword:        "pugo,blog,go,golang",
 		Description:    "PUGO is a simple blog engine by golang",
-		HostName:       "http://localhost/",
+		HostName:       fmt.Sprintf("http://%s", opt.Domain),
 		HeroImage:      "/img/bg.png",
 		TopAvatarImage: "/img/logo.png",
 	}
@@ -303,6 +317,8 @@ func (bs *BootstrapService) Install(_ interface{}) (*Result, error) {
 	}
 
 	// assign install time to config
+	core.Cfg.Http.Port = opt.Port
+	core.Cfg.Http.Domain = opt.Domain
 	core.Cfg.Install = fmt.Sprint(time.Now().Unix())
 	if err := core.Cfg.WriteToFile(core.ConfigFile); err != nil {
 		return nil, err
@@ -374,7 +390,7 @@ var (
 	firstArticleTag     = "hello"
 	firstArticleContent = `# Hello World
 
-Welcome to [Pugo](http://github.com/fuxiaohei/pugo)! This is your very first article. Read the [Wiki](http://github.com/fuxiaohei/pugo/wiki) for more infomation. If you get any problems when trying Pugo, you can find the answer or make a question in [issues](http://github.com/fuxiaohei/issue).
+Welcome to [Pugo](http://github.com/fuxiaohei/pugo)! This is your very first article. Read the [Wiki](http://github.com/fuxiaohei/pugo/wiki) for more infomation. If you get any problems when trying Pugo, you can find the answer or make a question in [issues](http://github.com/fuxiaohei/pugo/issues).
 
 ### Usage
 

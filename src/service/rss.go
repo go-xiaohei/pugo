@@ -36,13 +36,13 @@ func (rs *RssService) RSS(v interface{}) (*Result, error) {
 	for _, a := range articles {
 		itemBuf.WriteString(`<item>
         <title>` + a.Title + `</title>
-        <link>` + Setting.General.HostName + a.Href() + `</link>`)
+        <link>` + Setting.General.HostName + a.Href() + `</link>` + "\n")
 		if Setting.Content.RSSFullText {
 			itemBuf.WriteString(`<description><![CDATA[` + utils.Markdown2String(a.Body) + `]]></description>`)
 		} else {
 			itemBuf.WriteString(`<description><![CDATA[` + utils.Markdown2String(a.Preview) + `]]></description>`)
 		}
-		itemBuf.WriteString(`<pubDate>` + time.Unix(a.UpdateTime, 0).Format(time.RFC1123Z) + `</pubDate>
+		itemBuf.WriteString("\n" + `<pubDate>` + time.Unix(a.UpdateTime, 0).Format(time.RFC1123Z) + `</pubDate>
         <guid>` + Setting.General.HostName + a.Href() + `</guid>
     </item>`)
 	}
