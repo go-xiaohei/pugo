@@ -14,9 +14,12 @@ import (
 
 var (
 	serverCommand = cli.Command{
-		Name:   "server",
-		Usage:  "start pugo blog web server",
-		Action: Server,
+		Name:  "server",
+		Usage: "start pugo blog web server",
+		Action: func(ctx *cli.Context) {
+			sc := &serverContext{ctx: ctx}
+			core.Start(sc)
+		},
 		Flags: []cli.Flag{
 			cli.BoolFlag{Name: "debug",
 				Usage: "show more debug info when running server",
@@ -24,6 +27,18 @@ var (
 		},
 	}
 )
+
+type serverContext struct {
+	ctx *cli.Context
+}
+
+func (sc *serverContext) Start() {
+	Server(sc.ctx)
+}
+
+func (sc *serverContext) Stop() {
+
+}
 
 func Server(ctx *cli.Context) {
 	// change logger level
@@ -113,6 +128,7 @@ func Server(ctx *cli.Context) {
 	core.Server.Get("/", new(public.IndexController))
 
 	// start server
-	log15.Info("Server.start." + core.Cfg.Http.Host + ":" + core.Cfg.Http.Port)
-	core.Server.Run(core.Cfg.Http.Host + ":" + core.Cfg.Http.Port)
+	addr := core.Cfg.Http.Host + ":" + core.Cfg.Http.Port
+	log15.Info("Server.start." + addr)
+	go core.Server.Run(addr)
 }
