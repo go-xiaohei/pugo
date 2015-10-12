@@ -1,0 +1,260 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:700,400,300|Droid+Sans+Mono:700,400,300);
+@import "content.css";
+@import "prism.css";
+
+html,
+body {
+    font-family: "Open Sans", Helvetica Neue, "Microsoft Yahei", Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: #F6F6F6;
+}
+
+input,
+textarea {
+    outline: none !important;
+}
+
+pre code {
+    font-family: "Droid Sans Mono", Consolas, "Microsoft YaHei", Helvetica, Arial, sans-serif;
+}
+
+/*
+#site-title
+*/
+
+#site-sub-title {
+    font-size: 14px;
+    vertical-align: top;
+    margin-left: 12px;
+}
+
+/*
+#index-banner
+*/
+
+#index-banner {
+    min-height: 400px;
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+}
+
+#index-avatar {
+    background: #FFF;
+    height: 180px;
+    padding: 10px;
+    margin: 60px 0;
+}
+
+/*
+#main-container
+*/
+
+#main-container {
+    margin-bottom: 80px;
+}
+
+#main-container .article-section {
+    margin-bottom: 40px;
+}
+
+#main-container .article-section:first-child {
+    margin-top: -160px;
+}
+
+#main-container .article-section:first-child .content {
+    font-size: 1.2em;
+    line-height: 1.75;
+}
+
+#main-container .article-section .content {
+    font-size: 1.1em;
+    line-height: 1.6;
+}
+
+.article-section .meta {
+    margin: 2rem 0 1.5rem 0;
+}
+
+.article-section .main {
+    margin-top: .36rem;
+    margin-bottom: 1.5rem;
+    padding: .5rem 1.5rem .5rem 0;
+    position: relative;
+}
+
+.article-section .main2 {
+    padding: .5rem 1.5rem;
+}
+
+.article-section .meta > * {
+    display: block;
+    margin-bottom: 1.14rem;
+    position: relative;
+}
+
+.article-section .meta2 > * {
+    margin-right: 12px;
+}
+
+.article-section .meta2 i {
+    margin-right: 4px;
+}
+
+.article-section .date,
+.article-section .comments,
+.article-section .views {
+    text-transform: uppercase;
+}
+
+.article-section .title,
+.article-section .content,
+.article-section .meta2 {
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px dashed #EEE;
+}
+
+.article-section .title {
+    padding-right: 60px;
+}
+
+.article-section .badge.new {
+    top: 1.5rem
+}
+
+.article-page .btn {
+    margin: 0 1.5rem;
+}
+
+.article-section .no-preview {
+    font-size: 1.2em;
+    padding: 1em 0;
+}
+
+.archive-section .archive h5,
+.archive-section .archive .time {
+    display: inline-block;
+}
+
+.archive-section .archive .time {
+    min-width: 6em;
+}
+
+.archive-section .archive {
+    line-height: 60px;
+}
+
+.archive-section .main {
+    min-height: 360px;
+}
+
+/*
+#footer-container
+*/
+
+#footer-container .footer-copyright {
+    text-transform: uppercase;
+}
+
+/*
+.comment-section
+*/
+
+.comment-section .comment-main,
+.comment-section .comment-form {
+    padding: .5rem 1.5rem;
+}
+
+.comment-section .comment-header,
+.comment-section .comment-main > .comment {
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px dashed #EEE;
+}
+
+.comment-section .comment .children > .comment {
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px dashed #EEE;
+    margin-left: 8%;
+}
+
+.comment-section .avatar {
+    padding-right: 1.5rem;
+}
+
+.comment-section .meta {
+    line-height: 36px;
+}
+
+.comment-section .comment-main > .comment {
+    min-height: 90px;
+}
+
+.comment-section .comment .author {
+    font-size: 1.25em;
+    color: #444;
+}
+
+.comment-section .comment .date,
+.comment-section .comment .floor,
+.comment-section .comment .status,
+.comment-section .comment .badge {
+    padding-left: 1.5rem;
+    color: #999;
+    text-transform: uppercase;
+}
+
+.comment-section .meta2 {
+    line-height: 36px;
+    margin-top: -18px;
+}
+
+.comment-section .comment .content {
+    margin-top: .5rem;
+    padding-right: 3em;
+}
+
+.comment-section .reply i {
+    vertical-align: middle;
+}
+
+.comment-section .comment .reply {
+    display: none;
+}
+
+.comment-section .comment .body:hover .reply {
+    display: block;
+}
+
+.comment-section .comment .status {
+    display: none;
+    text-transform: uppercase;
+}
+
+.comment-section .comment .status.disapproved {
+    display: inline;
+}
+
+#comment-error,
+#comment-reply-view,
+#comment-reply-btn {
+    display: none;
+}
+
+#comment-reply-view blockquote {
+    padding: .6em 1em;
+    border-left: 1px solid #DDD;
+    background-color: #FAFAFA;
+}
+
+/*
+#error-container
+*/
+
+#error-container{
+    margin: 100px auto;
+}

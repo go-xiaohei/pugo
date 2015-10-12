@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    {{template "admin/_meta.tmpl" .}}
+</head>
+<body>
+{{template "admin/_nav.tmpl" .}}
+<div id="main">
+    <div class="container" id="comment-main">
+        <div class="main-title">
+            <h3>COMMENT</h3>
+            <a class="btn btn-primary btn-sm active" href="?status=all">All</a>
+            <a class="btn btn-sm btn-warning" href="?status=wait">Wait</a>
+            <a class="btn btn-sm btn-danger" href="?status=spam">Spam</a>
+        </div>
+        <hr/>
+        <div id="manage-comment-list">
+            {{range .Comments}}
+            <div class="comment clear" id="comment-{{.Id}}">
+                <div class="avatar pull-left">
+                    <img src="{{.AvatarUrl}}" alt="{{.Name}}"/>
+                </div>
+                <div class="meta">
+                    <a class="name" href="{{.AuthorUrl}}" target="_blank"><strong>{{.Name}}</strong></a>
+                    <span class="email">({{.Email}})</span>
+                    <span class="date">{{TimeUnixFormat .CreateTime "01.02 15:04:05"}}</span>
+                    <span class="from">&lt;{{.FromTitle}}&gt;</span>
+                    {{if .IsWait}}
+                    <a class="status text-warning">wait</a>
+                    <a class="opt approve text-danger" href="/admin/approve/comment?id={{.Id}}"><i class="fa fa-check"
+                                                                                                   title="approve this comment"></i></a>
+                    {{end}}
+                    {{if .IsSpam}}
+                    <a class="status text-danger">spam</a>
+                    <a class="opt approve text-success" href="/admin/approve/comment?id={{.Id}}"><i class="fa fa-check"
+                                                                                                    title="approve this comment"></i></a>
+                    {{end}}
+                    <a class="opt remove text-danger" href="/admin/delete/comment?id={{.Id}}"><i class="fa fa-times"
+                                                                                                 title="delete this comment"></i></a>
+                    <a class="opt reply text-primary" href="#comment-{{.Id}}" data-id="{{.Id}}"><i class="fa fa-reply"
+                                                                                                   title="reply this commit"></i></a>
+                </div>
+                <div class="body">
+                    <div class="content">{{Nl2BrHTML .Body}}</div>
+                    {{if .GetParent}}
+                    <div class="parent">@{{.GetParent.Name}}:{{.GetParent.Body}}</div>
+                    {{end}}
+                </div>
+            </div>
+            {{end}}
+            {{.Pager.HTML .PageUrl}}
+            <form id="reply-form" action="/admin/reply/comment" class="form" method="post">
+                <input type="hidden" name="pid" id="reply-pid" value="0"/>
+                <div id="reply-error" class="alert alert-danger">REPLY ERROR</div>
+                <div class="form-group">
+                    <textarea class="form-control" name="content" id="reply-content" rows="10"
+                              required="required"></textarea>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary">REPLY</button>
+                    <button class="btn btn-default" id="reply-cancel">CANCEL</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $('.opt.remove').on("click", function () {
+            return confirm("ARE YOU SURE TO DELETE THE COMMENT ?")
+        });
+        $('.opt.approve').on("click", function () {
+            return confirm("ARE YOU SURE TO ACCEPT THE COMMENT ?")
+        });
+        $('.opt.reply').on("click", function () {
+            var $form = $('#reply-form');
+            var $comment = $($(this).attr("href"));
+            $comment.append($form);
+            $form.show();
+            $('#reply-pid').val($(this).data("id"));
+        });
+        $('#reply-cancel').on("click",function(){
+           $('#reply-form').hide();
+        });
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    {{template "admin/_meta.tmpl" .}}
+</head>
+<body>
+{{template "admin/_nav.tmpl" .}}
+<div id="main">
+    <div class="container" id="theme-main">
+        <h3 class="main-title">THEME</h3>
+        <hr/>
+        <div id="theme-list">
+            {{range .Themes}}
+            <div class="theme clearfix">
+                <h4 class="title col-md-2"><strong>{{.Name}}</strong> ({{.Version}})</h4>
+                <span class="dir col-md-2">
+                    <i class="fa fa-file-o"></i>
+                    <span>({{.Directory}})</span>
+                </span>
+                <span class="status col-md-2">
+                    {{if .IsLocked}}
+                    <span class="label label-danger">LOCKED</span>
+                    {{end}}
+                    {{if .IsCurrent}}
+                    <span class="label label-primary">CURRENT</span>
+                    {{end}}
+                </span>
+                {{if .IsCurrentable}}
+                <span class="to-current pull-right">
+                    <a href="#">
+                        <button class="btn btn-info">
+                            <i class="fa fa-chevron-circle-right"></i>
+                            SET CURRENT
+                        </button>
+                    </a>
+                </span>
+                {{end}}
+            </div>
+            {{end}}
+        </div>
+    </div>
+</div>
+</body>
+</html>

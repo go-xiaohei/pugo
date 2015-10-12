@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    {{template "admin/_meta.tmpl" .}}
+</head>
+<body>
+<form id="login-form" action="/admin/login" method="post" class="container">
+    <h2 class="text-center" id="login-title">Login to Pugo</h2>
+    <hr/>
+    <div class="alert alert-danger form-group" id="login-error">{{.Error}}</div>
+    <div class="form-group">
+        <div class="input-group input-group-lg">
+            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+            <input class="form-control" id="login-user" type="text" name="user" placeholder="Username"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="input-group input-group-lg">
+            <span class="input-group-addon"><i class="fa fa-key"></i></span>
+            <input class="form-control" id="login-password" type="password" name="password" placeholder="Password"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <button class="btn btn-primary btn-block btn-lg">Login</button>
+    </div>
+    <div class="form-group">
+        <p class="form-control-static"><a href="/forget/password" id="login-forget">forget password ?</a></p>
+    </div>
+</form>
+<script>
+    $(function () {
+        $('#login-form').ajaxForm({
+            dataType: "json",
+            success: function (json) {
+                if (json.status) {
+                    window.location.href = "/admin/";
+                    return;
+                }
+                $('#login-error').text(json.error).show();
+            }
+        })
+    })
+</script>
+</body>
+</html>

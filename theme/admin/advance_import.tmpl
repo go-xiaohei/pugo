@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    {{template "admin/_meta.tmpl" .}}
+</head>
+<body>
+{{template "admin/_nav.tmpl" .}}
+<div id="main">
+    <div class="container" id="index-main">
+        <h3 class="main-title">IMPORT</h3>
+        <hr/>
+        <div id="import-forms">
+            <div class="alert alert-info" id="import-doing">IMPORTING DATA ......</div>
+            <div class="alert alert-success" id="import-success">IMPORTING DATA SUCCESS !!!</div>
+            <div class="alert alert-danger" id="import-error"></div>
+            <form id="import-goblog-form" action="/admin/import/goblog" class="form-inline" method="post">
+                <h4>GoBlog</h4>
+
+                <p class="help-text">a simple goblog engine based on json data, https://github.com/fuxiaohei/GoBlog</p>
+                <input class="form-control" id="import-goblog" type="file" name="file"/>
+                <button class="btn btn-primary">Upload</button>
+                <p class="help-text">upload zip file created by running GoBlog[.exe] backup</p>
+            </form>
+            <!--<form id="import-wp-form" action="#" class="form-inline">
+                <h4>Wordpress</h4>
+
+                <p class="help-text">Coming soon</p>
+            </form>-->
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        var isImporting = "{{.IsImporting}}";
+        if (isImporting) {
+            $('button,#import-success,#import-error').hide();
+            $('#import-doing').show();
+        }
+        $("form").ajaxForm({
+            dataType: "json",
+            beforeSubmit: function () {
+                $('button,#import-success,#import-error').hide();
+                $('#import-doing').show();
+            },
+            success: function (json) {
+                $("button").show();
+                $('#import-doing').hide();
+                if (json.status) {
+                    $('#import-success').show();
+                } else {
+                    $('#import-error').html(json.error).show();
+                }
+            }
+        })
+    });
+</script>
+</body>
+</html>

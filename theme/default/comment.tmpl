@@ -1,0 +1,91 @@
+<div class="section comment-section" id="comments">
+    <div class="row">
+        <div class="col l12 m12 s12 white z-depth-2">
+            <div class="comment-main">
+                {{if .Comments}}
+                <h4 class="comment-header">Comments</h4>
+                {{range .Comments}}
+                <div class="comment" id="comment-{{.Id}}" data-id="{{.Id}}" data-parent="{{.ParentId}}">
+                    <div class="avatar left">
+                        <img class="responsive-img circle z-depth-1"
+                             src="{{.AvatarUrl}}" alt="{{.Name}}"/>
+                    </div>
+                    <div class="body">
+                        <div class="meta">
+                            <a class="waves-effect waves-orange orange-text btn-flat right reply"
+                               href="#comment-{{.Id}}">
+                                <i class="mdi-content-reply"></i>&nbsp;&nbsp;REPLY
+                            </a>
+                            <a class="author" href="#"><strong>{{.Name}}</strong></a>
+                            <span class="date">{{TimeUnixFriend .CreateTime}}</span>
+                        </div>
+                        <div class="content entry-content">{{Nl2BrHTML .Body}}</div>
+                        <!--<div class="meta2 right-align">
+                            <span class="floor">#12</span>
+                        </div>-->
+                    </div>
+                    <div class="children"></div>
+                </div>
+                {{end}}
+                {{else}}
+                <h4 class="comment-header">No Comment Yet !</h4>
+                {{end}}
+            </div>
+            {{if .IsCommentEnable}}
+            <div class="comment-form">
+                <div class="row">
+                    <form class="col l8 m10 offset-l2 offset-m1 s12" method="post" id="comment-form"
+                          action="{{.CommentUrl}}">
+                        <div class="card-panel red lighten-2 white-text" id="comment-error"></div>
+                        <div class="card-panel" id="comment-reply-view"></div>
+                        <div class="row">
+                            <div class="input-field col s3">
+                                <input id="comment-user" type="text" class="validate" name="name" required="required">
+                                <label for="comment-user">Name</label>
+                            </div>
+                            <div class="input-field col s4">
+                                <input id="comment-email" type="email" class="validate" name="email"
+                                       required="required">
+                                <label for="comment-email">Email</label>
+                            </div>
+                            <div class="input-field col s5">
+                                <input id="comment-url" type="url" class="validate" name="url">
+                                <label for="comment-url">Url</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <textarea id="comment-content" class="materialize-textarea" name="content"></textarea>
+                                <label for="comment-content">Content</label>
+                            </div>
+                        </div>
+                        <div class="row center-align">
+                            <input type="hidden" name="parent" id="comment-parent" value="0"/>
+                            {{.XsrfHTML}}
+                            <button class="btn">SUBMIT</button>
+                            <button class="btn grey" type="button" id="comment-reply-btn">CANCEL REPLY</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <script type="text/template" id="comment-template">
+                <div class="comment">
+                    <div class="avatar left">
+                        <img class="responsive-img circle z-depth-1" src="{avatar_url}" alt="{name}"/>
+                    </div>
+                    <div class="body">
+                        <div class="meta">
+                            <a class="author" href="{url}"><strong>{name}</strong>
+                                <span class="red-text">(new)</span>
+                            </a>
+                            <span class="date">{created}</span>
+                            <span class="status {status}">{status}</span>
+                        </div>
+                        <div class="content entry-content">{content}</div>
+                    </div>
+                </div>
+            </script>
+            {{end}}
+        </div>
+    </div>
+</div>

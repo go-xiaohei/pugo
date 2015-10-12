@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    {{template "admin/_meta.tmpl" .}}
+</head>
+<body>
+{{template "admin/_nav.tmpl" .}}
+<div id="main">
+    <div class="container" id="setting-content-main">
+        <h3 class="main-title">SETTING COMMENT</h3>
+        <hr/>
+        <form id="setting-comment-form" class="form-horizontal" action="/admin/option/comment" method="post">
+            <div class="form-group alert alert-success" id="setting-comment-success"></div>
+            <div class="form-group alert alert-danger" id="setting-comment-error"></div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="comment-is-pager">Comment Pagination</label>
+
+                <div class="col-md-9">
+                    <div class="checkbox">
+                        <input id="comment-is-pager" name="is_pager" type="checkbox" value="true"
+                               style="margin-left: 0" disabled/>
+                        <span class="col-sm-offset-1 help-text">comment list should be in pagination in article page</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="comment-page-size">Comment Page Size</label>
+
+                <div class="col-md-9">
+                    <input class="form-control" id="comment-page-size" name="page_size" type="number"
+                           required="required" placeholder="NUMBER OF COMMENTS IN LIST PER PAGE" min="2"
+                           value="{{.CommentSetting.PageSize}}" readonly/></div>
+                <span class="col-sm-offset-2 col-sm-9 help-text">the number of comments in list. minimum 2.</span>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="comment-order">Order in List</label>
+
+                <div class="col-md-9">
+                    <select name="order" id="comment-order" class="form-control">
+                        <option value="create_time DESC"{{if eq .CommentSetting.Order `create_time DESC`}} selected{{end}}>CREATE TIME, DESCENDING</option>
+                        <option value="create_time ASC"{{if eq .CommentSetting.Order `create_time ASC`}} selected{{end}}>CREATE TIME, ASCENDING</option>
+                    </select>
+                </div>
+                <span class="col-sm-offset-2 col-sm-9 help-text">comments' order in list</span>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">Comment Text Length</label>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <div class="input-group-addon">MIN</div>
+                        <input type="text" class="form-control" name="min" value="{{.CommentSetting.MinLength}}">
+                        <div class="input-group-addon"> - </div>
+                        <input type="text" class="form-control" name="max" value="{{.CommentSetting.MaxLength}}">
+                        <div class="input-group-addon">MAX</div>
+                    </div>
+                </div>
+                <span class="col-sm-offset-2 col-sm-9 help-text">how many characters in comment body</span>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="comment-check">Check Strategy</label>
+
+                <div class="col-md-9">
+                    <select name="check" id="comment-check" class="form-control">
+                        <option value="all"{{if .CommentSetting.CheckAll}} selected{{end}}>CHECK ALL</option>
+                        <option value="passed"{{if .CommentSetting.CheckNoPass}} selected{{end}}>CHECK FIRST, PASS RECORDED</option>
+                    </select>
+                </div>
+                <span class="col-sm-offset-2 col-sm-9 help-text">check all comments, or check comments until one passed</span>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="comment-check">Auto Close Comment</label>
+
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="auto_close" value="{{.CommentSetting.AutoCloseDay}}">
+                        <div class="input-group-addon">DAYS</div>
+                    </div>
+                </div>
+                <span class="col-sm-offset-2 col-sm-9 help-text">the comment is closed after some days past.</span>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="comment-duration">Submit Duration</label>
+
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="duration" value="{{.CommentSetting.SubmitDuration}}" id="comment-duration">
+                        <div class="input-group-addon">SECONDS</div>
+                    </div>
+                </div>
+                <span class="col-sm-offset-2 col-sm-9 help-text">the duration between two commit submitting in each page</span>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="comment-show">Show Waiting Comment</label>
+
+                <div class="col-md-9">
+                    <div class="checkbox">
+                        <input id="comment-show" name="show_wait" type="checkbox" value="true"
+                               style="margin-left: 0"{{if .CommentSetting.ShowWaitComment}} checked{{end}}/>
+                        <span class="col-sm-offset-1 help-text">show waiting comments in list</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-9">
+                    {{.XsrfHTML}}
+                    <button type="submit" class="btn btn-primary">UPDATE SETTING</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+<script>
+    $(function () {
+        $('#setting-comment-form').ajaxForm({
+            dataType: "json",
+            success: function (json) {
+                console.log(json);
+                $('#setting-comment-success,#setting-comment-error').hide();
+                if (json.status) {
+                    $('#setting-comment-success').text("UPDATE SUCCESS !").show();
+                    return;
+                }
+                $("#setting-comment-error").text(json.error).show();
+            }
+        });
+    })
+</script>
+</html>

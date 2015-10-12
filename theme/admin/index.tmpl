@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    {{template "admin/_meta.tmpl" .}}
+</head>
+<body>
+{{template "admin/_nav.tmpl" .}}
+<div id="main">
+    <div class="container" id="index-main">
+        <h3 class="main-title">MESSAGES</h3>
+        <hr/>
+        <div id="message-list">
+            {{range .Messages}}
+            {{.HTML}}
+            {{end}}
+        </div>
+    </div>
+</div>
+</body>
+</html>

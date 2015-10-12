@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    {{template "admin/_meta.tmpl" .}}
+</head>
+<body>
+{{template "admin/_nav.tmpl" .}}
+<div id="main">
+    <div class="container" id="setting-general-main">
+        <h3 class="main-title">SETTING GENERAL</h3>
+        <hr/>
+        <form id="setting-general-form" class="form-horizontal" action="/admin/option/general" method="post">
+            <div class="form-group alert alert-success" id="setting-general-success"></div>
+            <div class="form-group alert alert-danger" id="setting-general-error"></div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="title">Site Title</label>
+
+                <div class="col-md-9">
+                    <input class="form-control" id="title" name="title" type="text" required="required"
+                           placeholder="SITE TITLE" value="{{.GeneralSetting.Title}}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="subtitle">Sub Title</label>
+
+                <div class="col-md-9"><input class="form-control" id="subtitle" name="subtitle" type="text"
+                                             required="required" placeholder="SITE SUBTITLE"
+                                             value="{{.GeneralSetting.SubTitle}}"/></div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="keyword">Keyword Meta</label>
+
+                <div class="col-md-9">
+                    <input id="keyword" class="form-control" name="keyword" type="text" placeholder="SITE KEYWORD META"
+                           value="{{.GeneralSetting.Keyword}}"/>
+                </div>
+                <span class="col-sm-offset-2 col-sm-9 help-text">&lt;meta content="keyword"&gt; in header</span>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="desc">Description Meta</label>
+
+                <div class="col-md-9">
+                    <input id="desc" class="form-control" name="desc" type="text" placeholder="SITE DESCRIPTION META"
+                           value="{{.GeneralSetting.Description}}"/>
+                </div>
+                <span class="col-sm-offset-2 col-sm-9 help-text">&lt;meta content="description"&gt; in header</span>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="host">Host Name</label>
+
+                <div class="col-md-9">
+                    <input id="host" class="form-control" name="host" type="url" required="required"
+                           placeholder="SITE HOST NAME" value="{{.GeneralSetting.HostName}}"/>
+                </div>
+                <span class="col-sm-offset-2 col-sm-9 help-text">used to build full url link</span>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="hero">Hero Image</label>
+
+                <div class="col-md-9">
+                    <input id="hero" class="form-control" name="hero" type="text" required="required"
+                           placeholder="HERO IMAGE" value="{{.GeneralSetting.HeroImage}}"/>
+                </div>
+                <span class="col-sm-offset-2 col-sm-9 help-text">hero image behind of avatar image</span>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="avatar">Avatar Image</label>
+
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <input id="avatar" class="form-control" name="avatar" type="text" required="required"
+                               placeholder="AVATAR IMAGE" value="{{.GeneralSetting.TopAvatarImage}}"/>
+                        <span class="input-group-addon">
+                            <input type="checkbox" value="true" name="avatar_ext"{{if .GeneralSetting.TopAvatarIsExternal}} checked{{end}}/>&nbsp;&nbsp; External Link
+                        </span>
+                    </div>
+                </div>
+                <span class="col-sm-offset-2 col-sm-9 help-text">avatar image at the top, use squared image better</span>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-9">
+                    {{.XsrfHTML}}
+                    <button type="submit" class="btn btn-primary">UPDATE SETTING</button>
+                </div>
+            </div>
+        </form>
+        <hr/>
+        <h3 class="main-title">SETTING MEDIA</h3>
+        <hr/>
+        <form id="setting-media-form" class="form-horizontal" action="/admin/option/media" method="post">
+            <div class="form-group alert alert-success" id="setting-media-success"></div>
+            <div class="form-group alert alert-danger" id="setting-media-error"></div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="file-size">Max File Size</label>
+
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="file-size" name="size"
+                               value="{{.MediaSetting.MaxFileSize}}" max="102400">
+                        <span class="input-group-addon">KB</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="image-file">Image File Types</label>
+
+                <div class="col-md-9">
+                    <input id="image-file" class="form-control" type="text" name="image"
+                           value="{{.MediaSetting.Image}}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="doc-file">Document File Types</label>
+
+                <div class="col-md-9">
+                    <input id="doc-file" class="form-control" type="text" name="doc"
+                           value="{{.MediaSetting.Doc}}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="common-file">Common File Types</label>
+
+                <div class="col-md-9">
+                    <input id="common-file" class="form-control" type="text" name="common"
+                           value="{{.MediaSetting.Common}}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-9">
+                    {{.XsrfHTML}}
+                    <button type="submit" class="btn btn-primary">UPDATE SETTING</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+<script>
+    $(function () {
+        $('#setting-general-form').ajaxForm({
+            dataType: "json",
+            success: function (json) {
+                console.log(json);
+                $('#setting-general-success,#setting-general-error').hide();
+                if (json.status) {
+                    $('#setting-general-success').text("UPDATE SUCCESS !").show();
+                    return;
+                }
+                $("#setting-general-error").text(json.error).show();
+            }
+        });
+        $('#setting-media-form').ajaxForm({
+            dataType: "json",
+            success: function (json) {
+                console.log(json);
+                $('#setting-media-success,#setting-media-error').hide();
+                if (json.status) {
+                    $('#setting-media-success').text("UPDATE SUCCESS !").show();
+                    return;
+                }
+                $("#setting-media-error").text(json.error).show();
+            }
+        })
+    })
+</script>
+</html>

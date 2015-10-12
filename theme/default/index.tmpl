@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    {{template "default/_meta.tmpl" .}}
+</head>
+<body>
+{{template "default/_header.tmpl" .}}
+<div id="main-container">
+    <div class="container row">
+        {{range .Articles}}
+        <div class="section article-section" id="article-{{.Id}}">
+            <div class="row">
+                <div class="col l10 offset-l1 m12 s12 white z-depth-1">
+                    <article class="article">
+                        <div class="main main2">
+                            <h4 class="title truncate"><a href="{{.Href}}" title="{{.Title}}">{{.Title}}</a></h4>
+                            <div class="meta2">
+                                <span class="date grey-text"><i class="mdi-action-schedule"></i> {{TimeUnixFriend .CreateTime}}</span>
+                                <a href="{{.Href}}#comments" class="comments grey-text">
+                                    <i class="mdi-editor-mode-comment"></i>comment&nbsp;&nbsp;&nbsp;{{.Comments}}
+                                </a>
+                                <a href="{{.Href}}" class="views grey-text">
+                                    <i class="mdi-action-visibility"></i>read&nbsp;&nbsp;&nbsp;{{.Hits}}
+                                </a>
+                                {{if .IsNewRead}}
+                                <span class="badge new red lighten-1"></span>
+                                {{end}}
+                            </div>
+                            <div class="content entry-content">
+                                {{if .Preview}}
+                                {{.PreviewContent}}
+                                {{else}}
+                                <p class="no-preview grey-text text-lighten center-align">No Preview Content</p>
+                                {{end}}
+                            </div>
+                            <div class="more right-align">
+                                <a class="waves-effect waves-teal btn-flat" href="{{.Href}}" title="read more">Read More</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+        {{end}}
+        <div class="section article-page center-align">
+            {{if .Pager.IsPrev}}
+            <a class="waves-effect waves-light btn btn-large blue lighten-2" href="/article/page/{{.Pager.Prev}}">prev</a>
+            {{end}}
+            {{if .Pager.IsNext}}
+            <a class="waves-effect waves-light btn btn-large blue lighten-2" href="/article/page/{{.Pager.Next}}">next</a>
+            {{end}}
+        </div>
+    </div>
+</div>
+{{template "default/_footer.tmpl" .}}
+</body>
+</html>

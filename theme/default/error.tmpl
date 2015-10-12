@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    {{template "default/_meta.tmpl" .}}
+</head>
+<body>
+<div id="error-container">
+    <div class="container row center-align">
+        {{if eq .Status 404}}
+            <div class="image">
+                <img src="{{.ThemeLink}}/img/404.png" alt="404" title="Not Found"/>
+            </div>
+            <div class="message">
+                <h4>Something doesn't look right ...</h4>
+                <br/>
+                <p>Try heading <a href="javascript:history.goBack(-1)" title="back">back</a> page or your <a href="/" title="homepage">homepage</a></p>
+            </div>
+        {{else}}
+        <div class="image">
+            <img src="{{.ThemeLink}}/img/500.png" alt="500" title="Internal Server Error"/>
+        </div>
+        <div class="message">
+            <h4>Something does run wrongly ...</h4>
+            <br/>
+            <p>Try heading <a href="javascript:history.goBack(-1)" title="back">back</a> page or your <a href="/" title="homepage">homepage</a></p>
+        </div>
+        {{end}}
+    </div>
+</div>
+</body>
+</html>
