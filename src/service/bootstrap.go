@@ -2,10 +2,10 @@ package service
 
 import (
 	"fmt"
-	"github.com/fuxiaohei/pugo/src/core"
-	"github.com/fuxiaohei/pugo/src/model"
-	"github.com/fuxiaohei/pugo/src/utils"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/go-xiaohei/pugo/src/core"
+	"github.com/go-xiaohei/pugo/src/model"
+	"github.com/go-xiaohei/pugo/src/utils"
 	_ "github.com/go-xorm/tidb"
 	"github.com/go-xorm/xorm"
 	"github.com/lunny/tango"
@@ -390,7 +390,7 @@ var (
 	firstArticleTag     = "hello"
 	firstArticleContent = `# Hello World
 
-Welcome to [Pugo](http://github.com/fuxiaohei/pugo)! This is your very first article. Read the [Wiki](http://github.com/fuxiaohei/pugo/wiki) for more infomation. If you get any problems when trying Pugo, you can find the answer or make a question in [issues](http://github.com/fuxiaohei/pugo/issues).
+Welcome to [Pugo](http://github.com/go-xiaohei/pugo)! This is your very first article. Read the [Wiki](http://github.com/go-xiaohei/pugo/wiki) for more infomation. If you get any problems when trying Pugo, you can find the answer or make a question in [issues](http://github.com/go-xiaohei/pugo/issues).
 
 ### Usage
 
@@ -415,7 +415,7 @@ You can sign in [admin panel](/admin/) with ` + "`admin`" + ` & ` + "`123456789`
 
 ### Usage
 
-You can download binary file from [Github Releases](https://github.com/fuxiaohei/pugo/releases) in your operation system.
+You can download binary file from [Github Releases](https://github.com/go-xiaohei/pugo/releases) in your operation system.
 
 Then unzip compressed file and run ` + "`pugo[.exe] server`" + ` to install and run site in ` + "`http://localhost:9899`" + `.
 
@@ -423,6 +423,6 @@ You need change ` + "`admin`" + ` settings to keep more safe.
 
 ### Contribute
 
-Please feedback any question to [Github Issue](https://github.com/fuxiaohei/pugo/issues).
+Please feedback any question to [Github Issue](https://github.com/go-xiaohei/pugo/issues).
 `
 )

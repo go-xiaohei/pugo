@@ -2,7 +2,7 @@ package middle
 
 import (
 	"fmt"
-	"github.com/fuxiaohei/pugo/src/core"
+	"github.com/go-xiaohei/pugo/src/core"
 	"github.com/lunny/tango"
 	"gopkg.in/inconshreveable/log15.v2"
 	"runtime"

@@ -2,9 +2,9 @@ package middle
 
 import (
 	"fmt"
-	"github.com/fuxiaohei/pugo/src/core"
-	"github.com/fuxiaohei/pugo/src/model"
-	"github.com/fuxiaohei/pugo/src/service"
+	"github.com/go-xiaohei/pugo/src/core"
+	"github.com/go-xiaohei/pugo/src/model"
+	"github.com/go-xiaohei/pugo/src/service"
 	"github.com/lunny/tango"
 	"github.com/tango-contrib/renders"
 	"net/http"

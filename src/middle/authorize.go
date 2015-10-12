@@ -1,8 +1,8 @@
 package middle
 
 import (
-	"github.com/fuxiaohei/pugo/src/model"
-	"github.com/fuxiaohei/pugo/src/service"
+	"github.com/go-xiaohei/pugo/src/model"
+	"github.com/go-xiaohei/pugo/src/service"
 	"github.com/lunny/tango"
 	"net/http"
 	"time"

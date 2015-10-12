@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/fuxiaohei/pugo/src/core"
-	"github.com/fuxiaohei/pugo/src/model"
-	"github.com/fuxiaohei/pugo/src/utils"
+	"github.com/go-xiaohei/pugo/src/core"
+	"github.com/go-xiaohei/pugo/src/model"
+	"github.com/go-xiaohei/pugo/src/utils"
 )
 
 var (

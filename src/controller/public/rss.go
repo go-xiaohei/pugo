@@ -2,7 +2,7 @@ package public
 
 import (
 	"bytes"
-	"github.com/fuxiaohei/pugo/src/service"
+	"github.com/go-xiaohei/pugo/src/service"
 	"github.com/lunny/tango"
 )
 

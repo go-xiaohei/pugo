@@ -2,9 +2,9 @@ package admin
 
 import (
 	"fmt"
-	"github.com/fuxiaohei/pugo/src/middle"
-	"github.com/fuxiaohei/pugo/src/model"
-	"github.com/fuxiaohei/pugo/src/service"
+	"github.com/go-xiaohei/pugo/src/middle"
+	"github.com/go-xiaohei/pugo/src/model"
+	"github.com/go-xiaohei/pugo/src/service"
 	"github.com/lunny/tango"
 	"os"
 	"path"

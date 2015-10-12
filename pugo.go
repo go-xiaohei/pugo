@@ -1,6 +1,8 @@
 package main
 
-import "github.com/fuxiaohei/pugo/src/boot"
+import (
+	"github.com/go-xiaohei/pugo/src/boot"
+)
 
 func main() {
 	boot.Run()

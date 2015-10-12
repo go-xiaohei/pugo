@@ -2,7 +2,7 @@ package service
 
 import (
 	"errors"
-	"github.com/fuxiaohei/pugo/src/model"
+	"github.com/go-xiaohei/pugo/src/model"
 )
 
 const (

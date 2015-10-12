@@ -3,8 +3,8 @@ package service
 import (
 	"encoding/json"
 	"github.com/Unknwon/cae/zip"
-	"github.com/fuxiaohei/pugo/src/core"
-	"github.com/fuxiaohei/pugo/src/model"
+	"github.com/go-xiaohei/pugo/src/core"
+	"github.com/go-xiaohei/pugo/src/model"
 	"io"
 	"io/ioutil"
 	"os"

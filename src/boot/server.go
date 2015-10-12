@@ -2,11 +2,11 @@ package boot
 
 import (
 	"github.com/codegangsta/cli"
-	"github.com/fuxiaohei/pugo/src/controller/admin"
-	"github.com/fuxiaohei/pugo/src/controller/public"
-	"github.com/fuxiaohei/pugo/src/core"
-	"github.com/fuxiaohei/pugo/src/middle"
-	"github.com/fuxiaohei/pugo/src/service"
+	"github.com/go-xiaohei/pugo/src/controller/admin"
+	"github.com/go-xiaohei/pugo/src/controller/public"
+	"github.com/go-xiaohei/pugo/src/core"
+	"github.com/go-xiaohei/pugo/src/middle"
+	"github.com/go-xiaohei/pugo/src/service"
 	"github.com/lunny/tango"
 	"gopkg.in/inconshreveable/log15.v2"
 	"gopkg.in/inconshreveable/log15.v2/ext"

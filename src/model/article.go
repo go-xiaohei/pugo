@@ -2,8 +2,8 @@ package model
 
 import (
 	"fmt"
-	"github.com/fuxiaohei/pugo/src/core"
-	"github.com/fuxiaohei/pugo/src/utils"
+	"github.com/go-xiaohei/pugo/src/core"
+	"github.com/go-xiaohei/pugo/src/utils"
 	"html/template"
 	"strings"
 	"time"

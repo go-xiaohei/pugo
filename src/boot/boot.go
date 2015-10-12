@@ -4,7 +4,7 @@ package boot
 import (
 	"fmt"
 	"github.com/codegangsta/cli"
-	"github.com/fuxiaohei/pugo/src/core"
+	"github.com/go-xiaohei/pugo/src/core"
 	"gopkg.in/inconshreveable/log15.v2"
 	"gopkg.in/inconshreveable/log15.v2/ext"
 	"os"

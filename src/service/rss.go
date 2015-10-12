@@ -2,8 +2,8 @@ package service
 
 import (
 	"bytes"
-	"github.com/fuxiaohei/pugo/src/model"
-	"github.com/fuxiaohei/pugo/src/utils"
+	"github.com/go-xiaohei/pugo/src/model"
+	"github.com/go-xiaohei/pugo/src/utils"
 	"time"
 )
 
