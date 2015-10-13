@@ -209,7 +209,7 @@ func prepareCommentListOption(opt CommentListOption) CommentListOption {
 	}
 	// set default status
 	if opt.Status == 0 {
-		if !opt.AllApproved && !opt.AllApproved {
+		if !opt.AllAccessible && !opt.AllApproved {
 			opt.AllApproved = true
 			return opt
 		}

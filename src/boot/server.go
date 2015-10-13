@@ -40,6 +40,8 @@ func (sc *serverContext) Stop() {
 
 }
 
+// server command action,
+// it's used by *boot.serverContext when run "pugo.exe server" command
 func Server(ctx *cli.Context) {
 	// change logger level
 	if ctx.Bool("debug") {

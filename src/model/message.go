@@ -32,7 +32,7 @@ type Message struct {
 	FromId     int64  `xorm:"notnull"`
 	Type       int    `xorm:"INT(8) notnull"`
 	Body       string `xorm:"TEXT"`
-	CreateTime int64  `xorm:"INT(12) created`
+	CreateTime int64  `xorm:"INT(12) created"`
 }
 
 func (m *Message) HTML() template.HTML {

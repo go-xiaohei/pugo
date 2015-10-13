@@ -241,15 +241,15 @@ func (bs *BootstrapService) Install(v interface{}) (*Result, error) {
 	Setting.Comment = commentSetting
 
 	menuSettings := []*model.SettingMenu{
-		&model.SettingMenu{
+		{
 			"Home", "/", "Home",
 			false, "home",
 		},
-		&model.SettingMenu{
+		{
 			"Archive", "/archive", "Archive",
 			false, "archive",
 		},
-		&model.SettingMenu{
+		{
 			"About", "/about.html", "About",
 			false, "about",
 		},

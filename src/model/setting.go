@@ -98,7 +98,7 @@ type SettingMedia struct {
 	ImageFile   []string `json:"image_file"`
 	DocFile     []string `json:"doc_file"`
 	CommonFile  []string `json:"common_file"`
-	DynamicLink bool     `json:"dync_link`
+	DynamicLink bool     `json:"dync_link"`
 }
 
 func (sm SettingMedia) Image() string {

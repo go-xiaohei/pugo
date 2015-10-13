@@ -25,6 +25,7 @@ var (
 	}
 )
 
+// install command action
 func Install(ctx *cli.Context) {
 	opt := service.BootstrapInitOption{true, false, false}
 	if err := service.Call(service.Bootstrap.Init, opt); err != nil {

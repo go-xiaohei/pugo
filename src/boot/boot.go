@@ -22,7 +22,7 @@ func init() {
 	core.App.Version = fmt.Sprintf("%s(%s)", core.PUGO_VERSION, core.PUGO_VERSION_STATE)
 	core.App.Compiled, _ = time.Parse("20060102", core.PUGO_VERSION_DATE)
 	core.App.Authors = []cli.Author{
-		cli.Author{core.PUGO_AUTHOR, core.PUGO_AUTHOR_EMAIL},
+		{core.PUGO_AUTHOR, core.PUGO_AUTHOR_EMAIL},
 	}
 	core.App.HideHelp = true
 	core.App.HideVersion = true
@@ -43,6 +43,7 @@ func init() {
 	core.Crash.SetHandler(log15.StreamHandler(file, log15.JsonFormat()))
 }
 
+// run blog engine
 func Run() {
 	core.App.RunAndExitOnError()
 }

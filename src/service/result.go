@@ -72,7 +72,7 @@ func (r *Result) SetTo(values ...interface{}) {
 
 func (r *Result) toDataTypes() []string {
 	s := make([]string, 0, len(r.data))
-	for name, _ := range r.data {
+	for name := range r.data {
 		s = append(s, name)
 	}
 	return s
