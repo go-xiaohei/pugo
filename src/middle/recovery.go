@@ -40,11 +40,13 @@ func Recover() tango.HandlerFunc {
 					"remote", ctx.Req().RemoteAddr,
 					"error", header,
 				)
+				// crash log
 				core.Crash.Error(
 					fmt.Sprintf(logFormat, ctx.Req().Method, ctx.Status(), ctx.Req().URL.Path),
 					"path", p,
 					"remote", ctx.Req().RemoteAddr,
 					"error", header,
+					"stack", content,
 				)
 			}
 		}()
@@ -70,14 +72,16 @@ func (rh *RecoveryHandler) Handle(ctx *tango.Context) {
 	}
 
 	// capture abort error
-	/*
-		if err, ok := ctx.Result.(tango.AbortError); ok {
-			ctx.WriteHeader(err.Code())
-			theme := new(ThemeRender)
-			theme.SetTheme(nil)
-			theme.RenderError(err.Code(), err)
+
+	if err, ok := ctx.Result.(tango.AbortError); ok {
+		code := err.Code()
+		if code == 404 {
+			ctx.Redirect("/error/404.html")
 			return
-		}*/
+		}
+		ctx.Redirect("/error/503.html")
+		return
+	}
 
 	// unexpected error
 	tango.Errors()(ctx)

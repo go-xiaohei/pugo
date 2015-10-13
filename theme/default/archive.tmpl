@@ -12,10 +12,14 @@
                 <div class="col l12 m12 s12 white z-depth-2">
                     <div class="main main2">
                         <h4 class="title">Archives</h4>
+
                         <div id="archive-list">
                             {{range .Archives}}
+                            {{if .IsNewYear}}
+                            <h5 class="archive-year">{{TimeUnixFormat .CreateTime "2006"}}</h5>
+                            {{end}}
                             <div class="archive">
-                                <span class="time">{{TimeUnixFormat .CreateTime "01.02"}}</span>
+                                <span class="time">{{TimeUnixFormat .CreateTime "2006.01.02"}}</span>
                                 <h5><a href="{{.Href}}" title="{{.Title}}">{{.Title}}</a></h5>
                             </div>
                             {{end}}

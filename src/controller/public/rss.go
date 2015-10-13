@@ -18,3 +18,12 @@ func (rc *RssController) Get() {
 	rc.Header().Add("Content-Type", "application/rss+xml;charset=UTF-8")
 	rc.Write(buf.Bytes())
 }
+
+type RobotController struct {
+	tango.Ctx
+}
+
+func (rc *RobotController) Get() {
+	rc.Write([]byte(`User-agent: *
+Disallow: /admin/`))
+}

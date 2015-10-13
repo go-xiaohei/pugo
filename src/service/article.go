@@ -8,6 +8,7 @@ import (
 	"github.com/go-xiaohei/pugo/src/model"
 	"github.com/go-xiaohei/pugo/src/utils"
 	"strings"
+	"time"
 )
 
 var (
@@ -297,8 +298,16 @@ func (as *ArticleService) Archive(v interface{}) (*Result, error) {
 	}
 	opt = prepareArchiveListOption(opt)
 	archives := make([]*model.ArticleArchive, 0)
-	if err := core.Db.Where("status = ?", model.ARTICLE_STATUS_PUBLISH).Find(&archives); err != nil {
+	if err := core.Db.Where("status = ?", model.ARTICLE_STATUS_PUBLISH).OrderBy("create_time DESC").Find(&archives); err != nil {
 		return nil, err
+	}
+	oldYear := 0
+	for _, a := range archives {
+		t := time.Unix(a.CreateTime, 0)
+		if oldYear != t.Year() {
+			oldYear = t.Year()
+			a.IsNewYear = true
+		}
 	}
 	return newResult(as.Archive, &archives), nil
 }

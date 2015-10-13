@@ -16,10 +16,13 @@ const (
 	PUGO_AUTHOR        = "fuxiaohei"
 	PUGO_AUTHOR_EMAIL  = "fuxiaohei@vip.qq.com"
 
-	RUM_MODE = "prod" // prod || debug
+	RUN_MOD_PROD  = "prod"
+	RUN_MOD_DEBUG = "debug"
 )
 
 var (
+	RunMode = RUN_MOD_PROD // prod || debug
+
 	App    *cli.App
 	Cfg    *Config
 	Db     *xorm.Engine

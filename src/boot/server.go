@@ -43,6 +43,7 @@ func (sc *serverContext) Stop() {
 func Server(ctx *cli.Context) {
 	// change logger level
 	if ctx.Bool("debug") {
+		core.RunMode = core.RUN_MOD_DEBUG
 		log15.Root().SetHandler(ext.FatalHandler(log15.StderrHandler))
 	}
 
@@ -122,9 +123,17 @@ func Server(ctx *cli.Context) {
 	core.Server.Get("/article/:id/:link.html", new(public.ArticleController))
 	core.Server.Get("/page/:id/:link.html", new(public.PageController))
 	core.Server.Post("/comment/:type/:id", new(public.CommentController))
+
+	core.Server.Get("/robots.txt", new(public.RobotController))
 	core.Server.Get("/feed.xml", new(public.RssController))
+	core.Server.Get("/feed", new(public.RssController))
+
 	core.Server.Get("/archive", new(public.ArchiveController))
 	core.Server.Get("/:link.html", new(public.PageController))
+
+	core.Server.Route([]string{"GET:NotFound"}, "/error/404.html", new(public.ErrorController))
+	core.Server.Route([]string{"GET:InternalError"}, "/error/503.html", new(public.ErrorController))
+
 	core.Server.Get("/", new(public.IndexController))
 
 	// start server

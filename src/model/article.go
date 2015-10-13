@@ -138,6 +138,7 @@ type ArticleArchive struct {
 	Title      string
 	Link       string
 	CreateTime int64
+	IsNewYear  bool `xorm:"-"`
 }
 
 func (aa *ArticleArchive) TableName() string {
