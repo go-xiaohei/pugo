@@ -35,7 +35,8 @@ type Comment struct {
 	FromId   int64 `xorm:"index(from)" json:"-"`
 	ParentId int64 `xorm:"index(parent)" json:"parent"`
 
-	parent *Comment `xorm:"-"`
+	parent    *Comment `xorm:"-"`
+	FromTitle string   `xorm:"-"`
 }
 
 func (c *Comment) IsTopApproved() bool {
@@ -61,20 +62,6 @@ func (c *Comment) IsSpam() bool {
 	return c.Status == COMMENT_STATUS_SPAM
 }
 
-func (c *Comment) FromTitle() string {
-	if c.From == COMMENT_FROM_ARTICLE {
-		if article := getArticleById(c.FromId); article != nil {
-			return article.Title
-		}
-	}
-	if c.From == COMMENT_FROM_PAGE {
-		if page := getPageById(c.FromId); page != nil {
-			return page.Title
-		}
-	}
-	return ""
-}
-
 func (c *Comment) GetParent() *Comment {
 	if c.ParentId == 0 {
 		return nil
@@ -92,26 +79,38 @@ func (c *Comment) GetParent() *Comment {
 	return c.parent
 }
 
-func getArticleById(id int64) *Article {
-	a := new(Article)
-	if _, err := core.Db.Where("id = ?", id).Get(a); err != nil {
-		return nil
+func (c *Comment) GetTitle() string {
+	if c.FromTitle == "" {
+		if c.From == COMMENT_FROM_ARTICLE {
+			c.FromTitle = getArticleTitleById(c.FromId)
+		}
+		if c.From == COMMENT_FROM_PAGE {
+			c.FromTitle = getPageTitleById(c.FromId)
+		}
 	}
-	if a.Id != id {
-		return nil
-	}
-	return a
+	return c.FromTitle
 }
 
-func getPageById(id int64) *Page {
-	a := new(Page)
-	if _, err := core.Db.Where("id = ?", id).Get(a); err != nil {
-		return nil
+func getArticleTitleById(id int64) string {
+	a := new(Article)
+	if _, err := core.Db.Cols("id,title").Where("id = ?", id).Get(a); err != nil {
+		return ""
 	}
 	if a.Id != id {
-		return nil
+		return ""
 	}
-	return a
+	return a.Title
+}
+
+func getPageTitleById(id int64) string {
+	a := new(Page)
+	if _, err := core.Db.Cols("id,title").Where("id = ?", id).Get(a); err != nil {
+		return ""
+	}
+	if a.Id != id {
+		return ""
+	}
+	return a.Title
 }
 
 type FrontComment struct {
@@ -144,4 +143,54 @@ func NewFrontComment(c *Comment) *FrontComment {
 		ParentId:   c.ParentId,
 	}
 	return fc
+}
+
+type CommentsGroup struct {
+	comments          []*Comment
+	cacheParent       map[int64]*Comment
+	cacheArticleTitle map[int64]string
+	cachePageTitle    map[int64]string
+}
+
+func NewCommentsGroup(cmts []*Comment) *CommentsGroup {
+	return &CommentsGroup{
+		comments:          cmts,
+		cacheParent:       make(map[int64]*Comment),
+		cacheArticleTitle: make(map[int64]string),
+		cachePageTitle:    make(map[int64]string),
+	}
+}
+
+func (cg *CommentsGroup) FillAll() {
+	for _, c := range cg.comments {
+		if c.From == COMMENT_FROM_ARTICLE {
+			if cg.cacheArticleTitle[c.FromId] == "" {
+				cg.cacheArticleTitle[c.FromId] = getArticleTitleById(c.FromId)
+			}
+			c.FromTitle = cg.cacheArticleTitle[c.FromId]
+		}
+		if c.From == COMMENT_FROM_PAGE {
+			if cg.cachePageTitle[c.FromId] == "" {
+				cg.cachePageTitle[c.FromId] = getPageTitleById(c.FromId)
+			}
+			c.FromTitle = cg.cachePageTitle[c.FromId]
+		}
+		if c.ParentId > 0 {
+			if cg.cacheParent[c.ParentId] == nil {
+				co := new(Comment)
+				if _, err := core.Db.Where("id = ?", c.ParentId).Get(co); err != nil {
+					continue
+				}
+				if c.ParentId != co.Id {
+					continue
+				}
+				cg.cacheParent[c.ParentId] = co
+			}
+			c.parent = cg.cacheParent[c.ParentId]
+		}
+	}
+}
+
+func (cg *CommentsGroup) Comments() []*Comment {
+	return cg.comments
 }

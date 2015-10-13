@@ -141,7 +141,7 @@ func (cs *CommentService) msgSave(cmt *model.Comment) {
 		"author": cmt.Name,
 		"site":   cmt.AuthorUrl(),
 		"body":   cmt.Body,
-		"title":  cmt.FromTitle(),
+		"title":  cmt.GetTitle(),
 	}
 
 	message := &model.Message{
@@ -263,6 +263,10 @@ func (cs *CommentService) List(v interface{}) (*Result, error) {
 	if err := sess.Find(&comments); err != nil {
 		return nil, err
 	}
+
+	commentsGroup := model.NewCommentsGroup(comments)
+	commentsGroup.FillAll()
+	comments = commentsGroup.Comments()
 
 	res := newResult(cs.List, &comments)
 	if opt.IsCount {

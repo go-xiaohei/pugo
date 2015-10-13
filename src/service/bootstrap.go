@@ -54,8 +54,11 @@ func (is *BootstrapService) Init(v interface{}) (*Result, error) {
 		}
 		// debug mode
 		if core.RunMode == core.RUN_MOD_DEBUG {
-			// core.Db.ShowDebug = true
+			core.Db.ShowDebug = true
+			core.Db.ShowInfo = false
 			core.Db.ShowSQL = true
+			core.Db.ShowWarn = true
+			core.Db.ShowErr = true
 		} else {
 			// close log in prod mode
 			core.Db.SetLogger(nil)
