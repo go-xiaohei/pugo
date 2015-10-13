@@ -171,11 +171,11 @@ func (ps *PageService) List(v interface{}) (*Result, error) {
 	if opt.IsCount {
 		// the session had been used, reset condition to count
 		if opt.Status == 0 {
-			sess.Where("status != ?", model.ARTICLE_STATUS_DELETE)
+			sess.Where("status != ?", model.PAGE_STATUS_DELETE)
 		} else {
 			sess.Where("status = ?", opt.Status)
 		}
-		count, err := sess.Count(new(model.Article))
+		count, err := sess.Count(new(model.Page))
 		if err != nil {
 			return nil, err
 		}

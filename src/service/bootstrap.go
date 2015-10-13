@@ -52,9 +52,19 @@ func (is *BootstrapService) Init(v interface{}) (*Result, error) {
 		if err != nil {
 			return nil, err
 		}
-		core.Db.SetLogger(nil)
-		// core.Db.ShowDebug = true
-		// core.Db.ShowSQL = true
+		// debug mode
+		if core.RunMode == core.RUN_MOD_DEBUG {
+			// core.Db.ShowDebug = true
+			core.Db.ShowSQL = true
+		} else {
+			// close log in prod mode
+			core.Db.SetLogger(nil)
+		}
+
+		// ping to test connection
+		if err := core.Db.Ping(); err != nil {
+			return nil, err
+		}
 	}
 	if core.Cfg != nil && opt.Server { // server depends on config
 		core.Server = tango.New([]tango.Handler{

@@ -151,11 +151,15 @@ type ArticleListOption struct {
 	Size     int
 	IsCount  bool
 	ReadTime int64
+	Tag      string // only affect in ListTag method
 }
 
 func prepareArticleListOption(opt ArticleListOption) ArticleListOption {
 	if opt.Order == "" {
 		opt.Order = "create_time DESC"
+		if opt.Tag != "" {
+			opt.Order = "article.create_time DESC"
+		}
 	}
 	if opt.Page < 1 {
 		opt.Page = 1
@@ -209,6 +213,29 @@ func (as *ArticleService) List(v interface{}) (*Result, error) {
 		}
 		res.Set(utils.CreatePager(opt.Page, opt.Size, int(count)))
 	}
+	return res, nil
+}
+
+func (as *ArticleService) ListByTag(v interface{}) (*Result, error) {
+	opt, ok := v.(ArticleListOption)
+	if !ok {
+		return nil, ErrServiceFuncNeedType(as.ListByTag, opt)
+	}
+	opt = prepareArticleListOption(opt)
+	sess := core.Db.NewSession().Limit(opt.Size, (opt.Page-1)*opt.Size).OrderBy(opt.Order)
+	defer sess.Close()
+	if opt.Status == 0 {
+		sess.Where("article.status != ? AND article_tag.tag = ?", model.ARTICLE_STATUS_DELETE, opt.Tag)
+	} else {
+		sess.Where("article.status = ? AND article_tag.tag = ?", opt.Status, opt.Tag)
+	}
+	sess.Join("LEFT", "article_tag", "article.id = article_tag.article_id")
+	articles := make([]*model.Article, 0)
+	if err := sess.Find(&articles); err != nil {
+		return nil, err
+	}
+	res := newResult(as.List, &articles)
+	res.Set(utils.CreatePager(opt.Page, opt.Size, int(10)))
 	return res, nil
 }
 
