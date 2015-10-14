@@ -17,6 +17,8 @@ import (
 	"github.com/tango-contrib/session"
 	"github.com/tango-contrib/xsrf"
 	"html/template"
+	"net/http"
+	_ "net/http/pprof"
 	"path"
 	"time"
 )
@@ -59,9 +61,14 @@ func (is *BootstrapService) Init(v interface{}) (*Result, error) {
 			core.Db.ShowSQL = true
 			core.Db.ShowWarn = true
 			core.Db.ShowErr = true
+			go func() {
+				http.ListenAndServe("0.0.0.0:6060", nil)
+			}()
 		} else {
 			// close log in prod mode
 			core.Db.SetLogger(nil)
+			cacher := xorm.NewLRUCacher(xorm.NewMemoryStore(), 1000)
+			engine.SetDefaultCacher(cacher)
 		}
 
 		// ping to test connection
