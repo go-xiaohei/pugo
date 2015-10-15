@@ -6,20 +6,22 @@
                 <h4 class="comment-header">Comments</h4>
                 {{range .Comments}}
                 <div class="comment" id="comment-{{.Id}}" data-id="{{.Id}}" data-parent="{{.ParentId}}">
-                    <div class="avatar left">
+                    <!--<div class="avatar left">
                         <img class="responsive-img circle z-depth-1"
                              src="{{.AvatarUrl}}" alt="{{.Name}}"/>
-                    </div>
+                    </div>-->
                     <div class="body">
                         <div class="meta">
-                            <a class="waves-effect waves-orange orange-text btn-flat right reply"
+                            <a class="author" href="{{.Url}}" target="_blank">{{.Name}}</a>
+                            <span class="date right">{{TimeUnixFriend .CreateTime}}</span>
+                        </div>
+                        <div class="content entry-content">
+                            {{Nl2BrHTML .Body}}
+                            <a class="waves-effect waves-indigo indigo-text btn-flat reply"
                                href="#comment-{{.Id}}">
                                 <i class="mdi-content-reply"></i>&nbsp;&nbsp;REPLY
                             </a>
-                            <a class="author" href="{{.Url}}" target="_blank"><strong>{{.Name}}</strong></a>
-                            <span class="date">{{TimeUnixFriend .CreateTime}}</span>
                         </div>
-                        <div class="content entry-content">{{Nl2BrHTML .Body}}</div>
                     </div>
                     <div class="children"></div>
                 </div>

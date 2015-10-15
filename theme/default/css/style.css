@@ -189,11 +189,23 @@ pre code {
     border-bottom: 1px dashed #EEE;
 }
 
-.comment-section .comment .children > .comment {
-    padding-top: 1rem;
-    margin-top: 1rem;
-    border-top: 1px dashed #EEE;
-    margin-left: 8%;
+.comment-section .comment-main > .comment {
+    border-bottom: 1px solid #CCC;
+}
+
+.comment-section .comment .body {
+    border-bottom: 1px dashed #EEE;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+}
+
+.comment-section .children .comment {
+    border-left: 6px solid #EEE;
+    padding-left: 1.5em;
+}
+
+.comment-section .comment-main > .comment > .children {
+    margin-left: 1.2em;
 }
 
 .comment-section .avatar {
@@ -209,8 +221,16 @@ pre code {
 }
 
 .comment-section .comment .author {
-    font-size: 1.25em;
-    color: #444;
+    font-size: 1.6em;
+    color: #999;
+}
+
+.comment-section .comment .children .author {
+    font-size: 1.2em;
+}
+
+.comment-section .comment .author:hover {
+    color: #40a5c4;
 }
 
 .comment-section .comment .date,
@@ -230,6 +250,8 @@ pre code {
 .comment-section .comment .content {
     margin-top: .5rem;
     padding-right: 3em;
+    margin-left: 1em;
+    min-height: 1.5em;
 }
 
 .comment-section .reply i {
@@ -238,10 +260,12 @@ pre code {
 
 .comment-section .comment .reply {
     display: none;
+    line-height: 1em;
+    height: 1em;
 }
 
-.comment-section .comment .body:hover .reply {
-    display: block;
+.comment-section .comment .content:hover .reply {
+    display: inline-block;
 }
 
 .comment-section .comment .status {

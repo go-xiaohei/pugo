@@ -77,4 +77,9 @@ $(document).ready(function () {
             }
         }
     });
+    var $c = $('.children');
+    $c.each(function (i, item) {
+        var $cs = $(item).children(".comment");
+        $(item).append($cs.get().reverse());
+    });
 });
