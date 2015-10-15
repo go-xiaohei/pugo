@@ -350,7 +350,7 @@ func (cs *CommentService) Reply(v interface{}) (*Result, error) {
 	if err != nil {
 		return nil, err
 	}
-	c.Name = user.Name
+	c.Name = user.Nick
 	c.Email = user.Email
 	c.AvatarUrl = user.AvatarUrl
 	c.Url = user.Url

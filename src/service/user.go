@@ -190,7 +190,7 @@ func (us *UserService) Profile(v interface{}) (*Result, error) {
 	if !ok {
 		return nil, ErrServiceFuncNeedType(us.Profile, u)
 	}
-	if _, err := core.Db.Where("id = ?", u.Id).Cols("name,email,profile,nick,url").Update(u); err != nil {
+	if _, err := core.Db.Where("id = ?", u.Id).Cols("name,email,profile,nick,url,avatar_url").Update(u); err != nil {
 		return nil, err
 	}
 	return nil, nil

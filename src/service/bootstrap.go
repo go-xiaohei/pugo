@@ -68,7 +68,7 @@ func (is *BootstrapService) Init(v interface{}) (*Result, error) {
 			// close log in prod mode
 			core.Db.SetLogger(nil)
 			cacher := xorm.NewLRUCacher(xorm.NewMemoryStore(), 1000)
-			engine.SetDefaultCacher(cacher)
+			core.Db.SetDefaultCacher(cacher)
 		}
 
 		// ping to test connection

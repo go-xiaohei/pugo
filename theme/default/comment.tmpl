@@ -1,6 +1,6 @@
 <div class="section comment-section" id="comments">
     <div class="row">
-        <div class="col l12 m12 s12 white z-depth-2">
+        <div class="col l10 offset-l1 m12 s12 white z-depth-2">
             <div class="comment-main">
                 {{if .Comments}}
                 <h4 class="comment-header">Comments</h4>
@@ -16,13 +16,10 @@
                                href="#comment-{{.Id}}">
                                 <i class="mdi-content-reply"></i>&nbsp;&nbsp;REPLY
                             </a>
-                            <a class="author" href="#"><strong>{{.Name}}</strong></a>
+                            <a class="author" href="{{.Url}}" target="_blank"><strong>{{.Name}}</strong></a>
                             <span class="date">{{TimeUnixFriend .CreateTime}}</span>
                         </div>
                         <div class="content entry-content">{{Nl2BrHTML .Body}}</div>
-                        <!--<div class="meta2 right-align">
-                            <span class="floor">#12</span>
-                        </div>-->
                     </div>
                     <div class="children"></div>
                 </div>

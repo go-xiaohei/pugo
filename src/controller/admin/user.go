@@ -4,6 +4,7 @@ import (
 	"github.com/go-xiaohei/pugo/src/middle"
 	"github.com/go-xiaohei/pugo/src/model"
 	"github.com/go-xiaohei/pugo/src/service"
+	"github.com/go-xiaohei/pugo/src/utils"
 	"github.com/lunny/tango"
 	"github.com/tango-contrib/xsrf"
 )
@@ -90,11 +91,12 @@ type ProfileForm struct {
 
 func (f ProfileForm) toUser() *model.User {
 	return &model.User{
-		Name:    f.Username,
-		Email:   f.Email,
-		Nick:    f.UserNick,
-		Profile: f.Profile,
-		Url:     f.Url,
+		Name:      f.Username,
+		Email:     f.Email,
+		Nick:      f.UserNick,
+		Profile:   f.Profile,
+		Url:       f.Url,
+		AvatarUrl: utils.Gravatar(f.Email),
 	}
 }
 

@@ -128,7 +128,7 @@
                     <i class="fa fa-link"></i> Home
                 </a></li>
                 <li><a href="/admin/profile" data-toggle="tooltip" title="User Profile" data-placement="left">
-                    <i class="fa fa-user-md"></i> {{.AuthUser.Nick}}
+                    <img src="{{.AuthUser.AvatarUrl}}" alt="{{.AuthUser.Nick}}" class="nav-avatar"/> {{.AuthUser.Nick}}
                 </a></li>
                 <li><a href="/admin/logout" data-toggle="tooltip" title="Logout" data-placement="left"><i
                         class="fa fa-sign-out"></i></a></li>

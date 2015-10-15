@@ -75,6 +75,12 @@ title {
     margin-bottom: 0;
 }
 
+.nav-avatar{
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+}
+
 /*
  #main
 */
