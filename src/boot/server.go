@@ -125,6 +125,8 @@ func Server(ctx *cli.Context) {
 	core.Server.Get("/article/:id/:link.html", new(public.ArticleController))
 	core.Server.Get("/page/:id/:link.html", new(public.PageController))
 	core.Server.Post("/comment/:type/:id", new(public.CommentController))
+	core.Server.Get("/tag/:tag", new(public.TagController))
+	core.Server.Get("/tag/:tag/page/:page", new(public.TagController))
 
 	core.Server.Get("/robots.txt", new(public.RobotController))
 	core.Server.Get("/feed.xml", new(public.RssController))

@@ -80,10 +80,6 @@ func (ac *ArticleController) Get() {
 
 type ArchiveController struct {
 	tango.Ctx
-	xsrf.Checker
-	session.Session
-
-	middle.AuthorizeCheck
 	middle.ThemeRender
 }
 

@@ -222,7 +222,7 @@ func (as *ArticleService) ListByTag(v interface{}) (*Result, error) {
 		return nil, ErrServiceFuncNeedType(as.ListByTag, opt)
 	}
 	opt = prepareArticleListOption(opt)
-	sess := core.Db.NewSession().Limit(opt.Size, (opt.Page-1)*opt.Size).OrderBy(opt.Order)
+	sess := core.Db.NewSession().Cols("article.*").Limit(opt.Size, (opt.Page-1)*opt.Size).OrderBy(opt.Order)
 	defer sess.Close()
 	if opt.Status == 0 {
 		sess.Where("article.status != ? AND article_tag.tag = ?", model.ARTICLE_STATUS_DELETE, opt.Tag)
@@ -235,7 +235,19 @@ func (as *ArticleService) ListByTag(v interface{}) (*Result, error) {
 		return nil, err
 	}
 	res := newResult(as.List, &articles)
-	res.Set(utils.CreatePager(opt.Page, opt.Size, int(10)))
+	if opt.IsCount {
+		if opt.Status == 0 {
+			sess.Where("article.status != ? AND article_tag.tag = ?", model.ARTICLE_STATUS_DELETE, opt.Tag)
+		} else {
+			sess.Where("article.status = ? AND article_tag.tag = ?", opt.Status, opt.Tag)
+		}
+		sess.Join("LEFT", "article_tag", "article.id = article_tag.article_id")
+		count, err := sess.Count(new(model.Article))
+		if err != nil {
+			return nil, err
+		}
+		res.Set(utils.CreatePager(opt.Page, opt.Size, int(count)))
+	}
 	return res, nil
 }
 

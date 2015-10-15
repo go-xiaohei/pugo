@@ -7,6 +7,11 @@
 {{template "default/_header.tmpl" .}}
 <div id="main-container">
     <div class="container row">
+        {{if .IsTagPage}}
+        <div class="section tag-section center-align">
+            <button class="btn-large waves-effect waves-light">{{.Tag}}</button>
+        </div>
+        {{end}}
         {{range .Articles}}
         <div class="section article-section" id="article-{{.Id}}">
             <div class="row">
@@ -42,6 +47,16 @@
             </div>
         </div>
         {{end}}
+        {{if .IsTagPage}}
+        <div class="section article-page center-align">
+            {{if .Pager.IsPrev}}
+            <a class="waves-effect waves-light btn btn-large blue lighten-2" href="{{.TagLink}}/page/{{.Pager.Prev}}">prev</a>
+            {{end}}
+            {{if .Pager.IsNext}}
+            <a class="waves-effect waves-light btn btn-large blue lighten-2" href="{{.TagLink}}/page/{{.Pager.Next}}">next</a>
+            {{end}}
+        </div>
+        {{else}}
         <div class="section article-page center-align">
             {{if .Pager.IsPrev}}
             <a class="waves-effect waves-light btn btn-large blue lighten-2" href="/article/page/{{.Pager.Prev}}">prev</a>
@@ -50,6 +65,7 @@
             <a class="waves-effect waves-light btn btn-large blue lighten-2" href="/article/page/{{.Pager.Next}}">next</a>
             {{end}}
         </div>
+        {{end}}
     </div>
 </div>
 {{template "default/_footer.tmpl" .}}

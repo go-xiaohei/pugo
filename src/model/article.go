@@ -5,6 +5,7 @@ import (
 	"github.com/go-xiaohei/pugo/src/core"
 	"github.com/go-xiaohei/pugo/src/utils"
 	"html/template"
+	"net/url"
 	"strings"
 	"time"
 )
@@ -41,9 +42,8 @@ type Article struct {
 	Status        int8  `xorm:"INT(8)"`
 	CommentStatus int8  `xorm:"INT(8)"`
 
-	tagData   []*ArticleTag `xorm:"-"`
-	userData  *User         `xorm:"-"`
-	IsNewRead bool          `xorm:"-"`
+	userData  *User `xorm:"-"`
+	IsNewRead bool  `xorm:"-"`
 }
 
 // tag struct
@@ -120,6 +120,27 @@ func (a *Article) Content() template.HTML {
 		return utils.Markdown2HTML(body)
 	}
 	return template.HTML(a.Body)
+}
+
+type TagLink struct {
+	Name string
+	Link string
+}
+
+func (a *Article) TagLinks() []*TagLink {
+	if a.TagString == "" {
+		return nil
+	}
+	tags := strings.Split(strings.Replace(a.TagString, "，", ",", -1), ",")
+	tagLinks := make([]*TagLink, len(tags))
+	for i, t := range tags {
+		tl := &TagLink{
+			Name: t,
+			Link: "/tag/" + url.QueryEscape(t),
+		}
+		tagLinks[i] = tl
+	}
+	return tagLinks
 }
 
 func getArticleUser(id int64) (*User, error) {

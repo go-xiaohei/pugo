@@ -24,6 +24,14 @@
                                 </a>
                             </div>
                             <div class="content entry-content">{{.Content}}</div>
+                            {{if .TagString}}
+                            <div class="tags right-align">
+                                <i class="mdi-action-label"></i>&nbsp;&nbsp;Tags
+                                {{range .TagLinks}}
+                                <a href="{{.Link}}" title="{{.Name}}">{{.Name}}</a>
+                                {{end}}
+                            </div>
+                            {{end}}
                             <!--<div class="more right-align">
                                 <a class="waves-effect waves-teal btn-flat" href="{{.Href}}" title="read more">Read More</a>
                             </div>-->

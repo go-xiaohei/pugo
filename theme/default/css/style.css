@@ -60,8 +60,17 @@ pre code {
     margin-bottom: 40px;
 }
 
-#main-container .article-section:first-child {
+#main-container .article-section:first-child,
+#main-container .tag-section {
     margin-top: -160px;
+}
+
+#main-container .tag-section .btn-large {
+    background-color: #f3989b;
+    width: 260px;
+    height: 70px;
+    font-size: 1.5em;
+    margin-bottom: 30px;
 }
 
 #main-container .article-section:first-child .content {
@@ -132,6 +141,11 @@ pre code {
 .article-section .no-preview {
     font-size: 1.2em;
     padding: 1em 0;
+}
+
+.article-section .tags a {
+    margin-left: 8px;
+    font-size: 1.2em;
 }
 
 .archive-section .archive h5,
@@ -255,6 +269,6 @@ pre code {
 #error-container
 */
 
-#error-container{
+#error-container {
     margin: 100px auto;
 }
