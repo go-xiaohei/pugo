@@ -1,0 +1,7 @@
+lanuage:go
+
+go:
+  - 1.5.1
+  - tip
+
+script: go build -v
