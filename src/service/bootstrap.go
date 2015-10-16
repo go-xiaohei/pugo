@@ -90,7 +90,7 @@ func (is *BootstrapService) Init(v interface{}) (*Result, error) {
 			RootPath: core.ThemeDirectory,
 			Prefix:   core.ThemePrefix,
 		}))
-		core.Server.Use(renders.New(renders.Options{
+		core.Render = renders.New(renders.Options{
 			Reload:     true,
 			Directory:  core.ThemeDirectory,
 			Extensions: []string{".tmpl"},
@@ -103,14 +103,15 @@ func (is *BootstrapService) Init(v interface{}) (*Result, error) {
 				"Nl2BrString":     utils.Nl2BrString,
 				"BytesSizeFriend": utils.FriendBytesSize,
 			},
-		}))
-		sessions := session.New(session.Options{
-			SessionIdName: core.SessionName,
 		})
+		core.Server.Use(core.Render)
 		core.Server.Use(xsrf.New(time.Hour))
 		core.Server.Use(binding.Bind())
-		core.Server.Use(sessions)
-		core.Server.Use(flash.Flashes(sessions))
+		core.Session = session.New(session.Options{
+			SessionIdName: core.SessionName,
+		})
+		core.Server.Use(core.Session)
+		core.Server.Use(flash.Flashes(core.Session))
 	}
 	return nil, nil
 }

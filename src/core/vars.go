@@ -4,6 +4,8 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/go-xorm/xorm"
 	"github.com/lunny/tango"
+	"github.com/tango-contrib/renders"
+	"github.com/tango-contrib/session"
 	"gopkg.in/inconshreveable/log15.v2"
 )
 
@@ -23,11 +25,13 @@ const (
 var (
 	RunMode = RUN_MOD_PROD // prod || debug
 
-	App    *cli.App
-	Cfg    *Config
-	Db     *xorm.Engine
-	Server *tango.Tango
-	Crash  log15.Logger
+	App     *cli.App
+	Cfg     *Config
+	Db      *xorm.Engine
+	Server  *tango.Tango
+	Crash   log15.Logger
+	Render  *renders.Renders
+	Session *session.Sessions
 
 	ConfigFile      string = "config.ini"
 	StaticPrefix    string = "/static"

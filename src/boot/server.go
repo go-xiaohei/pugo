@@ -10,6 +10,9 @@ import (
 	"github.com/lunny/tango"
 	"gopkg.in/inconshreveable/log15.v2"
 	"gopkg.in/inconshreveable/log15.v2/ext"
+	"net"
+	"net/http"
+	"time"
 )
 
 var (
@@ -30,19 +33,20 @@ var (
 
 type serverContext struct {
 	ctx *cli.Context
+	ln  net.Listener
 }
 
 func (sc *serverContext) Start() {
-	Server(sc.ctx)
+	sc.ln = serverListener(sc.ctx)
 }
 
 func (sc *serverContext) Stop() {
-
+	if sc.ln != nil {
+		sc.ln.Close()
+	}
 }
 
-// server command action,
-// it's used by *boot.serverContext when run "pugo.exe server" command
-func Server(ctx *cli.Context) {
+func serverListener(ctx *cli.Context) net.Listener {
 	// change logger level
 	if ctx.Bool("debug") {
 		core.RunMode = core.RUN_MOD_DEBUG
@@ -143,5 +147,40 @@ func Server(ctx *cli.Context) {
 	// start server
 	addr := core.Cfg.Http.Host + ":" + core.Cfg.Http.Port
 	log15.Info("Server.start." + addr)
-	go core.Server.Run(addr)
+
+	// closable server
+	ln, err := net.Listen("tcp", addr)
+	if err != nil {
+		log15.Crit("Server.start.fail", "error", err)
+	}
+
+	go func() {
+		server := &http.Server{Addr: addr, Handler: core.Server}
+		if err := server.Serve(tcpKeepAliveListener{ln.(*net.TCPListener)}); err != nil {
+			log15.Crit("Server.start.fail", "error", err)
+		}
+	}()
+
+	return ln
+}
+
+// server command action,
+// it's used by *boot.serverContext when run "pugo.exe server" command
+func Server(ctx *cli.Context) {
+	serverListener(ctx)
+}
+
+// copy from pkg net/http
+type tcpKeepAliveListener struct {
+	*net.TCPListener
+}
+
+func (ln tcpKeepAliveListener) Accept() (c net.Conn, err error) {
+	tc, err := ln.AcceptTCP()
+	if err != nil {
+		return
+	}
+	tc.SetKeepAlive(true)
+	tc.SetKeepAlivePeriod(3 * time.Minute)
+	return tc, nil
 }
