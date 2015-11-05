@@ -30,7 +30,7 @@ type (
 
 func NewCommonParser() *CommonParser {
 	return &CommonParser{
-		blocks: []Block{new(IniBlock),new(MarkdownBlock)},
+		blocks: []Block{new(IniBlock), new(MarkdownBlock)},
 	}
 }
 
