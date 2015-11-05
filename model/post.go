@@ -1,11 +1,14 @@
 package model
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"gopkg.in/ini.v1"
+	"html/template"
 	"os"
 	"pugo/parser"
+	"strings"
 	"time"
 )
 
@@ -20,12 +23,27 @@ type Post struct {
 	Created Time
 	Updated Time
 	Author  Author
-	Tags    []string
+	Tags    []Tag
 	Raw     []byte
 	rawType string
 
 	fileName string
 	fileTime time.Time
+}
+
+func (p *Post) ContentHTML() template.HTML {
+	if p.rawType == "markdown" {
+		return template.HTML(markdown(p.Raw))
+	}
+	return template.HTML(p.Raw)
+}
+
+func (p *Post) PreviewHTML() template.HTML {
+	bytes := bytes.Split(p.Raw, []byte("<!--more-->"))[0]
+	if p.rawType == "markdown" {
+		return template.HTML(markdown(bytes))
+	}
+	return template.HTML(bytes)
 }
 
 func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
@@ -45,7 +63,13 @@ func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 	section := iniF.Section("DEFAULT")
 	p.Title = section.Key("title").String()
 	p.Slug = section.Key("slug").String()
-	p.Tags = section.Key("tags").Strings(",")
+	tags := section.Key("tags").Strings(",")
+	for _, t := range tags {
+		t = strings.TrimSpace(t)
+		if t != "" {
+			p.Tags = append(p.Tags, NewTag(t))
+		}
+	}
 
 	ct, err := time.Parse("2006-01-02", section.Key("date").String())
 	if err != nil {
@@ -74,4 +98,18 @@ func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 	// build url
 	p.Url = fmt.Sprintf("/%d/%d/%d/%s", p.Created.Year, p.Created.Month, p.Created.Day, p.Slug)
 	return p, nil
+}
+
+type Posts []*Post
+
+func (p Posts) Len() int {
+	return len(p)
+}
+
+func (p Posts) Less(i, j int) bool {
+	return p[i].Created.Raw.Unix() > p[j].Created.Raw.Unix()
+}
+
+func (p Posts) Swap(i, j int) {
+	p[i], p[j] = p[j], p[i]
 }

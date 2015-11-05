@@ -2,6 +2,7 @@ package builder
 
 import (
 	"errors"
+	"fmt"
 	"github.com/Unknwon/com"
 	"os"
 	"pugo/parser"
@@ -70,6 +71,7 @@ func (b *Builder) Build(dest string) {
 	b.posts(ctx, r)
 	b.index(ctx, r)
 	r.End = time.Now()
+	fmt.Println("---duration", r.End.Sub(r.Begin), r.Error)
 	b.isBuilding = false
 	b.report = r
 }
