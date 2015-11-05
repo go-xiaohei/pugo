@@ -4,6 +4,8 @@ import "time"
 
 // build report
 type Report struct {
-	Time  time.Time
-	Error error
+	DstDir string
+	Begin  time.Time
+	End    time.Time
+	Error  error
 }

@@ -9,8 +9,10 @@ import (
 const (
 	VERSION  = "1.0"
 	VER_DATE = "2015-11-05"
-	SRC_DIR  = "source"
-	TPL_DIR  = "template"
+
+	SRC_DIR = "source"   // source contents dir
+	TPL_DIR = "template" // template dir
+	DST_DIR = "dest"     // destination dir
 )
 
 var (
@@ -49,13 +51,13 @@ func action(ctx *cli.Context) {
 		panic(b.Error)
 	}
 
-	go b.Build()
+	b.Build(DST_DIR)
 
 	// server
 	staticDir := b.Renders().Current().StaticDir()
 	static := server.NewStatic()
 	static.RootPath = staticDir
-	s := server.NewServer(ctx.String("addr"), static, server.NewHelper(b))
+	s := server.NewServer(ctx.String("addr"), static, server.NewHelper(b, DST_DIR))
 	s.Run()
 }
 

@@ -3,7 +3,9 @@ package builder
 import (
 	"errors"
 	"github.com/Unknwon/com"
+	"os"
 	"pugo/render"
+	"time"
 )
 
 var (
@@ -45,12 +47,25 @@ func (b *Builder) Renders() *render.Renders {
 	return b.renders
 }
 
-func (b *Builder) Build() {
+func (b *Builder) Build(dest string) {
 	// if on build, do not again
 	if b.isBuilding {
 		return
 	}
+	r := &Report{
+		DstDir: dest,
+		Begin:  time.Now(),
+	}
+	if err := os.MkdirAll(dest, os.ModePerm); err != nil {
+		r.Error = err
+		b.report = r
+		return
+	}
 	b.isBuilding = true
+	b.index(r)
+	r.End = time.Now()
+	b.isBuilding = false
+	b.report = r
 }
 
 func (b *Builder) IsBuilding() bool {

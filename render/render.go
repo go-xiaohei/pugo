@@ -31,7 +31,7 @@ func (r *Render) Template(file string) *Template {
 		if !com.IsFile(fullFile) {
 			return &Template{Error: ErrTemplateMissing}
 		}
-		template := newTemplate(fullFile)
+		template := newTemplate(fullFile, r.reload)
 		if template.Error != nil {
 			return template
 		}
