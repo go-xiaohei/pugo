@@ -2,8 +2,8 @@ package builder
 
 import (
 	"errors"
-	"fmt"
 	"github.com/Unknwon/com"
+	"gopkg.in/inconshreveable/log15.v2"
 	"os"
 	"pugo/parser"
 	"pugo/render"
@@ -56,6 +56,7 @@ func (b *Builder) Build(dest string) {
 	if b.isBuilding {
 		return
 	}
+	log15.Debug("Build.Start")
 	r := &Report{
 		Begin: time.Now(),
 	}
@@ -68,10 +69,14 @@ func (b *Builder) Build(dest string) {
 		DstDir: dest,
 	}
 	b.isBuilding = true
+	b.nav(ctx, r)
 	b.posts(ctx, r)
 	b.index(ctx, r)
 	r.End = time.Now()
-	fmt.Println("---duration", r.End.Sub(r.Begin), r.Error)
+	log15.Debug("Build.Finish", "duration", r.End.Sub(r.Begin), "error", r.Error)
+	if r.Error != nil {
+		log15.Error("Build.Error", "error", r.Error.Error())
+	}
 	b.isBuilding = false
 	b.report = r
 }

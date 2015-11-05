@@ -24,6 +24,7 @@ func (b *Builder) index(ctx *context, r *Report) {
 	defer f.Close()
 
 	viewData := map[string]interface{}{
+		"Nav":   ctx.Navs,
 		"Posts": ctx.IndexPosts,
 		"Pager": ctx.IndexPager,
 	}

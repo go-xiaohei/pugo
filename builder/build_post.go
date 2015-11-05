@@ -90,6 +90,7 @@ func (b *Builder) postRender(p *model.Post, ctx *context) error {
 	defer f.Close()
 
 	viewData := map[string]interface{}{
+		"Nav":   ctx.Navs,
 		"Title": p.Title,
 		"Post":  p,
 	}
@@ -116,6 +117,7 @@ func (b *Builder) postsRender(posts []*model.Post, ctx *context, pager *model.Pa
 	defer f.Close()
 
 	viewData := map[string]interface{}{
+		"Nav":   ctx.Navs,
 		"Posts": posts,
 		"Pager": pager,
 	}

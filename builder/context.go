@@ -8,4 +8,5 @@ type context struct {
 	Posts      []*model.Post
 	IndexPosts []*model.Post // temp posts for index page
 	IndexPager *model.Pager
+	Navs       []*model.Nav
 }

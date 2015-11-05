@@ -25,6 +25,10 @@ body {
     font-size: 1.2em;
 }
 
+#site-nav .nav li a .fa{
+    margin-right: 6px;
+}
+
 #site-title sup {
     font-size: 0.55em;
 }

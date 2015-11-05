@@ -2,22 +2,18 @@
     <div class="container">
         <div class="header clearfix">
             <nav id="site-nav">
-                <ul class="nav nav-inverse nav-pills pull-right">
-                    <li role="presentation" class="active"><a href="/">Home</a></li>
-                    <li role="presentation"><a href="/archive">Archive</a></li>
-                    <li role="presentation"><a href="/about.html">About</a></li>
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
-                            OpenSource <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Home</a></li>
-                            <li><a href="#">Archive</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
-                        </ul>
-                    </li>
+                <ul class="nav nav-inverse nav-pills pull-right">{{range .Nav}}
+                    <li role="presentation"{{if .SubNav}} class="dropdown"{{end}}>
+                        <a href="{{.Link}}"{{if .SubNav}} class="dropdown-toggle" data-toggle="dropdown"{{end}}>{{if .IconClass}}
+                            <i class="{{.IconClass}}"></i>{{end}}{{.Title}}{{if .SubNav}}<span class="caret"></span>{{end}}
+                        </a>{{if .SubNav}}
+                        <ul class="dropdown-menu">{{range .SubNav}}{{if .IsSeparator}}
+                            <li class="divider"></li>{{else}}
+                            <li><a href="{{.Link}}">{{if .IconClass}}
+                                <i class="{{.IconClass}}"></i>{{end}}{{.Title}}
+                            </a></li>{{end}}{{end}}
+                        </ul>{{end}}
+                    </li>{{end}}
                 </ul>
             </nav>
             <h3 id="site-title">FuXiaohei.Me
