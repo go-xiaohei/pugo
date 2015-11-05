@@ -37,10 +37,15 @@ func NewCommonParser() *CommonParser {
 func (cp *CommonParser) Detect(mark []byte) Block {
 	for _, b := range cp.blocks {
 		if b.Is(mark) {
-			return b
+			return b.New()
 		}
 	}
 	return nil
+}
+
+func (cp *CommonParser) Parse(src []byte) ([]Block, error) {
+	buf := bytes.NewBuffer(src)
+	return cp.ParseReader(buf)
 }
 
 func (cp *CommonParser) ParseReader(r io.Reader) ([]Block, error) {
@@ -62,7 +67,7 @@ func (cp *CommonParser) ParseReader(r io.Reader) ([]Block, error) {
 			continue
 		}
 
-		if bytes.HasPrefix(lineData, BLOCK_PREFIX) {
+		if bytes.HasPrefix(lineData, []byte(BLOCK_PREFIX)) {
 			// try to switch
 			newBlock := cp.Detect(bytes.TrimLeft(lineData, BLOCK_PREFIX))
 			if newBlock != nil {
@@ -83,6 +88,9 @@ func (cp *CommonParser) ParseReader(r io.Reader) ([]Block, error) {
 			}
 			break
 		}
+	}
+	if currentBlock != nil {
+		blocks = append(blocks, currentBlock)
 	}
 	return blocks, nil
 }

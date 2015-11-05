@@ -40,6 +40,9 @@ func (h *Helper) Handle(ctx *tango.Context) {
 	if url == "/" {
 		url = "/index.html"
 	}
+	if path.Ext(url) == "" {
+		url += ".html"
+	}
 	file := path.Join(h.dstDir, url)
 	if com.IsFile(file) {
 		ctx.ServeFile(file)

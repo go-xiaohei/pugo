@@ -25,16 +25,16 @@ func newTemplate(file string, reload bool) *Template {
 	}
 }
 
-func (t *Template) Compile(w io.Writer) {
+func (t *Template) Compile(w io.Writer, data interface{}, fnMap template.FuncMap) {
 	if t.tpl == nil || t.reload {
-		tpl, err := template.New(path.Base(t.file)).ParseFiles(t.file)
+		tpl, err := template.New(path.Base(t.file)).Funcs(fnMap).ParseFiles(t.file)
 		if err != nil {
 			t.Error = err
 			return
 		}
 		t.tpl = tpl
 	}
-	if err := t.tpl.Execute(w, nil); err != nil {
+	if err := t.tpl.Execute(w, data); err != nil {
 		t.Error = err
 		return
 	}

@@ -47,7 +47,7 @@ func (mb *MarkdownBlock) Type() string {
 }
 
 func (mb *MarkdownBlock) Is(mark []byte) bool {
-	return bytes.Equal(mark, []byte(BLOCK_INI))
+	return bytes.Equal(mark, []byte(BLOCK_MARKDOWN))
 }
 
 func (mb *MarkdownBlock) Write(data []byte) error {

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    {{include "meta.html" .}}
+</head>
+<body>
+{{include "header.html" .}}
+<section id="main">
+    <div class="container">
+        <div id="article-single">
+            <article class="article" id="article-4001">
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1 panel panel-default">
+                        <header class="header">
+                            <div class="meta">
+                        <span class="date">
+                            <span class="month">11</span>
+                            <span class="day">02</span>
+                        </span>
+                            </div>
+                            <h3 class="title">
+                                <a href="/article/4001/about-prose-io.html">About Prose.io</a>
+                            </h3>
+                        </header>
+                        <aside class="aside clearfix">
+
+                            <a class="tag label label-info" href="/tag/prose">prose</a>
+
+                            <a class="tag label label-info" href="/tag/about">about</a>
+
+                            <a class="stat label label-default pull-right" href="#comments">
+                                0 / 1
+                            </a>
+
+                        </aside>
+                        <section class="brief"><p>Prose provides a beatifully simple content authoring environment for CMS-free websites. It&rsquo;s a web-based interface for managing content on GitHub. Use it to create, edit, and delete files, and save your changes directly to GitHub. Host your website on GitHub Pages for free, or set up your own GitHub webhook server.</p>
+
+                            <p>Prose has advanced support for Jekyll sites and markdown content. Prose detects markdown posts in Jekyll sites and provides syntax highlighting, a formatting toolbar, and draft previews in the site&rsquo;s full layout.</p>
+
+                            <p>Developers can configure Jekyll sites to take advantage of these and many more features that customize the content editing experience.</p>
+
+                            <!--more-->
+
+                            <h3>Configuring</h3>
+
+                            <p>Prose can be configured per repository with additional metadata in a Jekyll site&rsquo;s _config.yml file or a separate prose.yml file. We offer Prose.io as a hosted service for the latest version, or you can download the source code and host it on your own. For for developer documentation, see the wiki page on GitHub.</p>
+
+                            <h3>Developing</h3>
+
+                            <p>Prose is an open source project. We encourage you to contribute and help us improve this application or adapt it to your needs. For instructions on developing Prose, see the Prose contributing guidelines.</p>
+
+                            <h3>Getting Help</h3>
+
+                            <p>We do not offer support for Prose at this time, however if you are a content editor using Prose, you should contact the developer who gave you access to it. To report technical problems with Prose, please file an issue on GitHub.</p>
+
+                            <h3>Credits</h3>
+
+                            <p>Prose is developed and maintained by Development Seed, a creative data visualization and mapping team based in Washington, DC.</p>
+                        </section>
+                    </div>
+                </div>
+            </article>
+
+            <div id="article-comment">
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1 panel panel-default" id="comments">
+                        <div class="header clearfix">
+                            <a class="btn pull-right btn-success" href="#comments" id="new-comment-btn">New Comment</a>
+                            <h4 class="title">Comments</h4>
+                        </div>
+                        <div class="loading">
+                            <div class="progress col-md-6 col-md-offset-3">
+                                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{{include "footer.html" .}}
+</body>
+</html>

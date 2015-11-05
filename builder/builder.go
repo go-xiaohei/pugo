@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/Unknwon/com"
 	"os"
+	"pugo/parser"
 	"pugo/render"
 	"time"
 )
@@ -20,6 +21,7 @@ type Builder struct {
 
 	renders *render.Renders
 	report  *Report
+	parser  parser.Parser
 
 	Error error
 }
@@ -34,6 +36,7 @@ func New(sourceDir, templateDir, currentTheme string, debug bool) *Builder {
 	builder := &Builder{
 		srcDir: sourceDir,
 		tplDir: templateDir,
+		parser: parser.NewCommonParser(),
 	}
 	r, err := render.NewRenders(templateDir, currentTheme, debug)
 	if err != nil {
@@ -53,16 +56,19 @@ func (b *Builder) Build(dest string) {
 		return
 	}
 	r := &Report{
-		DstDir: dest,
-		Begin:  time.Now(),
+		Begin: time.Now(),
 	}
 	if err := os.MkdirAll(dest, os.ModePerm); err != nil {
 		r.Error = err
 		b.report = r
 		return
 	}
+	ctx := &context{
+		DstDir: dest,
+	}
 	b.isBuilding = true
-	b.index(r)
+	b.posts(ctx, r)
+	b.index(ctx, r)
 	r.End = time.Now()
 	b.isBuilding = false
 	b.report = r
