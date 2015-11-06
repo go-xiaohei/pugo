@@ -69,14 +69,21 @@ func (b *Builder) Build(dest string) {
 		DstDir: dest,
 	}
 	b.isBuilding = true
+	b.meta(ctx, r)
+	log15.Debug("Build.Meta", "meta", ctx.Meta)
 	b.nav(ctx, r)
+	log15.Debug("Build.Navs", "navs", len(ctx.Navs))
 	b.posts(ctx, r)
+	log15.Debug("Build.Posts", "posts", len(ctx.Posts))
 	b.pages(ctx, r)
+	log15.Debug("Build.Pages", "pages", len(ctx.Pages))
 	b.index(ctx, r)
+	log15.Debug("Build.Index")
 	r.End = time.Now()
-	log15.Debug("Build.Finish", "duration", r.End.Sub(r.Begin), "error", r.Error)
 	if r.Error != nil {
 		log15.Error("Build.Error", "error", r.Error.Error())
+	} else {
+		log15.Info("Build.Finish", "duration", r.End.Sub(r.Begin), "error", r.Error)
 	}
 	b.isBuilding = false
 	b.report = r

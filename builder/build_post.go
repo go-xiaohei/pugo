@@ -89,11 +89,10 @@ func (b *Builder) postRender(p *model.Post, ctx *context) error {
 	}
 	defer f.Close()
 
-	viewData := map[string]interface{}{
-		"Nav":   ctx.Navs,
-		"Title": p.Title,
-		"Post":  p,
-	}
+	viewData := ctx.viewData()
+	viewData["Title"] = p.Title + " - " + ctx.Meta.Title
+	viewData["Desc"] = p.Desc
+	viewData["Post"] = p
 	if template.Compile(f, viewData, b.Renders().Current().FuncMap()); template.Error != nil {
 		return err
 	}
@@ -116,11 +115,10 @@ func (b *Builder) postsRender(posts []*model.Post, ctx *context, pager *model.Pa
 	}
 	defer f.Close()
 
-	viewData := map[string]interface{}{
-		"Nav":   ctx.Navs,
-		"Posts": posts,
-		"Pager": pager,
-	}
+	viewData := ctx.viewData()
+	viewData["Title"] = fmt.Sprintf("Page %d - %s", pager.Page, ctx.Meta.Title)
+	viewData["Posts"] = posts
+	viewData["Pager"] = pager
 	if template.Compile(f, viewData, b.Renders().Current().FuncMap()); template.Error != nil {
 		return err
 	}

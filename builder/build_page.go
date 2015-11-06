@@ -64,11 +64,10 @@ func (b *Builder) pageRender(p *model.Page, ctx *context) error {
 
 	ctx.Navs.Hover(p.HoverClass)
 	defer ctx.Navs.Reset()
-	viewData := map[string]interface{}{
-		"Nav":   ctx.Navs,
-		"Title": p.Title,
-		"Page":  p,
-	}
+	viewData := ctx.viewData()
+	viewData["Title"] = p.Title + " - " + ctx.Meta.Title
+	viewData["Desc"] = p.Desc
+	viewData["Page"] = p
 	if template.Compile(f, viewData, b.Renders().Current().FuncMap()); template.Error != nil {
 		return err
 	}

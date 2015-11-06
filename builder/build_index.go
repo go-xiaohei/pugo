@@ -24,11 +24,9 @@ func (b *Builder) index(ctx *context, r *Report) {
 	defer f.Close()
 	ctx.Navs.Hover("home") // set hover status
 	defer ctx.Navs.Reset() // remember to reset
-	viewData := map[string]interface{}{
-		"Nav":   ctx.Navs,
-		"Posts": ctx.IndexPosts,
-		"Pager": ctx.IndexPager,
-	}
+	viewData := ctx.viewData()
+	viewData["Posts"] = ctx.IndexPosts
+	viewData["Pager"] = ctx.IndexPager
 	if template.Compile(f, viewData, b.Renders().Current().FuncMap()); template.Error != nil {
 		r.Error = err
 		return
