@@ -37,4 +37,56 @@ func (b *Builder) feed(ctx *context, r *Report) {
 	dstFile := path.Join(ctx.DstDir, "feed.xml")
 	os.MkdirAll(path.Dir(dstFile), os.ModePerm)
 	r.Error = ioutil.WriteFile(dstFile, buf.Bytes(), os.ModePerm)
+	if r.Error != nil {
+		return
+	}
+
+	// sitemap
+	buf.Reset()
+	buf.WriteString(`<?xml version="1.0" encoding="UTF-8"?>`)
+	buf.WriteString(`<?xml-stylesheet type="text/xsl" href="/static/sitemap.xsl"?>`)
+	buf.WriteString(`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`)
+	buf.WriteString("<url>")
+	buf.WriteString(fmt.Sprintf("<loc>%s</loc>", baseUrl))
+	buf.WriteString(fmt.Sprintf("<lastmod>%s/</lastmod>", time.Now().Format(time.RFC3339)))
+	buf.WriteString("<changefreq>daily</changefreq>")
+	buf.WriteString("<priority>1.0</priority>")
+	buf.WriteString("</url>")
+
+	for _, p := range ctx.Posts {
+		buf.WriteString("<url>")
+		buf.WriteString(fmt.Sprintf("<loc>%s</loc>", baseUrl+p.Url))
+		buf.WriteString(fmt.Sprintf("<lastmod>%s/</lastmod>", p.Created.Raw.Format(time.RFC3339)))
+		buf.WriteString("<changefreq>daily</changefreq>")
+		buf.WriteString("<priority>0.6</priority>")
+		buf.WriteString("</url>")
+	}
+	buf.WriteString("<url>")
+	buf.WriteString(fmt.Sprintf("<loc>%s</loc>", baseUrl+"/archive"))
+	buf.WriteString(fmt.Sprintf("<lastmod>%s/</lastmod>", time.Now().Format(time.RFC3339)))
+	buf.WriteString("<changefreq>daily</changefreq>")
+	buf.WriteString("<priority>0.6</priority>")
+	buf.WriteString("</url>")
+
+	for i := 1; i <= ctx.PostPages; i++ {
+		buf.WriteString("<url>")
+		buf.WriteString(fmt.Sprintf("<loc>%s/posts/%d</loc>", baseUrl, i))
+		buf.WriteString(fmt.Sprintf("<lastmod>%s/</lastmod>", time.Now().Format(time.RFC3339)))
+		buf.WriteString("<changefreq>daily</changefreq>")
+		buf.WriteString("<priority>0.6</priority>")
+		buf.WriteString("</url>")
+	}
+
+	for _, p := range ctx.Pages {
+		buf.WriteString("<url>")
+		buf.WriteString(fmt.Sprintf("<loc>%s</loc>", baseUrl+p.Url))
+		buf.WriteString(fmt.Sprintf("<lastmod>%s/</lastmod>", p.Created.Raw.Format(time.RFC3339)))
+		buf.WriteString("<changefreq>weekly</changefreq>")
+		buf.WriteString("<priority>0.5</priority>")
+		buf.WriteString("</url>")
+	}
+	buf.WriteString("</urlset>")
+	dstFile = path.Join(ctx.DstDir, "sitemap.xml")
+	os.MkdirAll(path.Dir(dstFile), os.ModePerm)
+	r.Error = ioutil.WriteFile(dstFile, buf.Bytes(), os.ModePerm)
 }

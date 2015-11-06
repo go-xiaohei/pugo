@@ -7,7 +7,6 @@ import (
 	"os"
 	"pugo/parser"
 	"pugo/render"
-	"time"
 )
 
 var (
@@ -57,9 +56,7 @@ func (b *Builder) Build(dest string) {
 		return
 	}
 	log15.Debug("Build.Start")
-	r := &Report{
-		Begin: time.Now(),
-	}
+	r := newReport(dest)
 	if err := os.MkdirAll(dest, os.ModePerm); err != nil {
 		r.Error = err
 		b.report = r
@@ -70,22 +67,21 @@ func (b *Builder) Build(dest string) {
 	}
 	b.isBuilding = true
 	b.meta(ctx, r)
-	log15.Debug("Build.Meta", "meta", ctx.Meta)
+	log15.Debug("Build.Meta", "duration", r.Duration())
 	b.nav(ctx, r)
-	log15.Debug("Build.Navs", "navs", len(ctx.Navs))
+	log15.Debug("Build.Navs", "navs", len(ctx.Navs), "duration", r.Duration())
 	b.posts(ctx, r)
-	log15.Debug("Build.Posts", "posts", len(ctx.Posts))
+	log15.Debug("Build.Posts", "posts", len(ctx.Posts), "duration", r.Duration())
 	b.pages(ctx, r)
-	log15.Debug("Build.Pages", "pages", len(ctx.Pages))
+	log15.Debug("Build.Pages", "pages", len(ctx.Pages), "duration", r.Duration())
 	b.index(ctx, r)
-	log15.Debug("Build.Index")
+	log15.Debug("Build.Index", "duration", r.Duration())
 	b.feed(ctx, r)
-	log15.Debug("Build.Feed")
-	r.End = time.Now()
+	log15.Debug("Build.Feed", "duration", r.Duration())
 	if r.Error != nil {
 		log15.Error("Build.Error", "error", r.Error.Error())
 	} else {
-		log15.Info("Build.Finish", "duration", r.End.Sub(r.Begin), "error", r.Error)
+		log15.Info("Build.Finish", "duration", r.Duration(), "error", r.Error)
 	}
 	b.isBuilding = false
 	b.report = r

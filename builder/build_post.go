@@ -55,6 +55,7 @@ func (b *Builder) posts(ctx *context, r *Report) {
 	for {
 		pager := cursor.Page(page)
 		if pager == nil {
+			ctx.PostPages = page - 1
 			break
 		}
 		currentPosts = ctx.Posts[pager.Begin:pager.End]
