@@ -9,23 +9,27 @@
 link:/
 title:Home
 i18n:homepage
+hover:home
 
 [archive]
 link:/archive
 title:Archive
 i18n:archive
+hover:archive
 
 [about]
 link:/about
 title:About
 i18n:about
+hover:about
 
 [source]
 link:/source
 title:Source
 i18n:source
+hover:source
 icon:"fa fa-github"
-sub:official,-,github
+# sub:official,-,github
 
 [official]
 link:http://pugo.io

@@ -71,6 +71,7 @@ func (b *Builder) Build(dest string) {
 	b.isBuilding = true
 	b.nav(ctx, r)
 	b.posts(ctx, r)
+	b.pages(ctx, r)
 	b.index(ctx, r)
 	r.End = time.Now()
 	log15.Debug("Build.Finish", "duration", r.End.Sub(r.Begin), "error", r.Error)

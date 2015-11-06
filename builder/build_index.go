@@ -22,7 +22,8 @@ func (b *Builder) index(ctx *context, r *Report) {
 		return
 	}
 	defer f.Close()
-
+	ctx.Navs.Hover("home") // set hover status
+	defer ctx.Navs.Reset() // remember to reset
 	viewData := map[string]interface{}{
 		"Nav":   ctx.Navs,
 		"Posts": ctx.IndexPosts,

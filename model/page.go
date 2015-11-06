@@ -1,57 +1,43 @@
 package model
 
 import (
-	"bytes"
-	"errors"
 	"fmt"
 	"gopkg.in/ini.v1"
 	"html/template"
 	"os"
 	"pugo/parser"
-	"strings"
 	"time"
 )
 
-var (
-	ErrPostBlockError = errors.New("post-block-wrong")
-)
-
-type Post struct {
-	Title   string
-	Slug    string
-	Url     string
-	Desc    string // description in a sentence
-	Created Time
-	Updated Time
-	Author  Author
-	Tags    []Tag
-	Raw     []byte
-	rawType string
+type Page struct {
+	Title      string
+	Slug       string
+	Url        string
+	HoverClass string
+	Template   string
+	Desc       string
+	Created    Time
+	Updated    Time
+	Author     Author
+	Raw        []byte
+	rawType    string
 
 	fileName string
 	fileTime time.Time
 }
 
-func (p *Post) ContentHTML() template.HTML {
+func (p *Page) ContentHTML() template.HTML {
 	if p.rawType == "markdown" {
 		return template.HTML(markdown(p.Raw))
 	}
 	return template.HTML(p.Raw)
 }
 
-func (p *Post) PreviewHTML() template.HTML {
-	bytes := bytes.Split(p.Raw, []byte("<!--more-->"))[0]
-	if p.rawType == "markdown" {
-		return template.HTML(markdown(bytes))
-	}
-	return template.HTML(bytes)
-}
-
-func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
+func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 	if len(blocks) != 2 {
 		return nil, ErrPostBlockError
 	}
-	p := &Post{
+	p := &Page{
 		fileName: fi.Name(),
 		fileTime: fi.ModTime(),
 	}
@@ -65,13 +51,8 @@ func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 	p.Title = section.Key("title").String()
 	p.Slug = section.Key("slug").String()
 	p.Desc = section.Key("desc").String()
-	tags := section.Key("tags").Strings(",")
-	for _, t := range tags {
-		t = strings.TrimSpace(t)
-		if t != "" {
-			p.Tags = append(p.Tags, NewTag(t))
-		}
-	}
+	p.HoverClass = section.Key("hover").String()
+	p.Template = section.Key("template").MustString("page.html")
 
 	ct, err := time.Parse("2006-01-02", section.Key("date").String())
 	if err != nil {
@@ -98,20 +79,6 @@ func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 	p.Raw = blocks[1].Bytes()
 
 	// build url
-	p.Url = fmt.Sprintf("/%d/%d/%d/%s", p.Created.Year, p.Created.Month, p.Created.Day, p.Slug)
+	p.Url = fmt.Sprintf("/%s", p.Slug)
 	return p, nil
-}
-
-type Posts []*Post
-
-func (p Posts) Len() int {
-	return len(p)
-}
-
-func (p Posts) Less(i, j int) bool {
-	return p[i].Created.Raw.Unix() > p[j].Created.Raw.Unix()
-}
-
-func (p Posts) Swap(i, j int) {
-	p[i], p[j] = p[j], p[i]
 }

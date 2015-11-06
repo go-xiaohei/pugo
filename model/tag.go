@@ -10,6 +10,6 @@ type Tag struct {
 func NewTag(name string) Tag {
 	return Tag{
 		Name: name,
-		Url:  url.QueryEscape(name),
+		Url:  "/tag/" + url.QueryEscape(name),
 	}
 }

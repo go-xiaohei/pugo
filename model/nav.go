@@ -15,14 +15,32 @@ type Nav struct {
 	Title   string
 	IsBlank bool
 
-	IconClass string
-	I18n      string
-	SubNav    []*Nav
+	IconClass  string
+	HoverClass string
+	I18n       string
+	SubNav     []*Nav
 
 	IsSeparator bool
+	IsHover     bool
 }
 
-func NewNavs(blocks []parser.Block) ([]*Nav, error) {
+type Navs []*Nav
+
+func (navs Navs) Hover(name string) {
+	for _, n := range navs {
+		if n.HoverClass == name {
+			n.IsHover = true
+		}
+	}
+}
+
+func (navs Navs) Reset() {
+	for _, n := range navs {
+		n.IsHover = false
+	}
+}
+
+func NewNavs(blocks []parser.Block) (Navs, error) {
 	if len(blocks) != 1 {
 		return nil, ErrNavBlockWrong
 	}
@@ -55,7 +73,7 @@ func NewNavs(blocks []parser.Block) ([]*Nav, error) {
 		}
 		navs = append(navs, nav)
 	}
-	return navs, nil
+	return Navs(navs), nil
 }
 
 func section2Nav(s *ini.Section) *Nav {
@@ -64,10 +82,11 @@ func section2Nav(s *ini.Section) *Nav {
 		return nil
 	}
 	nav := &Nav{
-		Link:      link,
-		Title:     s.Key("title").String(),
-		IconClass: s.Key("icon").String(),
-		I18n:      s.Key("i18n").String(),
+		Link:       link,
+		Title:      s.Key("title").String(),
+		IconClass:  s.Key("icon").String(),
+		HoverClass: s.Key("hover").String(),
+		I18n:       s.Key("i18n").String(),
 	}
 	nav.IsBlank, _ = s.Key("blank").Bool()
 	return nav

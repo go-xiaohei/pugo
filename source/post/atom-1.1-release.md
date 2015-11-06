@@ -7,8 +7,6 @@ author_email:fuxiaohei@vip.qq.com
 tags:Atom,Editor
 
 -----markdown
-## 纸小墨简介
-
 纸小墨（InkPaper）是一个使用GO语言编写的静态博客构建工具，可以快速搭建博客网站。优点是无依赖跨平台，配置简单构建快速，注重于简洁易用与排版优化。
 
 ![纸小墨 - 简洁的静态博客构建工具](-/images/example.png)

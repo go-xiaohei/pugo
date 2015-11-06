@@ -107,7 +107,7 @@ body {
 
 .article .brief {
     line-height: 1.75;
-    font-size: 18px;
+    font-size: 16px;
     margin-bottom: 18px;
     padding-bottom: 12px;
     border-bottom: 1px dashed #DDD;
@@ -118,27 +118,27 @@ body {
 }
 
 .article .brief h1 {
-    font-size: 30px;
+    font-size: 26px;
     border-bottom: 1px dashed #DDD;
     padding-bottom: 11.5px;
 }
 
 .article .brief h2 {
-    font-size: 27px;
-    border-bottom: 1px dashed #DDD;
-    padding-bottom: 11.5px;
-    margin-top: 18px;
-}
-
-.article .brief h3 {
     font-size: 24px;
     border-bottom: 1px dashed #DDD;
     padding-bottom: 11.5px;
     margin-top: 18px;
 }
 
+.article .brief h3 {
+    font-size: 22px;
+    border-bottom: 1px dashed #DDD;
+    padding-bottom: 11.5px;
+    margin-top: 18px;
+}
+
 .article .brief h4 {
-    font-size: 21px;
+    font-size: 20px;
     border-bottom: 1px dashed #DDD;
     padding-bottom: 11.5px;
     margin-top: 18px;
