@@ -13,7 +13,7 @@ body {
 }
 
 #main{
-    margin-top: 7em;
+    margin-top: 5em;
 }
 
 #site-title {
@@ -30,7 +30,18 @@ body {
 }
 
 #site-title sup {
-    font-size: 0.55em;
+    font-size: 0.5em;
+    padding-left: 4px;
+    color: #888;
+}
+
+#site-title a{
+    color: #555;
+    text-decoration: none;
+}
+
+#site-title a:hover{
+   color: #111;
 }
 
 /*#hero*/
@@ -212,34 +223,6 @@ body {
 }
 
 /*
-#article-comment
-*/
-
-#comments{
-    padding-top: 18px;
-}
-
-#article-comment .header {
-    position: relative;
-    padding-bottom: 6px;
-    margin-bottom: 20px;
-    border-bottom: 1px dashed #DDD;
-}
-
-#article-comment .header h4{
-    line-height: 36px;
-    margin-top: 0;
-}
-
-#article-comment .loading .progress{
-    height: 18px;
-    padding-left: 0;
-    padding-right: 0;
-    margin-top: 40px;
-    margin-bottom: 60px;
-}
-
-/*
 #archive-list
 */
 
@@ -251,6 +234,8 @@ body {
     margin-right: 1em;
     font-size: .8em;
     color: #DDD;
+    display: inline-block;
+    width: 3em;
 }
 
 .archive h4{

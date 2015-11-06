@@ -69,6 +69,13 @@ func (b *Builder) posts(ctx *context, r *Report) {
 		}
 		page++
 	}
+
+	// build archive
+	archives := model.NewArchive(ctx.Posts)
+	if err := b.archiveRender(archives, ctx); err != nil {
+		r.Error = err
+		return
+	}
 }
 
 func (b *Builder) postRender(p *model.Post, ctx *context) error {
@@ -119,6 +126,31 @@ func (b *Builder) postsRender(posts []*model.Post, ctx *context, pager *model.Pa
 	viewData["Title"] = fmt.Sprintf("Page %d - %s", pager.Page, ctx.Meta.Title)
 	viewData["Posts"] = posts
 	viewData["Pager"] = pager
+	if template.Compile(f, viewData, b.Renders().Current().FuncMap()); template.Error != nil {
+		return err
+	}
+	return nil
+}
+
+func (b *Builder) archiveRender(archives []*model.Archive, ctx *context) error {
+	template := b.Renders().Current().Template("archive.html")
+	if template.Error != nil {
+		return template.Error
+	}
+
+	dstFile := path.Join(ctx.DstDir, "archive.html")
+	os.MkdirAll(path.Dir(dstFile), os.ModePerm)
+	f, err := os.OpenFile(dstFile, os.O_CREATE|os.O_TRUNC|os.O_RDWR, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	viewData := ctx.viewData()
+	ctx.Navs.Hover("archive")
+	defer ctx.Navs.Reset()
+	viewData["Title"] = fmt.Sprintf("Archive - %s", ctx.Meta.Title)
+	viewData["Archives"] = archives
 	if template.Compile(f, viewData, b.Renders().Current().FuncMap()); template.Error != nil {
 		return err
 	}

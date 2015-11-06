@@ -13,8 +13,13 @@ type Server struct {
 
 func NewServer(addr string, static *Static, helper *Helper) *Server {
 	return &Server{
-		addr:        addr,
-		tango:       tango.Classic(),
+		addr: addr,
+		tango: tango.New([]tango.Handler{
+			tango.Return(),
+			tango.Param(),
+			tango.Contexts(),
+			tango.Recovery(true),
+		}...),
 		static:      static,
 		buildHelper: helper,
 	}
@@ -25,7 +30,8 @@ func (s *Server) Static() *Static {
 }
 
 func (s *Server) Run() {
-	s.tango.Use(s.buildHelper)
+	s.tango.Use(logger())
 	s.tango.Use(s.static)
+	s.tango.Use(s.buildHelper)
 	s.tango.Run(s.addr)
 }

@@ -115,3 +115,35 @@ func (p Posts) Less(i, j int) bool {
 func (p Posts) Swap(i, j int) {
 	p[i], p[j] = p[j], p[i]
 }
+
+type Archive struct {
+	Year  int
+	Posts []*Post
+}
+
+func NewArchive(posts []*Post) []*Archive {
+	archives := []*Archive{}
+	var (
+		last, lastYear int
+	)
+	for _, p := range posts {
+		if len(archives) == 0 {
+			archives = append(archives, &Archive{
+				Year:  p.Created.Year,
+				Posts: []*Post{p},
+			})
+			continue
+		}
+		last = len(archives) - 1
+		lastYear = archives[last].Year
+		if lastYear == p.Created.Year {
+			archives[last].Posts = append(archives[last].Posts, p)
+			continue
+		}
+		archives = append(archives, &Archive{
+			Year:  p.Created.Year,
+			Posts: []*Post{p},
+		})
+	}
+	return archives
+}

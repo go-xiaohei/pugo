@@ -10,13 +10,15 @@
                         <ul class="dropdown-menu">{{range .SubNav}}{{if .IsSeparator}}
                             <li class="divider"></li>{{else}}
                             <li><a href="{{.Link}}"{{if .IsBlank}} target="_blank" {{end}}>{{if .IconClass}}
-                                <i class="{{.IconClass}}"></i>{{end}}{{.Title}}
-                            </a></li>{{end}}{{end}}
+                                <i class="{{.IconClass}}"></i>{{end}}{{.Title}}</a>
+                            </li>{{end}}{{end}}
                         </ul>{{end}}
                     </li>{{end}}
                 </ul>
             </nav>
-            <h3 id="site-title">{{.Meta.Title}}<sup>{{.Meta.Subtitle}}</sup></h3>
+            <h3 id="site-title">
+                <a href="/">{{.Meta.Title}}<sup>{{.Meta.Subtitle}}</sup></a>
+            </h3>
         </div>
     </div>
 </header>

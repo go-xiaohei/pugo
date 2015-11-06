@@ -79,6 +79,8 @@ func (b *Builder) Build(dest string) {
 	log15.Debug("Build.Pages", "pages", len(ctx.Pages))
 	b.index(ctx, r)
 	log15.Debug("Build.Index")
+	b.feed(ctx, r)
+	log15.Debug("Build.Feed")
 	r.End = time.Now()
 	if r.Error != nil {
 		log15.Error("Build.Error", "error", r.Error.Error())
