@@ -72,6 +72,8 @@ func (b *Builder) Build(dest string) {
 	log15.Debug("Build.Navs", "navs", len(ctx.Navs), "duration", r.Duration())
 	b.posts(ctx, r)
 	log15.Debug("Build.Posts", "posts", len(ctx.Posts), "duration", r.Duration())
+	b.tags(ctx, r)
+	log15.Debug("Build.Tags", "tags", len(ctx.Tags), "duration", r.Duration())
 	b.pages(ctx, r)
 	log15.Debug("Build.Pages", "pages", len(ctx.Pages), "duration", r.Duration())
 	b.index(ctx, r)

@@ -218,6 +218,10 @@ body {
     padding-bottom: 24px;
 }
 
+#article-list h2.tag{
+    margin: 0 auto 30px auto;
+}
+
 #page-single .article{
     margin-bottom: 0;
 }

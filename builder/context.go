@@ -6,6 +6,7 @@ import "pugo/model"
 type context struct {
 	DstDir     string
 	Posts      []*model.Post
+	Tags       map[string]*model.Tag
 	PostPages  int
 	Pages      []*model.Page
 	IndexPosts []*model.Post // temp posts for index page
