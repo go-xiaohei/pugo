@@ -69,7 +69,9 @@ func action(ctx *cli.Context) {
 	staticDir := b.Renders().Current().StaticDir()
 	static := server.NewStatic()
 	static.RootPath = staticDir
-	s := server.NewServer(ctx.String("addr"), static, server.NewHelper(b, DST_DIR))
+	s := server.NewServer(ctx.String("addr"))
+	s.Static = static
+	s.Helper = server.NewHelper(b, DST_DIR)
 	s.Run()
 }
 

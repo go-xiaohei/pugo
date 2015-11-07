@@ -5,7 +5,7 @@ import (
 	"path"
 )
 
-func (b *Builder) index(ctx *context, r *Report) {
+func (b *Builder) index(ctx *Context, r *Report) {
 	if r.Error != nil {
 		return
 	}
@@ -24,7 +24,7 @@ func (b *Builder) index(ctx *context, r *Report) {
 	defer f.Close()
 	ctx.Navs.Hover("home") // set hover status
 	defer ctx.Navs.Reset() // remember to reset
-	viewData := ctx.viewData()
+	viewData := ctx.ViewData()
 	viewData["Posts"] = ctx.IndexPosts
 	viewData["Pager"] = ctx.IndexPager
 	if template.Compile(f, viewData, b.Renders().Current().FuncMap()); template.Error != nil {

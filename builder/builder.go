@@ -21,6 +21,7 @@ type Builder struct {
 
 	renders *render.Renders
 	report  *Report
+	context *Context
 	parser  parser.Parser
 
 	Error error
@@ -62,7 +63,7 @@ func (b *Builder) Build(dest string) {
 		b.report = r
 		return
 	}
-	ctx := &context{
+	ctx := &Context{
 		DstDir: dest,
 	}
 	b.isBuilding = true
@@ -87,6 +88,7 @@ func (b *Builder) Build(dest string) {
 	}
 	b.isBuilding = false
 	b.report = r
+	b.context = ctx
 }
 
 func (b *Builder) IsBuilding() bool {
@@ -95,4 +97,8 @@ func (b *Builder) IsBuilding() bool {
 
 func (b *Builder) Report() *Report {
 	return b.report
+}
+
+func (b *Builder) Context() *Context {
+	return b.context
 }

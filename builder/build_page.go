@@ -7,7 +7,7 @@ import (
 	"pugo/model"
 )
 
-func (b *Builder) pages(ctx *context, r *Report) {
+func (b *Builder) pages(ctx *Context, r *Report) {
 	if r.Error != nil {
 		return
 	}
@@ -44,7 +44,7 @@ func (b *Builder) pages(ctx *context, r *Report) {
 	}
 }
 
-func (b *Builder) pageRender(p *model.Page, ctx *context) error {
+func (b *Builder) pageRender(p *model.Page, ctx *Context) error {
 	template := b.Renders().Current().Template(p.Template)
 	if template.Error != nil {
 		return template.Error
@@ -64,7 +64,7 @@ func (b *Builder) pageRender(p *model.Page, ctx *context) error {
 
 	ctx.Navs.Hover(p.HoverClass)
 	defer ctx.Navs.Reset()
-	viewData := ctx.viewData()
+	viewData := ctx.ViewData()
 	viewData["Title"] = p.Title + " - " + ctx.Meta.Title
 	viewData["Desc"] = p.Desc
 	viewData["Page"] = p

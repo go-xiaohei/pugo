@@ -6,7 +6,7 @@ import (
 	"pugo/model"
 )
 
-func (b *Builder) nav(ctx *context, r *Report) {
+func (b *Builder) nav(ctx *Context, r *Report) {
 	if r.Error != nil {
 		return
 	}

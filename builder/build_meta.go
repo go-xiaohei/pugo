@@ -6,7 +6,7 @@ import (
 	"pugo/model"
 )
 
-func (b *Builder) meta(ctx *context, r *Report) {
+func (b *Builder) meta(ctx *Context, r *Report) {
 	if r.Error != nil {
 		return
 	}

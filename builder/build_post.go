@@ -9,7 +9,7 @@ import (
 	"sort"
 )
 
-func (b *Builder) posts(ctx *context, r *Report) {
+func (b *Builder) posts(ctx *Context, r *Report) {
 	if r.Error != nil {
 		return
 	}
@@ -79,7 +79,7 @@ func (b *Builder) posts(ctx *context, r *Report) {
 	}
 }
 
-func (b *Builder) postRender(p *model.Post, ctx *context) error {
+func (b *Builder) postRender(p *model.Post, ctx *Context) error {
 	template := b.Renders().Current().Template("post.html")
 	if template.Error != nil {
 		return template.Error
@@ -97,7 +97,7 @@ func (b *Builder) postRender(p *model.Post, ctx *context) error {
 	}
 	defer f.Close()
 
-	viewData := ctx.viewData()
+	viewData := ctx.ViewData()
 	viewData["Title"] = p.Title + " - " + ctx.Meta.Title
 	viewData["Desc"] = p.Desc
 	viewData["Post"] = p
@@ -107,7 +107,7 @@ func (b *Builder) postRender(p *model.Post, ctx *context) error {
 	return nil
 }
 
-func (b *Builder) postsRender(posts []*model.Post, ctx *context, pager *model.Pager) error {
+func (b *Builder) postsRender(posts []*model.Post, ctx *Context, pager *model.Pager) error {
 	template := b.Renders().Current().Template("posts.html")
 	if template.Error != nil {
 		return template.Error
@@ -123,7 +123,7 @@ func (b *Builder) postsRender(posts []*model.Post, ctx *context, pager *model.Pa
 	}
 	defer f.Close()
 
-	viewData := ctx.viewData()
+	viewData := ctx.ViewData()
 	viewData["Title"] = fmt.Sprintf("Page %d - %s", pager.Page, ctx.Meta.Title)
 	viewData["Posts"] = posts
 	viewData["Pager"] = pager
@@ -133,7 +133,7 @@ func (b *Builder) postsRender(posts []*model.Post, ctx *context, pager *model.Pa
 	return nil
 }
 
-func (b *Builder) archiveRender(archives []*model.Archive, ctx *context) error {
+func (b *Builder) archiveRender(archives []*model.Archive, ctx *Context) error {
 	template := b.Renders().Current().Template("archive.html")
 	if template.Error != nil {
 		return template.Error
@@ -147,9 +147,10 @@ func (b *Builder) archiveRender(archives []*model.Archive, ctx *context) error {
 	}
 	defer f.Close()
 
-	viewData := ctx.viewData()
 	ctx.Navs.Hover("archive")
 	defer ctx.Navs.Reset()
+
+	viewData := ctx.ViewData()
 	viewData["Title"] = fmt.Sprintf("Archive - %s", ctx.Meta.Title)
 	viewData["Archives"] = archives
 	if template.Compile(f, viewData, b.Renders().Current().FuncMap()); template.Error != nil {

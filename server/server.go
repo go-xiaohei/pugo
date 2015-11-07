@@ -5,13 +5,13 @@ import (
 )
 
 type Server struct {
-	addr        string
-	tango       *tango.Tango
-	static      *Static
-	buildHelper *Helper
+	addr   string
+	tango  *tango.Tango
+	Static *Static
+	Helper *Helper
 }
 
-func NewServer(addr string, static *Static, helper *Helper) *Server {
+func NewServer(addr string) *Server {
 	return &Server{
 		addr: addr,
 		tango: tango.New([]tango.Handler{
@@ -20,18 +20,16 @@ func NewServer(addr string, static *Static, helper *Helper) *Server {
 			tango.Contexts(),
 			tango.Recovery(true),
 		}...),
-		static:      static,
-		buildHelper: helper,
 	}
-}
-
-func (s *Server) Static() *Static {
-	return s.static
 }
 
 func (s *Server) Run() {
 	s.tango.Use(logger())
-	s.tango.Use(s.static)
-	s.tango.Use(s.buildHelper)
+	if s.Static != nil {
+		s.tango.Use(s.Static)
+	}
+	if s.Helper != nil {
+		s.tango.Use(s.Helper)
+	}
 	s.tango.Run(s.addr)
 }

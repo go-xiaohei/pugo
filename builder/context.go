@@ -3,7 +3,7 @@ package builder
 import "pugo/model"
 
 // build context, maintain parse data, posts, pages or others
-type context struct {
+type Context struct {
 	DstDir     string
 	Posts      []*model.Post
 	Tags       map[string]*model.Tag
@@ -15,7 +15,7 @@ type context struct {
 	Meta       *model.Meta
 }
 
-func (ctx *context) viewData() map[string]interface{} {
+func (ctx *Context) ViewData() map[string]interface{} {
 	m := map[string]interface{}{
 		"Nav":   ctx.Navs,
 		"Meta":  ctx.Meta,

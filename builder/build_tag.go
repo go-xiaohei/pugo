@@ -7,7 +7,7 @@ import (
 	"pugo/model"
 )
 
-func (b *Builder) tags(ctx *context, r *Report) {
+func (b *Builder) tags(ctx *Context, r *Report) {
 	if r.Error != nil {
 		return
 	}
@@ -38,7 +38,7 @@ func (b *Builder) tags(ctx *context, r *Report) {
 		}
 		defer f.Close()
 
-		viewData := ctx.viewData()
+		viewData := ctx.ViewData()
 		viewData["Title"] = fmt.Sprintf("%s - %s", t, ctx.Meta.Title)
 		viewData["Tag"] = tags[t]
 		viewData["Posts"] = posts
