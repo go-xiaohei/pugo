@@ -26,8 +26,7 @@ func (h *Helper) Handle(ctx *tango.Context) {
 		return
 	}
 	if h.b.Report().Error != nil {
-		ctx.WriteHeader(500)
-		ctx.Write([]byte("<h1>Pugo built fail:" + h.b.Report().Error.Error() + "</h1>"))
+		ctx.Abort(500, h.b.Report().Error.Error())
 		return
 	}
 	// use built files
@@ -48,5 +47,6 @@ func (h *Helper) Handle(ctx *tango.Context) {
 		ctx.ServeFile(file)
 		return
 	}
+
 	ctx.Next()
 }

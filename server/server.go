@@ -5,10 +5,11 @@ import (
 )
 
 type Server struct {
-	addr   string
-	tango  *tango.Tango
-	Static *Static
-	Helper *Helper
+	addr         string
+	tango        *tango.Tango
+	Static       *Static
+	Helper       *Helper
+	ErrorHandler tango.HandlerFunc
 }
 
 func NewServer(addr string) *Server {
@@ -24,6 +25,9 @@ func NewServer(addr string) *Server {
 }
 
 func (s *Server) Run() {
+	if s.ErrorHandler != nil {
+		s.tango.ErrHandler = s.ErrorHandler
+	}
 	s.tango.Use(logger())
 	if s.Static != nil {
 		s.tango.Use(s.Static)

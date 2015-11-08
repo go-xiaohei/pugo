@@ -72,6 +72,7 @@ func action(ctx *cli.Context) {
 	s := server.NewServer(ctx.String("addr"))
 	s.Static = static
 	s.Helper = server.NewHelper(b, DST_DIR)
+	s.ErrorHandler = server.Errors(DST_DIR)
 	s.Run()
 }
 
