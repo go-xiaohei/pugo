@@ -7,7 +7,7 @@ import (
 type Server struct {
 	addr         string
 	tango        *tango.Tango
-	Static       *Static
+	Static       []*Static
 	Helper       *Helper
 	ErrorHandler tango.HandlerFunc
 }
@@ -29,8 +29,10 @@ func (s *Server) Run() {
 		s.tango.ErrHandler = s.ErrorHandler
 	}
 	s.tango.Use(logger())
-	if s.Static != nil {
-		s.tango.Use(s.Static)
+	if len(s.Static) > 0 {
+		for _, ss := range s.Static {
+			s.tango.Use(ss)
+		}
 	}
 	if s.Helper != nil {
 		s.tango.Use(s.Helper)

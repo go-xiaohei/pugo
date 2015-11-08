@@ -12,9 +12,10 @@ const (
 	VERSION  = "1.0"
 	VER_DATE = "2015-11-05"
 
-	SRC_DIR = "source"   // source contents dir
-	TPL_DIR = "template" // template dir
-	DST_DIR = "dest"     // destination dir
+	SRC_DIR    = "source"   // source contents dir
+	TPL_DIR    = "template" // template dir
+	UPLOAD_DIR = "upload"   // upload dir
+	DST_DIR    = "dest"     // destination dir
 )
 
 var (
@@ -69,8 +70,14 @@ func action(ctx *cli.Context) {
 	staticDir := b.Renders().Current().StaticDir()
 	static := server.NewStatic()
 	static.RootPath = staticDir
+
+	upload := server.NewStatic()
+	upload.RootPath = UPLOAD_DIR
+	upload.Prefix = "/upload"
+	upload.IndexFiles = []string{}
+
 	s := server.NewServer(ctx.String("addr"))
-	s.Static = static
+	s.Static = []*server.Static{static, upload}
 	s.Helper = server.NewHelper(b, DST_DIR)
 	s.ErrorHandler = server.Errors(DST_DIR)
 	s.Run()
