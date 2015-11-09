@@ -77,7 +77,7 @@ func (b *Builder) comment(ctx *Context, r *Report) {
 }
 
 func (b *Builder) assets(ctx *Context, r *Report) {
-	files := []string{"favicon.ico", "robot.txt"}
+	files := []string{"favicon.ico", "robots.txt"}
 	staticDir := b.Renders().Current().StaticDir()
 	for _, f := range files {
 		srcFile := path.Join(staticDir, f)
