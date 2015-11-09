@@ -1,10 +1,14 @@
 -----ini
-title:About Pugo Static
-slug:about
-date:2015-11-12
-author:傅小黑
-author_email:fuxiaohei@vip.qq.com
-hover:about
+title = About Pugo Static
+slug = about
+date = 2015-11-12
+author = pugo-robot
+author_email =
+; set nav to active status when this page
+hover = about
+; set template file to render this page
+template =
+
 
 -----markdown
 ### Introduction
