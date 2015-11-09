@@ -85,6 +85,7 @@ func (b *Builder) Build(dest string) {
 	log15.Debug("Build.Feed", "duration", r.Duration())
 	b.errors(ctx, r)
 	log15.Debug("Build.Errors", "duration", r.Duration())
+	b.assets(ctx, r)
 	if r.Error != nil {
 		log15.Error("Build.Error", "error", r.Error.Error())
 	} else {

@@ -1,6 +1,7 @@
 package builder
 
 import (
+	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo-static/model"
 	"os"
 	"path"
@@ -73,4 +74,16 @@ func (b *Builder) comment(ctx *Context, r *Report) {
 		return
 	}
 	ctx.Comment = cmt
+}
+
+func (b *Builder) assets(ctx *Context, r *Report) {
+	files := []string{"favicon.ico", "robot.txt"}
+	staticDir := b.Renders().Current().StaticDir()
+	for _, f := range files {
+		srcFile := path.Join(staticDir, f)
+		if com.IsFile(srcFile) {
+			dstFile := path.Join(ctx.DstDir, f)
+			com.Copy(srcFile, dstFile)
+		}
+	}
 }
