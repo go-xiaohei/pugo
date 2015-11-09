@@ -21,6 +21,7 @@ type Page struct {
 	Author     Author
 	Raw        []byte
 	rawType    string
+    Meta map[string]string
 
 	fileName string
 	fileTime time.Time
@@ -34,7 +35,7 @@ func (p *Page) ContentHTML() template.HTML {
 }
 
 func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
-	if len(blocks) != 2 {
+	if len(blocks) < 2 {
 		return nil, ErrPostBlockError
 	}
 	p := &Page{
@@ -53,6 +54,7 @@ func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 	p.Desc = section.Key("desc").String()
 	p.HoverClass = section.Key("hover").String()
 	p.Template = section.Key("template").MustString("page.html")
+    p.Meta = make(map[string]string)
 
 	ct, err := time.Parse("2006-01-02", section.Key("date").String())
 	if err != nil {
@@ -80,5 +82,17 @@ func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 
 	// build url
 	p.Url = fmt.Sprintf("/%s", p.Slug)
+
+    if len(blocks) > 2 {
+        // parse meta block
+        iniF, err = ini.Load(blocks[2].Bytes())
+        if err != nil {
+            return nil, err
+        }
+        keys := iniF.Section("DEFAULT").Keys()
+        for _,k := range keys{
+            p.Meta[k.Name()] = k.String()
+        }
+    }
 	return p, nil
 }

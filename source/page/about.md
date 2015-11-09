@@ -41,3 +41,6 @@ After you change your source `.md` files, just restart the server.
 - Theme: theme documentation is [wiki](#)
 
 - Build from source: install and debug documentation is [wiki]($)
+
+-----ini
+metadata = metadata
