@@ -71,6 +71,8 @@ func (b *Builder) Build(dest string) {
 	log15.Debug("Build.Meta", "duration", r.Duration())
 	b.nav(ctx, r)
 	log15.Debug("Build.Navs", "navs", len(ctx.Navs), "duration", r.Duration())
+	b.comment(ctx, r)
+	log15.Debug("Build.Comment", "comment", ctx.Comment.String(), "duration", r.Duration())
 	b.posts(ctx, r)
 	log15.Debug("Build.Posts", "posts", len(ctx.Posts), "duration", r.Duration())
 	b.tags(ctx, r)

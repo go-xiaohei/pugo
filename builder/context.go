@@ -13,14 +13,16 @@ type Context struct {
 	IndexPager *model.Pager
 	Navs       model.Navs
 	Meta       *model.Meta
+	Comment    *model.Comment
 }
 
 func (ctx *Context) ViewData() map[string]interface{} {
 	m := map[string]interface{}{
-		"Nav":   ctx.Navs,
-		"Meta":  ctx.Meta,
-		"Title": ctx.Meta.Title + " - " + ctx.Meta.Subtitle,
-		"Desc":  ctx.Meta.Desc,
+		"Nav":     ctx.Navs,
+		"Meta":    ctx.Meta,
+		"Title":   ctx.Meta.Title + " - " + ctx.Meta.Subtitle,
+		"Desc":    ctx.Meta.Desc,
+		"Comment": ctx.Comment,
 	}
 	return m
 }
