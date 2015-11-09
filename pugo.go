@@ -43,6 +43,10 @@ func init() {
 			Name:  "debug",
 			Usage: "debug mode flag",
 		},
+		cli.BoolFlag{
+			Name:  "build",
+			Usage: "only build site, but don't serve http",
+		},
 	}
 	app.Action = action
 }
@@ -65,6 +69,10 @@ func action(ctx *cli.Context) {
 	}
 
 	b.Build(DST_DIR)
+
+	if ctx.Bool("build") {
+		return
+	}
 
 	// server
 	staticDir := b.Renders().Current().StaticDir()

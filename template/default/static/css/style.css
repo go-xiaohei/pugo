@@ -12,7 +12,7 @@ body {
     background-color: #FCFCFC;
 }
 
-#main{
+#main {
     margin-top: 5em;
 }
 
@@ -25,7 +25,7 @@ body {
     font-size: 1.2em;
 }
 
-#site-nav .nav li a .fa{
+#site-nav .nav li a .fa {
     margin-right: 6px;
 }
 
@@ -35,13 +35,13 @@ body {
     color: #888;
 }
 
-#site-title a{
+#site-title a {
     color: #555;
     text-decoration: none;
 }
 
-#site-title a:hover{
-   color: #111;
+#site-title a:hover {
+    color: #111;
 }
 
 /*#hero*/
@@ -184,12 +184,17 @@ body {
     border-bottom-color: #DDD;
 }
 
+.article .brief p > code {
+    color: #333;
+    background-color: #f1f1f1;
+}
+
 .article .aside .tag {
     margin-right: 1em;
     font-size: 14px;
 }
 
-.article .aside .stat{
+.article .aside .stat {
     font-size: 14px;
 }
 
@@ -203,26 +208,26 @@ body {
     margin-left: 1em;
 }
 
-#article-single .aside{
+#article-single .aside {
     padding-top: 8px;
     border-bottom: 1px dashed #DDD;
     padding-bottom: 18px;
     margin-bottom: 18px;
 }
 
-#article-single .brief{
+#article-single .brief {
     margin-bottom: 40px;
 }
 
-#article-list .aside{
+#article-list .aside {
     padding-bottom: 24px;
 }
 
-#article-list h2.tag{
+#article-list h2.tag {
     margin: 0 auto 30px auto;
 }
 
-#page-single .article{
+#page-single .article {
     margin-bottom: 0;
 }
 
@@ -230,11 +235,11 @@ body {
 #archive-list
 */
 
-#archive-list .panel{
+#archive-list .panel {
     padding-bottom: 3em;
 }
 
-.archive .date{
+.archive .date {
     margin-right: 1em;
     font-size: .8em;
     color: #DDD;
@@ -242,7 +247,7 @@ body {
     width: 3em;
 }
 
-.archive h4{
+.archive h4 {
     line-height: 40px;
 }
 
