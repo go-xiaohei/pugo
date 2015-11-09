@@ -2,9 +2,9 @@ package server
 
 import (
 	"github.com/Unknwon/com"
+	"github.com/go-xiaohei/pugo-static/builder"
 	"github.com/lunny/tango"
 	"path"
-	"pugo/builder"
 	"strings"
 )
 

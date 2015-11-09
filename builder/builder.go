@@ -3,10 +3,10 @@ package builder
 import (
 	"errors"
 	"github.com/Unknwon/com"
+	"github.com/go-xiaohei/pugo-static/parser"
+	"github.com/go-xiaohei/pugo-static/render"
 	"gopkg.in/inconshreveable/log15.v2"
 	"os"
-	"pugo/parser"
-	"pugo/render"
 )
 
 var (

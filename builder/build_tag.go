@@ -2,9 +2,9 @@ package builder
 
 import (
 	"fmt"
+	"github.com/go-xiaohei/pugo-static/model"
 	"os"
 	"path"
-	"pugo/model"
 )
 
 func (b *Builder) tags(ctx *Context, r *Report) {

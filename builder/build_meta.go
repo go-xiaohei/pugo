@@ -1,9 +1,9 @@
 package builder
 
 import (
+	"github.com/go-xiaohei/pugo-static/model"
 	"os"
 	"path"
-	"pugo/model"
 )
 
 func (b *Builder) meta(ctx *Context, r *Report) {

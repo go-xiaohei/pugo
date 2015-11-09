@@ -2,8 +2,8 @@ package model
 
 import (
 	"errors"
+	"github.com/go-xiaohei/pugo-static/parser"
 	"gopkg.in/ini.v1"
-	"pugo/parser"
 )
 
 var (

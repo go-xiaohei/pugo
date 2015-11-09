@@ -2,10 +2,10 @@ package main
 
 import (
 	"github.com/codegangsta/cli"
+	"github.com/go-xiaohei/pugo-static/builder"
+	"github.com/go-xiaohei/pugo-static/server"
 	"gopkg.in/inconshreveable/log15.v2"
 	"gopkg.in/inconshreveable/log15.v2/ext"
-	"pugo/builder"
-	"pugo/server"
 )
 
 const (

@@ -2,10 +2,10 @@ package builder
 
 import (
 	"fmt"
+	"github.com/go-xiaohei/pugo-static/model"
 	"os"
 	"path"
 	"path/filepath"
-	"pugo/model"
 	"sort"
 )
 

@@ -1,10 +1,10 @@
 package builder
 
 import (
+	"github.com/go-xiaohei/pugo-static/model"
 	"os"
 	"path"
 	"path/filepath"
-	"pugo/model"
 )
 
 func (b *Builder) pages(ctx *Context, r *Report) {

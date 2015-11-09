@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/go-xiaohei/pugo-static/parser"
 	"gopkg.in/ini.v1"
 	"html/template"
 	"os"
-	"pugo/parser"
 	"strings"
 	"time"
 )
