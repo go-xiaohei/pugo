@@ -184,7 +184,8 @@ body {
     border-bottom-color: #DDD;
 }
 
-.article .brief p > code {
+.article .brief p > code,
+.article .brief li > code{
     color: #333;
     background-color: #f1f1f1;
 }
@@ -229,6 +230,10 @@ body {
 
 #page-single .article {
     margin-bottom: 0;
+}
+
+#comment{
+    margin-top: -4em;
 }
 
 /*
