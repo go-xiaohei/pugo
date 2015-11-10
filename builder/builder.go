@@ -7,6 +7,7 @@ import (
 	"github.com/go-xiaohei/pugo-static/render"
 	"gopkg.in/inconshreveable/log15.v2"
 	"os"
+	"strconv"
 )
 
 var (
@@ -14,18 +15,26 @@ var (
 	ErrTplDirMissing = errors.New("builder-tpl-dir-missing")
 )
 
-type Builder struct {
-	srcDir     string
-	tplDir     string
-	isBuilding bool
+type (
+	Builder struct {
+		srcDir     string
+		tplDir     string
+		isBuilding bool
 
-	renders *render.Renders
-	report  *Report
-	context *Context
-	parser  parser.Parser
+		renders *render.Renders
+		report  *Report
+		context *Context
+		parser  parser.Parser
+		tasks   []*BuildTask
 
-	Error error
-}
+		Error error
+	}
+	BuildTask struct {
+		Name  string
+		Fn    func(*Context, *Report)
+		Print func(*Context) string
+	}
+)
 
 func New(sourceDir, templateDir, currentTheme string, debug bool) *Builder {
 	if !com.IsDir(sourceDir) {
@@ -44,6 +53,27 @@ func New(sourceDir, templateDir, currentTheme string, debug bool) *Builder {
 		return &Builder{Error: err}
 	}
 	builder.renders = r
+	builder.tasks = []*BuildTask{
+		&BuildTask{"Meta", builder.meta, nil},
+		&BuildTask{"Navs", builder.nav, func(ctx *Context) string {
+			return strconv.Itoa(len(ctx.Navs))
+		}},
+		&BuildTask{"Comment", builder.comment, func(ctx *Context) string {
+			return ctx.Comment.String()
+		}},
+		&BuildTask{"Posts", builder.posts, func(ctx *Context) string {
+			return strconv.Itoa(len(ctx.Posts))
+		}},
+		&BuildTask{"Tags", builder.tags, func(ctx *Context) string {
+			return strconv.Itoa(len(ctx.Tags))
+		}},
+		&BuildTask{"Pages", builder.pages, func(ctx *Context) string {
+			return strconv.Itoa(len(ctx.Pages))
+		}},
+		&BuildTask{"Index", builder.index, nil},
+		&BuildTask{"Feed", builder.feed, nil},
+		&BuildTask{"Errors", builder.errors, nil},
+	}
 	return builder
 }
 
@@ -67,30 +97,23 @@ func (b *Builder) Build(dest string) {
 		DstDir: dest,
 	}
 	b.isBuilding = true
-	b.meta(ctx, r)
-	log15.Debug("Build.Meta", "duration", r.Duration())
-	b.nav(ctx, r)
-	log15.Debug("Build.Navs", "navs", len(ctx.Navs), "duration", r.Duration())
-	b.comment(ctx, r)
-	log15.Debug("Build.Comment", "comment", ctx.Comment.String(), "duration", r.Duration())
-	b.posts(ctx, r)
-	log15.Debug("Build.Posts", "posts", len(ctx.Posts), "duration", r.Duration())
-	b.tags(ctx, r)
-	log15.Debug("Build.Tags", "tags", len(ctx.Tags), "duration", r.Duration())
-	b.pages(ctx, r)
-	log15.Debug("Build.Pages", "pages", len(ctx.Pages), "duration", r.Duration())
-	b.index(ctx, r)
-	log15.Debug("Build.Index", "duration", r.Duration())
-	b.feed(ctx, r)
-	log15.Debug("Build.Feed", "duration", r.Duration())
-	b.errors(ctx, r)
-	log15.Debug("Build.Errors", "duration", r.Duration())
-	b.assets(ctx, r)
-	if r.Error != nil {
-		log15.Error("Build.Error", "error", r.Error.Error())
-	} else {
-		log15.Info("Build.Finish", "duration", r.Duration(), "error", r.Error)
+	for _, task := range b.tasks {
+		task.Fn(ctx, r)
+		if r.Error != nil {
+			log15.Error("Build."+task.Name, "error", r.Error.Error())
+
+			b.isBuilding = false
+			b.report = r
+			b.context = ctx
+			return
+		}
+		if task.Print != nil {
+			log15.Debug("Build."+task.Name+"."+task.Print(ctx), "duration", r.Duration())
+		} else {
+			log15.Debug("Build."+task.Name, "duration", r.Duration())
+		}
 	}
+	log15.Info("Build.Finish", "duration", r.Duration(), "error", r.Error)
 	b.isBuilding = false
 	b.report = r
 	b.context = ctx

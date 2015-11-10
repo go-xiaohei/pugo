@@ -69,6 +69,7 @@ func action(ctx *cli.Context) {
 	}
 
 	b.Build(DST_DIR)
+	b.Watch(DST_DIR)
 
 	if ctx.Bool("build") {
 		return
