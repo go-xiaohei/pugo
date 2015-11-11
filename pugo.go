@@ -69,7 +69,11 @@ func action(ctx *cli.Context) {
 	}
 
 	b.Build(DST_DIR)
-	b.Watch(DST_DIR)
+	if ctx.Bool("debug") {
+		b.Watch(DST_DIR, TPL_DIR)
+	} else {
+		b.Watch(DST_DIR, "")
+	}
 
 	if ctx.Bool("build") {
 		return

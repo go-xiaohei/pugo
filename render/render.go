@@ -29,6 +29,11 @@ func (r *Render) StaticDir() string {
 	return path.Join(r.dir, "static")
 }
 
+func (r *Render) IsExist(file string) bool {
+	fullFile := path.Join(r.dir, file)
+	return com.IsFile(fullFile)
+}
+
 func (r *Render) Template(file string) *Template {
 	if r.templates[file] == nil {
 		fullFile := path.Join(r.dir, file)

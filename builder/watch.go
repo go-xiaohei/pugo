@@ -3,10 +3,11 @@ package builder
 import (
 	"gopkg.in/fsnotify.v1"
 	"gopkg.in/inconshreveable/log15.v2"
+	"io/ioutil"
 	"path"
 )
 
-func (b *Builder) Watch(dstDir string) {
+func (b *Builder) Watch(dstDir, tplDir string) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		log15.Crit("Build.Watch", "error", err.Error())
@@ -18,7 +19,8 @@ func (b *Builder) Watch(dstDir string) {
 		for {
 			select {
 			case event := <-watcher.Events:
-				if path.Ext(event.Name) == ".md" {
+				ext := path.Ext(event.Name)
+				if ext == ".md" || ext == ".html" {
 					if event.Op != fsnotify.Chmod && !b.IsBuilding() {
 						log15.Info("Build.Watch.Rebuild", "change", event.String())
 						b.Build(dstDir)
@@ -30,5 +32,18 @@ func (b *Builder) Watch(dstDir string) {
 		}
 	}()
 
-	watcher.Add(b.srcDir)
+	watchDir(watcher, b.srcDir)
+	if tplDir != "" {
+		watchDir(watcher, tplDir)
+	}
+}
+
+func watchDir(watcher *fsnotify.Watcher, srcDir string) {
+	watcher.Add(srcDir)
+	dir, _ := ioutil.ReadDir(srcDir)
+	for _, d := range dir {
+		if d.IsDir() {
+			watchDir(watcher, path.Join(srcDir, d.Name()))
+		}
+	}
 }

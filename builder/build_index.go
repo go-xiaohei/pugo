@@ -1,6 +1,7 @@
 package builder
 
 import (
+	"github.com/go-xiaohei/pugo-static/render"
 	"os"
 	"path"
 )
@@ -9,11 +10,21 @@ func (b *Builder) index(ctx *Context, r *Report) {
 	if r.Error != nil {
 		return
 	}
-	template := b.Renders().Current().Template("posts.html")
-	if template.Error != nil {
-		r.Error = template.Error
-		return
+	var template *render.Template
+	if b.Renders().Current().IsExist("index.html") {
+		template = b.Renders().Current().Template("index.html")
+		if template.Error != nil {
+			r.Error = template.Error
+			return
+		}
+	} else {
+		template = b.Renders().Current().Template("posts.html")
+		if template.Error != nil {
+			r.Error = template.Error
+			return
+		}
 	}
+
 	dstFile := path.Join(ctx.DstDir, "index.html")
 	os.MkdirAll(path.Dir(dstFile), os.ModePerm)
 	f, err := os.OpenFile(dstFile, os.O_CREATE|os.O_TRUNC|os.O_RDWR, os.ModePerm)

@@ -68,6 +68,7 @@ func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 		}
 		p.Updated = NewTime(ut)
 	} else {
+		p.Updated = p.Created
 		// p.Updated = NewTime(p.fileTime)
 	}
 	p.Author = Author{

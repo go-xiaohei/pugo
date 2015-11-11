@@ -85,6 +85,7 @@ func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 		}
 		p.Updated = NewTime(ut)
 	} else {
+		p.Updated = p.Created
 		// p.Updated = NewTime(p.fileTime)
 	}
 	p.Author = Author{
