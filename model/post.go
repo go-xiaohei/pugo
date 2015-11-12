@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-xiaohei/pugo-static/parser"
-	"gopkg.in/ini.v1"
 	"html/template"
 	"os"
 	"strings"
@@ -56,16 +55,14 @@ func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 		fileTime: fi.ModTime(),
 	}
 
-	// parse first ini block
-	iniF, err := ini.Load(blocks[0].Bytes())
-	if err != nil {
+	block, ok := blocks[0].(parser.MetaBlock)
+	if !ok {
+		return nil, ErrMetaBlockWrong
+	}
+	if err := block.MapTo("", p); err != nil {
 		return nil, err
 	}
-	section := iniF.Section("DEFAULT")
-	if err := section.MapTo(p); err != nil {
-		return nil, err
-	}
-	tags := section.Key("tags").Strings(",")
+	tags := strings.Split(block.Item("tags"), ",")
 	for _, t := range tags {
 		t = strings.TrimSpace(t)
 		if t != "" {
@@ -73,15 +70,15 @@ func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 		}
 	}
 
-	p.Created = NewTime(section.Key("date").String(), p.fileTime)
+	p.Created = NewTime(block.Item("date"), p.fileTime)
 	p.Updated = p.Created
-	if upStr := section.Key("update_date").String(); upStr != "" {
+	if upStr := block.Item("update_date"); upStr != "" {
 		p.Updated = NewTime(upStr, p.fileTime)
 	}
 	p.Author = Author{
-		Name:  section.Key("author").String(),
-		Email: section.Key("author_email").String(),
-		Url:   section.Key("author_url").String(),
+		Name:  block.Item("author"),
+		Email: block.Item("author_email"),
+		Url:   block.Item("author_url"),
 	}
 
 	// parse markdown block

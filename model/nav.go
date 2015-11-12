@@ -3,7 +3,7 @@ package model
 import (
 	"errors"
 	"github.com/go-xiaohei/pugo-static/parser"
-	"gopkg.in/ini.v1"
+	"strings"
 )
 
 var (
@@ -44,45 +44,39 @@ func NewNavs(blocks []parser.Block) (Navs, error) {
 	if len(blocks) != 1 {
 		return nil, ErrNavBlockWrong
 	}
-	iniF, err := ini.Load(blocks[0].Bytes())
-	if err != nil {
-		return nil, err
+	block, ok := blocks[0].(parser.MetaBlock)
+	if !ok {
+		return nil, ErrMetaBlockWrong
 	}
-	navSection := iniF.Section("nav")
-	navKeys := navSection.Keys()
 	navs := make([]*Nav, 0)
+	navKeys := block.Keys("nav")
 	for _, k := range navKeys {
-		subSection := iniF.Section(k.String())
-		nav := section2Nav(subSection)
-		if nav == nil {
+		k = block.Item("nav", k)
+		nav := new(Nav)
+		if err := block.MapTo(k, nav); err != nil {
 			continue
 		}
-
-		sub := subSection.Key("sub").Strings(",")
-		if len(sub) > 0 {
+		if nav.Link == "" {
+			continue
+		}
+		sub := strings.Split(block.Item(k, "sub"), ",")
+		if len(sub) > 0 && sub[0] != "" {
 			for _, s := range sub {
 				if s == "-" {
 					nav.SubNav = append(nav.SubNav, &Nav{IsSeparator: true})
 					continue
 				}
-				n := section2Nav(iniF.Section(s))
-				if n != nil {
-					nav.SubNav = append(nav.SubNav, n)
+				n2 := new(Nav)
+				if err := block.MapTo(s, n2); err != nil {
+					continue
 				}
+				if n2.Link == "" {
+					continue
+				}
+				nav.SubNav = append(nav.SubNav, n2)
 			}
 		}
 		navs = append(navs, nav)
 	}
 	return Navs(navs), nil
-}
-
-func section2Nav(s *ini.Section) *Nav {
-	nav := new(Nav)
-	if err := s.MapTo(nav); err != nil {
-		return nil
-	}
-	if nav.Link == "" {
-		return nil
-	}
-	return nav
 }

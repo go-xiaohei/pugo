@@ -3,7 +3,6 @@ package model
 import (
 	"fmt"
 	"github.com/go-xiaohei/pugo-static/parser"
-	"gopkg.in/ini.v1"
 	"html/template"
 	"os"
 	"time"
@@ -44,28 +43,26 @@ func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 		Meta:     make(map[string]string),
 	}
 
-	// parse first ini block
-	iniF, err := ini.Load(blocks[0].Bytes())
-	if err != nil {
-		return nil, err
+	block, ok := blocks[0].(parser.MetaBlock)
+	if !ok {
+		return nil, ErrMetaBlockWrong
 	}
-	section := iniF.Section("DEFAULT")
-	if err := section.MapTo(p); err != nil {
+	if err := block.MapTo("", p); err != nil {
 		return nil, err
 	}
 	if p.Template == "" {
 		p.Template = "page.html"
 	}
 
-	p.Created = NewTime(section.Key("date").String(), p.fileTime)
+	p.Created = NewTime(block.Item("date"), p.fileTime)
 	p.Updated = p.Created
-	if upStr := section.Key("update_date").String(); upStr != "" {
+	if upStr := block.Item("update_date"); upStr != "" {
 		p.Updated = NewTime(upStr, p.fileTime)
 	}
 	p.Author = Author{
-		Name:  section.Key("author").String(),
-		Email: section.Key("author_email").String(),
-		Url:   section.Key("author_url").String(),
+		Name:  block.Item("author"),
+		Email: block.Item("author_email"),
+		Url:   block.Item("author_url"),
 	}
 
 	// parse markdown block
@@ -77,11 +74,11 @@ func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 
 	if len(blocks) > 2 {
 		// parse meta block
-		iniF, err = ini.Load(blocks[2].Bytes())
-		if err != nil {
-			return nil, err
+		block, ok := blocks[2].(parser.MetaBlock)
+		if !ok {
+			return nil, ErrMetaBlockWrong
 		}
-		p.Meta = iniF.Section("DEFAULT").KeysHash()
+		p.Meta = block.MapHash("")
 	}
 	return p, nil
 }

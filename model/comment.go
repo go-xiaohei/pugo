@@ -29,7 +29,7 @@ func NewComment(blocks []parser.Block) (*Comment, error) {
 	c := new(Comment)
 	// disqus
 	disqus := new(CommentDisqus)
-	if err := block.Meta("disqus", disqus); err != nil {
+	if err := block.MapTo("disqus", disqus); err != nil {
 		return nil, err
 	}
 	if disqus.Site != "" {

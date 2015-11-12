@@ -26,7 +26,7 @@ func NewMeta(blocks []parser.Block) (*Meta, error) {
 		return nil, ErrMetaBlockWrong
 	}
 	meta := new(Meta)
-	if err := block.Meta("meta", meta); err != nil {
+	if err := block.MapTo("meta", meta); err != nil {
 		return nil, err
 	}
 	return meta, nil
