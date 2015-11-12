@@ -3,7 +3,6 @@ package model
 import (
 	"errors"
 	"github.com/go-xiaohei/pugo-static/parser"
-	"gopkg.in/ini.v1"
 	"strings"
 )
 
@@ -12,28 +11,28 @@ var (
 )
 
 type Comment struct {
-	Disqus *CommentDisqus
+	Disqus *CommentDisqus `ini:"disqus"`
 }
 
 type CommentDisqus struct {
-	Site string
+	Site string `ini:"site"`
 }
 
 func NewComment(blocks []parser.Block) (*Comment, error) {
 	if len(blocks) != 1 {
 		return nil, ErrCommentBlockWrong
 	}
-	iniF, err := ini.Load(blocks[0].Bytes())
-	if err != nil {
-		return nil, err
+	block, ok := blocks[0].(parser.MetaBlock)
+	if !ok {
+		return nil, ErrCommentBlockWrong
 	}
 	c := new(Comment)
 	// disqus
-	section := iniF.Section("disqus")
-	if site := section.Key("site").String(); site != "" {
-		disqus := &CommentDisqus{
-			Site: site,
-		}
+	disqus := new(CommentDisqus)
+	if err := block.Meta("disqus", disqus); err != nil {
+		return nil, err
+	}
+	if disqus.Site != "" {
 		c.Disqus = disqus
 	}
 	return c, nil

@@ -11,17 +11,17 @@ var (
 )
 
 type Nav struct {
-	Link    string
-	Title   string
-	IsBlank bool
+	Link    string `ini:"link"`
+	Title   string `ini:"title"`
+	IsBlank bool   `ini:"blank"`
 
-	IconClass  string
-	HoverClass string
-	I18n       string
-	SubNav     []*Nav
+	IconClass  string `ini:"icon"`
+	HoverClass string `ini:"hover"`
+	I18n       string `ini:"i18n"`
+	SubNav     []*Nav `ini:"-"`
 
-	IsSeparator bool
-	IsHover     bool
+	IsSeparator bool `ini:"-"`
+	IsHover     bool `ini:"-"`
 }
 
 type Navs []*Nav
@@ -77,17 +77,12 @@ func NewNavs(blocks []parser.Block) (Navs, error) {
 }
 
 func section2Nav(s *ini.Section) *Nav {
-	link := s.Key("link").String()
-	if link == "" {
+	nav := new(Nav)
+	if err := s.MapTo(nav); err != nil {
 		return nil
 	}
-	nav := &Nav{
-		Link:       link,
-		Title:      s.Key("title").String(),
-		IconClass:  s.Key("icon").String(),
-		HoverClass: s.Key("hover").String(),
-		I18n:       s.Key("i18n").String(),
+	if nav.Link == "" {
+		return nil
 	}
-	nav.IsBlank, _ = s.Key("blank").Bool()
 	return nav
 }

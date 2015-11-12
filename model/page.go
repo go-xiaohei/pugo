@@ -10,15 +10,15 @@ import (
 )
 
 type Page struct {
-	Title      string
-	Slug       string
-	Url        string
-	HoverClass string
-	Template   string
-	Desc       string
-	Created    Time
-	Updated    Time
-	Author     Author
+	Title      string `ini:"title"`
+	Slug       string `ini:"slug"`
+	Url        string `ini:"-"`
+	HoverClass string `ini:"hover"`
+	Template   string `ini:"template"`
+	Desc       string `ini:"desc"`
+	Created    Time   `ini:"-"`
+	Updated    Time   `ini:"-"`
+	Author     Author `ini:"-"`
 	Raw        []byte
 	rawType    string
 	Meta       map[string]string
@@ -41,6 +41,7 @@ func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 	p := &Page{
 		fileName: fi.Name(),
 		fileTime: fi.ModTime(),
+		Meta:     make(map[string]string),
 	}
 
 	// parse first ini block
@@ -49,27 +50,17 @@ func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 		return nil, err
 	}
 	section := iniF.Section("DEFAULT")
-	p.Title = section.Key("title").String()
-	p.Slug = section.Key("slug").String()
-	p.Desc = section.Key("desc").String()
-	p.HoverClass = section.Key("hover").String()
-	p.Template = section.Key("template").MustString("page.html")
-	p.Meta = make(map[string]string)
-
-	ct, err := time.Parse("2006-01-02", section.Key("date").String())
-	if err != nil {
+	if err := section.MapTo(p); err != nil {
 		return nil, err
 	}
-	p.Created = NewTime(ct)
+	if p.Template == "" {
+		p.Template = "page.html"
+	}
+
+	p.Created = NewTime(section.Key("date").String(), p.fileTime)
+	p.Updated = p.Created
 	if upStr := section.Key("update_date").String(); upStr != "" {
-		ut, err := time.Parse("2006-01-02", upStr)
-		if err != nil {
-			return nil, err
-		}
-		p.Updated = NewTime(ut)
-	} else {
-		p.Updated = p.Created
-		// p.Updated = NewTime(p.fileTime)
+		p.Updated = NewTime(upStr, p.fileTime)
 	}
 	p.Author = Author{
 		Name:  section.Key("author").String(),
@@ -90,10 +81,7 @@ func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 		if err != nil {
 			return nil, err
 		}
-		keys := iniF.Section("DEFAULT").Keys()
-		for _, k := range keys {
-			p.Meta[k.Name()] = k.String()
-		}
+		p.Meta = iniF.Section("DEFAULT").KeysHash()
 	}
 	return p, nil
 }

@@ -17,15 +17,15 @@ var (
 )
 
 type Post struct {
-	Title   string
-	Slug    string
-	Url     string
-	Desc    string // description in a sentence
-	Created Time
-	Updated Time
-	Author  Author
-	Tags    []Tag
-	Raw     []byte
+	Title   string `ini:"title"`
+	Slug    string `ini:"slug"`
+	Url     string `ini:"-"`
+	Desc    string `ini:"desc"` // description in a sentence
+	Created Time   `ini:"-"`
+	Updated Time   `ini:"-"`
+	Author  Author `ini:"-"`
+	Tags    []Tag  `ini:"-"`
+	Raw     []byte ``
 	rawType string
 
 	fileName string
@@ -62,9 +62,9 @@ func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 		return nil, err
 	}
 	section := iniF.Section("DEFAULT")
-	p.Title = section.Key("title").String()
-	p.Slug = section.Key("slug").String()
-	p.Desc = section.Key("desc").String()
+	if err := section.MapTo(p); err != nil {
+		return nil, err
+	}
 	tags := section.Key("tags").Strings(",")
 	for _, t := range tags {
 		t = strings.TrimSpace(t)
@@ -73,20 +73,10 @@ func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 		}
 	}
 
-	ct, err := time.Parse("2006-01-02", section.Key("date").String())
-	if err != nil {
-		return nil, err
-	}
-	p.Created = NewTime(ct)
+	p.Created = NewTime(section.Key("date").String(), p.fileTime)
+	p.Updated = p.Created
 	if upStr := section.Key("update_date").String(); upStr != "" {
-		ut, err := time.Parse("2006-01-02", upStr)
-		if err != nil {
-			return nil, err
-		}
-		p.Updated = NewTime(ut)
-	} else {
-		p.Updated = p.Created
-		// p.Updated = NewTime(p.fileTime)
+		p.Updated = NewTime(upStr, p.fileTime)
 	}
 	p.Author = Author{
 		Name:  section.Key("author").String(),

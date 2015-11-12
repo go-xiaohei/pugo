@@ -9,7 +9,22 @@ type Time struct {
 	Day   int
 }
 
-func NewTime(t time.Time) Time {
+func NewTime(str string, t2 time.Time) Time {
+	var (
+		t   time.Time
+		err error
+	)
+	if len(str) <= 10 {
+		t, err = time.Parse("2006-01-02", str)
+		if err != nil {
+			t = t2
+		}
+	} else {
+		t, err = time.Parse("2006-01-02 15:04:05", str)
+		if err != nil {
+			t = t2
+		}
+	}
 	ti := Time{
 		Raw: t,
 	}

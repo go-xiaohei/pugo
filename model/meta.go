@@ -3,7 +3,6 @@ package model
 import (
 	"errors"
 	"github.com/go-xiaohei/pugo-static/parser"
-	"gopkg.in/ini.v1"
 )
 
 var (
@@ -11,28 +10,24 @@ var (
 )
 
 type Meta struct {
-	Title    string
-	Subtitle string
-	Keyword  string
-	Desc     string
-	Domain   string
+	Title    string `ini:"title"`
+	Subtitle string `ini:"subtitle"`
+	Keyword  string `ini:"keyword"`
+	Desc     string `ini:"desc"`
+	Domain   string `ini:"domain"`
 }
 
 func NewMeta(blocks []parser.Block) (*Meta, error) {
 	if len(blocks) != 1 {
 		return nil, ErrMetaBlockWrong
 	}
-	iniF, err := ini.Load(blocks[0].Bytes())
-	if err != nil {
-		return nil, err
+	block, ok := blocks[0].(parser.MetaBlock)
+	if !ok {
+		return nil, ErrMetaBlockWrong
 	}
-	section := iniF.Section("meta")
-	meta := &Meta{
-		Title:    section.Key("title").String(),
-		Subtitle: section.Key("subtitle").String(),
-		Keyword:  section.Key("keyword").String(),
-		Desc:     section.Key("desc").String(),
-		Domain:   section.Key("domain").String(),
+	meta := new(Meta)
+	if err := block.Meta("meta", meta); err != nil {
+		return nil, err
 	}
 	return meta, nil
 }
