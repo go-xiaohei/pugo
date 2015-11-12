@@ -1,9 +1,11 @@
 -----ini
 title = About Pugo Static
 slug = about
+desc = some words about pugo.static
 date = 2015-11-12
 author = pugo-robot
 author_email =
+author_url = http://pugo.io
 ; set nav to active status when this page
 hover = about
 ; set template file to render this page

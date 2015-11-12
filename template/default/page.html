@@ -23,7 +23,7 @@
                             </h3>
                         </header>
                         <aside class="aside clearfix">
-                            <a class="stat label label-default pull-right">{{.Page.Author.Name}}</a>
+                            <a class="stat label label-default pull-right"{{if .Page.Author.Url}} href="{{.Page.Author.Url}}" target="_blank"{{end}}>{{.Page.Author.Name}}</a>
                         </aside>
                         <section class="brief">{{.Page.ContentHTML}}</section>
                     </div>

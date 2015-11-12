@@ -169,6 +169,10 @@ body {
     font-weight: 700;
 }
 
+.article .brief img {
+    max-width: 100%;
+}
+
 .article-pager .btn {
     font-size: 1.8em;
 }
@@ -185,7 +189,7 @@ body {
 }
 
 .article .brief p > code,
-.article .brief li > code{
+.article .brief li > code {
     color: #333;
     background-color: #f1f1f1;
 }
@@ -232,7 +236,7 @@ body {
     margin-bottom: 0;
 }
 
-#comment{
+#comment {
     margin-top: -4em;
 }
 

@@ -113,7 +113,7 @@ func (b *Builder) postsRender(posts []*model.Post, ctx *Context, pager *model.Pa
 		return template.Error
 	}
 	layout := "posts/%d"
-	pager.SetLayout(layout)
+	pager.SetLayout("/" + layout)
 
 	dstFile := path.Join(ctx.DstDir, fmt.Sprintf(layout+".html", pager.Page))
 	os.MkdirAll(path.Dir(dstFile), os.ModePerm)

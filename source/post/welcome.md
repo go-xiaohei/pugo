@@ -1,11 +1,12 @@
 -----ini
 title = Welcome to Pugo.Static
 slug = welcome-pugo-static
+desc = welcome to try pugo.static site generator
 date = 2015-11-08
 update_date = 2015-11-11
 author = pugo-robot
 author_email =
-author_url =
+author_url = http://pugo.io
 tags = pugo,welcome
 
 -----markdown
@@ -27,6 +28,8 @@ author_email =
 author_url =
 tags = pugo,welcome
 ```
+
+<!--more-->
 
 #### blog content
 

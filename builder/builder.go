@@ -73,6 +73,7 @@ func New(sourceDir, templateDir, currentTheme string, debug bool) *Builder {
 		&BuildTask{"Index", builder.index, nil},
 		&BuildTask{"Feed", builder.feed, nil},
 		&BuildTask{"Errors", builder.errors, nil},
+		&BuildTask{"Assets", builder.assets, nil},
 	}
 	return builder
 }
