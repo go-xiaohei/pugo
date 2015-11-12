@@ -175,6 +175,7 @@ body {
 
 .article-pager .btn {
     font-size: 1.8em;
+    margin: 0 1em;
 }
 
 .article .brief pre code {
