@@ -19,6 +19,11 @@ func NewTime(str string, t2 time.Time) Time {
 		if err != nil {
 			t = t2
 		}
+	} else if len(str) <= 16 {
+		t, err = time.Parse("2006-01-02 15:04", str)
+		if err != nil {
+			t = t2
+		}
 	} else {
 		t, err = time.Parse("2006-01-02 15:04:05", str)
 		if err != nil {

@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo-static/builder"
+	"github.com/go-xiaohei/pugo-static/command"
 	"github.com/go-xiaohei/pugo-static/server"
 	"gopkg.in/inconshreveable/log15.v2"
 	"gopkg.in/inconshreveable/log15.v2/ext"
@@ -48,7 +49,6 @@ func init() {
 			Usage: "only build site, but don't serve http",
 		},
 	}
-	app.Action = action
 }
 
 func action(ctx *cli.Context) {
@@ -97,5 +97,7 @@ func action(ctx *cli.Context) {
 }
 
 func main() {
+	app.Action = action
+	app.Commands = []cli.Command{command.New(SRC_DIR, TPL_DIR)}
 	app.RunAndExitOnError()
 }
