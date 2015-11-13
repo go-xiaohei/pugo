@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	VERSION  = "0.6.0"
-	VER_DATE = "2015-11-11"
+	VERSION  = "0.7.0"
+	VER_DATE = "2015-11-14"
 
 	SRC_DIR    = "source"   // source contents dir
 	TPL_DIR    = "template" // template dir
