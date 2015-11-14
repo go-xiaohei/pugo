@@ -49,14 +49,13 @@ func init() {
 			Usage: "only build site, but don't serve http",
 		},
 	}
+	log15.Root().SetHandler(log15.LvlFilterHandler(log15.LvlDebug, ext.FatalHandler(log15.StderrHandler)))
 }
 
 func action(ctx *cli.Context) {
-	lv := log15.LvlInfo
-	if ctx.Bool("debug") {
-		lv = log15.LvlDebug
+	if !ctx.Bool("debug") {
+		log15.Root().SetHandler(log15.LvlFilterHandler(log15.LvlInfo, ext.FatalHandler(log15.StderrHandler)))
 	}
-	log15.Root().SetHandler(log15.LvlFilterHandler(lv, ext.FatalHandler(log15.StderrHandler)))
 
 	log15.Debug("Dir.Source./" + SRC_DIR)
 	log15.Debug("Dir.Template./" + TPL_DIR)
