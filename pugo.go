@@ -12,8 +12,8 @@ import (
 //go:generate go-bindata -o=asset/asset.go -pkg=asset source/... template/...
 
 const (
-	VERSION  = "0.7.0"
-	VER_DATE = "2015-11-14"
+	VERSION  = "0.7.2"
+	VER_DATE = "2015-11-15"
 
 	SRC_DIR    = "source"   // source contents dir
 	TPL_DIR    = "template" // template dir
