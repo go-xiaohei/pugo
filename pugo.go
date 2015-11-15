@@ -23,6 +23,7 @@ const (
 
 var (
 	app = cli.NewApp()
+	opt = new(builder.BuildOption)
 )
 
 func init() {
@@ -51,6 +52,12 @@ func init() {
 			Usage: "only build site, but don't serve http",
 		},
 	}
+	opt.SrcDir = SRC_DIR
+	opt.TplDir = TPL_DIR
+	opt.UploadDir = UPLOAD_DIR
+	opt.Version = VERSION
+	opt.VerDate = VER_DATE
+
 	log15.Root().SetHandler(log15.LvlFilterHandler(log15.LvlDebug, ext.FatalHandler(log15.StderrHandler)))
 }
 
@@ -64,7 +71,12 @@ func action(ctx *cli.Context) {
 	log15.Debug("Dir.Destination./" + DST_DIR)
 
 	// builder
-	b := builder.New(SRC_DIR, TPL_DIR, ctx.String("theme"), ctx.Bool("debug"))
+	opt.IsDebug = ctx.Bool("debug")
+	if opt.IsDebug {
+		opt.IsWatchTemplate = true
+	}
+	opt.Theme = ctx.String("theme")
+	b := builder.New(opt)
 	if b.Error != nil {
 		panic(b.Error)
 	}
@@ -72,11 +84,7 @@ func action(ctx *cli.Context) {
 	b.Version.Date = VER_DATE
 
 	b.Build(DST_DIR)
-	if ctx.Bool("debug") {
-		b.Watch(DST_DIR, TPL_DIR)
-	} else {
-		b.Watch(DST_DIR, "")
-	}
+	b.Watch(DST_DIR)
 
 	if ctx.Bool("build") {
 		return
@@ -100,7 +108,17 @@ func action(ctx *cli.Context) {
 }
 
 func main() {
+	opt := &builder.BuildOption{
+		SrcDir:    SRC_DIR,
+		TplDir:    TPL_DIR,
+		UploadDir: UPLOAD_DIR,
+		Version:   VERSION,
+		VerDate:   VER_DATE,
+	}
 	app.Action = action
-	app.Commands = []cli.Command{command.New(SRC_DIR, TPL_DIR)}
+	app.Commands = []cli.Command{
+		command.New(SRC_DIR, TPL_DIR),
+		command.Build(opt),
+	}
 	app.RunAndExitOnError()
 }

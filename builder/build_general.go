@@ -77,6 +77,13 @@ func (b *Builder) comment(ctx *Context, r *Report) {
 }
 
 func (b *Builder) assets(ctx *Context, r *Report) {
+	// copy all static
+	if ctx.isCopyAllAssets {
+		srcDir := b.Renders().Current().StaticDir()
+		dstDir := path.Join(ctx.DstDir, path.Base(srcDir))
+		com.CopyDir(srcDir, dstDir)
+		return
+	}
 	files := []string{"favicon.ico", "robots.txt"}
 	staticDir := b.Renders().Current().StaticDir()
 	for _, f := range files {

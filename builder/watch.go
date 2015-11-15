@@ -7,7 +7,7 @@ import (
 	"path"
 )
 
-func (b *Builder) Watch(dstDir, tplDir string) {
+func (b *Builder) Watch(dstDir string) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		log15.Crit("Build.Watch", "error", err.Error())
@@ -33,8 +33,8 @@ func (b *Builder) Watch(dstDir, tplDir string) {
 	}()
 
 	watchDir(watcher, b.srcDir)
-	if tplDir != "" {
-		watchDir(watcher, tplDir)
+	if b.opt.IsWatchTemplate {
+		watchDir(watcher, b.tplDir)
 	}
 }
 

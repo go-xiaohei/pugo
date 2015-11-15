@@ -4,8 +4,9 @@ import "github.com/go-xiaohei/pugo-static/model"
 
 // build context, maintain parse data, posts, pages or others
 type Context struct {
-	DstDir  string
-	Version builderVersion
+	DstDir          string
+	Version         builderVersion
+	isCopyAllAssets bool
 
 	Posts      []*model.Post
 	Tags       map[string]*model.Tag

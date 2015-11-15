@@ -20,6 +20,7 @@ type (
 		srcDir     string
 		tplDir     string
 		isBuilding bool
+		opt        *BuildOption
 
 		renders *render.Renders
 		report  *Report
@@ -39,22 +40,39 @@ type (
 		Num  string
 		Date string
 	}
+	BuildOption struct {
+		SrcDir    string
+		TplDir    string
+		Theme     string
+		UploadDir string
+
+		Version string
+		VerDate string
+
+		IsDebug         bool
+		IsCopyAssets    bool
+		IsWatchTemplate bool
+	}
 )
 
-func New(sourceDir, templateDir, currentTheme string, debug bool) *Builder {
-	if !com.IsDir(sourceDir) {
+func New(opt *BuildOption) *Builder {
+	if !com.IsDir(opt.SrcDir) {
 		return &Builder{Error: ErrSrcDirMissing}
 	}
-	if !com.IsDir(templateDir) {
+	if !com.IsDir(opt.TplDir) {
 		return &Builder{Error: ErrTplDirMissing}
 	}
 	builder := &Builder{
-		srcDir:  sourceDir,
-		tplDir:  templateDir,
-		parser:  parser.NewCommonParser(),
-		Version: builderVersion{},
+		srcDir: opt.SrcDir,
+		tplDir: opt.TplDir,
+		parser: parser.NewCommonParser(),
+		Version: builderVersion{
+			Num:  opt.Version,
+			Date: opt.VerDate,
+		},
+		opt: opt,
 	}
-	r, err := render.NewRenders(templateDir, currentTheme, debug)
+	r, err := render.NewRenders(opt.TplDir, opt.Theme, opt.IsDebug)
 	if err != nil {
 		return &Builder{Error: err}
 	}
@@ -101,8 +119,9 @@ func (b *Builder) Build(dest string) {
 		return
 	}
 	ctx := &Context{
-		DstDir:  dest,
-		Version: b.Version,
+		DstDir:          dest,
+		Version:         b.Version,
+		isCopyAllAssets: b.opt.IsCopyAssets,
 	}
 	b.isBuilding = true
 	for _, task := range b.tasks {
