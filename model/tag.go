@@ -1,7 +1,5 @@
 package model
 
-import "net/url"
-
 type Tag struct {
 	Name string
 	Url  string
@@ -10,6 +8,6 @@ type Tag struct {
 func NewTag(name string) Tag {
 	return Tag{
 		Name: name,
-		Url:  "/tags/" + url.QueryEscape(name),
+		Url:  "/tags/" + name,
 	}
 }
