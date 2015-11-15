@@ -9,6 +9,8 @@ import (
 	"gopkg.in/inconshreveable/log15.v2/ext"
 )
 
+//go:generate go-bindata -o=asset/asset.go -pkg=asset source/... template/...
+
 const (
 	VERSION  = "0.7.0"
 	VER_DATE = "2015-11-14"

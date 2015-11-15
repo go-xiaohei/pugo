@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Unknwon/com"
 	"github.com/codegangsta/cli"
+	"github.com/go-xiaohei/pugo-static/asset"
 	"gopkg.in/inconshreveable/log15.v2"
 	"io/ioutil"
 	"net/url"
@@ -55,7 +56,25 @@ func New(srcDir, tplDir string) cli.Command {
 }
 
 func newSite() func(ctx *cli.Context) {
-	return nil
+	return func(ctx *cli.Context) {
+		log15.Info("NewSite.Extract.Assets")
+		dirs := []string{"source", "template"}
+		isSuccess := true
+		for _, dir := range dirs {
+			if err := asset.RestoreAssets("./", dir); err != nil {
+				log15.Error("NewSite.Fail", "error", err)
+				isSuccess = false
+				break
+			}
+		}
+		if !isSuccess {
+			for _, dir := range dirs {
+				os.RemoveAll(path.Join("./", dir))
+			}
+			return
+		}
+		log15.Info("NewSite.Extract.Success")
+	}
 }
 
 func newPost(srcDir string) func(ctx *cli.Context) {
