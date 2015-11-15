@@ -4,7 +4,9 @@ import "github.com/go-xiaohei/pugo-static/model"
 
 // build context, maintain parse data, posts, pages or others
 type Context struct {
-	DstDir     string
+	DstDir  string
+	Version builderVersion
+
 	Posts      []*model.Post
 	Tags       map[string]*model.Tag
 	PostPages  int
@@ -18,6 +20,7 @@ type Context struct {
 
 func (ctx *Context) ViewData() map[string]interface{} {
 	m := map[string]interface{}{
+		"Version": ctx.Version,
 		"Nav":     ctx.Navs,
 		"Meta":    ctx.Meta,
 		"Title":   ctx.Meta.Title + " - " + ctx.Meta.Subtitle,

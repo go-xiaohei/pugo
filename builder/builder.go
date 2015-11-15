@@ -27,12 +27,17 @@ type (
 		parser  parser.Parser
 		tasks   []*BuildTask
 
-		Error error
+		Error   error
+		Version builderVersion
 	}
 	BuildTask struct {
 		Name  string
 		Fn    func(*Context, *Report)
 		Print func(*Context) string
+	}
+	builderVersion struct {
+		Num  string
+		Date string
 	}
 )
 
@@ -44,9 +49,10 @@ func New(sourceDir, templateDir, currentTheme string, debug bool) *Builder {
 		return &Builder{Error: ErrTplDirMissing}
 	}
 	builder := &Builder{
-		srcDir: sourceDir,
-		tplDir: templateDir,
-		parser: parser.NewCommonParser(),
+		srcDir:  sourceDir,
+		tplDir:  templateDir,
+		parser:  parser.NewCommonParser(),
+		Version: builderVersion{},
 	}
 	r, err := render.NewRenders(templateDir, currentTheme, debug)
 	if err != nil {
@@ -95,7 +101,8 @@ func (b *Builder) Build(dest string) {
 		return
 	}
 	ctx := &Context{
-		DstDir: dest,
+		DstDir:  dest,
+		Version: b.Version,
 	}
 	b.isBuilding = true
 	for _, task := range b.tasks {

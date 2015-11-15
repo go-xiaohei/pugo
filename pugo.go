@@ -68,6 +68,8 @@ func action(ctx *cli.Context) {
 	if b.Error != nil {
 		panic(b.Error)
 	}
+	b.Version.Num = VERSION
+	b.Version.Date = VER_DATE
 
 	b.Build(DST_DIR)
 	if ctx.Bool("debug") {
