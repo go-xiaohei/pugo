@@ -8,15 +8,18 @@ type Context struct {
 	Version         builderVersion
 	isCopyAllAssets bool
 
-	Posts      []*model.Post
-	Tags       map[string]*model.Tag
-	PostPages  int
-	Pages      []*model.Page
-	IndexPosts []*model.Post // temp posts for index page
-	IndexPager *model.Pager
-	Navs       model.Navs
-	Meta       *model.Meta
-	Comment    *model.Comment
+	Posts         []*model.Post
+	PostPageCount int
+	Pages         []*model.Page
+	indexPosts    []*model.Post // temp posts for index page
+	indexPager    *model.Pager
+
+	Tags     map[string]*model.Tag
+	tagPosts map[string][]*model.Post
+
+	Navs    model.Navs
+	Meta    *model.Meta
+	Comment *model.Comment
 }
 
 func (ctx *Context) ViewData() map[string]interface{} {

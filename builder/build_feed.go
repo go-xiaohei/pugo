@@ -68,7 +68,7 @@ func (b *Builder) feed(ctx *Context, r *Report) {
 	buf.WriteString("<priority>0.6</priority>")
 	buf.WriteString("</url>")
 
-	for i := 1; i <= ctx.PostPages; i++ {
+	for i := 1; i <= ctx.PostPageCount; i++ {
 		buf.WriteString("<url>")
 		buf.WriteString(fmt.Sprintf("<loc>%s/posts/%d</loc>", baseUrl, i))
 		buf.WriteString(fmt.Sprintf("<lastmod>%s/</lastmod>", time.Now().Format(time.RFC3339)))

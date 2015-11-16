@@ -7,7 +7,6 @@ import (
 	"github.com/go-xiaohei/pugo-static/render"
 	"gopkg.in/inconshreveable/log15.v2"
 	"os"
-	"strconv"
 )
 
 var (
@@ -78,26 +77,10 @@ func New(opt *BuildOption) *Builder {
 	}
 	builder.renders = r
 	builder.tasks = []*BuildTask{
-		&BuildTask{"Meta", builder.meta, nil},
-		&BuildTask{"Navs", builder.nav, func(ctx *Context) string {
-			return strconv.Itoa(len(ctx.Navs))
-		}},
-		&BuildTask{"Comment", builder.comment, func(ctx *Context) string {
-			return ctx.Comment.String()
-		}},
-		&BuildTask{"Posts", builder.posts, func(ctx *Context) string {
-			return strconv.Itoa(len(ctx.Posts))
-		}},
-		&BuildTask{"Tags", builder.tags, func(ctx *Context) string {
-			return strconv.Itoa(len(ctx.Tags))
-		}},
-		&BuildTask{"Pages", builder.pages, func(ctx *Context) string {
-			return strconv.Itoa(len(ctx.Pages))
-		}},
-		&BuildTask{"Index", builder.index, nil},
+		&BuildTask{"Data", builder.ReadData, nil},
+		&BuildTask{"Compile", builder.Compile, nil},
 		&BuildTask{"Feed", builder.feed, nil},
-		&BuildTask{"Errors", builder.errors, nil},
-		&BuildTask{"Assets", builder.assets, nil},
+		&BuildTask{"Copy", builder.CopyAssets, nil},
 	}
 	return builder
 }
