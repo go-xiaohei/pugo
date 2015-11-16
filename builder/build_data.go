@@ -42,6 +42,12 @@ func (b *Builder) readMeta(ctx *Context, r *Report) {
 	}
 	ctx.Navs = navs
 
+	if ctx.isSuffixed {
+		for _, n := range ctx.Navs {
+			n.Link = fixSuffix(n.Link)
+		}
+	}
+
 	cmt, err := model.NewComment(blocksMap["comment.md"])
 	if err != nil {
 		r.Error = err
@@ -66,6 +72,9 @@ func (b *Builder) readContents(ctx *Context, r *Report) {
 			r.Error = err
 			return
 		}
+		if ctx.isSuffixed {
+			post.Url = fixSuffix(post.Url)
+		}
 		ctx.Posts = append(ctx.Posts, post)
 	}
 	sort.Sort(model.Posts(ctx.Posts))
@@ -75,6 +84,9 @@ func (b *Builder) readContents(ctx *Context, r *Report) {
 	for _, p := range ctx.Posts {
 		for i, t := range p.Tags {
 			ctx.Tags[t.Name] = &p.Tags[i]
+			if ctx.isSuffixed {
+				ctx.Tags[t.Name].Url = fixSuffix(ctx.Tags[t.Name].Url)
+			}
 			ctx.tagPosts[t.Name] = append(ctx.tagPosts[t.Name], p)
 		}
 	}
@@ -89,6 +101,9 @@ func (b *Builder) readContents(ctx *Context, r *Report) {
 		if err != nil {
 			r.Error = err
 			return
+		}
+		if ctx.isSuffixed {
+			page.Url = fixSuffix(page.Url)
 		}
 		ctx.Pages = append(ctx.Pages, page)
 	}
@@ -145,4 +160,16 @@ func (b *Builder) parseDir(dir string, filter func(string) bool) (map[string][]p
 		return nil
 	})
 	return data, infoData, err
+}
+
+// fix suffix to url,
+// must append suffix
+func fixSuffix(u string) string {
+	if u == "/" {
+		return u
+	}
+	if path.Ext(u) == ".html" {
+		return u
+	}
+	return u + ".html"
 }

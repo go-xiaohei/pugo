@@ -7,6 +7,7 @@ type Context struct {
 	DstDir          string
 	Version         builderVersion
 	isCopyAllAssets bool
+	isSuffixed      bool // generate suffixed url
 
 	Posts         []*model.Post
 	PostPageCount int

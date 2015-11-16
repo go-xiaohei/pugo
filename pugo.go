@@ -80,15 +80,12 @@ func action(ctx *cli.Context) {
 	if b.Error != nil {
 		panic(b.Error)
 	}
-	b.Version.Num = VERSION
-	b.Version.Date = VER_DATE
 
 	b.Build(DST_DIR)
-	b.Watch(DST_DIR)
-
 	if ctx.Bool("build") {
 		return
 	}
+	b.Watch(DST_DIR)
 
 	// server
 	staticDir := b.Renders().Current().StaticDir()
