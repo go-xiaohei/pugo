@@ -85,6 +85,15 @@ func (b *Builder) WriteFeed(ctx *Context, r *Report) {
 		buf.WriteString("</url>")
 	}
 
+	for _, t := range ctx.Tags {
+		buf.WriteString("<url>")
+		buf.WriteString(fmt.Sprintf("<loc>%s</loc>", baseUrl+t.Url))
+		buf.WriteString(fmt.Sprintf("<lastmod>%s/</lastmod>", time.Now().Format(time.RFC3339)))
+		buf.WriteString("<changefreq>weekly</changefreq>")
+		buf.WriteString("<priority>0.5</priority>")
+		buf.WriteString("</url>")
+	}
+
 	for _, p := range ctx.Pages {
 		buf.WriteString("<url>")
 		buf.WriteString(fmt.Sprintf("<loc>%s</loc>", baseUrl+p.Url))
@@ -93,6 +102,7 @@ func (b *Builder) WriteFeed(ctx *Context, r *Report) {
 		buf.WriteString("<priority>0.5</priority>")
 		buf.WriteString("</url>")
 	}
+
 	buf.WriteString("</urlset>")
 	dstFile = path.Join(ctx.DstDir, "sitemap.xml")
 	os.MkdirAll(path.Dir(dstFile), os.ModePerm)
