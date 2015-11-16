@@ -79,8 +79,8 @@ func New(opt *BuildOption) *Builder {
 	builder.tasks = []*BuildTask{
 		&BuildTask{"Data", builder.ReadData, nil},
 		&BuildTask{"Compile", builder.Compile, nil},
-		&BuildTask{"Feed", builder.feed, nil},
 		&BuildTask{"Copy", builder.CopyAssets, nil},
+		&BuildTask{"Feed", builder.WriteFeed, nil},
 	}
 	return builder
 }

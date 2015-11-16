@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func (b *Builder) feed(ctx *Context, r *Report) {
+func (b *Builder) WriteFeed(ctx *Context, r *Report) {
 	baseUrl := "http://" + ctx.Meta.Domain
 	var buf bytes.Buffer
 	buf.WriteString(`<?xml version="1.0" encoding="UTF-8"?>`)
