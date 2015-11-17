@@ -38,6 +38,9 @@ func (cp *CommonParser) Detect(mark []byte) Block {
 }
 
 func (cp *CommonParser) Parse(src []byte) ([]Block, error) {
+	if src == nil || len(src) == 0 {
+		return nil, nil
+	}
 	buf := bytes.NewBuffer(src)
 	return cp.ParseReader(buf)
 }

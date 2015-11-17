@@ -38,6 +38,7 @@ func (ib *IniBlock) Is(mark []byte) bool {
 
 func (ib *IniBlock) Write(data []byte) error {
 	ib.data = append(ib.data, data...)
+	ib.iniObject = nil // todo: need locker
 	return nil
 }
 

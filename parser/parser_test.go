@@ -1,4 +1,4 @@
-package test
+package parser_test
 
 import (
 	"github.com/go-xiaohei/pugo-static/model"
@@ -9,9 +9,98 @@ import (
 	"testing"
 )
 
+type demoData struct {
+	Name     string
+	Age      int
+	IsFemale bool
+}
+
 var (
-	p = parser.NewCommonParser()
+	p  = parser.NewCommonParser()
+	p2 = parser.NewMdParser()
 )
+
+func TestIniBlock(t *testing.T) {
+	Convey("test ini block", t, func() {
+		Convey("test ini empty data", func() {
+			ib := new(parser.IniBlock)
+			ib.Write(nil)
+			demo := new(demoData)
+			err := ib.MapTo("", demo)
+			So(err, ShouldBeNil)
+			So(demo.Name, ShouldBeEmpty)
+
+			ib.Write(nil)
+			data := ib.MapHash("")
+			So(data, ShouldBeEmpty)
+
+			ib.Write(nil)
+			data2 := ib.Keys("")
+			So(data2, ShouldBeEmpty)
+		})
+
+		Convey("test wrong ini data", func() {
+			ib := new(parser.IniBlock)
+			ib.Write([]byte("aaaaaaaa"))
+			demo := new(demoData)
+			err := ib.MapTo("", demo)
+			So(err, ShouldNotBeNil)
+			So(demo.Name, ShouldBeEmpty)
+
+			ib.Write([]byte("bbbbbb"))
+			data := ib.MapHash("")
+			So(data, ShouldBeEmpty)
+
+			ib.Write([]byte("ccccc"))
+			data2 := ib.Keys("")
+			So(data2, ShouldBeEmpty)
+
+			ib.Write([]byte("dddd"))
+			data3 := ib.Item("abc")
+			So(data3, ShouldBeEmpty)
+		})
+	})
+}
+
+func TestParser(t *testing.T) {
+	Convey("test common parser", t, func() {
+		Convey("empty content", func() {
+			blocks, err := p.Parse(nil)
+			So(blocks, ShouldBeNil)
+			So(err, ShouldBeNil)
+
+			blocks, err = p.Parse([]byte(""))
+			So(blocks, ShouldBeNil)
+			So(err, ShouldBeNil)
+		})
+
+		Convey("is common parser", func() {
+			flag := p.Is([]byte(parser.MD_PARSER_PREFIX))
+			So(flag, ShouldBeFalse)
+
+			flag = p.Is([]byte(parser.COMMON_PARSER_PREFIX))
+			So(flag, ShouldBeTrue)
+
+			flag = p2.Is([]byte(parser.MD_PARSER_PREFIX))
+			So(flag, ShouldBeTrue)
+		})
+
+		Convey("detect block", func() {
+			block := p.Detect([]byte("xxx"))
+			So(block, ShouldBeNil)
+
+			block = p.Detect([]byte("ini"))
+			So(block, ShouldNotBeNil)
+			So(block.Type(), ShouldEqual, parser.BLOCK_INI)
+		})
+
+		Convey("first block error", func() {
+			blocks, err := p.Parse([]byte("-----xxx\ncontent"))
+			So(blocks, ShouldBeNil)
+			So(err, ShouldNotBeNil)
+		})
+	})
+}
 
 func TestParseMeta(t *testing.T) {
 	Convey("parse meta", t, func() {
@@ -64,17 +153,16 @@ func TestPostMeta(t *testing.T) {
 }
 
 func TestPageMeta(t *testing.T) {
-	Convey("parse page", t, func() {
+	Convey("parse page with MdParser", t, func() {
 		bytes, err := ioutil.ReadFile("../source/page/about.md")
 		So(err, ShouldBeNil)
-		blocks, err := p.Parse(bytes)
+		blocks, err := p2.Parse(bytes)
 		So(err, ShouldBeNil)
+		So(blocks, ShouldHaveLength, 2)
 
 		Convey("check page blocks", func() {
-			So(blocks, ShouldHaveLength, 3)
 			So(blocks[0].Type(), ShouldEqual, parser.BLOCK_INI)
 			So(blocks[1].Type(), ShouldEqual, parser.BLOCK_MARKDOWN)
-			So(blocks[2].Type(), ShouldEqual, parser.BLOCK_INI)
 
 			Convey("use page blocks", func() {
 				b, ok := blocks[0].(parser.MetaBlock)
@@ -85,6 +173,7 @@ func TestPageMeta(t *testing.T) {
 				page, err := model.NewPage(blocks, fi)
 				So(err, ShouldBeNil)
 				So(page.Title, ShouldEqual, b.Item("title"))
+				So(page.Meta["metadata"], ShouldEqual, b.Item("meta", "metadata"))
 			})
 		})
 	})

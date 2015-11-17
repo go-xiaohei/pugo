@@ -1,4 +1,4 @@
------ini
+```ini
 title = About Pugo Static
 slug = about
 desc = some words about pugo.static
@@ -11,8 +11,10 @@ hover = about
 ; set template file to render this page
 template =
 
+[meta]
+metadata = this is meta data
+```
 
------markdown
 ### Introduction
 
 `Pugo` is a simple static site generator by [Golang](https://golang.org). It compiled [markdown](#) content to site pages with beautiful theme. No dependencies, cross platform and very fast.
@@ -43,6 +45,3 @@ After you change your source `.md` files, just restart the server.
 - Theme: theme documentation is [wiki](#)
 
 - Build from source: install and debug documentation is [wiki]($)
-
------ini
-metadata = metadata
