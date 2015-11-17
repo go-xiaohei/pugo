@@ -23,6 +23,7 @@ func newReport(dstDir string) *Report {
 	}
 }
 
+// build-process duration
 func (r *Report) Duration() time.Duration {
 	return time.Since(r.Begin)
 }

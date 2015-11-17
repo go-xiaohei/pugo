@@ -1,12 +1,18 @@
 package builder
 
 import (
+	"errors"
 	"github.com/go-xiaohei/pugo-static/model"
 	"github.com/go-xiaohei/pugo-static/parser"
+	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
 	"sort"
+)
+
+var (
+	ErrParserMissing = errors.New("Parser-Unknown")
 )
 
 // parse data to context, if parsed all data to context for renders
@@ -112,11 +118,15 @@ func (b *Builder) readContents(ctx *Context, r *Report) {
 // parse file to blocks
 func (b *Builder) parseFile(file string) ([]parser.Block, error) {
 	file = path.Join(b.srcDir, file)
-	f, err := os.Open(file)
+	fileData, err := ioutil.ReadFile(file)
 	if err != nil {
 		return nil, err
 	}
-	blocks, err := b.parser.ParseReader(f)
+	p := b.getParser(fileData[:32]) // read first 32 bytes to find current parser
+	if p == nil {
+		return nil, ErrParserMissing
+	}
+	blocks, err := p.Parse(fileData)
 	if err != nil {
 		return nil, err
 	}
@@ -147,11 +157,15 @@ func (b *Builder) parseDir(dir string, filter func(string) bool) (map[string][]p
 				return nil
 			}
 		}
-		f, err := os.Open(p)
+		fileData, err := ioutil.ReadFile(p)
 		if err != nil {
 			return err
 		}
-		blocks, err := b.parser.ParseReader(f)
+		pa := b.getParser(fileData[:32]) // read first 32 bytes to find current parser
+		if pa == nil {
+			return ErrParserMissing
+		}
+		blocks, err := pa.Parse(fileData)
 		if err != nil {
 			return err
 		}

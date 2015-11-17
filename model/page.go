@@ -64,6 +64,7 @@ func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 		Email: block.Item("author_email"),
 		Url:   block.Item("author_url"),
 	}
+	p.Meta = block.MapHash("meta")
 
 	// parse markdown block
 	p.rawType = blocks[1].Type()

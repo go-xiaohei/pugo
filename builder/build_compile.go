@@ -116,7 +116,6 @@ func (b *Builder) compilePages(ctx *Context, r *Report) {
 		}
 
 		ctx.Navs.Hover(p.HoverClass)
-		defer ctx.Navs.Reset()
 		viewData := ctx.ViewData()
 		viewData["Title"] = p.Title + " - " + ctx.Meta.Title
 		viewData["Desc"] = p.Desc
@@ -124,8 +123,10 @@ func (b *Builder) compilePages(ctx *Context, r *Report) {
 
 		if err := b.compileTemplate(p.Template, viewData, dstFile); err != nil {
 			r.Error = err
+			ctx.Navs.Reset()
 			return
 		}
+		ctx.Navs.Reset()
 	}
 }
 

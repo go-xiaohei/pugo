@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// compile feed and sitemap
 func (b *Builder) WriteFeed(ctx *Context, r *Report) {
 	baseUrl := "http://" + ctx.Meta.Domain
 	var buf bytes.Buffer

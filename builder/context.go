@@ -1,6 +1,8 @@
 package builder
 
-import "github.com/go-xiaohei/pugo-static/model"
+import (
+	"github.com/go-xiaohei/pugo-static/model"
+)
 
 // build context, maintain parse data, posts, pages or others
 type Context struct {
@@ -23,6 +25,7 @@ type Context struct {
 	Comment *model.Comment
 }
 
+// return global view data for template compilation
 func (ctx *Context) ViewData() map[string]interface{} {
 	m := map[string]interface{}{
 		"Version": ctx.Version,

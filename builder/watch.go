@@ -7,6 +7,7 @@ import (
 	"path"
 )
 
+// watch source dir changes and build to destination directory if updated
 func (b *Builder) Watch(dstDir string) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {

@@ -15,6 +15,7 @@ var (
 )
 
 type (
+	// builder object, provides api to build and watch sources and templates
 	Builder struct {
 		srcDir     string
 		tplDir     string
@@ -24,12 +25,13 @@ type (
 		renders *render.Renders
 		report  *Report
 		context *Context
-		parser  parser.Parser
+		parsers []parser.Parser
 		tasks   []*BuildTask
 
 		Error   error
 		Version builderVersion
 	}
+	// build task defines the build function to run in build process
 	BuildTask struct {
 		Name  string
 		Fn    func(*Context, *Report)
@@ -39,6 +41,7 @@ type (
 		Num  string
 		Date string
 	}
+	// build option to builder
 	BuildOption struct {
 		SrcDir    string
 		TplDir    string
@@ -55,6 +58,7 @@ type (
 	}
 )
 
+// New builder with option
 func New(opt *BuildOption) *Builder {
 	if !com.IsDir(opt.SrcDir) {
 		return &Builder{Error: ErrSrcDirMissing}
@@ -65,7 +69,10 @@ func New(opt *BuildOption) *Builder {
 	builder := &Builder{
 		srcDir: opt.SrcDir,
 		tplDir: opt.TplDir,
-		parser: parser.NewCommonParser(),
+		parsers: []parser.Parser{
+			parser.NewCommonParser(),
+			parser.NewMdParser(),
+		},
 		Version: builderVersion{
 			Num:  opt.Version,
 			Date: opt.VerDate,
@@ -86,10 +93,12 @@ func New(opt *BuildOption) *Builder {
 	return builder
 }
 
+// get renders in builder
 func (b *Builder) Renders() *render.Renders {
 	return b.renders
 }
 
+// build to dest directory
 func (b *Builder) Build(dest string) {
 	// if on build, do not again
 	if b.isBuilding {
@@ -124,21 +133,34 @@ func (b *Builder) Build(dest string) {
 		} else {
 			log15.Debug("Build."+task.Name, "duration", r.Duration())
 		}
+		b.report = r
+		b.context = ctx
 	}
 	log15.Info("Build.Finish", "duration", r.Duration(), "error", r.Error)
 	b.isBuilding = false
-	b.report = r
-	b.context = ctx
 }
 
+// get parser with mark bytes
+func (b *Builder) getParser(data []byte) parser.Parser {
+	for _, p := range b.parsers {
+		if p.Is(data) {
+			return p
+		}
+	}
+	return nil
+}
+
+// is builder run building
 func (b *Builder) IsBuilding() bool {
 	return b.isBuilding
 }
 
+// get last report in builder
 func (b *Builder) Report() *Report {
 	return b.report
 }
 
+// get last context in builder
 func (b *Builder) Context() *Context {
 	return b.context
 }
