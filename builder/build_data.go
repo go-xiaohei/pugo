@@ -117,7 +117,7 @@ func (b *Builder) readContents(ctx *Context, r *Report) {
 
 // parse file to blocks
 func (b *Builder) parseFile(file string) ([]parser.Block, error) {
-	file = path.Join(b.srcDir, file)
+	file = path.Join(b.opt.SrcDir, file)
 	fileData, err := ioutil.ReadFile(file)
 	if err != nil {
 		return nil, err
@@ -148,7 +148,7 @@ func (b *Builder) parseFiles(files ...string) (map[string][]parser.Block, error)
 
 // parse files in directory with filter , return a map with file path and blocks
 func (b *Builder) parseDir(dir string, filter func(string) bool) (map[string][]parser.Block, map[string]os.FileInfo, error) {
-	dir = path.Join(b.srcDir, dir)
+	dir = path.Join(b.opt.SrcDir, dir)
 	data := make(map[string][]parser.Block)
 	infoData := make(map[string]os.FileInfo)
 	err := filepath.Walk(dir, func(p string, info os.FileInfo, err error) error {

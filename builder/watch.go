@@ -33,9 +33,9 @@ func (b *Builder) Watch(dstDir string) {
 		}
 	}()
 
-	watchDir(watcher, b.srcDir)
+	watchDir(watcher, b.opt.SrcDir)
 	if b.opt.IsWatchTemplate {
-		watchDir(watcher, b.tplDir)
+		watchDir(watcher, b.opt.TplDir)
 	}
 }
 

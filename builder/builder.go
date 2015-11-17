@@ -17,8 +17,6 @@ var (
 type (
 	// builder object, provides api to build and watch sources and templates
 	Builder struct {
-		srcDir     string
-		tplDir     string
 		isBuilding bool
 		opt        *BuildOption
 
@@ -67,8 +65,6 @@ func New(opt *BuildOption) *Builder {
 		return &Builder{Error: ErrTplDirMissing}
 	}
 	builder := &Builder{
-		srcDir: opt.SrcDir,
-		tplDir: opt.TplDir,
 		parsers: []parser.Parser{
 			parser.NewCommonParser(),
 			parser.NewMdParser(),
@@ -163,4 +159,13 @@ func (b *Builder) Report() *Report {
 // get last context in builder
 func (b *Builder) Context() *Context {
 	return b.context
+}
+
+// get option if nil, or set option with non-nil opt.
+func (b *Builder) Option(opt *BuildOption) *BuildOption {
+	if opt == nil {
+		return b.opt
+	}
+	b.opt = opt
+	return nil
 }
