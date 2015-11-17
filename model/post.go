@@ -16,16 +16,17 @@ var (
 )
 
 type Post struct {
-	Title   string `ini:"title"`
-	Slug    string `ini:"slug"`
-	Url     string `ini:"-"`
-	Desc    string `ini:"desc"` // description in a sentence
-	Created Time   `ini:"-"`
-	Updated Time   `ini:"-"`
-	Author  Author `ini:"-"`
-	Tags    []Tag  `ini:"-"`
-	Raw     []byte ``
-	rawType string
+	Title     string `ini:"title"`
+	Slug      string `ini:"slug"`
+	Permalink string `ini:"-"`
+	Url       string `ini:"-"`
+	Desc      string `ini:"desc"` // description in a sentence
+	Created   Time   `ini:"-"`
+	Updated   Time   `ini:"-"`
+	Author    Author `ini:"-"`
+	Tags      []Tag  `ini:"-"`
+	Raw       []byte ``
+	rawType   string
 
 	fileName string
 	fileTime time.Time
@@ -87,6 +88,7 @@ func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 
 	// build url
 	p.Url = fmt.Sprintf("/%d/%d/%d/%s", p.Created.Year, p.Created.Month, p.Created.Day, p.Slug)
+	p.Permalink = p.Url
 	return p, nil
 }
 

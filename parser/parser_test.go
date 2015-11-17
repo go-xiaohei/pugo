@@ -63,7 +63,7 @@ func TestIniBlock(t *testing.T) {
 }
 
 func TestParser(t *testing.T) {
-	Convey("test common parser", t, func() {
+	Convey("test parser", t, func() {
 		Convey("empty content", func() {
 			blocks, err := p.Parse(nil)
 			So(blocks, ShouldBeNil)
@@ -89,6 +89,9 @@ func TestParser(t *testing.T) {
 			block := p.Detect([]byte("xxx"))
 			So(block, ShouldBeNil)
 
+			block = p2.Detect([]byte("xxx"))
+			So(block, ShouldBeNil)
+
 			block = p.Detect([]byte("ini"))
 			So(block, ShouldNotBeNil)
 			So(block.Type(), ShouldEqual, parser.BLOCK_INI)
@@ -98,7 +101,15 @@ func TestParser(t *testing.T) {
 			blocks, err := p.Parse([]byte("-----xxx\ncontent"))
 			So(blocks, ShouldBeNil)
 			So(err, ShouldNotBeNil)
+
+			blocks, err = p2.Parse([]byte("```xxx\ncontent```"))
+			So(blocks, ShouldBeNil)
+			So(err, ShouldNotBeNil)
 		})
+
+		blocks, err := p.Parse([]byte("\n\n-----ini\ncontent"))
+		So(err, ShouldBeNil)
+		So(blocks, ShouldNotBeNil)
 	})
 }
 

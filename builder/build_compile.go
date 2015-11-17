@@ -41,6 +41,7 @@ func (b *Builder) compileSinglePost(ctx *Context, r *Report) {
 		viewData["Title"] = p.Title + " - " + ctx.Meta.Title
 		viewData["Desc"] = p.Desc
 		viewData["Post"] = p
+		viewData["Permalink"] = p.Permalink
 
 		if err := b.compileTemplate("post.html", viewData, dstFile); err != nil {
 			r.Error = err
@@ -120,6 +121,7 @@ func (b *Builder) compilePages(ctx *Context, r *Report) {
 		viewData["Title"] = p.Title + " - " + ctx.Meta.Title
 		viewData["Desc"] = p.Desc
 		viewData["Page"] = p
+		viewData["Permalink"] = p.Permalink
 
 		if err := b.compileTemplate(p.Template, viewData, dstFile); err != nil {
 			r.Error = err

@@ -12,6 +12,7 @@ type Page struct {
 	Title      string `ini:"title"`
 	Slug       string `ini:"slug"`
 	Url        string `ini:"-"`
+	Permalink  string `ini:"-"`
 	HoverClass string `ini:"hover"`
 	Template   string `ini:"template"`
 	Desc       string `ini:"desc"`
@@ -72,6 +73,7 @@ func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 
 	// build url
 	p.Url = fmt.Sprintf("/%s", p.Slug)
+	p.Permalink = p.Url
 
 	if len(blocks) > 2 {
 		// parse meta block
