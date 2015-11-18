@@ -88,9 +88,8 @@ func action(ctx *cli.Context) {
 	b.Watch(DST_DIR)
 
 	// server
-	staticDir := b.Renders().Current().StaticDir()
 	static := server.NewStatic()
-	static.RootPath = staticDir
+	static.RootPath = b.Context().Theme.Static() // use built context
 
 	upload := server.NewStatic()
 	upload.RootPath = UPLOAD_DIR

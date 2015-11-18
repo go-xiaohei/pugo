@@ -1,69 +1,50 @@
 package render
 
 import (
-	"bytes"
-	"fmt"
+	"errors"
 	"github.com/Unknwon/com"
 	"html/template"
 	"path"
 )
 
-type (
-	Render struct {
-		dir       string
-		templates map[string]*Template
-		reload    bool
-		fnMap     template.FuncMap
-	}
+var (
+	ErrRenderDirMissing = errors.New("render-dir-missing")
 )
 
-func NewRender(dir string, reload bool) *Render {
+type Render struct {
+	dir        string
+	extensions []string
+	funcMap    template.FuncMap
+}
+
+func New(dir string) *Render {
 	return &Render{
-		dir:       dir,
-		templates: make(map[string]*Template),
-		reload:    reload,
+		dir:        dir,
+		extensions: []string{".html"},
+		funcMap:    make(template.FuncMap),
 	}
 }
 
-func (r *Render) StaticDir() string {
-	return path.Join(r.dir, "static")
-}
-
-func (r *Render) IsExist(file string) bool {
-	fullFile := path.Join(r.dir, file)
-	return com.IsFile(fullFile)
-}
-
-func (r *Render) Template(file string) *Template {
-	if r.templates[file] == nil {
-		fullFile := path.Join(r.dir, file)
-		if !com.IsFile(fullFile) {
-			return &Template{Error: ErrTemplateMissing}
-		}
-		template := newTemplate(fullFile, r.reload)
-		if template.Error != nil {
-			return template
-		}
-		r.templates[file] = template
+// load theme by name
+func (r *Render) Load(name string) (*Theme, error) {
+	dir := path.Join(r.dir, name)
+	if !com.IsDir(dir) {
+		return nil, ErrRenderDirMissing
 	}
-	return r.templates[file]
+	theme := NewTheme(dir, r.funcMap, r.extensions)
+	return theme, theme.Load()
 }
 
-func (r *Render) FuncMap() template.FuncMap {
-	if r.fnMap == nil {
-		fnMap := make(template.FuncMap)
-		fnMap["include"] = func(file string, data interface{}) template.HTML {
-			t := r.Template(file)
-			if t.Error != nil {
-				return template.HTML(fmt.Sprintf("<-- include %s error : %s -->", file, t.Error.Error()))
-			}
-			var buf bytes.Buffer
-			if t.Compile(&buf, data, r.fnMap); t.Error != nil {
-				return template.HTML(fmt.Sprintf("<-- include %s error : %s -->", file, t.Error.Error()))
-			}
-			return template.HTML(buf.Bytes())
-		}
-		r.fnMap = fnMap
+// set extensions
+func (r *Render) SetExtensions(ex []string) {
+	r.extensions = ex
+}
+
+// set func map by name
+func (r *Render) SetFunc(name string, fn interface{}) {
+	if fn == nil {
+		delete(r.funcMap, name)
+		return
 	}
-	return r.fnMap
+	r.funcMap[name] = fn
 }

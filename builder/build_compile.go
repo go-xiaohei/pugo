@@ -43,7 +43,7 @@ func (b *Builder) compileSinglePost(ctx *Context, r *Report) {
 		viewData["Post"] = p
 		viewData["Permalink"] = p.Permalink
 
-		if err := b.compileTemplate("post.html", viewData, dstFile); err != nil {
+		if err := b.compileTemplate(ctx, "post.html", viewData, dstFile); err != nil {
 			r.Error = err
 			return
 		}
@@ -78,7 +78,7 @@ func (b *Builder) compilePagedPost(ctx *Context, r *Report) {
 		viewData["Posts"] = currentPosts
 		viewData["Pager"] = pager
 
-		if err := b.compileTemplate("posts.html", viewData, dstFile); err != nil {
+		if err := b.compileTemplate(ctx, "posts.html", viewData, dstFile); err != nil {
 			r.Error = err
 			return
 		}
@@ -102,7 +102,7 @@ func (b *Builder) compileArchive(ctx *Context, r *Report) {
 	ctx.Navs.Hover("archive")
 	defer ctx.Navs.Reset()
 
-	if err := b.compileTemplate("archive.html", viewData, dstFile); err != nil {
+	if err := b.compileTemplate(ctx, "archive.html", viewData, dstFile); err != nil {
 		r.Error = err
 		return
 	}
@@ -123,7 +123,7 @@ func (b *Builder) compilePages(ctx *Context, r *Report) {
 		viewData["Page"] = p
 		viewData["Permalink"] = p.Permalink
 
-		if err := b.compileTemplate(p.Template, viewData, dstFile); err != nil {
+		if err := b.compileTemplate(ctx, p.Template, viewData, dstFile); err != nil {
 			r.Error = err
 			ctx.Navs.Reset()
 			return
@@ -142,7 +142,7 @@ func (b *Builder) compileTags(ctx *Context, r *Report) {
 		viewData["Tag"] = ctx.Tags[t]
 		viewData["Posts"] = posts
 
-		if err := b.compileTemplate("posts.html", viewData, dstFile); err != nil {
+		if err := b.compileTemplate(ctx, "posts.html", viewData, dstFile); err != nil {
 			r.Error = err
 			return
 		}
@@ -152,7 +152,7 @@ func (b *Builder) compileTags(ctx *Context, r *Report) {
 // compile index page
 func (b *Builder) compileIndex(ctx *Context, r *Report) {
 	template := "posts.html"
-	if b.Renders().Current().IsExist("index.html") {
+	if t := ctx.Theme.Template("index.html"); t != nil {
 		template = "index.html"
 	}
 
@@ -164,25 +164,21 @@ func (b *Builder) compileIndex(ctx *Context, r *Report) {
 	viewData["Posts"] = ctx.indexPosts
 	viewData["Pager"] = ctx.indexPager
 
-	if err := b.compileTemplate(template, viewData, dstFile); err != nil {
+	if err := b.compileTemplate(ctx, template, viewData, dstFile); err != nil {
 		r.Error = err
 		return
 	}
 }
 
 // compile template by data and write to dest file.
-func (b *Builder) compileTemplate(file string, viewData map[string]interface{}, destFile string) error {
-	template := b.Renders().Current().Template(file)
-	if template.Error != nil {
-		return template.Error
-	}
+func (b *Builder) compileTemplate(ctx *Context, file string, viewData map[string]interface{}, destFile string) error {
 	os.MkdirAll(path.Dir(destFile), os.ModePerm)
 	f, err := os.OpenFile(destFile, os.O_CREATE|os.O_TRUNC|os.O_RDWR, os.ModePerm)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
-	if template.Compile(f, viewData, b.Renders().Current().FuncMap()); template.Error != nil {
+	if err := ctx.Theme.Execute(f, file, viewData); err != nil {
 		return err
 	}
 	return nil

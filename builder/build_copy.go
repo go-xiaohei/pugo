@@ -19,14 +19,13 @@ func (b *Builder) CopyAssets(ctx *Context, r *Report) {
 
 // copy static assets
 func (b *Builder) copyAssets(ctx *Context, r *Report) {
+	staticDir := ctx.Theme.Static()
 	// copy all static
 	if ctx.isCopyAllAssets {
-		srcDir := b.Renders().Current().StaticDir()
-		dstDir := path.Join(ctx.DstDir, path.Base(srcDir))
-		com.CopyDir(srcDir, dstDir)
+		dstDir := path.Join(ctx.DstDir, path.Base(staticDir))
+		com.CopyDir(staticDir, dstDir)
 	}
 	files := []string{"favicon.ico", "robots.txt"}
-	staticDir := b.Renders().Current().StaticDir()
 	for _, f := range files {
 		srcFile := path.Join(staticDir, f)
 		if com.IsFile(srcFile) {
@@ -53,10 +52,6 @@ func (b *Builder) copyError(ctx *Context, r *Report) {
 // copy error template,
 // need render with some error data
 func (b *Builder) copyErrorTemplate(ctx *Context, name string) error {
-	template := b.Renders().Current().Template(name)
-	if template.Error != nil {
-		return template.Error
-	}
 	dstFile := path.Join(ctx.DstDir, "errors/"+name)
 	os.MkdirAll(path.Dir(dstFile), os.ModePerm)
 	f, err := os.OpenFile(dstFile, os.O_CREATE|os.O_TRUNC|os.O_RDWR, os.ModePerm)
@@ -64,6 +59,5 @@ func (b *Builder) copyErrorTemplate(ctx *Context, name string) error {
 		return err
 	}
 	defer f.Close()
-	template.Compile(f, ctx.ViewData(), b.Renders().Current().FuncMap())
-	return template.Error
+	return ctx.Theme.Execute(f, name, ctx.ViewData())
 }

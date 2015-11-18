@@ -2,10 +2,12 @@ package builder
 
 import (
 	"github.com/go-xiaohei/pugo-static/model"
+	"github.com/go-xiaohei/pugo-static/render"
 )
 
 // build context, maintain parse data, posts, pages or others
 type Context struct {
+	Theme           *render.Theme
 	DstDir          string
 	Version         builderVersion
 	isCopyAllAssets bool

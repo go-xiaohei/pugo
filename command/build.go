@@ -55,7 +55,7 @@ func buildSite(opt *builder.BuildOption) func(ctx *cli.Context) {
 		targetDir := ctx.String("target")
 		log15.Info("BuildSite.Target.'" + targetDir + "'")
 		if com.IsDir(targetDir) {
-			// fmt.Println("target dir is existed, be careful about the old files in it")
+			log15.Warn("BuildSite.Target.'" + targetDir + "'.Existed")
 		}
 		b.Build(targetDir)
 		if err := b.Report().Error; err != nil {

@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    {{include "meta.html" .}}
-</head>
+{{template "meta.html" .}}
 <body>
-{{include "header.html" .}}
+{{template "header.html" .}}
 <section id="main">
     <div class="container">
         <div id="article-list">{{if .Tag}}
@@ -29,7 +25,8 @@
                         </aside>
                     </div>
                 </div>
-            </article>{{end}}
+            </article>
+            {{end}}
             <div class="article-pager text-center">
                 {{if .Pager.Prev}}<a class="btn btn-lg btn-info" href="{{.Pager.PrevUrl}}">prev</a>{{end}}
                 {{if .Pager.Next}}<a class="btn btn-lg btn-info" href="{{.Pager.NextUrl}}">next</a>{{end}}
@@ -37,6 +34,4 @@
         </div>
     </div>
 </section>
-{{include "footer.html" .}}
-</body>
-</html>
+{{template "footer.html" .}}

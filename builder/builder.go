@@ -20,7 +20,7 @@ type (
 		isBuilding bool
 		opt        *BuildOption
 
-		renders *render.Renders
+		render  *render.Render
 		report  *Report
 		context *Context
 		parsers []parser.Parser
@@ -75,11 +75,7 @@ func New(opt *BuildOption) *Builder {
 		},
 		opt: opt,
 	}
-	r, err := render.NewRenders(opt.TplDir, opt.Theme, opt.IsDebug)
-	if err != nil {
-		return &Builder{Error: err}
-	}
-	builder.renders = r
+	builder.render = render.New(builder.opt.TplDir)
 	builder.tasks = []*BuildTask{
 		&BuildTask{"Data", builder.ReadData, nil},
 		&BuildTask{"Compile", builder.Compile, nil},
@@ -89,9 +85,14 @@ func New(opt *BuildOption) *Builder {
 	return builder
 }
 
-// get renders in builder
-func (b *Builder) Renders() *render.Renders {
-	return b.renders
+// get render in builder
+func (b *Builder) Render() *render.Render {
+	return b.render
+}
+
+// get current theme in render
+func (b *Builder) theme() (*render.Theme, error) {
+	return b.render.Load(b.opt.Theme)
 }
 
 // build to dest directory
@@ -107,12 +108,21 @@ func (b *Builder) Build(dest string) {
 		b.report = r
 		return
 	}
+	theme, err := b.theme()
+	if err != nil {
+		r.Error = err
+		b.report = r
+		return
+	}
+
 	ctx := &Context{
 		DstDir:          dest,
+		Theme:           theme,
 		Version:         b.Version,
 		isCopyAllAssets: b.opt.IsCopyAssets,
 		isSuffixed:      b.opt.IsSuffixed,
 	}
+
 	b.isBuilding = true
 	for _, task := range b.tasks {
 		task.Fn(ctx, r)
