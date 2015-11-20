@@ -2,21 +2,24 @@ package render
 
 import (
 	"errors"
-	"github.com/Unknwon/com"
 	"html/template"
 	"path"
+
+	"github.com/Unknwon/com"
 )
 
 var (
-	ErrRenderDirMissing = errors.New("render-dir-missing")
+	ErrRenderDirMissing = errors.New("render-dir-missing") // error of template directory missing
 )
 
+// render struct
 type Render struct {
 	dir        string
 	extensions []string
 	funcMap    template.FuncMap
 }
 
+// new render in directory
 func New(dir string) *Render {
 	return &Render{
 		dir:        dir,

@@ -1,7 +1,7 @@
 -----ini
 [meta]
-title = Pugo.Static
-subtitle = generator
+title = Pugo
+subtitle = static.generator
 ; print in html <meta>
 keyword = pugo,golang,static,site,generator
 ; print in html <meta>

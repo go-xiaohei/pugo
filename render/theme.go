@@ -1,6 +1,7 @@
 package render
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"html/template"
@@ -41,11 +42,19 @@ type (
 
 // new theme with dir, functions and extenions
 func NewTheme(dir string, funcMap template.FuncMap, extension []string) *Theme {
-	return &Theme{
+	theme := &Theme{
 		dir:        dir,
 		funcMap:    funcMap,
 		extensions: extension,
 	}
+	theme.funcMap["include"] = func(tpl string, data interface{}) template.HTML {
+		var buf bytes.Buffer
+		if err := theme.Execute(&buf, tpl, data); err != nil {
+			return template.HTML("<!-- template " + tpl + " error:" + err.Error() + "-->")
+		}
+		return template.HTML(string(buf.Bytes()))
+	}
+	return theme
 }
 
 // load templates
@@ -53,6 +62,8 @@ func (th *Theme) Load() error {
 	return th.loadTemplates()
 }
 
+// changes from https://github.com/go-macaron/renders/blob/master/renders.go#L43,
+// thanks a lot
 func (th *Theme) loadTemplates() error {
 	th.lock.Lock()
 	defer th.lock.Unlock()
