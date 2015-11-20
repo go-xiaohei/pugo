@@ -2,6 +2,7 @@ package model
 
 import (
 	"errors"
+
 	"github.com/go-xiaohei/pugo-static/parser"
 )
 
@@ -9,6 +10,7 @@ var (
 	ErrMetaBlockWrong = errors.New("meta-blocks-wrong")
 )
 
+// Meta contains basic info in site
 type Meta struct {
 	Title    string `ini:"title"`
 	Subtitle string `ini:"subtitle"`
@@ -17,6 +19,7 @@ type Meta struct {
 	Domain   string `ini:"domain"`
 }
 
+// blocks to Meta
 func NewMeta(blocks []parser.Block) (*Meta, error) {
 	if len(blocks) != 1 {
 		return nil, ErrMetaBlockWrong

@@ -1,6 +1,7 @@
 package builder
 
 import (
+	"github.com/go-xiaohei/pugo-static/helper"
 	"github.com/go-xiaohei/pugo-static/model"
 	"github.com/go-xiaohei/pugo-static/render"
 )
@@ -17,7 +18,7 @@ type Context struct {
 	PostPageCount int
 	Pages         []*model.Page
 	indexPosts    []*model.Post // temp posts for index page
-	indexPager    *model.Pager
+	indexPager    *helper.Pager
 
 	Tags     map[string]*model.Tag
 	tagPosts map[string][]*model.Post

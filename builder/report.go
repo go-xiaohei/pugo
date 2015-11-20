@@ -6,6 +6,7 @@ import (
 )
 
 // build report
+// todo : finish this Report
 type Report struct {
 	DstDir string
 	Begin  time.Time

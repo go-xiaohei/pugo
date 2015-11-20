@@ -2,9 +2,11 @@ package builder
 
 import (
 	"fmt"
-	"github.com/go-xiaohei/pugo-static/model"
 	"os"
 	"path"
+
+	"github.com/go-xiaohei/pugo-static/helper"
+	"github.com/go-xiaohei/pugo-static/model"
 )
 
 // compile data to html files
@@ -55,7 +57,7 @@ func (b *Builder) compilePagedPost(ctx *Context, r *Report) {
 	// post pagination
 	var (
 		currentPosts []*model.Post = nil
-		cursor                     = model.NewPagerCursor(4, len(ctx.Posts))
+		cursor                     = helper.NewPagerCursor(4, len(ctx.Posts))
 		page         int           = 1
 		layout                     = "posts/%d"
 	)

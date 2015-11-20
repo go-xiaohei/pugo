@@ -12,22 +12,27 @@ const (
 )
 
 type (
+	// CommonParser is default parser for single content
 	CommonParser struct {
 		blocks []Block
 	}
 )
 
+// NewCommonParser retuns new CommonParser
 func NewCommonParser() *CommonParser {
 	return &CommonParser{
+		// set IniBlock and MarkdownBlock as default blocks to parse
 		blocks: []Block{new(IniBlock), new(MarkdownBlock)},
 	}
 }
 
+// check bytes can be parsed by CommonParser
 func (cp *CommonParser) Is(data []byte) bool {
 	data = bytes.TrimLeft(data, "\n")
 	return bytes.HasPrefix(data, []byte(COMMON_PARSER_PREFIX))
 }
 
+// detect block to save parsed bytes
 func (cp *CommonParser) Detect(mark []byte) Block {
 	for _, b := range cp.blocks {
 		if b.Is(mark) {
@@ -37,6 +42,7 @@ func (cp *CommonParser) Detect(mark []byte) Block {
 	return nil
 }
 
+// parse bytes to blocks
 func (cp *CommonParser) Parse(src []byte) ([]Block, error) {
 	if src == nil || len(src) == 0 {
 		return nil, nil
@@ -45,6 +51,7 @@ func (cp *CommonParser) Parse(src []byte) ([]Block, error) {
 	return cp.ParseReader(buf)
 }
 
+// parser bytes in reader to blocks
 func (cp *CommonParser) ParseReader(r io.Reader) ([]Block, error) {
 	var (
 		currentBlock Block   = nil
@@ -86,6 +93,7 @@ func (cp *CommonParser) ParseReader(r io.Reader) ([]Block, error) {
 			break
 		}
 	}
+	// do not forget last block
 	if currentBlock != nil {
 		blocks = append(blocks, currentBlock)
 	}

@@ -1,12 +1,14 @@
-package model
+package helper
 
 import "fmt"
 
 type (
+	// PagerCursor creates Pager with each page number
 	PagerCursor struct {
 		all  int
 		size int
 	}
+	// Pager contains pagination data when on a page number
 	Pager struct {
 		Begin int
 		End   int
@@ -18,6 +20,7 @@ type (
 	}
 )
 
+// NewPagerCursor with size and all count
 func NewPagerCursor(size, all int) *PagerCursor {
 	return &PagerCursor{
 		all:  all,
@@ -25,6 +28,7 @@ func NewPagerCursor(size, all int) *PagerCursor {
 	}
 }
 
+// create Pager on a page number
 func (p *PagerCursor) Page(i int) *Pager {
 	if i < 1 {
 		return nil
@@ -48,10 +52,13 @@ func (p *PagerCursor) Page(i int) *Pager {
 	return pager
 }
 
+// set pager layout string,
+// use to print url
 func (pg *Pager) SetLayout(layout string) {
 	pg.layout = layout
 }
 
+// prev url
 func (pg *Pager) PrevUrl() string {
 	if pg.Prev > 0 {
 		return fmt.Sprintf(pg.layout, pg.Prev)
@@ -59,6 +66,7 @@ func (pg *Pager) PrevUrl() string {
 	return ""
 }
 
+// next url
 func (pg *Pager) NextUrl() string {
 	if pg.Next > 0 {
 		return fmt.Sprintf(pg.layout, pg.Next)

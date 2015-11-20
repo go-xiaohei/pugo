@@ -1,12 +1,13 @@
 package parser_test
 
 import (
-	"github.com/go-xiaohei/pugo-static/model"
-	"github.com/go-xiaohei/pugo-static/parser"
-	. "github.com/smartystreets/goconvey/convey"
 	"io/ioutil"
 	"os"
 	"testing"
+
+	"github.com/go-xiaohei/pugo-static/model"
+	"github.com/go-xiaohei/pugo-static/parser"
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 type demoData struct {
@@ -127,7 +128,7 @@ func TestParseMeta(t *testing.T) {
 			Convey("use meta block", func() {
 				b, ok := blocks[0].(parser.MetaBlock)
 				So(ok, ShouldBeTrue)
-				So(b.Item("meta", "title"), ShouldEqual, "Pugo.Static")
+				So(b.Item("meta", "title"), ShouldEqual, "Pugo")
 
 				meta, err := model.NewMeta(blocks)
 				So(err, ShouldBeNil)

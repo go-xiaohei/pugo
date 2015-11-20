@@ -2,6 +2,7 @@ package model
 
 import "time"
 
+// custom time struct, use to display more time data without function calling
 type Time struct {
 	Raw   time.Time
 	Year  int
@@ -9,6 +10,8 @@ type Time struct {
 	Day   int
 }
 
+// NewTime parses str as time,
+// if error, use t2
 func NewTime(str string, t2 time.Time) Time {
 	var (
 		t   time.Time

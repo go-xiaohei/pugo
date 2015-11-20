@@ -206,7 +206,6 @@ func generateTemplateName(base, path string) string {
 }
 
 func getFileContent(path string) (string, error) {
-	// Read the file content of the template
 	file, err := os.Open(path)
 	if err != nil {
 		return "", err

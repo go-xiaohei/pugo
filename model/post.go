@@ -4,17 +4,20 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/go-xiaohei/pugo-static/parser"
 	"html/template"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/go-xiaohei/pugo-static/helper"
+	"github.com/go-xiaohei/pugo-static/parser"
 )
 
 var (
 	ErrPostBlockError = errors.New("post-block-wrong")
 )
 
+// Post contains data for a post
 type Post struct {
 	Title     string `ini:"title"`
 	Slug      string `ini:"slug"`
@@ -32,21 +35,25 @@ type Post struct {
 	fileTime time.Time
 }
 
+// post's content html
 func (p *Post) ContentHTML() template.HTML {
 	if p.rawType == "markdown" {
-		return template.HTML(markdown(p.Raw))
+		return template.HTML(helper.Markdown(p.Raw))
 	}
 	return template.HTML(p.Raw)
 }
 
+// post's preview html,
+// use "<!--more-->" to separate, return first part
 func (p *Post) PreviewHTML() template.HTML {
 	bytes := bytes.Split(p.Raw, []byte("<!--more-->"))[0]
 	if p.rawType == "markdown" {
-		return template.HTML(markdown(bytes))
+		return template.HTML(helper.Markdown(bytes))
 	}
 	return template.HTML(bytes)
 }
 
+// blocks  to Post
 func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 	if len(blocks) != 2 {
 		return nil, ErrPostBlockError
@@ -92,25 +99,21 @@ func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 	return p, nil
 }
 
+// posts list
 type Posts []*Post
 
-func (p Posts) Len() int {
-	return len(p)
-}
+// implement sort.Sort inteface
+func (p Posts) Len() int           { return len(p) }
+func (p Posts) Less(i, j int) bool { return p[i].Created.Raw.Unix() > p[j].Created.Raw.Unix() }
+func (p Posts) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 
-func (p Posts) Less(i, j int) bool {
-	return p[i].Created.Raw.Unix() > p[j].Created.Raw.Unix()
-}
-
-func (p Posts) Swap(i, j int) {
-	p[i], p[j] = p[j], p[i]
-}
-
+// archive stat for posts
 type Archive struct {
-	Year  int
+	Year  int // each list by year
 	Posts []*Post
 }
 
+// posts to archive
 func NewArchive(posts []*Post) []*Archive {
 	archives := []*Archive{}
 	var (

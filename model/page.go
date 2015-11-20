@@ -2,38 +2,43 @@ package model
 
 import (
 	"fmt"
-	"github.com/go-xiaohei/pugo-static/parser"
 	"html/template"
 	"os"
 	"time"
+
+	"github.com/go-xiaohei/pugo-static/helper"
+	"github.com/go-xiaohei/pugo-static/parser"
 )
 
+// Page contains fields for a page
 type Page struct {
 	Title      string `ini:"title"`
 	Slug       string `ini:"slug"`
 	Url        string `ini:"-"`
 	Permalink  string `ini:"-"`
 	HoverClass string `ini:"hover"`
-	Template   string `ini:"template"`
+	Template   string `ini:"template"` // page's template for render
 	Desc       string `ini:"desc"`
 	Created    Time   `ini:"-"`
 	Updated    Time   `ini:"-"`
 	Author     Author `ini:"-"`
 	Raw        []byte
 	rawType    string
-	Meta       map[string]string
+	Meta       map[string]string // page's extra meta data
 
 	fileName string
 	fileTime time.Time
 }
 
+// page's html content
 func (p *Page) ContentHTML() template.HTML {
 	if p.rawType == "markdown" {
-		return template.HTML(markdown(p.Raw))
+		return template.HTML(helper.Markdown(p.Raw))
 	}
 	return template.HTML(p.Raw)
 }
 
+// blocks to Page
 func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 	if len(blocks) < 2 {
 		return nil, ErrPostBlockError
@@ -52,6 +57,7 @@ func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 		return nil, err
 	}
 	if p.Template == "" {
+		// default page template is page.html
 		p.Template = "page.html"
 	}
 

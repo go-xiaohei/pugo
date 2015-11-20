@@ -2,14 +2,16 @@ package model
 
 import (
 	"errors"
-	"github.com/go-xiaohei/pugo-static/parser"
 	"strings"
+
+	"github.com/go-xiaohei/pugo-static/parser"
 )
 
 var (
 	ErrNavBlockWrong = errors.New("nav-blocks-wrong")
 )
 
+// Nav defines items in navigatior
 type Nav struct {
 	Link    string `ini:"link"`
 	Title   string `ini:"title"`
@@ -18,10 +20,10 @@ type Nav struct {
 	IconClass  string `ini:"icon"`
 	HoverClass string `ini:"hover"`
 	I18n       string `ini:"i18n"`
-	SubNav     []*Nav `ini:"-"`
 
-	IsSeparator bool `ini:"-"`
-	IsHover     bool `ini:"-"`
+	SubNav      []*Nav `ini:"-"` // todo : no support yed
+	IsSeparator bool   `ini:"-"`
+	IsHover     bool   `ini:"-"`
 }
 
 type Navs []*Nav
