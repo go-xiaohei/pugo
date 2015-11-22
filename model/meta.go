@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/go-xiaohei/pugo-static/parser"
+	"net/url"
 )
 
 var (
@@ -17,6 +18,8 @@ type Meta struct {
 	Keyword  string `ini:"keyword"`
 	Desc     string `ini:"desc"`
 	Domain   string `ini:"domain"`
+	Root     string `ini:"root"`
+	Base     string `ini:"-"`
 }
 
 // blocks to Meta
@@ -31,6 +34,11 @@ func NewMeta(blocks []parser.Block) (*Meta, error) {
 	meta := new(Meta)
 	if err := block.MapTo("meta", meta); err != nil {
 		return nil, err
+	}
+	u, _ := url.Parse(meta.Root)
+	meta.Base = u.Path
+	if meta.Base == "/" {
+		meta.Base = ""
 	}
 	return meta, nil
 }

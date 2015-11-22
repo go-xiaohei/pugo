@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"github.com/lunny/tango"
 	"gopkg.in/inconshreveable/log15.v2"
+	"path"
 	"strings"
 	"time"
 )
 
 var (
+	logBase   = ""
 	logFormat = "Http.%s.%d.%s" // Http.Method.Url from&duration
 )
 
@@ -37,10 +39,10 @@ func logger() tango.HandlerFunc {
 
 		// skip static files
 		if ctx.Req().Method == "GET" {
-			if strings.HasPrefix(p, "/static") {
+			if strings.HasPrefix(p, path.Join(logBase, "/static")) {
 				return
 			}
-			if strings.HasPrefix(p, "/theme") {
+			if strings.HasPrefix(p, path.Join(logBase, "/theme")) {
 				return
 			}
 		}

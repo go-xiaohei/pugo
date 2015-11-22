@@ -96,7 +96,7 @@ func action(ctx *cli.Context) {
 	upload.Prefix = "/upload"
 	upload.IndexFiles = []string{}
 
-	s := server.NewServer(ctx.String("addr"))
+	s := server.NewServer(ctx.String("addr"), b)
 	s.Static = []*server.Static{static, upload}
 	s.Helper = server.NewHelper(b, DST_DIR)
 	s.ErrorHandler = server.Errors(DST_DIR)

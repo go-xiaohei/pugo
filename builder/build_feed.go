@@ -6,12 +6,13 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"strings"
 	"time"
 )
 
 // compile feed and sitemap
 func (b *Builder) WriteFeed(ctx *Context, r *Report) {
-	baseUrl := "http://" + ctx.Meta.Domain
+	baseUrl := strings.TrimSuffix(ctx.Meta.Root, "/")
 	var buf bytes.Buffer
 	buf.WriteString(`<?xml version="1.0" encoding="UTF-8"?>`)
 	buf.WriteString(`<rss version="2.0">`)
@@ -45,7 +46,7 @@ func (b *Builder) WriteFeed(ctx *Context, r *Report) {
 	// sitemap
 	buf.Reset()
 	buf.WriteString(`<?xml version="1.0" encoding="UTF-8"?>`)
-	buf.WriteString(`<?xml-stylesheet type="text/xsl" href="/static/sitemap.xsl"?>`)
+	buf.WriteString(`<?xml-stylesheet type="text/xsl" href="` + ctx.Meta.Base + `/static/sitemap.xsl"?>`)
 	buf.WriteString(`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`)
 	buf.WriteString("<url>")
 	buf.WriteString(fmt.Sprintf("<loc>%s</loc>", baseUrl))

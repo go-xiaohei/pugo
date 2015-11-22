@@ -68,8 +68,8 @@ func (mp *MdParser) ParseReader(r io.Reader) ([]Block, error) {
 				if currentBlock = mp.Detect(bytes.TrimLeft(lineData, MD_PARSER_PREFIX)); currentBlock == nil {
 					return nil, errors.New("block-parse-first-error")
 				}
+				continue
 			}
-			continue
 		}
 
 		// when parsing first block, check end mark to close the block.

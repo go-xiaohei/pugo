@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/lunny/tango"
+	"gopkg.in/inconshreveable/log15.v2"
 	"os"
 	"path"
 	"path/filepath"
@@ -14,6 +15,7 @@ type Static struct {
 	IndexFiles []string
 	ListDir    bool
 	FilterExts []string
+	realPrefix string
 }
 
 func NewStatic() *Static {
@@ -26,6 +28,11 @@ func NewStatic() *Static {
 	}
 }
 
+func (s *Static) setBase(base string) {
+	s.realPrefix = path.Join(base, s.Prefix)
+	log15.Debug("Server.Static." + s.realPrefix)
+}
+
 func (s *Static) Handle(ctx *tango.Context) {
 	if ctx.Req().Method != "GET" && ctx.Req().Method != "HEAD" {
 		ctx.Next()
@@ -33,15 +40,15 @@ func (s *Static) Handle(ctx *tango.Context) {
 	}
 	var rPath = ctx.Req().URL.Path
 	// if defined prefix, then only check prefix
-	if s.Prefix != "" {
-		if !strings.HasPrefix(ctx.Req().URL.Path, s.Prefix) {
+	if s.realPrefix != "" {
+		if !strings.HasPrefix(ctx.Req().URL.Path, s.realPrefix) {
 			ctx.Next()
 			return
 		} else {
-			if len(s.Prefix) == len(ctx.Req().URL.Path) {
+			if len(s.realPrefix) == len(ctx.Req().URL.Path) {
 				rPath = ""
 			} else {
-				rPath = ctx.Req().URL.Path[len(s.Prefix):]
+				rPath = ctx.Req().URL.Path[len(s.realPrefix):]
 			}
 		}
 	}
@@ -105,7 +112,7 @@ func (s *Static) Handle(ctx *tango.Context) {
 			rootPath, _ := filepath.Abs(s.RootPath)
 			rPath, _ := filepath.Rel(rootPath, fPath)
 			if fPath != rootPath {
-				ctx.Write([]byte(`<li>&nbsp; &nbsp; <a href="/` + path.Join(s.Prefix, filepath.Dir(rPath)) + `">..</a></li>`))
+				ctx.Write([]byte(`<li>&nbsp; &nbsp; <a href="/` + path.Join(s.realPrefix, filepath.Dir(rPath)) + `">..</a></li>`))
 			}
 			err = filepath.Walk(fPath, func(p string, fi os.FileInfo, err error) error {
 				rPath, _ := filepath.Rel(fPath, p)
@@ -115,7 +122,7 @@ func (s *Static) Handle(ctx *tango.Context) {
 				rPath, _ = filepath.Rel(rootPath, p)
 				ps, _ := os.Stat(p)
 				if ps.IsDir() {
-					ctx.Write([]byte(`<li>┖ <a href="/` + path.Join(s.Prefix, rPath) + `">` + filepath.Base(p) + `</a></li>`))
+					ctx.Write([]byte(`<li>┖ <a href="/` + path.Join(s.realPrefix, rPath) + `">` + filepath.Base(p) + `</a></li>`))
 				} else {
 					if len(s.FilterExts) > 0 {
 						var matched bool
@@ -130,7 +137,7 @@ func (s *Static) Handle(ctx *tango.Context) {
 						}
 					}
 
-					ctx.Write([]byte(`<li>&nbsp; &nbsp; <a href="/` + path.Join(s.Prefix, rPath) + `">` + filepath.Base(p) + `</a></li>`))
+					ctx.Write([]byte(`<li>&nbsp; &nbsp; <a href="/` + path.Join(s.realPrefix, rPath) + `">` + filepath.Base(p) + `</a></li>`))
 				}
 				return nil
 			})

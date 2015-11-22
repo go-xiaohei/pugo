@@ -37,6 +37,7 @@ func (ctx *Context) ViewData() map[string]interface{} {
 		"Title":   ctx.Meta.Title + " - " + ctx.Meta.Subtitle,
 		"Desc":    ctx.Meta.Desc,
 		"Comment": ctx.Comment,
+		"Root":    ctx.Meta.Base,
 	}
 	return m
 }

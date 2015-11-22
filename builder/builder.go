@@ -124,6 +124,8 @@ func (b *Builder) Build(dest string) {
 	}
 
 	b.isBuilding = true
+
+	// run tasks
 	for _, task := range b.tasks {
 		task.Fn(ctx, r)
 		if r.Error != nil {
@@ -142,6 +144,7 @@ func (b *Builder) Build(dest string) {
 		b.report = r
 		b.context = ctx
 	}
+
 	log15.Info("Build.Finish", "duration", r.Duration(), "error", r.Error)
 	b.isBuilding = false
 }

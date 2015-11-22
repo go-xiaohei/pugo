@@ -8,16 +8,16 @@ import (
 // build report
 // todo : finish this Report
 type Report struct {
-	DstDir string
-	Begin  time.Time
-	Error  error
-	Tree   *reportTree
+	DstDir    string
+	BeginTime time.Time
+	Error     error
+	Tree      *reportTree
 }
 
 func newReport(dstDir string) *Report {
 	return &Report{
-		DstDir: dstDir,
-		Begin:  time.Now(),
+		DstDir:    dstDir,
+		BeginTime: time.Now(),
 		Tree: &reportTree{
 			Index: "HOME",
 		},
@@ -26,7 +26,7 @@ func newReport(dstDir string) *Report {
 
 // build-process duration
 func (r *Report) Duration() time.Duration {
-	return time.Since(r.Begin)
+	return time.Since(r.BeginTime)
 }
 
 // record route tree
