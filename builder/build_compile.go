@@ -69,10 +69,8 @@ func (b *Builder) compilePagedPost(ctx *Context, r *Report) {
 		}
 
 		currentPosts = ctx.Posts[pager.Begin:pager.End]
-		pager.SetLayout("/" + layout)
-		if ctx.isSuffixed {
-			pager.SetLayout("/" + layout + ".html")
-		}
+		pager.SetLayout("/" + layout + ".html")
+
 		dstFile := path.Join(ctx.DstDir, fmt.Sprintf(layout+".html", pager.Page))
 
 		viewData := ctx.ViewData()

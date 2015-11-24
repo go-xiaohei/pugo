@@ -45,7 +45,6 @@ func buildSite(opt *builder.BuildOption) func(ctx *cli.Context) {
 		opt.IsDebug = true
 		opt.IsWatchTemplate = true
 		opt.IsCopyAssets = true
-		opt.IsSuffixed = true
 
 		b := builder.New(opt)
 		if b.Error != nil {

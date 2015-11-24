@@ -8,6 +8,6 @@ type Tag struct {
 func NewTag(name string) Tag {
 	return Tag{
 		Name: name,
-		Url:  "/tags/" + name,
+		Url:  "/tags/" + name + ".html",
 	}
 }

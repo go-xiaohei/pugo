@@ -64,11 +64,7 @@ func (b *Builder) WriteFeed(ctx *Context, r *Report) {
 		buf.WriteString("</url>")
 	}
 	buf.WriteString("<url>")
-	if ctx.isSuffixed {
-		buf.WriteString(fmt.Sprintf("<loc>%s</loc>", baseUrl+"/archive.html"))
-	} else {
-		buf.WriteString(fmt.Sprintf("<loc>%s</loc>", baseUrl+"/archive"))
-	}
+	buf.WriteString(fmt.Sprintf("<loc>%s</loc>", baseUrl+"/archive.html"))
 	buf.WriteString(fmt.Sprintf("<lastmod>%s/</lastmod>", time.Now().Format(time.RFC3339)))
 	buf.WriteString("<changefreq>daily</changefreq>")
 	buf.WriteString("<priority>0.6</priority>")
@@ -76,11 +72,7 @@ func (b *Builder) WriteFeed(ctx *Context, r *Report) {
 
 	for i := 1; i <= ctx.PostPageCount; i++ {
 		buf.WriteString("<url>")
-		if ctx.isSuffixed {
-			buf.WriteString(fmt.Sprintf("<loc>%s/posts/%d.html</loc>", baseUrl, i))
-		} else {
-			buf.WriteString(fmt.Sprintf("<loc>%s/posts/%d</loc>", baseUrl, i))
-		}
+		buf.WriteString(fmt.Sprintf("<loc>%s/posts/%d.html</loc>", baseUrl, i))
 		buf.WriteString(fmt.Sprintf("<lastmod>%s/</lastmod>", time.Now().Format(time.RFC3339)))
 		buf.WriteString("<changefreq>daily</changefreq>")
 		buf.WriteString("<priority>0.6</priority>")

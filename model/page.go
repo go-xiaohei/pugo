@@ -78,8 +78,8 @@ func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 	p.Raw = blocks[1].Bytes()
 
 	// build url
-	p.Url = fmt.Sprintf("/%s", p.Slug)
-	p.Permalink = p.Url
+	p.Permalink = fmt.Sprintf("/%s", p.Slug)
+	p.Url = p.Permalink + ".html"
 
 	if len(blocks) > 2 {
 		// parse meta block

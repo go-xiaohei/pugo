@@ -52,7 +52,6 @@ type (
 		IsDebug         bool
 		IsCopyAssets    bool
 		IsWatchTemplate bool
-		IsSuffixed      bool
 	}
 )
 
@@ -120,7 +119,6 @@ func (b *Builder) Build(dest string) {
 		Theme:           theme,
 		Version:         b.Version,
 		isCopyAllAssets: b.opt.IsCopyAssets,
-		isSuffixed:      b.opt.IsSuffixed,
 	}
 
 	b.isBuilding = true

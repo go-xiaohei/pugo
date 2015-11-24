@@ -94,8 +94,9 @@ func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 	p.Raw = blocks[1].Bytes()
 
 	// build url
-	p.Url = fmt.Sprintf("/%d/%d/%d/%s", p.Created.Year, p.Created.Month, p.Created.Day, p.Slug)
-	p.Permalink = p.Url
+	p.Permalink = fmt.Sprintf("/%d/%d/%d/%s", p.Created.Year, p.Created.Month, p.Created.Day, p.Slug)
+	p.Url = p.Permalink + ".html"
+
 	return p, nil
 }
 
