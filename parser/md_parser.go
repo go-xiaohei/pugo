@@ -73,7 +73,7 @@ func (mp *MdParser) ParseReader(r io.Reader) ([]Block, error) {
 		}
 
 		// when parsing first block, check end mark to close the block.
-		if bytes.Equal(lineData, []byte(MD_PARSER_PREFIX)) && len(blocks) == 0 {
+		if len(blocks) == 0 && bytes.Equal(lineData, []byte(MD_PARSER_PREFIX)) {
 			blocks = append(blocks, currentBlock)
 			currentBlock = nil
 			continue
