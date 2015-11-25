@@ -54,6 +54,12 @@ func NewTheme(dir string, funcMap template.FuncMap, extension []string) *Theme {
 		}
 		return template.HTML(string(buf.Bytes()))
 	}
+	theme.funcMap["html"] = func(str string) template.HTML {
+		return template.HTML(str)
+	}
+	theme.funcMap["js"] = func(str string) template.JS {
+		return template.JS(str)
+	}
 	return theme
 }
 

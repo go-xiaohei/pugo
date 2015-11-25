@@ -5,10 +5,13 @@ import (
 	"strings"
 
 	"github.com/go-xiaohei/pugo-static/parser"
+	"sync"
 )
 
 var (
 	ErrNavBlockWrong = errors.New("nav-blocks-wrong")
+
+	navLock sync.Mutex
 )
 
 // Nav defines items in navigatior
@@ -29,6 +32,8 @@ type Nav struct {
 type Navs []*Nav
 
 func (navs Navs) Hover(name string) {
+	navLock.Lock()
+	defer navLock.Unlock()
 	for _, n := range navs {
 		if n.HoverClass == name {
 			n.IsHover = true
@@ -37,6 +42,8 @@ func (navs Navs) Hover(name string) {
 }
 
 func (navs Navs) Reset() {
+	navLock.Lock()
+	defer navLock.Unlock()
 	for _, n := range navs {
 		n.IsHover = false
 	}

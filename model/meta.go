@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-xiaohei/pugo-static/parser"
 	"net/url"
+	"strings"
 )
 
 var (
@@ -34,6 +35,13 @@ func NewMeta(blocks []parser.Block) (*Meta, error) {
 	meta := new(Meta)
 	if err := block.MapTo("meta", meta); err != nil {
 		return nil, err
+	}
+	if meta.Root == "" {
+		meta.Root = "http://" + meta.Domain
+	} else {
+		if strings.HasSuffix(meta.Root, "/") {
+			meta.Root = strings.TrimSuffix(meta.Root, "/")
+		}
 	}
 	u, _ := url.Parse(meta.Root)
 	meta.Base = u.Path

@@ -1,3 +1,3 @@
 -----ini
 [disqus]
-site =
+site = fuxiaohei
