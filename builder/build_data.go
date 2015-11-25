@@ -28,35 +28,21 @@ func (b *Builder) ReadData(ctx *Context, r *Report) {
 // read meta data, from meta.md,nav.md and comment.md
 // they are global values.
 func (b *Builder) readMeta(ctx *Context, r *Report) {
-	blocksMap, err := b.parseFiles("meta.md", "nav.md", "comment.md")
+	blocks, err := b.parseFile("meta.md")
 	if err != nil {
 		r.Error = err
 		return
 	}
 
-	meta, err := model.NewMeta(blocksMap["meta.md"])
+	ctx.Meta, ctx.Navs, ctx.Comment, err = model.NewAllMeta(blocks)
 	if err != nil {
 		r.Error = err
 		return
 	}
-	ctx.Meta = meta
-
-	navs, err := model.NewNavs(blocksMap["nav.md"])
-	if err != nil {
-		r.Error = err
-		return
-	}
-	ctx.Navs = navs
 	for _, n := range ctx.Navs {
 		n.Link = fixSuffix(n.Link)
 	}
 
-	cmt, err := model.NewComment(blocksMap["comment.md"])
-	if err != nil {
-		r.Error = err
-		return
-	}
-	ctx.Comment = cmt
 }
 
 // read contents, including posts and pages

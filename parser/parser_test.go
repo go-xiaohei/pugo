@@ -118,7 +118,7 @@ func TestParseMeta(t *testing.T) {
 	Convey("parse meta", t, func() {
 		bytes, err := ioutil.ReadFile("../source/meta.md")
 		So(err, ShouldBeNil)
-		blocks, err := p.Parse(bytes)
+		blocks, err := p2.Parse(bytes)
 		So(err, ShouldBeNil)
 
 		Convey("check meta block", func() {
@@ -130,7 +130,7 @@ func TestParseMeta(t *testing.T) {
 				So(ok, ShouldBeTrue)
 				So(b.Item("meta", "title"), ShouldEqual, "Pugo")
 
-				meta, err := model.NewMeta(blocks)
+				meta, _, _, err := model.NewAllMeta(blocks)
 				So(err, ShouldBeNil)
 				So(meta.Title, ShouldEqual, b.Item("meta", "title"))
 			})

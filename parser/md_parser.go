@@ -60,10 +60,7 @@ func (mp *MdParser) ParseReader(r io.Reader) ([]Block, error) {
 			if len(lineData) == 0 {
 				continue
 			}
-			if len(blocks) > 0 {
-				// the second block must be markdown block
-				currentBlock = new(MarkdownBlock).New()
-			} else {
+			if len(blocks) == 0 {
 				// the first block need be MetaBlock
 				if currentBlock = mp.Detect(bytes.TrimLeft(lineData, MD_PARSER_PREFIX)); currentBlock == nil {
 					return nil, errors.New("block-parse-first-error")
@@ -75,13 +72,15 @@ func (mp *MdParser) ParseReader(r io.Reader) ([]Block, error) {
 		// when parsing first block, check end mark to close the block.
 		if len(blocks) == 0 && bytes.Equal(lineData, []byte(MD_PARSER_PREFIX)) {
 			blocks = append(blocks, currentBlock)
-			currentBlock = nil
+			currentBlock = new(MarkdownBlock).New()
 			continue
 		}
 
 		// write block
-		if err := currentBlock.Write(append(lineData, []byte("\n")...)); err != nil {
-			return nil, err
+		if len(lineData) > 0 {
+			if err := currentBlock.Write(append(lineData, []byte("\n")...)); err != nil {
+				return nil, err
+			}
 		}
 
 		if err != nil {
@@ -92,7 +91,9 @@ func (mp *MdParser) ParseReader(r io.Reader) ([]Block, error) {
 		}
 	}
 
-	if currentBlock != nil {
+	// this block must be md block,
+	// if empty, do not use it, so same behavior as without -----markdown block
+	if currentBlock != nil && len(currentBlock.Bytes()) > 0 {
 		blocks = append(blocks, currentBlock)
 	}
 	return blocks, nil

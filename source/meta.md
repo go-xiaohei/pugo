@@ -1,4 +1,4 @@
------ini
+```ini
 [meta]
 title = Pugo
 subtitle = static.generator
@@ -10,3 +10,36 @@ desc = pugo is a simple static site generator
 domain = localhost
 ; root path for site, if empty, build as http://{domain}/
 root = http://localhost/
+
+[nav]
+; reference to [home] block, same below.
+-:home
+-:archive
+-:about
+-:source
+
+[nav.home]
+link = /
+title = Home
+i18n = homepage
+; set nav to active status
+hover = home
+
+[nav.archive]
+link = /archive
+title = Archive
+i18n = archive
+hover = archive
+
+[nav.about]
+link = /about
+title = About
+i18n = about
+; browser open in new tab
+blank = true
+hover = about
+
+[comment.disqus]
+site = fuxiaohei
+
+```
