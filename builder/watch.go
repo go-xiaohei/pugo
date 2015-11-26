@@ -11,10 +11,10 @@ import (
 func (b *Builder) Watch(dstDir string) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		log15.Crit("Build.Watch", "error", err.Error())
+		log15.Crit("Watch.Fail", "error", err.Error())
 		return
 	}
-	log15.Info("Build.Watch")
+	log15.Info("Watch.Start")
 
 	go func() {
 		for {
@@ -23,20 +23,18 @@ func (b *Builder) Watch(dstDir string) {
 				ext := path.Ext(event.Name)
 				if ext == ".md" || ext == ".html" {
 					if event.Op != fsnotify.Chmod && !b.IsBuilding() {
-						log15.Info("Build.Watch.Rebuild", "change", event.String())
+						log15.Info("Watch.Rebuild", "change", event.String())
 						b.Build(dstDir)
 					}
 				}
 			case err := <-watcher.Errors:
-				log15.Error("Build.Watch", "error", err.Error())
+				log15.Error("Watch.Errors", "error", err.Error())
 			}
 		}
 	}()
 
 	watchDir(watcher, b.opt.SrcDir)
-	if b.opt.IsWatchTemplate {
-		watchDir(watcher, b.opt.TplDir)
-	}
+	watchDir(watcher, b.opt.TplDir)
 }
 
 func watchDir(watcher *fsnotify.Watcher, srcDir string) {

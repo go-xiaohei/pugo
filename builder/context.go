@@ -4,14 +4,16 @@ import (
 	"github.com/go-xiaohei/pugo-static/helper"
 	"github.com/go-xiaohei/pugo-static/model"
 	"github.com/go-xiaohei/pugo-static/render"
+	"time"
 )
 
 // build context, maintain parse data, posts, pages or others
 type Context struct {
-	Theme           *render.Theme
-	DstDir          string
-	Version         builderVersion
-	isCopyAllAssets bool
+	Theme     *render.Theme
+	DstDir    string
+	Version   builderVersion
+	BeginTime time.Time
+	Error     error
 
 	Posts         []*model.Post
 	PostPageCount int
@@ -40,4 +42,9 @@ func (ctx *Context) ViewData() map[string]interface{} {
 		"Root":    ctx.Meta.Base,
 	}
 	return m
+}
+
+// return duration
+func (ctx *Context) Duration() time.Duration {
+	return time.Since(ctx.BeginTime)
 }

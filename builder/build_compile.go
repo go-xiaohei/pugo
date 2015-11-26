@@ -10,29 +10,29 @@ import (
 )
 
 // compile data to html files
-func (b *Builder) Compile(ctx *Context, r *Report) {
-	if b.compileSinglePost(ctx, r); r.Error != nil {
+func (b *Builder) Compile(ctx *Context) {
+	if b.compileSinglePost(ctx); ctx.Error != nil {
 		return
 	}
-	if b.compilePagedPost(ctx, r); r.Error != nil {
+	if b.compilePagedPost(ctx); ctx.Error != nil {
 		return
 	}
-	if b.compileArchive(ctx, r); r.Error != nil {
+	if b.compileArchive(ctx); ctx.Error != nil {
 		return
 	}
-	if b.compilePages(ctx, r); r.Error != nil {
+	if b.compilePages(ctx); ctx.Error != nil {
 		return
 	}
-	if b.compileTags(ctx, r); r.Error != nil {
+	if b.compileTags(ctx); ctx.Error != nil {
 		return
 	}
-	if b.compileIndex(ctx, r); r.Error != nil {
+	if b.compileIndex(ctx); ctx.Error != nil {
 		return
 	}
 }
 
 // compile each single post to html
-func (b *Builder) compileSinglePost(ctx *Context, r *Report) {
+func (b *Builder) compileSinglePost(ctx *Context) {
 	for _, p := range ctx.Posts {
 		dstFile := path.Join(ctx.DstDir, p.Url)
 		if path.Ext(dstFile) == "" {
@@ -46,14 +46,14 @@ func (b *Builder) compileSinglePost(ctx *Context, r *Report) {
 		viewData["Permalink"] = p.Permalink
 
 		if err := b.compileTemplate(ctx, "post.html", viewData, dstFile); err != nil {
-			r.Error = err
+			ctx.Error = err
 			return
 		}
 	}
 }
 
 // compile paged posts to html
-func (b *Builder) compilePagedPost(ctx *Context, r *Report) {
+func (b *Builder) compilePagedPost(ctx *Context) {
 	// post pagination
 	var (
 		currentPosts []*model.Post = nil
@@ -79,7 +79,7 @@ func (b *Builder) compilePagedPost(ctx *Context, r *Report) {
 		viewData["Pager"] = pager
 
 		if err := b.compileTemplate(ctx, "posts.html", viewData, dstFile); err != nil {
-			r.Error = err
+			ctx.Error = err
 			return
 		}
 
@@ -92,7 +92,7 @@ func (b *Builder) compilePagedPost(ctx *Context, r *Report) {
 }
 
 // compile archive page
-func (b *Builder) compileArchive(ctx *Context, r *Report) {
+func (b *Builder) compileArchive(ctx *Context) {
 	archives := model.NewArchive(ctx.Posts)
 	dstFile := path.Join(ctx.DstDir, "archive.html")
 	viewData := ctx.ViewData()
@@ -103,13 +103,13 @@ func (b *Builder) compileArchive(ctx *Context, r *Report) {
 	defer ctx.Navs.Reset()
 
 	if err := b.compileTemplate(ctx, "archive.html", viewData, dstFile); err != nil {
-		r.Error = err
+		ctx.Error = err
 		return
 	}
 }
 
 // compile pages
-func (b *Builder) compilePages(ctx *Context, r *Report) {
+func (b *Builder) compilePages(ctx *Context) {
 	for _, p := range ctx.Pages {
 		dstFile := path.Join(ctx.DstDir, p.Url)
 		if path.Ext(dstFile) == "" {
@@ -124,7 +124,7 @@ func (b *Builder) compilePages(ctx *Context, r *Report) {
 		viewData["Permalink"] = p.Permalink
 
 		if err := b.compileTemplate(ctx, p.Template, viewData, dstFile); err != nil {
-			r.Error = err
+			ctx.Error = err
 			ctx.Navs.Reset()
 			return
 		}
@@ -133,7 +133,7 @@ func (b *Builder) compilePages(ctx *Context, r *Report) {
 }
 
 // compile tagged page
-func (b *Builder) compileTags(ctx *Context, r *Report) {
+func (b *Builder) compileTags(ctx *Context) {
 	for t, posts := range ctx.tagPosts {
 		dstFile := path.Join(ctx.DstDir, fmt.Sprintf("%s.html", ctx.Tags[t].Url))
 
@@ -143,14 +143,14 @@ func (b *Builder) compileTags(ctx *Context, r *Report) {
 		viewData["Posts"] = posts
 
 		if err := b.compileTemplate(ctx, "posts.html", viewData, dstFile); err != nil {
-			r.Error = err
+			ctx.Error = err
 			return
 		}
 	}
 }
 
 // compile index page
-func (b *Builder) compileIndex(ctx *Context, r *Report) {
+func (b *Builder) compileIndex(ctx *Context) {
 	template := "posts.html"
 	if t := ctx.Theme.Template("index.html"); t != nil {
 		template = "index.html"
@@ -165,7 +165,7 @@ func (b *Builder) compileIndex(ctx *Context, r *Report) {
 	viewData["Pager"] = ctx.indexPager
 
 	if err := b.compileTemplate(ctx, template, viewData, dstFile); err != nil {
-		r.Error = err
+		ctx.Error = err
 		return
 	}
 }

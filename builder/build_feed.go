@@ -11,7 +11,7 @@ import (
 )
 
 // compile feed and sitemap
-func (b *Builder) WriteFeed(ctx *Context, r *Report) {
+func (b *Builder) WriteFeed(ctx *Context) {
 	baseUrl := strings.TrimSuffix(ctx.Meta.Root, "/")
 	var buf bytes.Buffer
 	buf.WriteString(`<?xml version="1.0" encoding="UTF-8"?>`)
@@ -38,8 +38,7 @@ func (b *Builder) WriteFeed(ctx *Context, r *Report) {
 
 	dstFile := path.Join(ctx.DstDir, "feed.xml")
 	os.MkdirAll(path.Dir(dstFile), os.ModePerm)
-	r.Error = ioutil.WriteFile(dstFile, buf.Bytes(), os.ModePerm)
-	if r.Error != nil {
+	if ctx.Error = ioutil.WriteFile(dstFile, buf.Bytes(), os.ModePerm); ctx.Error != nil {
 		return
 	}
 
@@ -100,5 +99,5 @@ func (b *Builder) WriteFeed(ctx *Context, r *Report) {
 	buf.WriteString("</urlset>")
 	dstFile = path.Join(ctx.DstDir, "sitemap.xml")
 	os.MkdirAll(path.Dir(dstFile), os.ModePerm)
-	r.Error = ioutil.WriteFile(dstFile, buf.Bytes(), os.ModePerm)
+	ctx.Error = ioutil.WriteFile(dstFile, buf.Bytes(), os.ModePerm)
 }

@@ -32,38 +32,18 @@ func init() {
 	app.Author = "https://github.com/fuxiaohei"
 	app.Email = "fuxiaohei@vip.qq.com"
 	app.Version = VERSION + "(" + VER_DATE + ")"
-	app.Flags = []cli.Flag{
-		cli.StringFlag{
-			Name:  "addr",
-			Value: "0.0.0.0:9899",
-			Usage: "pugo's http server address",
-		},
-		cli.StringFlag{
-			Name:  "theme",
-			Value: "default",
-			Usage: "pugo's theme to display",
-		},
-		cli.BoolFlag{
-			Name:  "debug",
-			Usage: "debug mode flag",
-		},
-		cli.BoolFlag{
-			Name:  "build",
-			Usage: "only build site, but don't serve http",
-		},
-	}
 	opt.SrcDir = SRC_DIR
 	opt.TplDir = TPL_DIR
 	opt.UploadDir = UPLOAD_DIR
 	opt.Version = VERSION
 	opt.VerDate = VER_DATE
 
-	log15.Root().SetHandler(log15.LvlFilterHandler(log15.LvlDebug, ext.FatalHandler(log15.StderrHandler)))
+	log15.Root().SetHandler(log15.LvlFilterHandler(log15.LvlInfo, ext.FatalHandler(log15.StderrHandler)))
 }
 
 func action(ctx *cli.Context) {
 	if !ctx.Bool("debug") {
-		log15.Root().SetHandler(log15.LvlFilterHandler(log15.LvlInfo, ext.FatalHandler(log15.StderrHandler)))
+
 	}
 
 	log15.Debug("Dir.Source./" + SRC_DIR)
@@ -71,10 +51,6 @@ func action(ctx *cli.Context) {
 	log15.Debug("Dir.Destination./" + DST_DIR)
 
 	// builder
-	opt.IsDebug = ctx.Bool("debug")
-	if opt.IsDebug {
-		opt.IsWatchTemplate = true
-	}
 	opt.Theme = ctx.String("theme")
 	b := builder.New(opt)
 	if b.Error != nil {

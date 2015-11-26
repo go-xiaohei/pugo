@@ -52,7 +52,7 @@ func (s *Server) Run() {
 
 func (s *Server) refresh(ctx *tango.Context) {
 	// if build time changed, refresh server setting
-	if s.refreshTime == s.builder.Report().BeginTime.Unix() {
+	if s.refreshTime == s.builder.Context().BeginTime.Unix() {
 		ctx.Next()
 		return
 	}
@@ -70,6 +70,6 @@ func (s *Server) refresh(ctx *tango.Context) {
 	}
 	logBase = base
 
-	s.refreshTime = s.builder.Report().BeginTime.Unix()
+	s.refreshTime = s.builder.Context().BeginTime.Unix()
 	ctx.Next()
 }

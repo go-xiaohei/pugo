@@ -6,7 +6,7 @@ import (
 	"github.com/go-xiaohei/pugo-static/parser"
 	"github.com/go-xiaohei/pugo-static/render"
 	"gopkg.in/inconshreveable/log15.v2"
-	"os"
+	"time"
 )
 
 var (
@@ -21,7 +21,6 @@ type (
 		opt        *BuildOption
 
 		render  *render.Render
-		report  *Report
 		context *Context
 		parsers []parser.Parser
 		tasks   []*BuildTask
@@ -32,7 +31,7 @@ type (
 	// build task defines the build function to run in build process
 	BuildTask struct {
 		Name  string
-		Fn    func(*Context, *Report)
+		Fn    func(*Context)
 		Print func(*Context) string
 	}
 	builderVersion struct {
@@ -48,10 +47,6 @@ type (
 
 		Version string
 		VerDate string
-
-		IsDebug         bool
-		IsCopyAssets    bool
-		IsWatchTemplate bool
 	}
 )
 
@@ -81,6 +76,8 @@ func New(opt *BuildOption) *Builder {
 		&BuildTask{"Copy", builder.CopyAssets, nil},
 		&BuildTask{"Feed", builder.WriteFeed, nil},
 	}
+	log15.Debug("Builder.Source." + opt.SrcDir)
+	log15.Debug("Builder.Template." + opt.TplDir)
 	return builder
 }
 
@@ -101,49 +98,39 @@ func (b *Builder) Build(dest string) {
 		return
 	}
 	log15.Debug("Build.Start")
-	r := newReport(dest)
-	if err := os.MkdirAll(dest, os.ModePerm); err != nil {
-		r.Error = err
-		b.report = r
-		return
+	ctx := &Context{
+		DstDir:    dest,
+		Version:   b.Version,
+		BeginTime: time.Now(),
 	}
 	theme, err := b.theme()
 	if err != nil {
-		r.Error = err
-		b.report = r
+		ctx.Error = err
+		b.context = ctx
 		return
 	}
-
-	ctx := &Context{
-		DstDir:          dest,
-		Theme:           theme,
-		Version:         b.Version,
-		isCopyAllAssets: b.opt.IsCopyAssets,
-	}
-
+	ctx.Theme = theme
 	b.isBuilding = true
 
 	// run tasks
 	for _, task := range b.tasks {
-		task.Fn(ctx, r)
-		if r.Error != nil {
-			log15.Error("Build."+task.Name, "error", r.Error.Error())
+		task.Fn(ctx)
+		if ctx.Error != nil {
+			log15.Error("Build."+task.Name, "error", ctx.Error.Error())
 
 			b.isBuilding = false
-			b.report = r
 			b.context = ctx
 			return
 		}
 		if task.Print != nil {
-			log15.Debug("Build."+task.Name+"."+task.Print(ctx), "duration", r.Duration())
+			log15.Debug("Build."+task.Name+"."+task.Print(ctx), "duration", ctx.Duration())
 		} else {
-			log15.Debug("Build."+task.Name, "duration", r.Duration())
+			log15.Debug("Build."+task.Name, "duration", ctx.Duration())
 		}
-		b.report = r
 		b.context = ctx
 	}
 
-	log15.Info("Build.Finish", "duration", r.Duration(), "error", r.Error)
+	log15.Info("Build.Finish", "duration", ctx.Duration())
 	b.isBuilding = false
 }
 
@@ -160,11 +147,6 @@ func (b *Builder) getParser(data []byte) parser.Parser {
 // is builder run building
 func (b *Builder) IsBuilding() bool {
 	return b.isBuilding
-}
-
-// get last report in builder
-func (b *Builder) Report() *Report {
-	return b.report
 }
 
 // get last context in builder

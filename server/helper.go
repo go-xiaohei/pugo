@@ -26,8 +26,8 @@ func (h *Helper) Handle(ctx *tango.Context) {
 		ctx.Write([]byte("<h1>Pugo is building site!</h1>"))
 		return
 	}
-	if h.b.Report().Error != nil {
-		ctx.Abort(500, h.b.Report().Error.Error())
+	if h.b.Context().Error != nil {
+		ctx.Abort(500, h.b.Context().Error.Error())
 		return
 	}
 	// use built files

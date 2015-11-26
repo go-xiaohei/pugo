@@ -17,27 +17,27 @@ var (
 )
 
 // parse data to context, if parsed all data to context for renders
-func (b *Builder) ReadData(ctx *Context, r *Report) {
-	if b.readMeta(ctx, r); r.Error != nil {
+func (b *Builder) ReadData(ctx *Context) {
+	if b.readMeta(ctx); ctx.Error != nil {
 		return
 	}
-	if b.readContents(ctx, r); r.Error != nil {
+	if b.readContents(ctx); ctx.Error != nil {
 		return
 	}
 }
 
 // read meta data, from meta.md,nav.md and comment.md
 // they are global values.
-func (b *Builder) readMeta(ctx *Context, r *Report) {
+func (b *Builder) readMeta(ctx *Context) {
 	blocks, err := b.parseFile("meta.md")
 	if err != nil {
-		r.Error = err
+		ctx.Error = err
 		return
 	}
 
 	ctx.Meta, ctx.Navs, ctx.Authors, ctx.Comment, err = model.NewAllMeta(blocks)
 	if err != nil {
-		r.Error = err
+		ctx.Error = err
 		return
 	}
 	for _, n := range ctx.Navs {
@@ -46,19 +46,19 @@ func (b *Builder) readMeta(ctx *Context, r *Report) {
 }
 
 // read contents, including posts and pages
-func (b *Builder) readContents(ctx *Context, r *Report) {
+func (b *Builder) readContents(ctx *Context) {
 	filter := func(p string) bool {
 		return path.Ext(p) == ".md"
 	}
 	postData, infoData, err := b.parseDir("post", filter)
 	if err != nil {
-		r.Error = err
+		ctx.Error = err
 		return
 	}
 	for k, blocks := range postData {
 		post, err := model.NewPost(blocks, infoData[k])
 		if err != nil {
-			r.Error = err
+			ctx.Error = err
 			return
 		}
 		// use named author
@@ -80,13 +80,13 @@ func (b *Builder) readContents(ctx *Context, r *Report) {
 
 	pageData, infoData, err := b.parseDir("page", filter)
 	if err != nil {
-		r.Error = err
+		ctx.Error = err
 		return
 	}
 	for k, blocks := range pageData {
 		page, err := model.NewPage(blocks, infoData[k])
 		if err != nil {
-			r.Error = err
+			ctx.Error = err
 			return
 		}
 		// use named author
