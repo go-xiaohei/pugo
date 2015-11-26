@@ -128,9 +128,9 @@ func TestParseMeta(t *testing.T) {
 			Convey("use meta block", func() {
 				b, ok := blocks[0].(parser.MetaBlock)
 				So(ok, ShouldBeTrue)
-				So(b.Item("meta", "title"), ShouldEqual, "Pugo")
+				So(b.Item("meta", "title"), ShouldEqual, "Pugo.Static")
 
-				meta, _, _, err := model.NewAllMeta(blocks)
+				meta, _, _, _, err := model.NewAllMeta(blocks)
 				So(err, ShouldBeNil)
 				So(meta.Title, ShouldEqual, b.Item("meta", "title"))
 			})
@@ -142,7 +142,7 @@ func TestPostMeta(t *testing.T) {
 	Convey("parse post", t, func() {
 		bytes, err := ioutil.ReadFile("../source/post/welcome.md")
 		So(err, ShouldBeNil)
-		blocks, err := p.Parse(bytes)
+		blocks, err := p2.Parse(bytes)
 		So(err, ShouldBeNil)
 
 		Convey("check post blocks", func() {
@@ -153,7 +153,7 @@ func TestPostMeta(t *testing.T) {
 			Convey("use post blocks", func() {
 				b, ok := blocks[0].(parser.MetaBlock)
 				So(ok, ShouldBeTrue)
-				So(b.Item("title"), ShouldEqual, "Welcome to Pugo.Static")
+				So(b.Item("title"), ShouldEqual, "Welcome")
 
 				fi, _ := os.Stat("../source/post/welcome.md")
 				post, err := model.NewPost(blocks, fi)
@@ -179,7 +179,7 @@ func TestPageMeta(t *testing.T) {
 			Convey("use page blocks", func() {
 				b, ok := blocks[0].(parser.MetaBlock)
 				So(ok, ShouldBeTrue)
-				So(b.Item("title"), ShouldEqual, "About Pugo Static")
+				So(b.Item("title"), ShouldEqual, "About Pugo.Static")
 
 				fi, _ := os.Stat("../source/page/about.md")
 				page, err := model.NewPage(blocks, fi)
