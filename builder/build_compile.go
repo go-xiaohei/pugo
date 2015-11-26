@@ -135,7 +135,7 @@ func (b *Builder) compilePages(ctx *Context) {
 // compile tagged page
 func (b *Builder) compileTags(ctx *Context) {
 	for t, posts := range ctx.tagPosts {
-		dstFile := path.Join(ctx.DstDir, fmt.Sprintf("%s.html", ctx.Tags[t].Url))
+		dstFile := path.Join(ctx.DstDir, fmt.Sprintf("tags/%s.html", ctx.Tags[t].Name))
 
 		viewData := ctx.ViewData()
 		viewData["Title"] = fmt.Sprintf("%s - %s", t, ctx.Meta.Title)

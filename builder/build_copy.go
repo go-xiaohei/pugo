@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 
 	"github.com/Unknwon/com"
+	"strings"
+	"time"
 )
 
 // copy assets to target directory,
@@ -24,6 +26,16 @@ func (b *Builder) CopyAssets(ctx *Context) {
 
 func (b *Builder) copyClean(ctx *Context) {
 	filepath.Walk(ctx.DstDir, func(p string, info os.FileInfo, err error) error {
+		if path.Ext(p) != ".html" ||
+			info.IsDir() ||
+			strings.HasPrefix(p, path.Join(ctx.DstDir, "/static")) ||
+			strings.HasPrefix(p, path.Join(ctx.DstDir, "/upload")) {
+			return nil
+		}
+		sub := info.ModTime().Sub(ctx.BeginTime.Add(-1 * time.Second))
+		if sub < -1 {
+			os.RemoveAll(p)
+		}
 		return nil
 	})
 }
