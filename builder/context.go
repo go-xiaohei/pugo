@@ -24,6 +24,7 @@ type Context struct {
 
 	Navs    model.Navs
 	Meta    *model.Meta
+	Authors model.AuthorMap
 	Comment *model.Comment
 }
 

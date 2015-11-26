@@ -5,8 +5,8 @@ type Tag struct {
 	Url  string
 }
 
-func NewTag(name string) Tag {
-	return Tag{
+func NewTag(name string) *Tag {
+	return &Tag{
 		Name: name,
 		Url:  "/tags/" + name + ".html",
 	}

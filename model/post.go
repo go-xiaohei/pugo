@@ -19,16 +19,16 @@ var (
 
 // Post contains data for a post
 type Post struct {
-	Title     string `ini:"title"`
-	Slug      string `ini:"slug"`
-	Permalink string `ini:"-"`
-	Url       string `ini:"-"`
-	Desc      string `ini:"desc"` // description in a sentence
-	Created   Time   `ini:"-"`
-	Updated   Time   `ini:"-"`
-	Author    Author `ini:"-"`
-	Tags      []Tag  `ini:"-"`
-	Raw       []byte ``
+	Title     string  `ini:"title"`
+	Slug      string  `ini:"slug"`
+	Permalink string  `ini:"-"`
+	Url       string  `ini:"-"`
+	Desc      string  `ini:"desc"` // description in a sentence
+	Created   Time    `ini:"-"`
+	Updated   Time    `ini:"-"`
+	Author    *Author `ini:"-"`
+	Tags      []*Tag  `ini:"-"`
+	Raw       []byte  ``
 	rawType   string
 
 	fileName string
@@ -83,7 +83,7 @@ func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 	if upStr := block.Item("update_date"); upStr != "" {
 		p.Updated = NewTime(upStr, p.fileTime)
 	}
-	p.Author = Author{
+	p.Author = &Author{
 		Name:  block.Item("author"),
 		Email: block.Item("author_email"),
 		Url:   block.Item("author_url"),

@@ -1,9 +1,10 @@
 package builder
 
 import (
-	"github.com/Unknwon/com"
 	"os"
 	"path"
+
+	"github.com/Unknwon/com"
 )
 
 // copy assets to target directory,
@@ -23,14 +24,22 @@ func (b *Builder) copyAssets(ctx *Context, r *Report) {
 	// copy all static
 	if ctx.isCopyAllAssets {
 		dstDir := path.Join(ctx.DstDir, path.Base(staticDir))
-		com.CopyDir(staticDir, dstDir)
+		// remove old directory, otherwise return error when com.Copy
+		os.RemoveAll(dstDir)
+		if err := com.CopyDir(staticDir, dstDir); err != nil {
+			r.Error = err
+			return
+		}
 	}
 	files := []string{"favicon.ico", "robots.txt"}
 	for _, f := range files {
 		srcFile := path.Join(staticDir, f)
 		if com.IsFile(srcFile) {
 			dstFile := path.Join(ctx.DstDir, f)
-			com.Copy(srcFile, dstFile)
+			if err := com.Copy(srcFile, dstFile); err != nil {
+				r.Error = err
+				return
+			}
 		}
 	}
 }

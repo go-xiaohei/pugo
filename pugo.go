@@ -111,10 +111,11 @@ func main() {
 		Version:   VERSION,
 		VerDate:   VER_DATE,
 	}
-	app.Action = action
+	// app.Action = action
 	app.Commands = []cli.Command{
 		command.New(SRC_DIR, TPL_DIR),
 		command.Build(opt),
+		command.Server(),
 	}
 	app.RunAndExitOnError()
 }

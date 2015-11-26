@@ -2,13 +2,14 @@ package builder
 
 import (
 	"errors"
-	"github.com/go-xiaohei/pugo-static/model"
-	"github.com/go-xiaohei/pugo-static/parser"
 	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
 	"sort"
+
+	"github.com/go-xiaohei/pugo-static/model"
+	"github.com/go-xiaohei/pugo-static/parser"
 )
 
 var (
@@ -34,7 +35,7 @@ func (b *Builder) readMeta(ctx *Context, r *Report) {
 		return
 	}
 
-	ctx.Meta, ctx.Navs, ctx.Comment, err = model.NewAllMeta(blocks)
+	ctx.Meta, ctx.Navs, ctx.Authors, ctx.Comment, err = model.NewAllMeta(blocks)
 	if err != nil {
 		r.Error = err
 		return
@@ -42,7 +43,6 @@ func (b *Builder) readMeta(ctx *Context, r *Report) {
 	for _, n := range ctx.Navs {
 		n.Link = fixSuffix(n.Link)
 	}
-
 }
 
 // read contents, including posts and pages
@@ -61,6 +61,10 @@ func (b *Builder) readContents(ctx *Context, r *Report) {
 			r.Error = err
 			return
 		}
+		// use named author
+		if author, ok := ctx.Authors[post.Author.Name]; ok {
+			post.Author = author
+		}
 		ctx.Posts = append(ctx.Posts, post)
 	}
 	sort.Sort(model.Posts(ctx.Posts))
@@ -69,7 +73,7 @@ func (b *Builder) readContents(ctx *Context, r *Report) {
 	ctx.tagPosts = make(map[string][]*model.Post)
 	for _, p := range ctx.Posts {
 		for i, t := range p.Tags {
-			ctx.Tags[t.Name] = &p.Tags[i]
+			ctx.Tags[t.Name] = p.Tags[i]
 			ctx.tagPosts[t.Name] = append(ctx.tagPosts[t.Name], p)
 		}
 	}
@@ -84,6 +88,10 @@ func (b *Builder) readContents(ctx *Context, r *Report) {
 		if err != nil {
 			r.Error = err
 			return
+		}
+		// use named author
+		if author, ok := ctx.Authors[page.Author.Name]; ok {
+			page.Author = author
 		}
 		ctx.Pages = append(ctx.Pages, page)
 	}

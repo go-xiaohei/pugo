@@ -3,10 +3,11 @@ package model
 import (
 	"errors"
 
-	"github.com/go-xiaohei/pugo-static/parser"
 	"net/url"
 	"strings"
 	"sync"
+
+	"github.com/go-xiaohei/pugo-static/parser"
 )
 
 var (
@@ -27,7 +28,7 @@ type Meta struct {
 }
 
 // blocks to Meta
-func NewAllMeta(blocks []parser.Block) (meta *Meta, navbar Navs, cmt *Comment, err error) {
+func NewAllMeta(blocks []parser.Block) (meta *Meta, navbar Navs, au AuthorMap, cmt *Comment, err error) {
 	if len(blocks) != 1 {
 		err = ErrMetaBlockWrong
 		return
@@ -58,8 +59,8 @@ func NewAllMeta(blocks []parser.Block) (meta *Meta, navbar Navs, cmt *Comment, e
 
 	// build nav
 	navs := make([]*Nav, 0)
-	navKeys := block.Keys("nav")
-	for _, k := range navKeys {
+	keys := block.Keys("nav")
+	for _, k := range keys {
 		k = block.Item("nav", k)
 		nav := new(Nav)
 		if err := block.MapTo("nav."+k, nav); err != nil {
@@ -88,6 +89,25 @@ func NewAllMeta(blocks []parser.Block) (meta *Meta, navbar Navs, cmt *Comment, e
 		navs = append(navs, nav)
 	}
 	navbar = Navs(navs)
+
+	// build Authors
+	authors := make(map[string]*Author)
+	keys = block.Keys("author")
+	for _, k := range keys {
+		k = block.Item("author", k)
+		author := new(Author)
+		if err := block.MapTo("author."+k, author); err != nil {
+			continue
+		}
+		if author.Name == "" {
+			continue
+		}
+		if author.Nick == "" {
+			author.Nick = author.Name
+		}
+		authors[author.Name] = author
+	}
+	au = AuthorMap(authors)
 
 	// build comment
 	cmt = new(Comment)
@@ -167,3 +187,14 @@ func (c *Comment) IsOK() bool {
 	}
 	return false
 }
+
+// Author of post or page
+type Author struct {
+	Name      string `ini:"name"`
+	Nick      string `ini:"nick"`
+	Email     string `ini:"email"`
+	Url       string `ini:"url"`
+	AvatarUrl string `ini:"avatar"` // todo: fill this field with gravatar
+}
+
+type AuthorMap map[string]*Author

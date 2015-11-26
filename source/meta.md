@@ -1,7 +1,7 @@
 ```ini
 [meta]
-title = Pugo
-subtitle = static.generator
+title = Pugo.Static
+subtitle = site generator
 ; print in html <meta>
 keyword = pugo,golang,static,site,generator
 ; print in html <meta>
@@ -11,6 +11,7 @@ domain = localhost
 ; root path for site, if empty, build as http://{domain}/
 root = http://localhost/
 
+; nav data
 [nav]
 ; reference to [home] block, same below.
 -:home
@@ -39,6 +40,25 @@ i18n = about
 blank = true
 hover = about
 
+; author data
+[author]
+-:pugo
+-:fuxiaohei
+
+[author.pugo]
+name = pugo
+email =
+url = http://pugo.io
+avatar =
+
+[author.fuxiaohei]
+name = fuxiaohei
+nick = 傅小黑
+email = fuxioahei@vip.qq.com
+url = http://fuxiaohei.me
+avatar =
+
+; comment settings
 [comment.disqus]
 site = fuxiaohei
 

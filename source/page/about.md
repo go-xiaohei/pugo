@@ -1,11 +1,9 @@
 ```ini
-title = About Pugo Static
+title = About Pugo.Static
 slug = about
 desc = some words about pugo.static
 date = 2015-11-12
-author = pugo-robot
-author_email =
-author_url = http://pugo.io
+author = pugo
 ; set nav to active status when this page
 hover = about
 ; set template file to render this page
@@ -17,12 +15,13 @@ metadata = this is meta data
 
 ### Introduction
 
-`Pugo` is a simple static site generator by [Golang](https://golang.org). It compiled [markdown](#) content to site pages with beautiful theme. No dependencies, cross platform and very fast.
+`Pugo` is a simple static site generator by [Golang](https://golang.org). It compiled [markdown](https://help.github.com/articles/markdown-basics/) content to site pages with beautiful theme. No dependencies, cross platform and very fast.
 
 ### Quick start
 
-1. Download and extract from [Pugo Releases](#), Run `pugo[.exe]` directly.
+1. Download and extract from [Pugo Releases](http://pugo.io), Run `pugo[.exe]` directly.
 2. Open `http://localhost:9899` to visit.
+
 
 ### Configuration
 
@@ -42,6 +41,4 @@ After you change your source `.md` files, just restart the server.
 
 ### Customize
 
-- Theme: theme documentation is [wiki](#)
-
-- Build from source: install and debug documentation is [wiki]($)
+- Theme: theme documentation is [wiki](http://pugo.io/docs/templates.html)

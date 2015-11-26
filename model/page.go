@@ -12,16 +12,16 @@ import (
 
 // Page contains fields for a page
 type Page struct {
-	Title      string `ini:"title"`
-	Slug       string `ini:"slug"`
-	Url        string `ini:"-"`
-	Permalink  string `ini:"-"`
-	HoverClass string `ini:"hover"`
-	Template   string `ini:"template"` // page's template for render
-	Desc       string `ini:"desc"`
-	Created    Time   `ini:"-"`
-	Updated    Time   `ini:"-"`
-	Author     Author `ini:"-"`
+	Title      string  `ini:"title"`
+	Slug       string  `ini:"slug"`
+	Url        string  `ini:"-"`
+	Permalink  string  `ini:"-"`
+	HoverClass string  `ini:"hover"`
+	Template   string  `ini:"template"` // page's template for render
+	Desc       string  `ini:"desc"`
+	Created    Time    `ini:"-"`
+	Updated    Time    `ini:"-"`
+	Author     *Author `ini:"-"`
 	Raw        []byte
 	rawType    string
 	Meta       map[string]string // page's extra meta data
@@ -66,7 +66,7 @@ func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 	if upStr := block.Item("update_date"); upStr != "" {
 		p.Updated = NewTime(upStr, p.fileTime)
 	}
-	p.Author = Author{
+	p.Author = &Author{
 		Name:  block.Item("author"),
 		Email: block.Item("author_email"),
 		Url:   block.Item("author_url"),

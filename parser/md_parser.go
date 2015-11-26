@@ -53,6 +53,7 @@ func (mp *MdParser) ParseReader(r io.Reader) ([]Block, error) {
 		currentBlock Block   = nil
 		blocks       []Block = nil
 		reader               = bufio.NewReader(r)
+		isLined      bool
 	)
 	for {
 		lineData, _, err := reader.ReadLine()
@@ -77,9 +78,12 @@ func (mp *MdParser) ParseReader(r io.Reader) ([]Block, error) {
 		}
 
 		// write block
-		if len(lineData) > 0 {
+		if len(lineData) > 0 || isLined {
 			if err := currentBlock.Write(append(lineData, []byte("\n")...)); err != nil {
 				return nil, err
+			}
+			if len(blocks) > 0 {
+				isLined = true
 			}
 		}
 
