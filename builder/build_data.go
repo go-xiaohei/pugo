@@ -24,6 +24,16 @@ func (b *Builder) ReadData(ctx *Context) {
 	if b.readContents(ctx); ctx.Error != nil {
 		return
 	}
+	// fix sub directory case
+	if ctx.Meta.Base != "" {
+		ctx.DstDir = path.Join(ctx.DstDir, ctx.Meta.Base)
+		os.MkdirAll(ctx.DstDir, os.ModePerm)
+
+		// write redirect index.html
+		ioutil.WriteFile(path.Join(ctx.DstOriginDir, "index.html"),
+			[]byte(`<meta http-equiv="refresh" content="0; url=`+ctx.Meta.Base+`" />`),
+			os.ModePerm)
+	}
 }
 
 // read meta data, from meta.md,nav.md and comment.md

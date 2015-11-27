@@ -29,6 +29,9 @@ func (b *Builder) copyClean(ctx *Context) {
 }
 
 func removeDirectory(dir string) error {
+	if !com.IsDir(dir) {
+		return nil
+	}
 	dirs, err := ioutil.ReadDir(dir)
 	if err != nil {
 		return err

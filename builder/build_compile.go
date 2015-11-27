@@ -2,7 +2,6 @@ package builder
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 
@@ -12,17 +11,6 @@ import (
 
 // compile data to html files
 func (b *Builder) Compile(ctx *Context) {
-	// fix sub directory case
-	if ctx.Meta.Base != "" {
-		ctx.DstDir = path.Join(ctx.DstDir, ctx.Meta.Base)
-		os.MkdirAll(ctx.DstDir, os.ModePerm)
-
-		// write redirect index.html
-		ioutil.WriteFile(path.Join(ctx.DstOriginDir, "index.html"),
-			[]byte(`<meta http-equiv="refresh" content="0; url=`+ctx.Meta.Base+`" />`),
-			os.ModePerm)
-	}
-
 	if b.compileSinglePost(ctx); ctx.Error != nil {
 		return
 	}
