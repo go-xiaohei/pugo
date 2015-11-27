@@ -73,8 +73,8 @@ func New(opt *BuildOption) *Builder {
 	builder.render = render.New(builder.opt.TplDir)
 	builder.tasks = []*BuildTask{
 		&BuildTask{"Data", builder.ReadData, nil},
-		&BuildTask{"Compile", builder.Compile, nil},
 		&BuildTask{"Copy", builder.CopyAssets, nil},
+		&BuildTask{"Compile", builder.Compile, nil},
 		&BuildTask{"Feed", builder.WriteFeed, nil},
 	}
 	log15.Debug("Build.Source." + opt.SrcDir)
@@ -101,9 +101,10 @@ func (b *Builder) Build(dest string) {
 	}
 	log15.Debug("Build.Start")
 	ctx := &Context{
-		DstDir:    dest,
-		Version:   b.Version,
-		BeginTime: time.Now(),
+		DstDir:       dest,
+		DstOriginDir: dest,
+		Version:      b.Version,
+		BeginTime:    time.Now(),
 	}
 	theme, err := b.theme()
 	if err != nil {

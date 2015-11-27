@@ -1,19 +1,21 @@
 package builder
 
 import (
+	"time"
+
 	"github.com/go-xiaohei/pugo-static/helper"
 	"github.com/go-xiaohei/pugo-static/model"
 	"github.com/go-xiaohei/pugo-static/render"
-	"time"
 )
 
 // build context, maintain parse data, posts, pages or others
 type Context struct {
-	Theme     *render.Theme
-	DstDir    string
-	Version   builderVersion
-	BeginTime time.Time
-	Error     error
+	Theme        *render.Theme
+	DstOriginDir string // provided destination directory
+	DstDir       string // read output destination, affected by root value in meta.md
+	Version      builderVersion
+	BeginTime    time.Time
+	Error        error
 
 	Posts         []*model.Post
 	PostPageCount int

@@ -9,13 +9,16 @@ import (
 	"gopkg.in/inconshreveable/log15.v2"
 )
 
+// simple built-in http server
 type Server struct {
-	Tango *tango.Tango
+	Tango *tango.Tango // use tango
 
 	dstDir string
 	prefix string
 }
 
+// new server
+// set dstDir to make sure read correct static file
 func New(dstDir string) *Server {
 	t := tango.New([]tango.Handler{
 		tango.Return(),
@@ -30,10 +33,12 @@ func New(dstDir string) *Server {
 	}
 }
 
+// set prefix to trim url
 func (s *Server) SetPrefix(prefix string) {
 	s.prefix = prefix
 }
 
+// set run
 func (s *Server) Run(addr string) {
 	log15.Debug("Server.Start." + addr)
 	s.Tango.Use(logger())
@@ -43,10 +48,17 @@ func (s *Server) Run(addr string) {
 }
 
 func (s *Server) globalHandler(ctx *tango.Context) {
-	file := path.Join(s.dstDir, ctx.Param("*name", "index.html"))
+	param := ctx.Param("*name")
+	if path.Ext(param) == "" {
+		// visit directory, file index.html
+		param = path.Join(param, "index.html")
+	}
+	file := path.Join(s.dstDir, param)
+	// try simple file
 	if com.IsFile(file) {
 		ctx.ServeFile(file)
 		return
 	}
-	ctx.Redirect("/error/404.html")
+
+	ctx.Redirect("/")
 }

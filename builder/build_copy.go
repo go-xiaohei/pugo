@@ -1,12 +1,9 @@
 package builder
 
 import (
+	"io/ioutil"
 	"os"
 	"path"
-	"path/filepath"
-
-	"strings"
-	"time"
 
 	"github.com/Unknwon/com"
 )
@@ -14,31 +11,36 @@ import (
 // copy assets to target directory,
 // favicon, robots.txt, error pages and all static asset if ctx.isCopyAllAssets
 func (b *Builder) CopyAssets(ctx *Context) {
+	if b.copyClean(ctx); ctx.Error != nil {
+		return
+	}
 	if b.copyAssets(ctx); ctx.Error != nil {
 		return
 	}
 	if b.copyError(ctx); ctx.Error != nil {
 		return
 	}
-	if b.copyClean(ctx); ctx.Error != nil {
-		return
-	}
 }
 
 func (b *Builder) copyClean(ctx *Context) {
-	filepath.Walk(ctx.DstDir, func(p string, info os.FileInfo, err error) error {
-		if path.Ext(p) != ".html" ||
-			info.IsDir() ||
-			strings.HasPrefix(p, path.Join(ctx.DstDir, "/static")) ||
-			strings.HasPrefix(p, path.Join(ctx.DstDir, "/upload")) {
-			return nil
+	if err := removeDirectory(ctx.DstOriginDir); err != nil {
+		ctx.Error = err
+	}
+}
+
+func removeDirectory(dir string) error {
+	dirs, err := ioutil.ReadDir(dir)
+	if err != nil {
+		return err
+	}
+	for _, d := range dirs {
+		if d.IsDir() {
+			if err = removeDirectory(path.Join(dir, d.Name())); err != nil {
+				return err
+			}
 		}
-		sub := info.ModTime().Sub(ctx.BeginTime.Add(-1 * time.Second))
-		if sub < -1 {
-			os.RemoveAll(p)
-		}
-		return nil
-	})
+	}
+	return os.RemoveAll(dir)
 }
 
 // copy static assets
@@ -55,7 +57,8 @@ func (b *Builder) copyAssets(ctx *Context) {
 
 	assetFiles := []string{"favicon.ico", "robots.txt"}
 	for _, f := range assetFiles {
-		dstFile := path.Join(ctx.DstDir, f)
+		// use origin dir, make these files existing in top directory
+		dstFile := path.Join(ctx.DstOriginDir, f)
 		srcFile := path.Join(staticDir, f)
 		if err := com.Copy(srcFile, dstFile); err != nil {
 			ctx.Error = err
