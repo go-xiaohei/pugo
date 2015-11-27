@@ -5,9 +5,10 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/Unknwon/com"
 	"strings"
 	"time"
+
+	"github.com/Unknwon/com"
 )
 
 // copy assets to target directory,
@@ -51,6 +52,16 @@ func (b *Builder) copyAssets(ctx *Context) {
 		ctx.Error = err
 		return
 	}
+
+	assetFiles := []string{"favicon.ico", "robots.txt"}
+	for _, f := range assetFiles {
+		dstFile := path.Join(ctx.DstDir, f)
+		srcFile := path.Join(staticDir, f)
+		if err := com.Copy(srcFile, dstFile); err != nil {
+			ctx.Error = err
+			return
+		}
+	}
 }
 
 // copy error pages
@@ -70,7 +81,7 @@ func (b *Builder) copyError(ctx *Context) {
 // copy error template,
 // need render with some error data
 func (b *Builder) copyErrorTemplate(ctx *Context, name string) error {
-	dstFile := path.Join(ctx.DstDir, "errors/"+name)
+	dstFile := path.Join(ctx.DstDir, "error/"+name)
 	os.MkdirAll(path.Dir(dstFile), os.ModePerm)
 	f, err := os.OpenFile(dstFile, os.O_CREATE|os.O_TRUNC|os.O_RDWR, os.ModePerm)
 	if err != nil {

@@ -1,75 +1,52 @@
 package server
 
 import (
-	"github.com/go-xiaohei/pugo-static/builder"
+	"path"
+
+	"github.com/Unknwon/com"
+	"github.com/lunny/log"
 	"github.com/lunny/tango"
 	"gopkg.in/inconshreveable/log15.v2"
 )
 
 type Server struct {
-	addr         string
-	tango        *tango.Tango
-	builder      *builder.Builder
-	Static       []*Static
-	Helper       *Helper
-	ErrorHandler tango.HandlerFunc
+	Tango *tango.Tango
 
-	refreshTime int64
+	dstDir string
+	prefix string
 }
 
-func NewServer(addr string, b *builder.Builder) *Server {
+func New(dstDir string) *Server {
+	t := tango.New([]tango.Handler{
+		tango.Return(),
+		tango.Param(),
+		tango.Contexts(),
+		tango.Recovery(true),
+	}...)
+	t.Logger().(*log.Logger).SetOutputLevel(log.Lerror)
 	return &Server{
-		addr: addr,
-		tango: tango.New([]tango.Handler{
-			tango.Return(),
-			tango.Param(),
-			tango.Contexts(),
-			tango.Recovery(true),
-		}...),
-		builder: b,
+		Tango:  t,
+		dstDir: dstDir,
 	}
 }
 
-func (s *Server) Run() {
-	if s.ErrorHandler != nil {
-		s.tango.ErrHandler = s.ErrorHandler
-	}
-	s.tango.Use(tango.HandlerFunc(s.refresh))
-	s.tango.Use(logger())
-	if len(s.Static) > 0 {
-		for _, ss := range s.Static {
-			if base := s.builder.Context().Meta.Base; base != "" {
-				ss.setBase(base)
-			}
-			s.tango.Use(ss)
-		}
-	}
-	if s.Helper != nil {
-		s.tango.Use(s.Helper)
-	}
-	s.tango.Run(s.addr)
+func (s *Server) SetPrefix(prefix string) {
+	s.prefix = prefix
 }
 
-func (s *Server) refresh(ctx *tango.Context) {
-	// if build time changed, refresh server setting
-	if s.refreshTime == s.builder.Context().BeginTime.Unix() {
-		ctx.Next()
+func (s *Server) Run(addr string) {
+	log15.Debug("Server.Start." + addr)
+	s.Tango.Use(logger())
+	s.Tango.Get("/", s.globalHandler)
+	s.Tango.Get("/*name", s.globalHandler)
+	s.Tango.Run(addr)
+}
+
+func (s *Server) globalHandler(ctx *tango.Context) {
+	file := path.Join(s.dstDir, ctx.Param("*name", "index.html"))
+	if com.IsFile(file) {
+		ctx.ServeFile(file)
 		return
 	}
-	log15.Debug("Server.Refresh.AfterBuild")
-
-	base := s.builder.Context().Meta.Base
-	for _, ss := range s.Static {
-		if base != "" {
-			ss.setBase(base)
-			continue
-		}
-		if ss.Prefix != ss.realPrefix {
-			ss.setBase(base)
-		}
-	}
-	logBase = base
-
-	s.refreshTime = s.builder.Context().BeginTime.Unix()
-	ctx.Next()
+	ctx.Redirect("/error/404.html")
 }

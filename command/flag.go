@@ -21,6 +21,15 @@ var (
 		Value: "dest",
 		Usage: "set compiling to directory",
 	}
+	addrFlag = cli.StringFlag{
+		Name:  "addr",
+		Value: "0.0.0.0:9899",
+		Usage: "set http server address",
+	}
+	noWatchFlag = cli.BoolFlag{
+		Name:  "nowatch",
+		Usage: "do not watch changes",
+	}
 )
 
 func setDebugMode(ctx *cli.Context) error {

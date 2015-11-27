@@ -2,11 +2,12 @@ package builder
 
 import (
 	"errors"
+	"time"
+
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo-static/parser"
 	"github.com/go-xiaohei/pugo-static/render"
 	"gopkg.in/inconshreveable/log15.v2"
-	"time"
 )
 
 var (
@@ -76,8 +77,9 @@ func New(opt *BuildOption) *Builder {
 		&BuildTask{"Copy", builder.CopyAssets, nil},
 		&BuildTask{"Feed", builder.WriteFeed, nil},
 	}
-	log15.Debug("Builder.Source." + opt.SrcDir)
-	log15.Debug("Builder.Template." + opt.TplDir)
+	log15.Debug("Build.Source." + opt.SrcDir)
+	log15.Debug("Build.Template." + opt.TplDir)
+	log15.Debug("Build.Theme." + opt.Theme)
 	return builder
 }
 

@@ -11,6 +11,7 @@ import (
 	"gopkg.in/inconshreveable/log15.v2"
 )
 
+// build Command, need BuildOption
 func Build(opt *builder.BuildOption) cli.Command {
 	return cli.Command{
 		Name:     "build",
@@ -19,6 +20,7 @@ func Build(opt *builder.BuildOption) cli.Command {
 		Flags: []cli.Flag{
 			destFlag,
 			themeFlag,
+			noWatchFlag,
 			debugFlag,
 		},
 		Action: buildSite(opt),
@@ -26,9 +28,9 @@ func Build(opt *builder.BuildOption) cli.Command {
 	}
 }
 
+// build site function
 func buildSite(opt *builder.BuildOption) func(ctx *cli.Context) {
 	return func(ctx *cli.Context) {
-		setDebugMode(ctx)
 		// ctrl+C capture
 		signalChan := make(chan os.Signal)
 		signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
@@ -45,12 +47,17 @@ func buildSite(opt *builder.BuildOption) func(ctx *cli.Context) {
 		if com.IsDir(targetDir) {
 			log15.Warn("Dest." + targetDir + ".Existed")
 		}
+
+		// auto watching
 		b.Build(targetDir)
 		if err := b.Context().Error; err != nil {
 			log15.Crit("Build.Fail", "error", err.Error())
 		}
-		b.Watch(targetDir)
-		<-signalChan
+
+		if !ctx.Bool("nowatch") {
+			b.Watch(targetDir)
+			<-signalChan
+		}
 		log15.Info("Build.Close")
 	}
 }
