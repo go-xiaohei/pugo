@@ -16,16 +16,16 @@ This blog is generated from file `source/welcome.md`. You can learn it and try t
 
 Blog's meta data, such as title, author, are created by first `ini` section with block **\`\`\`ini ..... \`\`\`**:
 
-    ```ini
-    title = Welcome to Pugo.Static
-    slug = welcome-pugo-static
-    date = 2015-11-08
-    update_date = 2015-11-11
-    author = pugo-robot
-    author_email =
-    author_url =
-    tags = pugo,welcome
-    ```
+```ini
+title = Welcome to Pugo.Static
+slug = welcome-pugo-static
+date = 2015-11-28 11:28
+update_date = 2015-11-28 12:28
+author = pugo-robot
+author_email =
+author_url =
+tags = pugo,welcome
+```
 
 #### blog content
 

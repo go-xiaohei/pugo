@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {{include "meta.html" .}}
+</head>
+<body>
+<div class="pure-g-r" id="layout">
+    {{include "sidebar.html" .}}
+    <div class="pure-u-1">
+        <div class="content">
+            <div class="post">
+                <h1 class="post-header">{{.Post.Title}}</h1>
+                <div class="post-meta">
+                    <small>{{.Post.Created.Year}}-{{.Post.Created.Month}}-{{.Post.Created.Day}}</small>
+                </div>
+                <div class="post-description">{{.Post.ContentHTML}}</div>
+            </div>
+            {{include "comment.html" .}}
+        </div>
+        {{include "footer.html" .}}
+    </div>
+</div>
+{{include "footer_js.html" .}}
+</body>
+</html>

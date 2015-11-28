@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {{include "meta.html" .}}
+</head>
+<body>
+<div class="pure-g-r" id="layout">
+    {{include "sidebar.html" .}}
+    <div class="pure-u-1">
+        <div class="content">
+            <div class="page-header">
+                <h1>文章存档</h1>
+            </div>
+            {{range .Archives}}
+            <div class="archive">
+                <h3>{{.Year}}</h3>
+                {{range .Posts}}
+                <ul>
+                    <li>
+                        <h4>
+                            <span class="date">{{.Created.Year}}.{{.Created.Month}}.{{.Created.Day}}</span>
+                            »
+                            <a href="{{.Url}}">{{.Title}}</a>
+                        </h4>
+                    </li>
+                </ul>
+                {{end}}
+            </div>
+            {{end}}
+        </div>
+        {{include "footer.html" .}}
+    </div>
+</div>
+{{include "footer_js.html" .}}
+</body>
+</html>
