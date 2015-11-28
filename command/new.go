@@ -3,7 +3,6 @@ package command
 import (
 	"bytes"
 	"fmt"
-	"github.com/Unknwon/com"
 	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo-static/asset"
 	"gopkg.in/inconshreveable/log15.v2"
@@ -13,19 +12,6 @@ import (
 	"path"
 	"strings"
 	"time"
-)
-
-var (
-	pathReplacer = strings.NewReplacer(".", "-", " ", "-", "+", "-")
-	newPostFlags = []cli.Flag{
-		cli.StringFlag{
-			Name:  "file",
-			Usage: "filename of new post",
-		},
-		cli.StringFlag{
-			Name:  "md",
-			Usage: "load .md file as markdown content",
-		}}
 )
 
 func New(srcDir, tplDir string) cli.Command {
@@ -41,13 +27,11 @@ func New(srcDir, tplDir string) cli.Command {
 			cli.Command{
 				Name:   "post",
 				Usage:  "create new post",
-				Flags:  newPostFlags,
 				Action: newPost(srcDir),
 			},
 			cli.Command{
 				Name:   "page",
 				Usage:  "create new page",
-				Flags:  newPostFlags,
 				Action: newPage(srcDir),
 			},
 		},
@@ -57,12 +41,12 @@ func New(srcDir, tplDir string) cli.Command {
 
 func newSite() func(ctx *cli.Context) {
 	return func(ctx *cli.Context) {
-		log15.Info("NewSite.Extract.Assets")
+		log15.Info("New.Extract.Assets")
 		dirs := []string{"source", "template"}
 		isSuccess := true
 		for _, dir := range dirs {
 			if err := asset.RestoreAssets("./", dir); err != nil {
-				log15.Error("NewSite.Fail", "error", err)
+				log15.Error("New.Extract.Fail", "error", err)
 				isSuccess = false
 				break
 			}
@@ -73,31 +57,23 @@ func newSite() func(ctx *cli.Context) {
 			}
 			return
 		}
-		log15.Info("NewSite.Extract.Success")
+		log15.Info("New.Extract")
 	}
 }
 
 func newPost(srcDir string) func(ctx *cli.Context) {
 	return func(ctx *cli.Context) {
-		file := ctx.String("file")
-		if file == "" {
-			log15.Crit("New Post need current filename, please run 'pugo new post --file=filename.md'")
-		}
+		file := time.Now().Format("2006-01-02-15-04") + ".md"
 		file = path.Join(srcDir, "post", file)
-		if com.IsFile(file) {
-			log15.Crit("New Post file is existed..")
-		}
-
-		log15.Debug("NewPost." + file)
+		log15.Debug("New." + file + ".Begin")
 
 		// write meta
 		var buf bytes.Buffer
 		// ini block
 		title := strings.TrimSuffix(path.Base(file), path.Ext(file))
-		log15.Debug("NewPost.Title." + title)
-		fmt.Fprintln(&buf, "-----ini")
+		fmt.Fprintln(&buf, "```ini")
 		fmt.Fprintf(&buf, `title = "%s"`+"\n", title)
-		fmt.Fprintf(&buf, `slug = "%s"`+"\n", url.QueryEscape(pathReplacer.Replace(title)))
+		fmt.Fprintf(&buf, `slug = "%s"`+"\n", url.QueryEscape(title))
 		fmt.Fprintf(&buf, `desc = "%s"`+"\n", title)
 		fmt.Fprintf(&buf, "date = %s\n", time.Now().Format("2006-01-02 15:04"))
 		fmt.Fprintf(&buf, "update_date = %s\n", time.Now().Format("2006-01-02 15:04"))
@@ -105,51 +81,36 @@ func newPost(srcDir string) func(ctx *cli.Context) {
 		fmt.Fprintln(&buf, "author_email = ")
 		fmt.Fprintln(&buf, "author_url = ")
 		fmt.Fprintln(&buf, "tags = post")
-		fmt.Fprintln(&buf, "")
+		fmt.Fprintln(&buf, "```")
 
 		// write markdown content
-		fmt.Fprintln(&buf, "-----markdown")
-		if mdFile := ctx.String("md"); mdFile != "" {
-			data, _ := ioutil.ReadFile(mdFile)
-			log15.Debug("NewPost.Source.Md." + mdFile)
-			if len(data) > 0 {
-				buf.Write(data)
-			}
-		} else {
-			fmt.Fprintln(&buf, "write your post content here")
-		}
+		fmt.Fprintln(&buf, "")
+		fmt.Fprintln(&buf, "write your post content here")
 
 		// write to source file
 		os.MkdirAll(path.Dir(file), os.ModePerm)
 		if err := ioutil.WriteFile(file, buf.Bytes(), os.ModePerm); err != nil {
-			log15.Crit("NewPost.Fail", "error", err)
+			log15.Crit("New.Fail", "error", err)
 		}
 
-		log15.Info("NewPost." + file + ".Success")
+		log15.Info("New." + file + "")
 	}
 }
 
 func newPage(srcDir string) func(ctx *cli.Context) {
 	return func(ctx *cli.Context) {
-		file := ctx.String("file")
-		if file == "" {
-			log15.Crit("New Page need current filename, please run 'pugo new page --file=filename.md'")
-		}
+		file := time.Now().Format("2006-01-02-15-04") + ".md"
 		file = path.Join(srcDir, "page", file)
-		if com.IsFile(file) {
-			log15.Crit("New Page file is existed..")
-		}
-
-		log15.Debug("NewPage." + file)
+		log15.Debug("New." + file + ".Begin")
 
 		// write meta
 		var buf bytes.Buffer
 		// ini block
 		title := strings.TrimSuffix(path.Base(file), path.Ext(file))
 		log15.Debug("NewPage.Title." + title)
-		fmt.Fprintln(&buf, "-----ini")
+		fmt.Fprintln(&buf, "```ini")
 		fmt.Fprintf(&buf, `title = "%s"`+"\n", title)
-		fmt.Fprintf(&buf, `slug = "%s"`+"\n", url.QueryEscape(pathReplacer.Replace(title)))
+		fmt.Fprintf(&buf, `slug = "%s"`+"\n", url.QueryEscape(title))
 		fmt.Fprintf(&buf, `desc = "%s"`+"\n", title)
 		fmt.Fprintf(&buf, "date = %s\n", time.Now().Format("2006-01-02 15:04"))
 		fmt.Fprintf(&buf, "update_date = %s\n", time.Now().Format("2006-01-02 15:04"))
@@ -158,26 +119,18 @@ func newPage(srcDir string) func(ctx *cli.Context) {
 		fmt.Fprintln(&buf, "author_url = ")
 		fmt.Fprintln(&buf, "hover = ")
 		fmt.Fprintln(&buf, "template = page.html")
-		fmt.Fprintln(&buf, "")
+		fmt.Fprintln(&buf, "```")
 
 		// write markdown content
-		fmt.Fprintln(&buf, "-----markdown")
-		if mdFile := ctx.String("md"); mdFile != "" {
-			data, _ := ioutil.ReadFile(mdFile)
-			log15.Debug("NewPage.Source.Md." + mdFile)
-			if len(data) > 0 {
-				buf.Write(data)
-			}
-		} else {
-			fmt.Fprintln(&buf, "write your page content here")
-		}
+		fmt.Fprintln(&buf, "")
+		fmt.Fprintln(&buf, "write your page content here")
 
 		// write to source file
 		os.MkdirAll(path.Dir(file), os.ModePerm)
 		if err := ioutil.WriteFile(file, buf.Bytes(), os.ModePerm); err != nil {
-			log15.Crit("NewPage.Fail", "error", err)
+			log15.Crit("New.Fail", "error", err)
 		}
 
-		log15.Info("NewPage." + file + ".Success")
+		log15.Info("New." + file)
 	}
 }
