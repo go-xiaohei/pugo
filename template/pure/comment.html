@@ -4,8 +4,10 @@
     <div id="disqus_thread"></div>
     <script>
         var disqus_developer = 1;
-        var disqus_shortname = "{{.Comment.Disqus.Site}}"; // required: replace example with your forum shortname
-        /* * * DON'T EDIT BELOW THIS LINE * * */
+        var disqus_shortname = "{{.Comment.Disqus.Site}}";
+        var disqus_config = function () {
+            this.page.url = "{{.Meta.Root}}{{.Permalink}}"; // Replace PAGE_URL with your page's canonical URL variable
+        };
         (function () {
             var dsq = document.createElement('script');
             dsq.type = 'text/javascript';
