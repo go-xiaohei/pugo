@@ -11,7 +11,8 @@ import (
 // copy assets to target directory,
 // favicon, robots.txt, error pages and all static asset if ctx.isCopyAllAssets
 func (b *Builder) CopyAssets(ctx *Context) {
-	if b.copyClean(ctx); ctx.Error != nil {
+	if err := removeDirectory(ctx.DstOriginDir); err != nil {
+		ctx.Error = err
 		return
 	}
 	if b.copyAssets(ctx); ctx.Error != nil {
@@ -19,12 +20,7 @@ func (b *Builder) CopyAssets(ctx *Context) {
 	}
 }
 
-func (b *Builder) copyClean(ctx *Context) {
-	if err := removeDirectory(ctx.DstOriginDir); err != nil {
-		ctx.Error = err
-	}
-}
-
+// remove all sub dirs and files in directory
 func removeDirectory(dir string) error {
 	if !com.IsDir(dir) {
 		return nil
