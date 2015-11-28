@@ -51,15 +51,8 @@ email =
 url = http://pugo.io
 avatar =
 
-[author.fuxiaohei]
-name = fuxiaohei
-nick = 傅小黑
-email = fuxioahei@vip.qq.com
-url = http://fuxiaohei.me
-avatar =
-
 ; comment settings
 [comment.disqus]
-site = fuxiaohei
+site =
 
 ```

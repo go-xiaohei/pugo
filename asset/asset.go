@@ -112,7 +112,7 @@ func (fi bindataFileInfo) Sys() interface{} {
 	return nil
 }
 
-var _sourceMetaMd = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x84\x93\x41\xae\xd3\x30\x10\x86\xf7\x73\x8a\x39\x40\x48\xc5\x0e\xbd\x47\x11\xec\x58\x22\xb1\xac\x22\xd5\x49\xa6\x89\xd5\xc4\x93\xda\xe3\x96\x27\xc4\x06\x89\x35\xe2\x26\xec\x39\xcf\x5b\x70\x0b\xc6\x6e\x92\x16\xb1\x60\x95\xd8\x33\xf3\xfd\xbf\x3d\xe3\xfd\x7e\x6f\x9d\x85\xdd\x48\x62\x2a\x10\x2b\x03\xe1\x16\x3f\xc4\x8e\xcb\x8f\x62\xc4\x36\x10\x62\xbd\x6c\x07\x2b\x84\x1d\x39\xf2\x46\xd8\xc3\x23\x4e\xde\x3a\x41\xeb\xb0\x97\x71\xc0\xd7\x09\xf2\x06\x8e\xf4\x74\x61\xdf\x6a\xfe\xa4\x98\xa2\xe3\xc1\xb8\xae\x08\x99\x56\x24\x44\xf1\x5f\x44\x4b\xa1\x99\xeb\xd1\x06\x34\xaa\x3c\x4e\x6a\xe1\x0a\xf9\xd7\x47\x1d\xed\xd0\xe2\x60\xdd\x31\xe0\x81\x3d\x1e\x88\xda\x22\xa7\x8d\x66\x82\x96\x47\xa3\x02\x5b\x1c\xb8\x31\x43\xcf\x41\xb4\xc4\x33\x0b\x4e\x46\xfa\x5c\x90\x6d\xa1\x3d\x20\x8d\x93\x3c\x15\x33\xd0\x04\x75\x25\xd3\xc3\x66\xf3\xf9\xca\xf8\xb2\x81\x5c\xb7\x5d\xf6\x57\xe2\x06\x94\xe9\xcc\x19\x5b\x23\x06\x76\xfa\x57\x25\x11\x3a\x90\x27\xd7\x10\x0a\xe3\xae\xe7\x91\x2a\xac\xb5\xe6\xa8\xe6\xcc\x48\x58\xd3\xc0\x97\x12\x5e\x3c\xa4\x90\x7e\x8c\x6f\x7a\x7b\xce\x7f\x35\x47\xd1\x6f\xe0\xe8\x1b\x82\x4c\x2c\x33\x00\xd2\x31\xd5\xc1\x66\xed\xd6\xfb\x54\x6c\x5f\xbe\x4a\x47\x4c\x29\x93\xe9\x48\xc5\x03\x49\x76\xa4\xd2\xa6\x11\xc5\xe6\xeb\x8b\x01\x7a\x3e\x93\x9f\x73\x67\xf2\x2c\x7c\x83\x2f\x4e\x16\x8d\x77\xf3\x7a\x96\x59\xc2\x0b\x6a\x59\xcf\xb4\x64\xfe\x8e\x95\xcf\xb2\x92\xf2\x6a\xe1\xe4\x85\x36\xd0\xf3\x25\x28\x89\x27\x72\x69\x18\x1c\x5d\x50\x4c\x0d\xb5\xce\x4e\x62\x88\x8f\x77\x62\xb9\x48\xab\x4c\x94\x5e\x9b\x77\xbd\xf2\xeb\xa2\xd2\x3b\x4b\x63\xa3\x9f\x43\xfc\x64\x0d\xf7\x64\x61\x09\x96\x29\x52\x81\x4b\x57\x7f\x9d\x2e\xd0\x01\xb1\x03\x6e\x21\xfa\xe1\xd6\xd5\x14\x29\x2d\x83\x39\x2b\x59\x15\x6f\x80\x95\xb9\x52\x6e\x2a\xce\x36\xc9\xea\xf3\xd7\x6f\xcf\x3f\xbf\xff\xfe\xf5\x63\x61\xe7\x14\x36\x9a\xf2\xf6\x6c\xa7\xf2\x74\x2a\x1b\x1e\xff\x16\x5c\x21\xa5\x76\xe4\xa6\xfa\x88\x9a\x39\x92\xbe\x0f\xed\xa5\x58\xd7\x05\xd8\xcd\x3b\x65\x6b\xc3\x29\x86\x0a\xf2\x5b\xb8\xb7\x01\xfa\xa4\xe1\x4f\x00\x00\x00\xff\xff\x15\x00\x0b\x90\xd7\x03\x00\x00")
+var _sourceMetaMd = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x84\x93\xb1\xae\xdb\x3a\x0c\x86\x77\x3e\x05\x1f\xc0\xd7\xc1\xdd\x8a\xd3\xa6\x40\xb7\x8e\x05\x3a\x06\x06\x42\xdb\x8c\x2d\xc4\x12\x5d\x89\x4a\x7a\x50\xf4\xdd\x4b\x29\x76\xce\x01\x3a\x74\x92\x25\x92\xdf\xff\x8b\xa2\xcf\xe7\xb3\x0b\x0e\x4e\x9e\x95\x3a\x50\xa7\x0b\xe3\x11\xbf\xe5\x49\xda\xef\x4a\xea\x06\x48\xb9\xdf\x8f\x93\x53\xc6\x89\x03\x47\x52\x89\xf0\x11\xd7\xe8\x82\xa2\x0b\x38\xab\x5f\xf0\x53\x81\x7c\x86\x2b\xbf\xde\x25\x8e\x96\xbf\x1a\xa6\x99\x64\xa1\x30\x35\xa9\xd2\x9a\x82\x68\xfe\x89\x18\x39\x0d\x5b\x3d\xba\x84\x64\xca\x7e\x35\x0b\x0f\xc8\xdf\x3e\xfa\xec\x96\x11\x17\x17\xae\x09\x2f\x12\xf1\xc2\x3c\x36\x35\xcd\xd3\x0a\xa3\x78\x32\x81\x23\x2e\x32\xd0\x32\x4b\x52\x2b\x89\x22\x8a\x2b\xe9\x5c\x0b\xaa\x2d\x74\x17\x64\xbf\xea\x6b\xb3\x01\x29\x99\x2b\x5d\x5f\x0e\x87\x5f\x0f\xc6\xef\x03\xd4\xba\xe3\x7e\xfe\x24\x1e\xc0\x98\x81\x6e\x38\x92\x12\x9c\xec\xab\x2b\x22\x7c\xe1\xc8\x61\x60\x54\xc1\xd3\x2c\x9e\x3b\xec\xad\xe6\x6a\xe6\xc8\x33\xf6\xbc\xc8\xbd\x85\xff\x5e\x4a\xc8\x16\x8a\xc3\xec\x6e\xf5\xab\x97\xac\xb6\x26\xc9\x71\x60\xa8\xc4\xb6\x02\xa0\x5c\xd3\x1c\x1c\x9e\xaf\xf5\xb5\x14\xbb\xff\x3f\x94\x2b\x96\x94\x95\x26\x36\xf1\xc4\x5a\x1d\x99\x34\x0d\x6a\xd8\xda\xbe\x9c\x60\x96\x1b\xc7\x2d\x77\x23\x6f\xc2\x6f\xf0\xdd\xc9\xae\xf1\x65\xdb\x6f\x32\x7b\x78\x47\xed\xfb\x8d\x56\xcc\xbf\x63\xd5\xbb\x3c\x49\x75\xb7\x73\xea\xc6\x1e\x30\xca\x3d\x19\x49\x56\x0e\x65\x18\x02\xdf\x51\xa9\x87\xde\x66\xa7\x30\x34\xe6\x77\x62\xb5\xc8\xaa\x28\xeb\x6c\x8f\xf7\x68\xf9\x63\xd3\x59\xcf\xca\xd8\xd8\x72\xc9\x3f\x1d\xc9\xcc\x0e\xf6\x60\x5b\x22\x1d\x84\xd2\xfa\xc7\x74\x81\x0d\x88\x5b\xf0\x08\x39\x2e\x6f\xaf\x5a\x22\xad\x13\xa0\x9b\x91\x4d\xb1\x68\x0d\xe2\x3d\xdb\xa4\x5a\x57\xd5\x85\x29\xc1\x69\x3b\x69\x47\x97\x7e\xe4\xd4\x41\x9d\x4a\xcb\xb5\x5f\x0a\xfe\x04\x00\x00\xff\xff\x61\x11\x17\xa4\x57\x03\x00\x00")
 
 func sourceMetaMdBytes() ([]byte, error) {
 	return bindataRead(
@@ -127,7 +127,7 @@ func sourceMetaMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "source/meta.md", size: 983, mode: os.FileMode(420), modTime: time.Unix(1448637461, 0)}
+	info := bindataFileInfo{name: "source/meta.md", size: 855, mode: os.FileMode(420), modTime: time.Unix(1448716927, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1064,51 +1064,51 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
-	"source/meta.md": sourceMetaMd,
-	"source/page/about.md": sourcePageAboutMd,
-	"source/post/welcome.md": sourcePostWelcomeMd,
-	"template/default/archive.html": templateDefaultArchiveHtml,
-	"template/default/comment.html": templateDefaultCommentHtml,
-	"template/default/footer.html": templateDefaultFooterHtml,
-	"template/default/header.html": templateDefaultHeaderHtml,
-	"template/default/meta.html": templateDefaultMetaHtml,
-	"template/default/page.html": templateDefaultPageHtml,
-	"template/default/post.html": templateDefaultPostHtml,
-	"template/default/posts.html": templateDefaultPostsHtml,
-	"template/default/static/css/bootstrap.min.css": templateDefaultStaticCssBootstrapMinCss,
-	"template/default/static/css/font-awesome.min.css": templateDefaultStaticCssFontAwesomeMinCss,
-	"template/default/static/css/prism.css": templateDefaultStaticCssPrismCss,
-	"template/default/static/css/style.css": templateDefaultStaticCssStyleCss,
-	"template/default/static/favicon.ico": templateDefaultStaticFaviconIco,
-	"template/default/static/fonts/FontAwesome.otf": templateDefaultStaticFontsFontawesomeOtf,
-	"template/default/static/fonts/fontawesome-webfont.eot": templateDefaultStaticFontsFontawesomeWebfontEot,
-	"template/default/static/fonts/fontawesome-webfont.svg": templateDefaultStaticFontsFontawesomeWebfontSvg,
-	"template/default/static/fonts/fontawesome-webfont.ttf": templateDefaultStaticFontsFontawesomeWebfontTtf,
-	"template/default/static/fonts/fontawesome-webfont.woff": templateDefaultStaticFontsFontawesomeWebfontWoff,
+	"source/meta.md":                                          sourceMetaMd,
+	"source/page/about.md":                                    sourcePageAboutMd,
+	"source/post/welcome.md":                                  sourcePostWelcomeMd,
+	"template/default/archive.html":                           templateDefaultArchiveHtml,
+	"template/default/comment.html":                           templateDefaultCommentHtml,
+	"template/default/footer.html":                            templateDefaultFooterHtml,
+	"template/default/header.html":                            templateDefaultHeaderHtml,
+	"template/default/meta.html":                              templateDefaultMetaHtml,
+	"template/default/page.html":                              templateDefaultPageHtml,
+	"template/default/post.html":                              templateDefaultPostHtml,
+	"template/default/posts.html":                             templateDefaultPostsHtml,
+	"template/default/static/css/bootstrap.min.css":           templateDefaultStaticCssBootstrapMinCss,
+	"template/default/static/css/font-awesome.min.css":        templateDefaultStaticCssFontAwesomeMinCss,
+	"template/default/static/css/prism.css":                   templateDefaultStaticCssPrismCss,
+	"template/default/static/css/style.css":                   templateDefaultStaticCssStyleCss,
+	"template/default/static/favicon.ico":                     templateDefaultStaticFaviconIco,
+	"template/default/static/fonts/FontAwesome.otf":           templateDefaultStaticFontsFontawesomeOtf,
+	"template/default/static/fonts/fontawesome-webfont.eot":   templateDefaultStaticFontsFontawesomeWebfontEot,
+	"template/default/static/fonts/fontawesome-webfont.svg":   templateDefaultStaticFontsFontawesomeWebfontSvg,
+	"template/default/static/fonts/fontawesome-webfont.ttf":   templateDefaultStaticFontsFontawesomeWebfontTtf,
+	"template/default/static/fonts/fontawesome-webfont.woff":  templateDefaultStaticFontsFontawesomeWebfontWoff,
 	"template/default/static/fonts/fontawesome-webfont.woff2": templateDefaultStaticFontsFontawesomeWebfontWoff2,
-	"template/default/static/js/bootstrap.min.js": templateDefaultStaticJsBootstrapMinJs,
-	"template/default/static/js/jquery-2.1.4.min.js": templateDefaultStaticJsJquery214MinJs,
-	"template/default/static/js/prism.min.js": templateDefaultStaticJsPrismMinJs,
-	"template/default/static/robots.txt": templateDefaultStaticRobotsTxt,
-	"template/default/static/sitemap.xsl": templateDefaultStaticSitemapXsl,
-	"template/pure/archive.html": templatePureArchiveHtml,
-	"template/pure/comment.html": templatePureCommentHtml,
-	"template/pure/footer.html": templatePureFooterHtml,
-	"template/pure/footer_js.html": templatePureFooter_jsHtml,
-	"template/pure/meta.html": templatePureMetaHtml,
-	"template/pure/page.html": templatePurePageHtml,
-	"template/pure/post.html": templatePurePostHtml,
-	"template/pure/posts.html": templatePurePostsHtml,
-	"template/pure/sidebar.html": templatePureSidebarHtml,
-	"template/pure/static/css/blog.css": templatePureStaticCssBlogCss,
-	"template/pure/static/css/prism.css": templatePureStaticCssPrismCss,
-	"template/pure/static/css/pure-min.css": templatePureStaticCssPureMinCss,
-	"template/pure/static/favicon.ico": templatePureStaticFaviconIco,
-	"template/pure/static/js/jquery-2.1.4.min.js": templatePureStaticJsJquery214MinJs,
-	"template/pure/static/js/prism.min.js": templatePureStaticJsPrismMinJs,
-	"template/pure/static/robots.txt": templatePureStaticRobotsTxt,
-	"template/pure/static/sitemap.xsl": templatePureStaticSitemapXsl,
-	"template/tpl.md": templateTplMd,
+	"template/default/static/js/bootstrap.min.js":             templateDefaultStaticJsBootstrapMinJs,
+	"template/default/static/js/jquery-2.1.4.min.js":          templateDefaultStaticJsJquery214MinJs,
+	"template/default/static/js/prism.min.js":                 templateDefaultStaticJsPrismMinJs,
+	"template/default/static/robots.txt":                      templateDefaultStaticRobotsTxt,
+	"template/default/static/sitemap.xsl":                     templateDefaultStaticSitemapXsl,
+	"template/pure/archive.html":                              templatePureArchiveHtml,
+	"template/pure/comment.html":                              templatePureCommentHtml,
+	"template/pure/footer.html":                               templatePureFooterHtml,
+	"template/pure/footer_js.html":                            templatePureFooter_jsHtml,
+	"template/pure/meta.html":                                 templatePureMetaHtml,
+	"template/pure/page.html":                                 templatePurePageHtml,
+	"template/pure/post.html":                                 templatePurePostHtml,
+	"template/pure/posts.html":                                templatePurePostsHtml,
+	"template/pure/sidebar.html":                              templatePureSidebarHtml,
+	"template/pure/static/css/blog.css":                       templatePureStaticCssBlogCss,
+	"template/pure/static/css/prism.css":                      templatePureStaticCssPrismCss,
+	"template/pure/static/css/pure-min.css":                   templatePureStaticCssPureMinCss,
+	"template/pure/static/favicon.ico":                        templatePureStaticFaviconIco,
+	"template/pure/static/js/jquery-2.1.4.min.js":             templatePureStaticJsJquery214MinJs,
+	"template/pure/static/js/prism.min.js":                    templatePureStaticJsPrismMinJs,
+	"template/pure/static/robots.txt":                         templatePureStaticRobotsTxt,
+	"template/pure/static/sitemap.xsl":                        templatePureStaticSitemapXsl,
+	"template/tpl.md":                                         templateTplMd,
 }
 
 // AssetDir returns the file names below a certain
@@ -1150,6 +1150,7 @@ type bintree struct {
 	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
+
 var _bintree = &bintree{nil, map[string]*bintree{
 	"source": &bintree{nil, map[string]*bintree{
 		"meta.md": &bintree{sourceMetaMd, map[string]*bintree{}},
@@ -1164,59 +1165,59 @@ var _bintree = &bintree{nil, map[string]*bintree{
 		"default": &bintree{nil, map[string]*bintree{
 			"archive.html": &bintree{templateDefaultArchiveHtml, map[string]*bintree{}},
 			"comment.html": &bintree{templateDefaultCommentHtml, map[string]*bintree{}},
-			"footer.html": &bintree{templateDefaultFooterHtml, map[string]*bintree{}},
-			"header.html": &bintree{templateDefaultHeaderHtml, map[string]*bintree{}},
-			"meta.html": &bintree{templateDefaultMetaHtml, map[string]*bintree{}},
-			"page.html": &bintree{templateDefaultPageHtml, map[string]*bintree{}},
-			"post.html": &bintree{templateDefaultPostHtml, map[string]*bintree{}},
-			"posts.html": &bintree{templateDefaultPostsHtml, map[string]*bintree{}},
+			"footer.html":  &bintree{templateDefaultFooterHtml, map[string]*bintree{}},
+			"header.html":  &bintree{templateDefaultHeaderHtml, map[string]*bintree{}},
+			"meta.html":    &bintree{templateDefaultMetaHtml, map[string]*bintree{}},
+			"page.html":    &bintree{templateDefaultPageHtml, map[string]*bintree{}},
+			"post.html":    &bintree{templateDefaultPostHtml, map[string]*bintree{}},
+			"posts.html":   &bintree{templateDefaultPostsHtml, map[string]*bintree{}},
 			"static": &bintree{nil, map[string]*bintree{
 				"css": &bintree{nil, map[string]*bintree{
-					"bootstrap.min.css": &bintree{templateDefaultStaticCssBootstrapMinCss, map[string]*bintree{}},
+					"bootstrap.min.css":    &bintree{templateDefaultStaticCssBootstrapMinCss, map[string]*bintree{}},
 					"font-awesome.min.css": &bintree{templateDefaultStaticCssFontAwesomeMinCss, map[string]*bintree{}},
-					"prism.css": &bintree{templateDefaultStaticCssPrismCss, map[string]*bintree{}},
-					"style.css": &bintree{templateDefaultStaticCssStyleCss, map[string]*bintree{}},
+					"prism.css":            &bintree{templateDefaultStaticCssPrismCss, map[string]*bintree{}},
+					"style.css":            &bintree{templateDefaultStaticCssStyleCss, map[string]*bintree{}},
 				}},
 				"favicon.ico": &bintree{templateDefaultStaticFaviconIco, map[string]*bintree{}},
 				"fonts": &bintree{nil, map[string]*bintree{
-					"FontAwesome.otf": &bintree{templateDefaultStaticFontsFontawesomeOtf, map[string]*bintree{}},
-					"fontawesome-webfont.eot": &bintree{templateDefaultStaticFontsFontawesomeWebfontEot, map[string]*bintree{}},
-					"fontawesome-webfont.svg": &bintree{templateDefaultStaticFontsFontawesomeWebfontSvg, map[string]*bintree{}},
-					"fontawesome-webfont.ttf": &bintree{templateDefaultStaticFontsFontawesomeWebfontTtf, map[string]*bintree{}},
-					"fontawesome-webfont.woff": &bintree{templateDefaultStaticFontsFontawesomeWebfontWoff, map[string]*bintree{}},
+					"FontAwesome.otf":           &bintree{templateDefaultStaticFontsFontawesomeOtf, map[string]*bintree{}},
+					"fontawesome-webfont.eot":   &bintree{templateDefaultStaticFontsFontawesomeWebfontEot, map[string]*bintree{}},
+					"fontawesome-webfont.svg":   &bintree{templateDefaultStaticFontsFontawesomeWebfontSvg, map[string]*bintree{}},
+					"fontawesome-webfont.ttf":   &bintree{templateDefaultStaticFontsFontawesomeWebfontTtf, map[string]*bintree{}},
+					"fontawesome-webfont.woff":  &bintree{templateDefaultStaticFontsFontawesomeWebfontWoff, map[string]*bintree{}},
 					"fontawesome-webfont.woff2": &bintree{templateDefaultStaticFontsFontawesomeWebfontWoff2, map[string]*bintree{}},
 				}},
 				"js": &bintree{nil, map[string]*bintree{
-					"bootstrap.min.js": &bintree{templateDefaultStaticJsBootstrapMinJs, map[string]*bintree{}},
+					"bootstrap.min.js":    &bintree{templateDefaultStaticJsBootstrapMinJs, map[string]*bintree{}},
 					"jquery-2.1.4.min.js": &bintree{templateDefaultStaticJsJquery214MinJs, map[string]*bintree{}},
-					"prism.min.js": &bintree{templateDefaultStaticJsPrismMinJs, map[string]*bintree{}},
+					"prism.min.js":        &bintree{templateDefaultStaticJsPrismMinJs, map[string]*bintree{}},
 				}},
-				"robots.txt": &bintree{templateDefaultStaticRobotsTxt, map[string]*bintree{}},
+				"robots.txt":  &bintree{templateDefaultStaticRobotsTxt, map[string]*bintree{}},
 				"sitemap.xsl": &bintree{templateDefaultStaticSitemapXsl, map[string]*bintree{}},
 			}},
 		}},
 		"pure": &bintree{nil, map[string]*bintree{
-			"archive.html": &bintree{templatePureArchiveHtml, map[string]*bintree{}},
-			"comment.html": &bintree{templatePureCommentHtml, map[string]*bintree{}},
-			"footer.html": &bintree{templatePureFooterHtml, map[string]*bintree{}},
+			"archive.html":   &bintree{templatePureArchiveHtml, map[string]*bintree{}},
+			"comment.html":   &bintree{templatePureCommentHtml, map[string]*bintree{}},
+			"footer.html":    &bintree{templatePureFooterHtml, map[string]*bintree{}},
 			"footer_js.html": &bintree{templatePureFooter_jsHtml, map[string]*bintree{}},
-			"meta.html": &bintree{templatePureMetaHtml, map[string]*bintree{}},
-			"page.html": &bintree{templatePurePageHtml, map[string]*bintree{}},
-			"post.html": &bintree{templatePurePostHtml, map[string]*bintree{}},
-			"posts.html": &bintree{templatePurePostsHtml, map[string]*bintree{}},
-			"sidebar.html": &bintree{templatePureSidebarHtml, map[string]*bintree{}},
+			"meta.html":      &bintree{templatePureMetaHtml, map[string]*bintree{}},
+			"page.html":      &bintree{templatePurePageHtml, map[string]*bintree{}},
+			"post.html":      &bintree{templatePurePostHtml, map[string]*bintree{}},
+			"posts.html":     &bintree{templatePurePostsHtml, map[string]*bintree{}},
+			"sidebar.html":   &bintree{templatePureSidebarHtml, map[string]*bintree{}},
 			"static": &bintree{nil, map[string]*bintree{
 				"css": &bintree{nil, map[string]*bintree{
-					"blog.css": &bintree{templatePureStaticCssBlogCss, map[string]*bintree{}},
-					"prism.css": &bintree{templatePureStaticCssPrismCss, map[string]*bintree{}},
+					"blog.css":     &bintree{templatePureStaticCssBlogCss, map[string]*bintree{}},
+					"prism.css":    &bintree{templatePureStaticCssPrismCss, map[string]*bintree{}},
 					"pure-min.css": &bintree{templatePureStaticCssPureMinCss, map[string]*bintree{}},
 				}},
 				"favicon.ico": &bintree{templatePureStaticFaviconIco, map[string]*bintree{}},
 				"js": &bintree{nil, map[string]*bintree{
 					"jquery-2.1.4.min.js": &bintree{templatePureStaticJsJquery214MinJs, map[string]*bintree{}},
-					"prism.min.js": &bintree{templatePureStaticJsPrismMinJs, map[string]*bintree{}},
+					"prism.min.js":        &bintree{templatePureStaticJsPrismMinJs, map[string]*bintree{}},
 				}},
-				"robots.txt": &bintree{templatePureStaticRobotsTxt, map[string]*bintree{}},
+				"robots.txt":  &bintree{templatePureStaticRobotsTxt, map[string]*bintree{}},
 				"sitemap.xsl": &bintree{templatePureStaticSitemapXsl, map[string]*bintree{}},
 			}},
 		}},
@@ -1270,4 +1271,3 @@ func _filePath(dir, name string) string {
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
-
