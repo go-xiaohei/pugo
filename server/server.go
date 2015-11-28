@@ -49,6 +49,7 @@ func (s *Server) Run(addr string) {
 }
 
 func (s *Server) serveFile(ctx *tango.Context, file string) bool {
+	log15.Debug("Dest.File." + file)
 	if com.IsFile(file) {
 		ctx.ServeFile(file)
 		return true
@@ -59,12 +60,12 @@ func (s *Server) serveFile(ctx *tango.Context, file string) bool {
 func (s *Server) globalHandler(ctx *tango.Context) {
 	param := ctx.Param("*name")
 	if path.Ext(param) == "" {
-		if s.serveFile(ctx, path.Join(s.dstDir, param, "index.html")) {
-			return
+		if !strings.HasSuffix(param, "/") {
+			if s.serveFile(ctx, path.Join(s.dstDir, param+".html")) {
+				return
+			}
 		}
-	}
-	if !strings.HasSuffix(param, "/") {
-		if s.serveFile(ctx, path.Join(s.dstDir, param, ".html")) {
+		if s.serveFile(ctx, path.Join(s.dstDir, param, "index.html")) {
 			return
 		}
 	}

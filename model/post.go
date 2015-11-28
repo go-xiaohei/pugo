@@ -103,7 +103,7 @@ func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 // posts list
 type Posts []*Post
 
-// implement sort.Sort inteface
+// implement sort.Sort interface
 func (p Posts) Len() int           { return len(p) }
 func (p Posts) Less(i, j int) bool { return p[i].Created.Raw.Unix() > p[j].Created.Raw.Unix() }
 func (p Posts) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
