@@ -105,7 +105,7 @@ func TestBuildWatch(t *testing.T) {
 		file := path.Join(opt.SrcDir, "test.md")
 		ioutil.WriteFile(file, []byte("```ini"), os.ModePerm)
 
-		time.Sleep(time.Second)
+		time.Sleep(5 * time.Second)
 		So(b.Context(), ShouldNotBeNil)
 		So(b.Context().Error, ShouldNotBeNil)
 	})
