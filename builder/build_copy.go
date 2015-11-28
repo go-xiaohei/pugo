@@ -17,9 +17,6 @@ func (b *Builder) CopyAssets(ctx *Context) {
 	if b.copyAssets(ctx); ctx.Error != nil {
 		return
 	}
-	if b.copyError(ctx); ctx.Error != nil {
-		return
-	}
 }
 
 func (b *Builder) copyClean(ctx *Context) {
@@ -68,31 +65,4 @@ func (b *Builder) copyAssets(ctx *Context) {
 			return
 		}
 	}
-}
-
-// copy error pages
-func (b *Builder) copyError(ctx *Context) {
-	// copy 404 to errors
-	if err := b.copyErrorTemplate(ctx, "404.html"); err != nil {
-		ctx.Error = err
-		return
-	}
-	// copy 500 to errors
-	if err := b.copyErrorTemplate(ctx, "500.html"); err != nil {
-		ctx.Error = err
-		return
-	}
-}
-
-// copy error template,
-// need render with some error data
-func (b *Builder) copyErrorTemplate(ctx *Context, name string) error {
-	dstFile := path.Join(ctx.DstDir, "error/"+name)
-	os.MkdirAll(path.Dir(dstFile), os.ModePerm)
-	f, err := os.OpenFile(dstFile, os.O_CREATE|os.O_TRUNC|os.O_RDWR, os.ModePerm)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-	return ctx.Theme.Execute(f, name, ctx.ViewData())
 }

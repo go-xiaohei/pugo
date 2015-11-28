@@ -7,6 +7,7 @@ import (
 	"github.com/lunny/log"
 	"github.com/lunny/tango"
 	"gopkg.in/inconshreveable/log15.v2"
+	"strings"
 )
 
 // simple built-in http server
@@ -47,18 +48,28 @@ func (s *Server) Run(addr string) {
 	s.Tango.Run(addr)
 }
 
+func (s *Server) serveFile(ctx *tango.Context, file string) bool {
+	if com.IsFile(file) {
+		ctx.ServeFile(file)
+		return true
+	}
+	return false
+}
+
 func (s *Server) globalHandler(ctx *tango.Context) {
 	param := ctx.Param("*name")
 	if path.Ext(param) == "" {
-		// visit directory, file index.html
-		param = path.Join(param, "index.html")
+		if s.serveFile(ctx, path.Join(s.dstDir, param, "index.html")) {
+			return
+		}
 	}
-	file := path.Join(s.dstDir, param)
-	// try simple file
-	if com.IsFile(file) {
-		ctx.ServeFile(file)
+	if !strings.HasSuffix(param, "/") {
+		if s.serveFile(ctx, path.Join(s.dstDir, param, ".html")) {
+			return
+		}
+	}
+	if s.serveFile(ctx, path.Join(s.dstDir, param)) {
 		return
 	}
-
 	ctx.Redirect("/")
 }
