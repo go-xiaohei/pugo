@@ -27,7 +27,7 @@ func serveSite(opt *builder.BuildOption) func(ctx *cli.Context) {
 		// run server in goroutine
 		go serve(ctx, opt)
 		// run buildSite to build
-		buildSite(opt)(ctx)
+		buildSite(opt, true)(ctx)
 	}
 }
 

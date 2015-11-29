@@ -4,7 +4,7 @@
     <div class="pure-u-1">
         <div class="content">
             <div class="page-header">
-                <h1>Articles</h1>
+                <h1>所有文章</h1>
             </div>
             {{if .Tag}}<h2>标签：{{.Tag.Name}}</h2>{{end}}{{range .Posts}}
             <div class="post">
@@ -21,8 +21,8 @@
         </div>
         <div class="pagination pure-g">
             <ul>
-                {{if .Pager.Prev}}<li class="prev pure-u-1-3"><a href="{{.Root}}{{.Pager.PrevUrl}}">← Newer</a></li>{{end}}
-                {{if .Pager.Next}}<li class="next pure-u-1-3"><a href="{{.Root}}{{.Pager.NextUrl}}">Older →</a></li>{{end}}
+                {{if .Pager.Prev}}<li class="prev pure-u-1-3"><a href="{{.Root}}{{.Pager.PrevUrl}}">← 更新的</a></li>{{end}}
+                {{if .Pager.Next}}<li class="next pure-u-1-3"><a href="{{.Root}}{{.Pager.NextUrl}}">以前的 →</a></li>{{end}}
             </ul>
         </div>
         {{template "footer.html" .}}

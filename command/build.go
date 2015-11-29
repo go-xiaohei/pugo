@@ -23,13 +23,13 @@ func Build(opt *builder.BuildOption) cli.Command {
 			watchFlag,
 			debugFlag,
 		},
-		Action: buildSite(opt),
+		Action: buildSite(opt, false),
 		Before: setDebugMode,
 	}
 }
 
 // build site function
-func buildSite(opt *builder.BuildOption) func(ctx *cli.Context) {
+func buildSite(opt *builder.BuildOption, mustWatch bool) func(ctx *cli.Context) {
 	return func(ctx *cli.Context) {
 		// ctrl+C capture
 		signalChan := make(chan os.Signal)
@@ -54,7 +54,7 @@ func buildSite(opt *builder.BuildOption) func(ctx *cli.Context) {
 			log15.Crit("Build.Fail", "error", err.Error())
 		}
 
-		if ctx.Bool("watch") {
+		if ctx.Bool("watch") || mustWatch {
 			b.Watch(targetDir)
 			<-signalChan
 		}

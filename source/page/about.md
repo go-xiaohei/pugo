@@ -17,6 +17,8 @@ metadata = this is meta data
 
 `Pugo` is a simple static site generator by [Golang](https://golang.org). It compiled [markdown](https://help.github.com/articles/markdown-basics/) content to site pages with beautiful theme. No dependencies, cross platform and very fast.
 
+![golang](/static/media/golang.png)
+
 ### Quick start
 
 1. Download and extract from [Pugo Releases](http://pugo.io), Run `pugo[.exe]` directly.

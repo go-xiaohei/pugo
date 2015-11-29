@@ -6,6 +6,7 @@ import (
 	"github.com/go-xiaohei/pugo-static/command"
 	"gopkg.in/inconshreveable/log15.v2"
 	"gopkg.in/inconshreveable/log15.v2/ext"
+	"path"
 )
 
 //go:generate go-bindata -o=asset/asset.go -pkg=asset source/... template/...
@@ -14,10 +15,10 @@ const (
 	VERSION  = "0.8.0"
 	VER_DATE = "2015-11-30"
 
-	SRC_DIR    = "source"   // source contents dir
-	TPL_DIR    = "template" // template dir
-	UPLOAD_DIR = "upload"   // upload dir
-	DST_DIR    = "dest"     // destination dir
+	SRC_DIR   = "source"   // source contents dir
+	TPL_DIR   = "template" // template dir
+	MEDIA_DIR = "media"    // upload dir
+	DST_DIR   = "dest"     // destination dir
 )
 
 var (
@@ -33,7 +34,7 @@ func init() {
 	app.Version = VERSION + "(" + VER_DATE + ")"
 	opt.SrcDir = SRC_DIR
 	opt.TplDir = TPL_DIR
-	opt.UploadDir = UPLOAD_DIR
+	opt.MediaDir = path.Join(SRC_DIR, MEDIA_DIR)
 	opt.Version = VERSION
 	opt.VerDate = VER_DATE
 
