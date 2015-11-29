@@ -1,39 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-   {{include "meta.html" .}}
-</head>
-<body>
+{{template "meta.html" .}}
 <div class="pure-g-r" id="layout">
-    {{include "sidebar.html" .}}
+    {{template "sidebar.html" .}}
     <div class="pure-u-1">
         <div class="content">
             <div class="page-header">
-                <h1>所有文章</h1>
+                <h1>Articles</h1>
             </div>
             {{if .Tag}}<h2>标签：{{.Tag.Name}}</h2>{{end}}{{range .Posts}}
             <div class="post">
-                <h3 class="post-header"><a href="{{.Url}}">{{.Title}}</a></h3>
+                <h3 class="post-header"><a href="{{$.Root}}{{.Url}}">{{.Title}}</a></h3>
                 <div class="post-meta">
                     <small>{{.Created.Year}}-{{.Created.Month}}-{{.Created.Day}}</small>
                 </div>
                 <div class="post-description">{{.PreviewHTML}}</div>
                 <div class="more">
-                    <a href="{{.Url}}" class="btn pure-button pure-button-primary">read more..</a>
+                    <a href="{{$.Root}}{{.Url}}" class="btn pure-button pure-button-primary">read more..</a>
                 </div>
             </div>
             {{end}}
         </div>
         <div class="pagination pure-g">
             <ul>
-                {{if .Pager.Prev}}<li class="prev pure-u-1-3"><a href="{{.Pager.PrevUrl}}">← 更新的</a></li>{{end}}
-                {{if .Pager.Next}}<li class="next pure-u-1-3"><a href="{{.Pager.NextUrl}}">以前的 →</a>{{end}}
-                </li>
+                {{if .Pager.Prev}}<li class="prev pure-u-1-3"><a href="{{.Root}}{{.Pager.PrevUrl}}">← Newer</a></li>{{end}}
+                {{if .Pager.Next}}<li class="next pure-u-1-3"><a href="{{.Root}}{{.Pager.NextUrl}}">Older →</a></li>{{end}}
             </ul>
         </div>
-        {{include "footer.html" .}}
+        {{template "footer.html" .}}
     </div>
 </div>
-{{include "footer_js.html" .}}
-</body>
-</html>
+{{template "footer_js.html" .}}
