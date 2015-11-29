@@ -50,16 +50,25 @@ func (b *Builder) copyAssets(ctx *Context) {
 	}
 
 	// copy upload data
-	dstDir = path.Join(ctx.DstDir, path.Base(staticDir), path.Base(b.opt.MediaDir))
-	if err := com.CopyDir(b.opt.MediaDir, dstDir); err != nil {
-		ctx.Error = err
-		return
+	if com.IsDir(b.opt.MediaDir) {
+		dstDir = path.Join(ctx.DstDir, path.Base(staticDir), path.Base(b.opt.MediaDir))
+		if err := com.CopyDir(b.opt.MediaDir, dstDir); err != nil {
+			ctx.Error = err
+			return
+		}
 	}
 
 	assetFiles := []string{"favicon.ico", "robots.txt"}
 	for _, f := range assetFiles {
+		srcFile := path.Join(b.opt.SrcDir, f)
+		if !com.IsFile(srcFile) {
+			srcFile = path.Join(staticDir, f)
+		}
+		if !com.IsFile(srcFile) {
+			continue
+		}
+
 		// use origin dir, make these files existing in top directory
-		srcFile := path.Join(staticDir, f)
 		if err := com.Copy(srcFile, path.Join(ctx.DstOriginDir, f)); err != nil {
 			ctx.Error = err
 			return

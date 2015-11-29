@@ -72,10 +72,10 @@ func New(opt *BuildOption) *Builder {
 	}
 	builder.render = render.New(builder.opt.TplDir)
 	builder.tasks = []*BuildTask{
-		&BuildTask{"Data", builder.ReadData, nil},
-		&BuildTask{"Copy", builder.CopyAssets, nil},
-		&BuildTask{"Compile", builder.Compile, nil},
-		&BuildTask{"Feed", builder.WriteFeed, nil},
+		{"Data", builder.ReadData, nil},
+		{"Copy", builder.CopyAssets, nil},
+		{"Compile", builder.Compile, nil},
+		{"Feed", builder.WriteFeed, nil},
 	}
 	log15.Debug("Build.Source." + opt.SrcDir)
 	log15.Debug("Build.Template." + opt.TplDir)

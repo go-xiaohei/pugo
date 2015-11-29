@@ -9,7 +9,7 @@ desc = pugo is a simple static site generator
 ; build links for feed, sitemap
 domain = localhost
 ; root path for site, if empty, build as http://{domain}/
-root = http://localhost/
+root = http://localhost
 
 ; nav data
 [nav]
@@ -43,7 +43,6 @@ hover = about
 ; author data
 [author]
 -:pugo
--:fuxiaohei
 
 [author.pugo]
 name = pugo

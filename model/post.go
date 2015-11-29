@@ -11,6 +11,7 @@ import (
 
 	"github.com/go-xiaohei/pugo-static/helper"
 	"github.com/go-xiaohei/pugo-static/parser"
+	"path"
 )
 
 var (
@@ -69,6 +70,10 @@ func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 	}
 	if err := block.MapTo("", p); err != nil {
 		return nil, err
+	}
+	if p.Slug == "" {
+		ext := path.Ext(fi.Name())
+		p.Slug = strings.TrimSuffix(fi.Name(), ext)
 	}
 	tags := strings.Split(block.Item("tags"), ",")
 	for _, t := range tags {

@@ -19,17 +19,17 @@ func New(srcDir, tplDir string) cli.Command {
 		Name:  "new",
 		Usage: "create new site, post or page",
 		Subcommands: []cli.Command{
-			cli.Command{
+			{
 				Name:   "site",
 				Usage:  "create new site",
 				Action: newSite(),
 			},
-			cli.Command{
+			{
 				Name:   "post",
 				Usage:  "create new post",
 				Action: newPost(srcDir),
 			},
-			cli.Command{
+			{
 				Name:   "page",
 				Usage:  "create new page",
 				Action: newPage(srcDir),

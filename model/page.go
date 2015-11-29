@@ -8,6 +8,8 @@ import (
 
 	"github.com/go-xiaohei/pugo-static/helper"
 	"github.com/go-xiaohei/pugo-static/parser"
+	"path"
+	"strings"
 )
 
 // Page contains fields for a page
@@ -55,6 +57,10 @@ func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 	}
 	if err := block.MapTo("", p); err != nil {
 		return nil, err
+	}
+	if p.Slug == "" {
+		ext := path.Ext(fi.Name())
+		p.Slug = strings.TrimSuffix(fi.Name(), ext)
 	}
 	if p.Template == "" {
 		// default page template is page.html
