@@ -7,6 +7,10 @@ import (
 	"path"
 )
 
+var (
+	watchingExt = []string{".md", ".html", ".css", ".js"}
+)
+
 // watch source dir changes and build to destination directory if updated
 func (b *Builder) Watch(dstDir string) {
 	watcher, err := fsnotify.NewWatcher()
@@ -21,10 +25,13 @@ func (b *Builder) Watch(dstDir string) {
 			select {
 			case event := <-watcher.Events:
 				ext := path.Ext(event.Name)
-				if ext == ".md" || ext == ".html" {
-					if event.Op != fsnotify.Chmod && !b.IsBuilding() {
-						log15.Info("Watch.Rebuild", "change", event.String())
-						b.Build(dstDir)
+				for _, e := range watchingExt {
+					if e == ext {
+						if event.Op != fsnotify.Chmod && !b.IsBuilding() {
+							log15.Info("Watch.Rebuild", "change", event.String())
+							b.Build(dstDir)
+						}
+						break
 					}
 				}
 			case err := <-watcher.Errors:

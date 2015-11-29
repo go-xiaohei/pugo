@@ -20,7 +20,7 @@ func Build(opt *builder.BuildOption) cli.Command {
 		Flags: []cli.Flag{
 			destFlag,
 			themeFlag,
-			noWatchFlag,
+			watchFlag,
 			debugFlag,
 		},
 		Action: buildSite(opt),
@@ -54,10 +54,11 @@ func buildSite(opt *builder.BuildOption) func(ctx *cli.Context) {
 			log15.Crit("Build.Fail", "error", err.Error())
 		}
 
-		if !ctx.Bool("nowatch") {
+		if ctx.Bool("watch") {
 			b.Watch(targetDir)
 			<-signalChan
 		}
+
 		log15.Info("Build.Close")
 	}
 }

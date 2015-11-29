@@ -26,9 +26,9 @@ var (
 		Value: "0.0.0.0:9899",
 		Usage: "set http server address",
 	}
-	noWatchFlag = cli.BoolFlag{
-		Name:  "nowatch",
-		Usage: "do not watch changes",
+	watchFlag = cli.BoolFlag{
+		Name:  "watch",
+		Usage: "watch changes and auto-rebuild",
 	}
 )
 
