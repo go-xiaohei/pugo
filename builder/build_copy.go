@@ -44,9 +44,14 @@ func (b *Builder) copyAssets(ctx *Context) {
 	staticDir := ctx.Theme.Static()
 	// copy all static
 	dstDir := path.Join(ctx.DstDir, path.Base(staticDir))
-	// remove old directory, otherwise return error when com.Copy
-	os.RemoveAll(dstDir)
 	if err := com.CopyDir(staticDir, dstDir); err != nil {
+		ctx.Error = err
+		return
+	}
+
+	// copy upload data
+	dstDir = path.Join(ctx.DstDir, b.opt.UploadDir)
+	if err := com.CopyDir(b.opt.UploadDir, dstDir); err != nil {
 		ctx.Error = err
 		return
 	}
@@ -54,9 +59,12 @@ func (b *Builder) copyAssets(ctx *Context) {
 	assetFiles := []string{"favicon.ico", "robots.txt"}
 	for _, f := range assetFiles {
 		// use origin dir, make these files existing in top directory
-		dstFile := path.Join(ctx.DstOriginDir, f)
 		srcFile := path.Join(staticDir, f)
-		if err := com.Copy(srcFile, dstFile); err != nil {
+		if err := com.Copy(srcFile, path.Join(ctx.DstOriginDir, f)); err != nil {
+			ctx.Error = err
+			return
+		}
+		if err := com.Copy(srcFile, path.Join(ctx.DstDir, f)); err != nil {
 			ctx.Error = err
 			return
 		}

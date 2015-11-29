@@ -43,8 +43,8 @@ type (
 	BuildOption struct {
 		SrcDir    string
 		TplDir    string
-		Theme     string
 		UploadDir string
+		Theme     string
 
 		Version string
 		VerDate string
