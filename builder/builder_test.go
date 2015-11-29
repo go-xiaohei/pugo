@@ -12,12 +12,12 @@ import (
 
 var (
 	opt = &builder.BuildOption{
-		SrcDir:    "../source",
-		TplDir:    "../template",
-		UploadDir: "../upload",
-		Version:   "0.0.0",
-		VerDate:   "2015-11-11",
-		Theme:     "default",
+		SrcDir:   "../source",
+		TplDir:   "../template",
+		MediaDir: "../source/media",
+		Version:  "0.0.0",
+		VerDate:  "2015-11-11",
+		Theme:    "default",
 	}
 	target          = "../dest"
 	b               = builder.New(opt)
@@ -48,15 +48,16 @@ func TestBuilderBuild(t *testing.T) {
 		// check dirs and files
 		Convey("Check Built And Files", func() {
 			var flag = true
+			t := path.Join(target, b.Context().Meta.Base)
 			for _, dir := range shoudlExistDirs {
-				if flag = flag && com.IsDir(path.Join(target, dir)); !flag {
+				if flag = flag && com.IsDir(path.Join(t, dir)); !flag {
 					break
 				}
 			}
 			So(flag, ShouldBeTrue)
 
 			for _, f := range shouldExistFiles {
-				if flag = flag && com.IsFile(path.Join(target, f)); !flag {
+				if flag = flag && com.IsFile(path.Join(t, f)); !flag {
 					break
 				}
 			}
