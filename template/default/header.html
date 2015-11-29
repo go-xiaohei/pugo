@@ -4,12 +4,12 @@
             <nav id="site-nav">
                 <ul class="nav nav-inverse nav-pills pull-right">{{range .Nav}}
                     <li role="presentation" class="{{if .IsHover}}active{{end}}{{if .SubNav}} dropdown{{end}}">
-                        <a href="{{$.Root}}{{.Link}}" class="{{if .SubNav}} dropdown-toggle{{end}}"{{if .SubNav}} data-toggle="dropdown"{{end}}{{if .IsBlank}} target="_blank" {{end}}>{{if .IconClass}}
+                        <a href="{{url .Link}}" class="{{if .SubNav}} dropdown-toggle{{end}}"{{if .SubNav}} data-toggle="dropdown"{{end}}{{if .IsBlank}} target="_blank" {{end}}>{{if .IconClass}}
                             <i class="{{.IconClass}}"></i>{{end}}{{.Title}}{{if .SubNav}}<span class="caret"></span>{{end}}
                         </a>{{if .SubNav}}
                         <ul class="dropdown-menu">{{range .SubNav}}{{if .IsSeparator}}
                             <li class="divider"></li>{{else}}
-                            <li><a href="{{$.Root}}{{.Link}}"{{if .IsBlank}} target="_blank" {{end}}>{{if .IconClass}}
+                            <li><a href="{{url .Link}}"{{if .IsBlank}} target="_blank" {{end}}>{{if .IconClass}}
                                 <i class="{{.IconClass}}"></i>{{end}}{{.Title}}</a>
                             </li>{{end}}{{end}}
                         </ul>{{end}}

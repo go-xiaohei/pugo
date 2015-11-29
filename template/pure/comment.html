@@ -6,7 +6,7 @@
         var disqus_developer = 1;
         var disqus_shortname = "{{.Comment.Disqus.Site}}";
         var disqus_config = function () {
-            this.page.url = "{{.Meta.Root}}{{.Permalink}}"; // Replace PAGE_URL with your page's canonical URL variable
+            this.page.url = "{{fullUrl .Permalink}}"; // Replace PAGE_URL with your page's canonical URL variable
         };
         (function () {
             var dsq = document.createElement('script');

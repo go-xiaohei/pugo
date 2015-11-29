@@ -15,11 +15,11 @@
                         </span>
                             </div>
                             <h3 class="title">
-                                <a href="{{$.Root}}{{.Post.Url}}">{{.Post.Title}}</a>
+                                <a href="{{url .Post.Url}}">{{.Post.Title}}</a>
                             </h3>
                         </header>
                         <aside class="aside clearfix">{{range .Post.Tags}}
-                            <a class="tag label label-info" href="{{$.Root}}{{.Url}}">{{.Name}}</a>{{end}}
+                            <a class="tag label label-info" href="{{url .Url}}">{{.Name}}</a>{{end}}
                             <a class="stat label label-default pull-right"{{if .Post.Author.Url}} href="{{.Post.Author.Url}}" target="_blank"{{end}}>{{.Post.Author.Name}}</a>
                         </aside>
                         <section class="brief">{{.Post.ContentHTML}}</section>

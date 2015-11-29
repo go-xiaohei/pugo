@@ -24,16 +24,24 @@ func (b *Builder) ReadData(ctx *Context) {
 	if b.readContents(ctx); ctx.Error != nil {
 		return
 	}
-	// fix sub directory case
+	// change dst dir if meta root is sub directory
 	if ctx.Meta.Base != "" {
 		ctx.DstDir = path.Join(ctx.DstDir, ctx.Meta.Base)
-		os.MkdirAll(ctx.DstDir, os.ModePerm)
-
-		// write redirect index.html
-		ioutil.WriteFile(path.Join(ctx.DstOriginDir, "index.html"),
-			[]byte(`<meta http-equiv="refresh" content="0; url=`+ctx.Meta.Base+`" />`),
-			os.ModePerm)
 	}
+	// load theme after data reading finished
+	b.render.SetFunc("url", func(str ...string) string {
+		return path.Join(append([]string{ctx.Meta.Base}, str...)...)
+	})
+	b.render.SetFunc("fullUrl", func(str ...string) string {
+		return ctx.Meta.Root + path.Join(str...)
+	})
+	theme, err := b.render.Load(b.opt.Theme)
+	if err != nil {
+		ctx.Error = err
+		return
+	}
+
+	ctx.Theme = theme
 }
 
 // read meta data, from meta.md,nav.md and comment.md

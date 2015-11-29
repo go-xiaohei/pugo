@@ -88,11 +88,6 @@ func (b *Builder) Render() *render.Render {
 	return b.render
 }
 
-// get current theme in render
-func (b *Builder) theme() (*render.Theme, error) {
-	return b.render.Load(b.opt.Theme)
-}
-
 // build to dest directory
 func (b *Builder) Build(dest string) {
 	// if on build, do not again
@@ -106,13 +101,6 @@ func (b *Builder) Build(dest string) {
 		Version:      b.Version,
 		BeginTime:    time.Now(),
 	}
-	theme, err := b.theme()
-	if err != nil {
-		ctx.Error = err
-		b.context = ctx
-		return
-	}
-	ctx.Theme = theme
 	b.isBuilding = true
 
 	// run tasks

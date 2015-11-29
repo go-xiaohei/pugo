@@ -10,6 +10,11 @@ type Time struct {
 	Day   int
 }
 
+// layout time string
+func (t Time) Format(layout string) string {
+	return t.Raw.Format(layout)
+}
+
 // NewTime parses str as time,
 // if error, use t2
 func NewTime(str string, t2 time.Time) Time {

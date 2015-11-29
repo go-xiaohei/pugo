@@ -7,10 +7,22 @@ import (
 
 	"github.com/go-xiaohei/pugo-static/helper"
 	"github.com/go-xiaohei/pugo-static/model"
+	"gopkg.in/inconshreveable/log15.v2"
+	"io/ioutil"
+	"strconv"
 )
 
 // compile data to html files
 func (b *Builder) Compile(ctx *Context) {
+	// fix sub directory case
+	if ctx.DstDir != ctx.DstOriginDir {
+		os.MkdirAll(ctx.DstDir, os.ModePerm)
+
+		// write redirect index.html
+		ioutil.WriteFile(path.Join(ctx.DstOriginDir, "index.html"),
+			[]byte(`<meta http-equiv="refresh" content="0; url=`+ctx.Meta.Base+`" />`),
+			os.ModePerm)
+	}
 	if b.compileSinglePost(ctx); ctx.Error != nil {
 		return
 	}
@@ -33,6 +45,7 @@ func (b *Builder) Compile(ctx *Context) {
 
 // compile each single post to html
 func (b *Builder) compileSinglePost(ctx *Context) {
+	log15.Debug("Post." + strconv.Itoa(len(ctx.Posts)))
 	for _, p := range ctx.Posts {
 		dstFile := path.Join(ctx.DstDir, p.Url)
 		if path.Ext(dstFile) == "" {
@@ -89,6 +102,7 @@ func (b *Builder) compilePagedPost(ctx *Context) {
 		}
 		page++
 	}
+	log15.Debug("Post.Pages." + strconv.Itoa(page-1))
 }
 
 // compile archive page
@@ -110,6 +124,7 @@ func (b *Builder) compileArchive(ctx *Context) {
 
 // compile pages
 func (b *Builder) compilePages(ctx *Context) {
+	log15.Debug("Pages." + strconv.Itoa(len(ctx.Pages)))
 	for _, p := range ctx.Pages {
 		dstFile := path.Join(ctx.DstDir, p.Url)
 		if path.Ext(dstFile) == "" {
@@ -134,6 +149,7 @@ func (b *Builder) compilePages(ctx *Context) {
 
 // compile tagged page
 func (b *Builder) compileTags(ctx *Context) {
+	log15.Debug("Tags." + strconv.Itoa(len(ctx.Tags)))
 	for t, posts := range ctx.tagPosts {
 		dstFile := path.Join(ctx.DstDir, fmt.Sprintf("tags/%s.html", ctx.Tags[t].Name))
 

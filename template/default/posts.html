@@ -16,20 +16,20 @@
                         </span>
                             </div>
                             <h3 class="title">
-                                <a href="{{$.Root}}{{.Url}}">{{.Title}}</a>
+                                <a href="{{url .Url}}">{{.Title}}</a>
                             </h3>
                         </header>
                         <section class="brief">{{.PreviewHTML}}</section>
                         <aside class="aside clearfix">
-                            <a class="btn btn-primary btn-lg pull-right" href="{{$.Root}}{{.Url}}">Read More</a>
+                            <a class="btn btn-primary btn-lg pull-right" href="{{url .Url}}">Read More</a>
                         </aside>
                     </div>
                 </div>
             </article>
             {{end}}
             <div class="article-pager text-center">
-                {{if .Pager.Prev}}<a class="btn btn-lg btn-info" href="{{$.Root}}{{.Pager.PrevUrl}}">prev</a>{{end}}
-                {{if .Pager.Next}}<a class="btn btn-lg btn-info" href="{{$.Root}}{{.Pager.NextUrl}}">next</a>{{end}}
+                {{if .Pager.Prev}}<a class="btn btn-lg btn-info" href="{{url .Pager.PrevUrl}}">prev</a>{{end}}
+                {{if .Pager.Next}}<a class="btn btn-lg btn-info" href="{{url .Pager.NextUrl}}">next</a>{{end}}
             </div>
         </div>
     </div>
