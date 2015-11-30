@@ -1,42 +1,47 @@
 package builder
 
 import (
-	"io/ioutil"
 	"os"
 	"path"
 
 	"github.com/Unknwon/com"
+	"github.com/go-xiaohei/pugo-static/helper"
+	"path/filepath"
+	"strings"
 )
 
 // copy assets to target directory,
 // favicon, robots.txt, error pages and all static asset if ctx.isCopyAllAssets
 func (b *Builder) CopyAssets(ctx *Context) {
-	if err := removeDirectory(ctx.DstOriginDir); err != nil {
-		ctx.Error = err
-		return
-	}
 	if b.copyAssets(ctx); ctx.Error != nil {
 		return
 	}
+	if b.copyClean(ctx); ctx.Error != nil {
+		return
+	}
+
 }
 
-// remove all sub dirs and files in directory
-func removeDirectory(dir string) error {
-	if !com.IsDir(dir) {
-		return nil
-	}
-	dirs, err := ioutil.ReadDir(dir)
-	if err != nil {
-		return err
-	}
-	for _, d := range dirs {
-		if d.IsDir() {
-			if err = removeDirectory(path.Join(dir, d.Name())); err != nil {
-				return err
-			}
+// clean old no change s file
+func (b *Builder) copyClean(ctx *Context) {
+	static := path.Base(ctx.Theme.Static())
+	ctx.Error = filepath.Walk(ctx.DstDir, func(p string, fi os.FileInfo, err error) error {
+		if err != nil {
+			return err
 		}
-	}
-	return os.RemoveAll(dir)
+		// skip directory and static dir
+		rel, _ := filepath.Rel(ctx.DstDir, p)
+		if fi.IsDir() || strings.HasPrefix(rel, static) {
+			return nil
+		}
+		if rel == "favicon.ico" || rel == "robots.txt" {
+			return nil
+		}
+		if ctx.BeginTime.Unix()-fi.ModTime().Unix() > 10 {
+			return os.Remove(p)
+		}
+		return nil
+	})
 }
 
 // copy static assets
@@ -44,6 +49,10 @@ func (b *Builder) copyAssets(ctx *Context) {
 	staticDir := ctx.Theme.Static()
 	// copy all static
 	dstDir := path.Join(ctx.DstDir, path.Base(staticDir))
+	if err := helper.RemoveDir(dstDir); err != nil {
+		ctx.Error = err
+		return
+	}
 	if err := com.CopyDir(staticDir, dstDir); err != nil {
 		ctx.Error = err
 		return
