@@ -45,7 +45,7 @@ hover = about
 -:pugo
 
 [author.pugo]
-name = pugo
+name = pugo-robot
 email =
 url = http://pugo.io
 avatar =

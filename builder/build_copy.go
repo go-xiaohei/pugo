@@ -4,10 +4,11 @@ import (
 	"os"
 	"path"
 
-	"github.com/Unknwon/com"
-	"github.com/go-xiaohei/pugo-static/helper"
 	"path/filepath"
 	"strings"
+
+	"github.com/Unknwon/com"
+	"github.com/go-xiaohei/pugo-static/helper"
 )
 
 // copy assets to target directory,
@@ -37,8 +38,11 @@ func (b *Builder) copyClean(ctx *Context) {
 		if rel == "favicon.ico" || rel == "robots.txt" {
 			return nil
 		}
-		if ctx.BeginTime.Unix()-fi.ModTime().Unix() > 10 {
-			return os.Remove(p)
+		ext := path.Ext(p)
+		if ext == ".html" || ext == ".xml" {
+			if ctx.BeginTime.Unix()-fi.ModTime().Unix() > 10 {
+				return os.Remove(p)
+			}
 		}
 		return nil
 	})
@@ -53,7 +57,12 @@ func (b *Builder) copyAssets(ctx *Context) {
 		ctx.Error = err
 		return
 	}
-	if err := com.CopyDir(staticDir, dstDir); err != nil {
+	if err := com.CopyDir(staticDir, dstDir, func(p string) bool {
+		if path.Ext(p) == ".DS_Store" {
+			return true
+		}
+		return false
+	}); err != nil {
 		ctx.Error = err
 		return
 	}

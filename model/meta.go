@@ -105,7 +105,7 @@ func NewAllMeta(blocks []parser.Block) (meta *Meta, navbar Navs, au AuthorMap, c
 		if author.Nick == "" {
 			author.Nick = author.Name
 		}
-		authors[author.Name] = author
+		authors[k] = author
 	}
 	au = AuthorMap(authors)
 
