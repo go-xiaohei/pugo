@@ -6,6 +6,7 @@ import (
 	"github.com/go-xiaohei/pugo-static/app/server"
 )
 
+// Server command serve files
 func Server(opt *builder.BuildOption) cli.Command {
 	return cli.Command{
 		Name:     "server",

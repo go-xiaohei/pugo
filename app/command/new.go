@@ -14,6 +14,7 @@ import (
 	"time"
 )
 
+// New commands create default site, page or post
 func New(srcDir, tplDir string) cli.Command {
 	return cli.Command{
 		Name:  "new",

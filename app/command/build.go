@@ -54,7 +54,7 @@ func buildSite(opt *builder.BuildOption, mustWatch bool) func(ctx *cli.Context) 
 			log15.Crit("Build.Fail", "error", err.Error())
 		}
 
-		if ctx.Bool("watch") || mustWatch {
+		if ctx.Bool("watch") || isWatch || mustWatch {
 			b.Watch(targetDir)
 			<-signalChan
 		}
