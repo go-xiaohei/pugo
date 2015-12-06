@@ -2,14 +2,14 @@ package main
 
 import (
 	"github.com/codegangsta/cli"
-	"github.com/go-xiaohei/pugo-static/builder"
-	"github.com/go-xiaohei/pugo-static/command"
+	"github.com/go-xiaohei/pugo-static/app/builder"
+	"github.com/go-xiaohei/pugo-static/app/command"
 	"gopkg.in/inconshreveable/log15.v2"
 	"gopkg.in/inconshreveable/log15.v2/ext"
 	"path"
 )
 
-//go:generate go-bindata -o=asset/asset.go -pkg=asset source/... template/...
+//go:generate go-bindata -o=app/asset/asset.go -pkg=asset source/... template/...
 
 const (
 	VERSION  = "0.8.0"

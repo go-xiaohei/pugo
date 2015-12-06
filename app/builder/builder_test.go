@@ -2,7 +2,7 @@ package builder_test
 
 import (
 	"github.com/Unknwon/com"
-	"github.com/go-xiaohei/pugo-static/builder"
+	"github.com/go-xiaohei/pugo-static/app/builder"
 	. "github.com/smartystreets/goconvey/convey"
 	"io/ioutil"
 	"os"

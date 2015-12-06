@@ -5,8 +5,8 @@ import (
 	"os"
 	"path"
 
-	"github.com/go-xiaohei/pugo-static/helper"
-	"github.com/go-xiaohei/pugo-static/model"
+	"github.com/go-xiaohei/pugo-static/app/helper"
+	"github.com/go-xiaohei/pugo-static/app/model"
 	"gopkg.in/inconshreveable/log15.v2"
 	"io/ioutil"
 	"strconv"

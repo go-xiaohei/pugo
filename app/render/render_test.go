@@ -2,8 +2,8 @@ package render_test
 
 import (
 	"bytes"
-	"github.com/go-xiaohei/pugo-static/model"
-	"github.com/go-xiaohei/pugo-static/render"
+	"github.com/go-xiaohei/pugo-static/app/model"
+	"github.com/go-xiaohei/pugo-static/app/render"
 	. "github.com/smartystreets/goconvey/convey"
 	"html/template"
 	"path"

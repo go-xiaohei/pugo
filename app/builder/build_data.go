@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"sort"
 
-	"github.com/go-xiaohei/pugo-static/model"
-	"github.com/go-xiaohei/pugo-static/parser"
+	"github.com/go-xiaohei/pugo-static/app/model"
+	"github.com/go-xiaohei/pugo-static/app/parser"
 )
 
 var (

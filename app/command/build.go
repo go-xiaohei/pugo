@@ -7,7 +7,7 @@ import (
 
 	"github.com/Unknwon/com"
 	"github.com/codegangsta/cli"
-	"github.com/go-xiaohei/pugo-static/builder"
+	"github.com/go-xiaohei/pugo-static/app/builder"
 	"gopkg.in/inconshreveable/log15.v2"
 )
 

@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/Unknwon/com"
-	"github.com/go-xiaohei/pugo-static/helper"
+	"github.com/go-xiaohei/pugo-static/app/helper"
 )
 
 // copy assets to target directory,

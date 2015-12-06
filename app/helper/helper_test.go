@@ -3,7 +3,7 @@ package helper_test
 import (
 	"testing"
 
-	"github.com/go-xiaohei/pugo-static/helper"
+	"github.com/go-xiaohei/pugo-static/app/helper"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/go-xiaohei/pugo-static/parser"
+	"github.com/go-xiaohei/pugo-static/app/parser"
 )
 
 var (
