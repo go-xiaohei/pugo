@@ -49,9 +49,11 @@ type (
 		Version string
 		VerDate string
 
-		Before func(b *Builder, ctx *Context) error
-		After  func(b *Builder, ctx *Context) error
+		Before BuildHook
+		After  BuildHook
 	}
+	// hook func to build process
+	BuildHook func(b *Builder, ctx *Context) error
 )
 
 // New builder with option

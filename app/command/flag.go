@@ -9,7 +9,10 @@ import (
 )
 
 var (
-	confFile  = "conf.ini"
+	// conf.ini
+	confFile = "conf.ini"
+	iniFile  *ini.File
+
 	debugFlag = cli.BoolFlag{
 		Name:  "debug",
 		Usage: "print debug logs",
@@ -43,11 +46,12 @@ func init() {
 	if !com.IsFile(confFile) {
 		return
 	}
-	iniFile, err := ini.Load(confFile)
+	iFile, err := ini.Load(confFile)
 	if err != nil {
 		log15.Crit("Conf.Load."+confFile, "error", err.Error())
 		return
 	}
+	iniFile = iFile
 	isDebug = iniFile.Section("mode").Key("debug").MustBool(false)
 	isWatch = iniFile.Section("build").Key("watch").MustBool(false)
 
