@@ -48,6 +48,9 @@ type (
 
 		Version string
 		VerDate string
+
+		Before func(b *Builder, ctx *Context) error
+		After  func(b *Builder, ctx *Context) error
 	}
 )
 
@@ -94,6 +97,7 @@ func (b *Builder) Build(dest string) {
 	if b.isBuilding {
 		return
 	}
+
 	log15.Debug("Build.Start")
 	ctx := &Context{
 		DstDir:       dest,
@@ -102,6 +106,17 @@ func (b *Builder) Build(dest string) {
 		BeginTime:    time.Now(),
 	}
 	b.isBuilding = true
+
+	// before hook
+	if b.opt.Before != nil {
+		if err := b.opt.Before(b, ctx); err != nil {
+			log15.Error("Build.Before", "error", err.Error())
+			ctx.Error = err
+			b.isBuilding = false
+			b.context = ctx
+			return
+		}
+	}
 
 	// run tasks
 	for _, task := range b.tasks {
@@ -123,6 +138,18 @@ func (b *Builder) Build(dest string) {
 
 	log15.Info("Build.Finish", "duration", ctx.Duration())
 	b.isBuilding = false
+
+	// after hook
+	if b.opt.After != nil {
+		if err := b.opt.After(b, ctx); err != nil {
+			log15.Error("Build.After", "error", err.Error())
+			if ctx.Error == nil {
+				ctx.Error = err
+			}
+			b.context = ctx
+			return
+		}
+	}
 }
 
 // get parser with mark bytes
