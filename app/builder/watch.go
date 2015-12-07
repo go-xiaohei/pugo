@@ -11,7 +11,7 @@ import (
 
 var (
 	watchingExt       = []string{".md", ".html", ".css", ".js"}
-	watchScheduleTime time.Time
+	watchScheduleTime int64
 )
 
 // watch source dir changes and build to destination directory if updated
@@ -24,6 +24,18 @@ func (b *Builder) Watch(dstDir string) {
 	log15.Info("Watch.Start")
 	b.isWatching = true
 
+	// use a ticker to trigger build
+	go func() {
+		c := time.Tick(1 * time.Second)
+		for {
+			t := <-c
+			if watchScheduleTime > 0 && t.UnixNano() > watchScheduleTime {
+				b.Build(dstDir)
+				watchScheduleTime = 0
+			}
+		}
+	}()
+
 	go func() {
 		for {
 			select {
@@ -33,21 +45,7 @@ func (b *Builder) Watch(dstDir string) {
 					if e == ext {
 						if event.Op != fsnotify.Chmod && !b.IsBuilding() {
 							log15.Info("Watch.Rebuild", "change", event.String())
-
-							go func(dstDir string) {
-								// set schedule time
-								// copy from https://github.com/beego/bee/blob/develop/watch.go#L70
-								watchScheduleTime = time.Now().Add(time.Second)
-								for {
-									time.Sleep(watchScheduleTime.Sub(time.Now()))
-									if time.Now().After(watchScheduleTime) {
-										break
-									}
-									return
-								}
-								b.Build(dstDir)
-							}(dstDir)
-
+							watchScheduleTime = time.Now().Add(time.Second).UnixNano()
 						}
 						break
 					}

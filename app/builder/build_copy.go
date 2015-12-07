@@ -70,9 +70,11 @@ func (b *Builder) copyAssets(ctx *Context) {
 	// copy upload data
 	if com.IsDir(b.opt.MediaDir) {
 		dstDir = path.Join(ctx.DstDir, path.Base(staticDir), path.Base(b.opt.MediaDir))
-		if err := com.CopyDir(b.opt.MediaDir, dstDir); err != nil {
-			ctx.Error = err
-			return
+		if !com.IsDir(dstDir) {
+			if err := com.CopyDir(b.opt.MediaDir, dstDir); err != nil {
+				ctx.Error = err
+				return
+			}
 		}
 	}
 
