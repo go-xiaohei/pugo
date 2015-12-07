@@ -19,6 +19,7 @@ type (
 	// builder object, provides api to build and watch sources and templates
 	Builder struct {
 		isBuilding bool
+		isWatching bool
 		opt        *BuildOption
 
 		render  *render.Render
@@ -167,6 +168,11 @@ func (b *Builder) getParser(data []byte) parser.Parser {
 // is builder run building
 func (b *Builder) IsBuilding() bool {
 	return b.isBuilding
+}
+
+// is builder watching changes
+func (b *Builder) IsWatching() bool {
+	return b.isWatching
 }
 
 // get last context in builder

@@ -1,10 +1,11 @@
 package builder
 
 import (
-	"gopkg.in/fsnotify.v1"
-	"gopkg.in/inconshreveable/log15.v2"
 	"io/ioutil"
 	"path"
+
+	"gopkg.in/fsnotify.v1"
+	"gopkg.in/inconshreveable/log15.v2"
 )
 
 var (
@@ -19,6 +20,7 @@ func (b *Builder) Watch(dstDir string) {
 		return
 	}
 	log15.Info("Watch.Start")
+	b.isWatching = true
 
 	go func() {
 		for {

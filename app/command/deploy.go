@@ -2,6 +2,7 @@ package command
 
 import (
 	"errors"
+	"time"
 
 	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo-static/app/builder"
@@ -29,13 +30,28 @@ func deploySite(opt *builder.BuildOption) func(ctx *cli.Context) {
 	// real deploy action, in builder hook
 	afterFunc := func(dopt *deploy.Option) builder.BuildHook {
 		return func(b *builder.Builder, ctx *builder.Context) error {
-			println("deploy")
+
 			// do git deployment
 			for name, gitOpt := range dopt.GitOptions {
-				if err := deploy.Git(gitOpt, ctx); err != nil {
-					log15.Error("Deploy.Git.["+name+"]", "error", err)
+				fn := func(name string, gitOpt deploy.GitOption) {
+					log15.Info("Deploy.Git.[" + name + "].Start")
+					t := time.Now()
+					if err := deploy.Git(gitOpt, ctx); err != nil {
+						log15.Error("Deploy.Git.["+name+"]", "error", err, "duration", time.Since(t))
+						return
+					}
+					log15.Info("Deploy.Git.["+name+"].Done", "duration", time.Since(t))
+				}
+
+				// if is watching, deploy process can run in goroutine
+				if b.IsWatching() {
+					go fn(name, gitOpt)
+				} else {
+					// otherwise, block it
+					fn(name, gitOpt)
 				}
 			}
+
 			return nil
 		}
 	}

@@ -21,6 +21,7 @@ var (
 	gitMessageReplacer = strings.NewReplacer("{now}", time.Now().Format(time.RFC3339))
 )
 
+// git option
 type GitOption struct {
 	RepoUrl  string `ini:"repo_url"`
 	Branch   string `ini:"branch"`
@@ -29,6 +30,7 @@ type GitOption struct {
 	Message  string `ini:"message"`
 }
 
+// is valid option
 func (g *GitOption) isValid() error {
 	if g.RepoUrl == "" || g.Branch == "" || g.Message == "" {
 		return errors.New("deploy to git need repo url, branch name and message")
