@@ -2,9 +2,10 @@ package command
 
 import (
 	"errors"
-	"fmt"
+
 	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo-static/app/builder"
+	"github.com/go-xiaohei/pugo-static/app/deploy"
 	"gopkg.in/inconshreveable/log15.v2"
 )
 
@@ -24,14 +25,17 @@ func Deploy(opt *builder.BuildOption) cli.Command {
 	}
 }
 
-type deployOption struct {
-}
-
 func deploySite(opt *builder.BuildOption) func(ctx *cli.Context) {
 	// real deploy action, in builder hook
-	afterFunc := func(dopt *deployOption) builder.BuildHook {
+	afterFunc := func(dopt *deploy.Option) builder.BuildHook {
 		return func(b *builder.Builder, ctx *builder.Context) error {
 			println("deploy")
+			// do git deployment
+			for name, gitOpt := range dopt.GitOptions {
+				if err := deploy.Git(gitOpt, ctx); err != nil {
+					log15.Error("Deploy.Git.["+name+"]", "error", err)
+				}
+			}
 			return nil
 		}
 	}
@@ -39,11 +43,13 @@ func deploySite(opt *builder.BuildOption) func(ctx *cli.Context) {
 	// build action
 	return func(ctx *cli.Context) {
 		if iniFile == nil {
-			log15.Crit("Deploy.Fail", "error", errors.New("please write deploy options to conf.ini"))
+			log15.Crit("Deploy.Init.Fail", "error", errors.New("please write deploy options to conf.ini"))
 		}
-		fmt.Println(confFile)
-
-		dOpt := &deployOption{}
+		dOpt, err := deploy.NewOption(iniFile)
+		if err != nil {
+			log15.Error("Deploy.Init.Fail", "error", err)
+			return
+		}
 
 		// add hook to opt
 		if opt.After == nil {
