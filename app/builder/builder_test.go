@@ -1,13 +1,14 @@
 package builder_test
 
 import (
-	"github.com/Unknwon/com"
-	"github.com/go-xiaohei/pugo-static/app/builder"
-	. "github.com/smartystreets/goconvey/convey"
 	"io/ioutil"
 	"os"
 	"path"
 	"testing"
+
+	"github.com/Unknwon/com"
+	"github.com/go-xiaohei/pugo-static/app/builder"
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 var (
@@ -19,7 +20,7 @@ var (
 		VerDate:  "2015-11-11",
 		Theme:    "default",
 	}
-	target          = "../dest"
+	target          = "../../dest"
 	b               = builder.New(opt)
 	shoudlExistDirs = []string{
 		"tags",
@@ -68,19 +69,19 @@ func TestBuilderBuild(t *testing.T) {
 
 func TestBuilderErrors(t *testing.T) {
 	Convey("Build Errors", t, func() {
-		opt.SrcDir = "../xxxx"
+		opt.SrcDir = "../../xxxx"
 		b2 := builder.New(opt)
 		So(b2.Error, ShouldEqual, builder.ErrSrcDirMissing)
 
-		opt.SrcDir = "../source"
-		opt.TplDir = "../xxx"
+		opt.SrcDir = "../../source"
+		opt.TplDir = "../../xxx"
 		b2 = builder.New(opt)
 		So(b2.Error, ShouldEqual, builder.ErrTplDirMissing)
 
 	})
 
 	Convey("Build Fail", t, func() {
-		opt.TplDir = "../template"
+		opt.TplDir = "../../template"
 		opt.SrcDir = "./testdata"
 
 		b := builder.New(opt)

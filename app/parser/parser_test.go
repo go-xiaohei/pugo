@@ -116,7 +116,7 @@ func TestParser(t *testing.T) {
 
 func TestParseMeta(t *testing.T) {
 	Convey("parse meta", t, func() {
-		bytes, err := ioutil.ReadFile("../source/meta.md")
+		bytes, err := ioutil.ReadFile("../../source/meta.md")
 		So(err, ShouldBeNil)
 		blocks, err := p2.Parse(bytes)
 		So(err, ShouldBeNil)
@@ -140,7 +140,7 @@ func TestParseMeta(t *testing.T) {
 
 func TestPostMeta(t *testing.T) {
 	Convey("parse post", t, func() {
-		bytes, err := ioutil.ReadFile("../source/post/welcome.md")
+		bytes, err := ioutil.ReadFile("../../source/post/welcome.md")
 		So(err, ShouldBeNil)
 		blocks, err := p2.Parse(bytes)
 		So(err, ShouldBeNil)
@@ -155,7 +155,7 @@ func TestPostMeta(t *testing.T) {
 				So(ok, ShouldBeTrue)
 				So(b.Item("title"), ShouldEqual, "Welcome")
 
-				fi, _ := os.Stat("../source/post/welcome.md")
+				fi, _ := os.Stat("../../source/post/welcome.md")
 				post, err := model.NewPost(blocks, fi)
 				So(err, ShouldBeNil)
 				So(post.Title, ShouldEqual, b.Item("title"))
@@ -166,7 +166,7 @@ func TestPostMeta(t *testing.T) {
 
 func TestPageMeta(t *testing.T) {
 	Convey("parse page with MdParser", t, func() {
-		bytes, err := ioutil.ReadFile("../source/page/about.md")
+		bytes, err := ioutil.ReadFile("../../source/page/about.md")
 		So(err, ShouldBeNil)
 		blocks, err := p2.Parse(bytes)
 		So(err, ShouldBeNil)
@@ -181,7 +181,7 @@ func TestPageMeta(t *testing.T) {
 				So(ok, ShouldBeTrue)
 				So(b.Item("title"), ShouldEqual, "About Pugo.Static")
 
-				fi, _ := os.Stat("../source/page/about.md")
+				fi, _ := os.Stat("../../source/page/about.md")
 				page, err := model.NewPage(blocks, fi)
 				So(err, ShouldBeNil)
 				So(page.Title, ShouldEqual, b.Item("title"))

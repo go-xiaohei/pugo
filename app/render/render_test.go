@@ -2,12 +2,13 @@ package render_test
 
 import (
 	"bytes"
-	"github.com/go-xiaohei/pugo-static/app/model"
-	"github.com/go-xiaohei/pugo-static/app/render"
-	. "github.com/smartystreets/goconvey/convey"
 	"html/template"
 	"path"
 	"testing"
+
+	"github.com/go-xiaohei/pugo-static/app/model"
+	"github.com/go-xiaohei/pugo-static/app/render"
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 var (
@@ -26,7 +27,7 @@ func init() {
 }
 
 func TestRender(t *testing.T) {
-	r := render.New("../template")
+	r := render.New("../../template")
 	for name, fn := range funcMap {
 		r.SetFunc(name, fn)
 	}
@@ -41,7 +42,7 @@ func TestRender(t *testing.T) {
 }
 
 func TestTheme(t *testing.T) {
-	theme := render.NewTheme("../template/default", funcMap, []string{".html"})
+	theme := render.NewTheme("../../template/default", funcMap, []string{".html"})
 	Convey("load theme", t, func() {
 		err := theme.Load()
 		So(err, ShouldBeNil)
