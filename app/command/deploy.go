@@ -30,7 +30,6 @@ func deploySite(opt *builder.BuildOption) func(ctx *cli.Context) {
 	// real deploy action, in builder hook
 	afterFunc := func(dopt *deploy.Option) builder.BuildHook {
 		return func(b *builder.Builder, ctx *builder.Context) error {
-
 			// do git deployment
 			for name, gitOpt := range dopt.GitOptions {
 				fn := func(name string, gitOpt deploy.GitOption) {

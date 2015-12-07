@@ -3,13 +3,15 @@ package builder
 import (
 	"io/ioutil"
 	"path"
+	"time"
 
 	"gopkg.in/fsnotify.v1"
 	"gopkg.in/inconshreveable/log15.v2"
 )
 
 var (
-	watchingExt = []string{".md", ".html", ".css", ".js"}
+	watchingExt       = []string{".md", ".html", ".css", ".js"}
+	watchScheduleTime time.Time
 )
 
 // watch source dir changes and build to destination directory if updated
@@ -31,7 +33,21 @@ func (b *Builder) Watch(dstDir string) {
 					if e == ext {
 						if event.Op != fsnotify.Chmod && !b.IsBuilding() {
 							log15.Info("Watch.Rebuild", "change", event.String())
-							b.Build(dstDir)
+
+							go func(dstDir string) {
+								// set schedule time
+								// copy from https://github.com/beego/bee/blob/develop/watch.go#L70
+								watchScheduleTime = time.Now().Add(time.Second)
+								for {
+									time.Sleep(watchScheduleTime.Sub(time.Now()))
+									if time.Now().After(watchScheduleTime) {
+										break
+									}
+									return
+								}
+								b.Build(dstDir)
+							}(dstDir)
+
 						}
 						break
 					}

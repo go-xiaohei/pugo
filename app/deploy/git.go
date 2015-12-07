@@ -6,6 +6,8 @@ import (
 	"strings"
 	"time"
 
+	"gopkg.in/inconshreveable/log15.v2"
+
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo-static/app/builder"
 )
@@ -58,26 +60,29 @@ func Git(opt GitOption, ctx *builder.Context) error {
 		return ErrGitNotRepo
 	}
 	// add files
-	if _, _, err := com.ExecCmdDirBytes(
+	if _, stderr, err := com.ExecCmdDir(
 		ctx.DstDir,
 		"git",
 		[]string{"add", "--all"}...); err != nil {
+		log15.Debug("Deploy.Git.Error", "error", stderr)
 		return err
 	}
 	// commit message
-	if _, _, err := com.ExecCmdDirBytes(
+	if _, stderr, err := com.ExecCmdDir(
 		ctx.DstDir,
 		"git",
 		[]string{
 			"commit",
 			"-m",
 			gitMessageReplacer.Replace(opt.Message)}...); err != nil {
+		log15.Debug("Deploy.Git.Error", "error", stderr)
 		return err
 	}
 	// change remote url
-	if _, _, err := com.ExecCmdDir(ctx.DstDir, "git", []string{
+	if _, stderr, err := com.ExecCmdDir(ctx.DstDir, "git", []string{
 		"remote", "set-url", "origin", opt.remoteUrl(),
 	}...); err != nil {
+		log15.Debug("Deploy.Git.Error", "error", stderr)
 		return err
 	}
 	// push to repo
@@ -86,6 +91,7 @@ func Git(opt GitOption, ctx *builder.Context) error {
 		"--force",
 		"origin", opt.Branch,
 	}...); err != nil {
+		log15.Debug("Deploy.Git.Error", "error", stderr)
 		if stderr != "" {
 			return errors.New(stderr)
 		}
