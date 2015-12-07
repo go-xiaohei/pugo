@@ -13,11 +13,11 @@ import (
 
 var (
 	opt = &builder.BuildOption{
-		SrcDir:   "../source",
-		TplDir:   "../template",
-		MediaDir: "../source/media",
-		Version:  "0.0.0",
-		VerDate:  "2015-11-11",
+		SrcDir:   "../../source",
+		TplDir:   "../../template",
+		MediaDir: "../../source/media",
+		Version:  "0.1.1",
+		VerDate:  "2015-12-22",
 		Theme:    "default",
 	}
 	target          = "../../dest"
