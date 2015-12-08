@@ -38,9 +38,9 @@ func deploySite(opt *builder.BuildOption) func(ctx *cli.Context) {
 	// real deploy action, in builder hook
 	afterFunc := func(b *builder.Builder, ctx *builder.Context) error {
 		if b.IsWatching() {
-			return deployer.RunAsync()
+			return deployer.RunAsync(b, ctx)
 		}
-		return deployer.Run()
+		return deployer.Run(b, ctx)
 	}
 
 	// build action

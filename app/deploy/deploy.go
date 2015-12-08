@@ -31,7 +31,10 @@ func New(file *ini.File) (*Deployer, error) {
 		return nil, errors.New("please write deploy settings in conf.ini")
 	}
 	d := &Deployer{
-		registered: map[string]DeployTask{TYPE_GIT: new(GitTask)},
+		registered: map[string]DeployTask{
+			TYPE_GIT: new(GitTask),
+			TYPE_FTP: new(FtpTask),
+		},
 	}
 	for _, name := range items {
 		s := file.Section("deploy." + name)
