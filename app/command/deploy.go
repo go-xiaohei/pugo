@@ -30,7 +30,7 @@ func deploySite(opt *builder.BuildOption) func(ctx *cli.Context) {
 	if iniFile == nil {
 		log15.Crit("Deploy.Fail", "error", errors.New("please add conf.ini to set deploy options"))
 	}
-	deployer, err := deploy.New(iniFile.Section("deploy"))
+	deployer, err := deploy.New(iniFile)
 	if err != nil {
 		log15.Crit("Deploy.Fail", "error", err.Error())
 	}

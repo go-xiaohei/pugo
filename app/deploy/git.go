@@ -18,33 +18,38 @@ const (
 )
 
 var (
-	ErrGitNotRepo = errors.New("destination directory is not a git repository")
+	_ DeployTask = new(GitTask)
 
-	// git message replacer
+	ErrGitNotRepo      = errors.New("destination directory is not a git repository")
 	gitMessageReplacer = strings.NewReplacer("{now}", time.Now().Format(time.RFC3339))
 )
 
 type (
+	// Git Deployment task
 	GitTask struct {
 		name string
 		opt  *GitOption
 	}
+	// git options
 	GitOption struct {
-		Directory string `ini:"directory"`
-		RepoUrl   string `ini:"repo_url"`
-		Branch    string `ini:"branch"`
-		User      string `ini:"user"`
-		Password  string `ini:"password"`
-		Message   string `ini:"message"`
+		Directory string `ini:"directory"` // if set, use this value. otherwise, use ctx.DstDir
+		RepoUrl   string `ini:"repo_url"`  // remote repository url
+		Branch    string `ini:"branch"`    // remote repository branch name
+		User      string `ini:"user"`      // remote repository username, may need for http or https
+		Password  string `ini:"password"`  // remote repository user password,may need for http or https
+		Message   string `ini:"message"`   // commit message, only support {now} time string
 	}
 )
 
+// New GitTask with name and ini.Section options
 func (gt *GitTask) New(name string, section *ini.Section) (DeployTask, error) {
 	// create a new GitTask
 	var (
 		g = &GitTask{
 			name: name,
-			opt:  &GitOption{},
+			opt: &GitOption{
+				Message: "Site Updated at {now}",
+			},
 		}
 		err error
 	)
@@ -57,10 +62,12 @@ func (gt *GitTask) New(name string, section *ini.Section) (DeployTask, error) {
 	return g, nil
 }
 
+// GitTask's name
 func (g *GitTask) Name() string {
 	return g.name
 }
 
+// GitTask's type
 func (g *GitTask) Type() string {
 	return TYPE_GIT
 }
