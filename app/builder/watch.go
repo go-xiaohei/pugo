@@ -36,6 +36,7 @@ func (b *Builder) Watch(dstDir string) {
 		}
 	}()
 
+	// catch fsnotify events
 	go func() {
 		for {
 			select {
@@ -60,6 +61,7 @@ func (b *Builder) Watch(dstDir string) {
 	watchDir(watcher, b.opt.TplDir)
 }
 
+// watch sub directory
 func watchDir(watcher *fsnotify.Watcher, srcDir string) {
 	watcher.Add(srcDir)
 	dir, _ := ioutil.ReadDir(srcDir)
