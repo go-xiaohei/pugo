@@ -18,7 +18,7 @@ type (
 		files map[string]*DiffEntry
 	}
 	DiffEntry struct {
-		behavior int
+		Behavior int
 		t        time.Time
 	}
 )
@@ -31,11 +31,21 @@ func newDiff() *Diff {
 
 func (d *Diff) Add(file string, behavior int) {
 	file = filepath.ToSlash(file)
-	d.files[file] = &DiffEntry{behavior: behavior, t: time.Now()}
+	d.files[file] = &DiffEntry{Behavior: behavior, t: time.Now()}
 }
 
 func (d *Diff) Exist(file string) bool {
 	file = filepath.ToSlash(file)
 	_, ok := d.files[file]
 	return ok
+}
+
+func (d *Diff) Walk(fn func(string, *DiffEntry) error) error {
+	var err error
+	for name, f := range d.files {
+		if err = fn(name, f); err != nil {
+			return err
+		}
+	}
+	return nil
 }

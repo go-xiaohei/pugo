@@ -15,7 +15,7 @@ type Context struct {
 	DstDir       string // read output destination, affected by root value in meta.md
 	Version      builderVersion
 	BeginTime    time.Time
-    Diff *Diff
+	Diff         *Diff
 	Error        error
 
 	Posts         []*model.Post

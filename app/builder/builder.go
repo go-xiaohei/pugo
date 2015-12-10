@@ -4,7 +4,6 @@ import (
 	"errors"
 	"time"
 
-	"fmt"
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo-static/app/parser"
 	"github.com/go-xiaohei/pugo-static/app/render"
@@ -154,9 +153,6 @@ func (b *Builder) Build(dest string) {
 			b.context = ctx
 			return
 		}
-	}
-	for name, f := range ctx.Diff.files {
-		fmt.Println(name, f.behavior, f.t)
 	}
 }
 
