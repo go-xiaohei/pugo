@@ -43,9 +43,9 @@ func (b *Builder) WriteFeed(ctx *Context) {
 		return
 	}
 	if com.IsFile(dstFile) {
-		ctx.Diff.Add(dstFile, DIFF_UPDATE)
+		ctx.Diff.Add(dstFile, DIFF_UPDATE, time.Now())
 	} else {
-		ctx.Diff.Add(dstFile, DIFF_ADD)
+		ctx.Diff.Add(dstFile, DIFF_ADD, time.Now())
 	}
 
 	// sitemap
@@ -107,8 +107,8 @@ func (b *Builder) WriteFeed(ctx *Context) {
 	os.MkdirAll(path.Dir(dstFile), os.ModePerm)
 	ctx.Error = ioutil.WriteFile(dstFile, buf.Bytes(), os.ModePerm)
 	if com.IsFile(dstFile) {
-		ctx.Diff.Add(dstFile, DIFF_UPDATE)
+		ctx.Diff.Add(dstFile, DIFF_UPDATE, time.Now())
 	} else {
-		ctx.Diff.Add(dstFile, DIFF_ADD)
+		ctx.Diff.Add(dstFile, DIFF_ADD, time.Now())
 	}
 }

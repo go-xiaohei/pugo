@@ -11,6 +11,7 @@ import (
 	"gopkg.in/inconshreveable/log15.v2"
 	"io/ioutil"
 	"strconv"
+	"time"
 )
 
 // compile data to html files
@@ -190,9 +191,9 @@ func (b *Builder) compileIndex(ctx *Context) {
 // compile template by data and write to dest file.
 func (b *Builder) compileTemplate(ctx *Context, file string, viewData map[string]interface{}, destFile string) error {
 	if com.IsFile(destFile) {
-		ctx.Diff.Add(destFile, DIFF_UPDATE)
+		ctx.Diff.Add(destFile, DIFF_UPDATE, time.Now())
 	} else {
-		ctx.Diff.Add(destFile, DIFF_ADD)
+		ctx.Diff.Add(destFile, DIFF_ADD, time.Now())
 	}
 
 	os.MkdirAll(path.Dir(destFile), os.ModePerm)

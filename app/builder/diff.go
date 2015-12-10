@@ -29,9 +29,9 @@ func newDiff() *Diff {
 	}
 }
 
-func (d *Diff) Add(file string, behavior int) {
+func (d *Diff) Add(file string, behavior int, t time.Time) {
 	file = filepath.ToSlash(file)
-	d.files[file] = &DiffEntry{Behavior: behavior, t: time.Now()}
+	d.files[file] = &DiffEntry{Behavior: behavior, t: t}
 }
 
 func (d *Diff) Exist(file string) bool {
