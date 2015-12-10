@@ -3,6 +3,7 @@ package builder
 import (
 	"bytes"
 	"fmt"
+	"github.com/Unknwon/com"
 	"io/ioutil"
 	"os"
 	"path"
@@ -40,6 +41,11 @@ func (b *Builder) WriteFeed(ctx *Context) {
 	os.MkdirAll(path.Dir(dstFile), os.ModePerm)
 	if ctx.Error = ioutil.WriteFile(dstFile, buf.Bytes(), os.ModePerm); ctx.Error != nil {
 		return
+	}
+	if com.IsFile(dstFile) {
+		ctx.Diff.Add(dstFile, DIFF_UPDATE)
+	} else {
+		ctx.Diff.Add(dstFile, DIFF_ADD)
 	}
 
 	// sitemap
@@ -100,4 +106,9 @@ func (b *Builder) WriteFeed(ctx *Context) {
 	dstFile = path.Join(ctx.DstDir, "sitemap.xml")
 	os.MkdirAll(path.Dir(dstFile), os.ModePerm)
 	ctx.Error = ioutil.WriteFile(dstFile, buf.Bytes(), os.ModePerm)
+	if com.IsFile(dstFile) {
+		ctx.Diff.Add(dstFile, DIFF_UPDATE)
+	} else {
+		ctx.Diff.Add(dstFile, DIFF_ADD)
+	}
 }

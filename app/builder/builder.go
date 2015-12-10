@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"fmt"
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo-static/app/parser"
 	"github.com/go-xiaohei/pugo-static/app/render"
@@ -102,14 +103,15 @@ func (b *Builder) Build(dest string) {
 	}
 
 	log15.Debug("Build.Start")
+	b.isBuilding = true
+
 	ctx := &Context{
 		DstDir:       dest,
 		DstOriginDir: dest,
 		Version:      b.Version,
 		BeginTime:    time.Now(),
+		Diff:         newDiff(),
 	}
-	b.isBuilding = true
-
 	// before hook
 	if b.opt.Before != nil {
 		if err := b.opt.Before(b, ctx); err != nil {
@@ -152,6 +154,9 @@ func (b *Builder) Build(dest string) {
 			b.context = ctx
 			return
 		}
+	}
+	for name, f := range ctx.Diff.files {
+		fmt.Println(name, f.behavior, f.t)
 	}
 }
 

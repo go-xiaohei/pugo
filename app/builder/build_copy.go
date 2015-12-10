@@ -3,9 +3,7 @@ package builder
 import (
 	"os"
 	"path"
-
 	"path/filepath"
-	"strings"
 
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo-static/app/helper"
@@ -14,69 +12,84 @@ import (
 // copy assets to target directory,
 // favicon, robots.txt, error pages and all static asset if ctx.isCopyAllAssets
 func (b *Builder) CopyAssets(ctx *Context) {
-	if b.copyAssets(ctx); ctx.Error != nil {
-		return
-	}
-	if b.copyClean(ctx); ctx.Error != nil {
+	// copy static files
+	staticDir := ctx.Theme.Static()
+	if err := b.copyAssets(ctx, staticDir, path.Join(ctx.DstDir, path.Base(staticDir))); err != nil {
+		ctx.Error = err
 		return
 	}
 
+	// copy media files
+	if err := b.copyAssets(ctx, b.opt.MediaDir, path.Join(ctx.DstDir, path.Base(staticDir), path.Base(b.opt.MediaDir))); err != nil {
+		ctx.Error = err
+		return
+	}
+
+	// some extra files
+	if b.copyExtraAssets(ctx); ctx.Error != nil {
+		return
+	}
+
+	// clean un-track files
+	if b.copyClean(ctx); ctx.Error != nil {
+		return
+	}
 }
 
 // clean old no change s file
 func (b *Builder) copyClean(ctx *Context) {
-	static := path.Base(ctx.Theme.Static())
 	ctx.Error = filepath.Walk(ctx.DstDir, func(p string, fi os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		// skip directory and static dir
-		rel, _ := filepath.Rel(ctx.DstDir, p)
-		if fi.IsDir() || strings.HasPrefix(rel, static) {
+		if fi.IsDir() {
 			return nil
 		}
-		if rel == "favicon.ico" || rel == "robots.txt" {
-			return nil
-		}
-		ext := path.Ext(p)
-		if ext == ".html" || ext == ".xml" {
-			if ctx.BeginTime.Unix()-fi.ModTime().Unix() > 10 {
-				return os.Remove(p)
-			}
+		// not build file, clean it
+		if !ctx.Diff.Exist(p) {
+			ctx.Diff.Add(p, DIFF_REMOVE)
+			return os.Remove(p)
 		}
 		return nil
 	})
 }
 
 // copy static assets
-func (b *Builder) copyAssets(ctx *Context) {
-	staticDir := ctx.Theme.Static()
-	// copy all static
-	dstDir := path.Join(ctx.DstDir, path.Base(staticDir))
-	if err := helper.RemoveDir(dstDir); err != nil {
-		ctx.Error = err
-		return
-	}
-	if err := com.CopyDir(staticDir, dstDir, func(p string) bool {
-		if path.Ext(p) == ".DS_Store" {
-			return true
+func (b *Builder) copyAssets(ctx *Context, srcDir string, dstDir string) error {
+	return filepath.Walk(srcDir, func(p string, fi os.FileInfo, err error) error {
+		if err != nil {
+			return err
 		}
-		return false
-	}); err != nil {
-		ctx.Error = err
-		return
-	}
+		if fi.IsDir() {
+			return nil
+		}
 
-	// copy upload data
-	if com.IsDir(b.opt.MediaDir) {
-		dstDir = path.Join(ctx.DstDir, path.Base(staticDir), path.Base(b.opt.MediaDir))
-		if !com.IsDir(dstDir) {
-			if err := com.CopyDir(b.opt.MediaDir, dstDir); err != nil {
-				ctx.Error = err
-				return
+		// if file exist, check mod time
+		rel, _ := filepath.Rel(srcDir, p)
+		toFile := filepath.Join(dstDir, rel)
+		if com.IsFile(toFile) {
+			if fi2, _ := os.Stat(toFile); fi2 != nil {
+				if fi2.ModTime().Sub(fi.ModTime()).Seconds() > 0 {
+					ctx.Diff.Add(toFile, DIFF_KEEP)
+					return nil
+				}
+				if err := helper.CopyFile(p, toFile); err != nil {
+					return err
+				}
+				ctx.Diff.Add(toFile, DIFF_UPDATE)
+				return nil
 			}
 		}
-	}
+
+		// not exist, just copy
+		if err := helper.CopyFile(p, toFile); err != nil {
+			return err
+		}
+		ctx.Diff.Add(toFile, DIFF_ADD)
+		return nil
+	})
+}
+
+// copy extra files
+func (b *Builder) copyExtraAssets(ctx *Context) {
+	staticDir := ctx.Theme.Static()
 
 	assetFiles := []string{"favicon.ico", "robots.txt"}
 	for _, f := range assetFiles {
@@ -89,13 +102,18 @@ func (b *Builder) copyAssets(ctx *Context) {
 		}
 
 		// use origin dir, make these files existing in top directory
-		if err := com.Copy(srcFile, path.Join(ctx.DstOriginDir, f)); err != nil {
+		toFile := path.Join(ctx.DstOriginDir, f)
+		if err := com.Copy(srcFile, toFile); err != nil {
 			ctx.Error = err
 			return
 		}
-		if err := com.Copy(srcFile, path.Join(ctx.DstDir, f)); err != nil {
+		ctx.Diff.Add(toFile, DIFF_ADD)
+
+		toFile = path.Join(ctx.DstDir, f)
+		if err := com.Copy(srcFile, toFile); err != nil {
 			ctx.Error = err
 			return
 		}
+		ctx.Diff.Add(toFile, DIFF_ADD)
 	}
 }

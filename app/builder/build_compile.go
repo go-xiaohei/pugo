@@ -5,6 +5,7 @@ import (
 	"os"
 	"path"
 
+	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo-static/app/helper"
 	"github.com/go-xiaohei/pugo-static/app/model"
 	"gopkg.in/inconshreveable/log15.v2"
@@ -188,6 +189,12 @@ func (b *Builder) compileIndex(ctx *Context) {
 
 // compile template by data and write to dest file.
 func (b *Builder) compileTemplate(ctx *Context, file string, viewData map[string]interface{}, destFile string) error {
+	if com.IsFile(destFile) {
+		ctx.Diff.Add(destFile, DIFF_UPDATE)
+	} else {
+		ctx.Diff.Add(destFile, DIFF_ADD)
+	}
+
 	os.MkdirAll(path.Dir(destFile), os.ModePerm)
 	f, err := os.OpenFile(destFile, os.O_CREATE|os.O_TRUNC|os.O_RDWR, os.ModePerm)
 	if err != nil {
