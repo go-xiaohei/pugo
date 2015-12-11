@@ -2,16 +2,17 @@ package deploy
 
 import (
 	"errors"
+	"net/textproto"
+	"net/url"
+	"os"
+	"path"
+	"path/filepath"
+	"strings"
+	"time"
 
 	"github.com/go-xiaohei/pugo-static/app/builder"
 	"github.com/jlaffaye/ftp"
 	"gopkg.in/ini.v1"
-	"net/textproto"
-	"net/url"
-	"os"
-	"path/filepath"
-	"strings"
-	"time"
 )
 
 const (
@@ -23,10 +24,12 @@ var (
 )
 
 type (
+	// ftp deployment task
 	FtpTask struct {
 		name string
 		opt  *FtpOption
 	}
+	// ftp deploy option
 	FtpOption struct {
 		url      *url.URL
 		Address  string `ini:"address"`
@@ -35,6 +38,7 @@ type (
 	}
 )
 
+// is option valid
 func (fopt *FtpOption) isValid() error {
 	if fopt.Address == "" || fopt.User == "" || fopt.Password == "" {
 		return errors.New("deploy to ft need addres, username and password")
@@ -47,6 +51,7 @@ func (fopt *FtpOption) isValid() error {
 	return nil
 }
 
+// new ftp task with section
 func (ft *FtpTask) New(name string, section *ini.Section) (DeployTask, error) {
 	var (
 		f = &FtpTask{
@@ -64,18 +69,22 @@ func (ft *FtpTask) New(name string, section *ini.Section) (DeployTask, error) {
 	return f, nil
 }
 
+// ftp task's name
 func (ft *FtpTask) Name() string {
 	return ft.name
 }
 
+// ftp task's is valid
 func (ft *FtpTask) IsValid() error {
 	return ft.opt.isValid()
 }
 
+// ftp task's type
 func (ft *FtpTask) Type() string {
 	return TYPE_FTP
 }
 
+// ftp task do action
 func (ft *FtpTask) Do(b *builder.Builder, ctx *builder.Context) error {
 	client, err := ftp.DialTimeout(ft.opt.url.Host, time.Second*10)
 	if err != nil {
@@ -88,60 +97,121 @@ func (ft *FtpTask) Do(b *builder.Builder, ctx *builder.Context) error {
 		}
 	}
 
-	// move to destination directory
-	ftpDir := ft.opt.url.Path
-	list, err := client.NameList(".")
-	if err != nil {
-		return err
-	}
-	isFound := false
-	for _, name := range list {
-		if name == strings.Trim(ftpDir, "/") {
-			isFound = true
-		}
-	}
-	if !isFound {
-		if err = client.MakeDir(ftpDir); err != nil {
-			return err
-		}
-	}
+	ftpDir := strings.TrimPrefix(ft.opt.url.Path, "/")
+
 	if err = client.ChangeDir(ftpDir); err != nil {
-		return err
+		if isTextProtoError(err, ftp.StatusFileUnavailable) {
+			dirs := getDirs(ftpDir)
+			if err = makeDir(client, dirs); err != nil {
+				return err
+			}
+			// change  to directory again
+			if err = client.ChangeDir(ftpDir); err != nil {
+				return err
+			}
+			return uploadAllFiles(client, ctx)
+		}
 	}
 
-	var (
-		rel, toFile string
-	)
-	if err = ctx.Diff.Walk(func(name string, entry *builder.DiffEntry) error {
-		rel, _ = filepath.Rel(ctx.DstDir, name)
-		toFile = filepath.ToSlash(filepath.Join(ftpDir, rel))
+	return uploadDiffFiles(client, ctx)
+}
 
-		// check file, if not exist, upload it
-		_, err := client.Retr(toFile)
-		if e, ok := err.(*textproto.Error); ok {
-			if e.Code == ftp.StatusPageTypeUnknown {
-				if err = uploadFile(client, toFile, name); err != nil {
-					return err
-				}
-			}
-		}
+// upload files with checking diff status
+func uploadDiffFiles(client *ftp.ServerConn, ctx *builder.Context) error {
+	return ctx.Diff.Walk(func(name string, entry *builder.DiffEntry) error {
+		rel, _ := filepath.Rel(ctx.DstDir, name)
+		rel = filepath.ToSlash(rel)
 
 		if entry.Behavior == builder.DIFF_KEEP {
 			return nil
 		}
-		return nil
-	}); err != nil {
-		return err
-	}
 
+		if entry.Behavior == builder.DIFF_REMOVE {
+			return client.Delete(rel)
+		}
+
+		dirs := getDirs(path.Dir(rel))
+		for i := len(dirs) - 1; i >= 0; i-- {
+			client.MakeDir(dirs[i])
+		}
+
+		// upload file
+		f, err := os.Open(name)
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+		if err = client.Stor(rel, f); err != nil {
+			return err
+		}
+		return nil
+	})
+}
+
+// upload all files ignore diff status
+func uploadAllFiles(client *ftp.ServerConn, ctx *builder.Context) error {
+	var (
+		createdDirs = make(map[string]bool)
+		err         error
+	)
+	return ctx.Diff.Walk(func(name string, entry *builder.DiffEntry) error {
+		rel, _ := filepath.Rel(ctx.DstDir, name)
+		rel = filepath.ToSlash(rel)
+
+		// create directory recursive
+		dirs := getDirs(path.Dir(rel))
+		if len(dirs) > 0 {
+			for i := len(dirs) - 1; i >= 0; i-- {
+				dir := dirs[i]
+				if !createdDirs[dir] {
+					if err = client.MakeDir(dir); err != nil {
+						return err
+					}
+					createdDirs[dir] = true
+				}
+			}
+		}
+
+		// upload file
+		f, err := os.Open(name)
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+		if err = client.Stor(rel, f); err != nil {
+			return err
+		}
+		return nil
+	})
+}
+
+func getDirs(dir string) []string {
+	if dir == "." || dir == "/" {
+		return nil
+	}
+	dirs := []string{dir}
+	for {
+		dir = path.Dir(dir)
+		if dir == "." || dir == "/" {
+			break
+		}
+		dirs = append(dirs, dir)
+	}
+	return dirs
+}
+
+func makeDir(client *ftp.ServerConn, dirs []string) error {
+	for i := len(dirs) - 1; i >= 0; i-- {
+		if err := client.MakeDir(dirs[i]); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
-func uploadFile(c *ftp.ServerConn, path, file string) error {
-	f, err := os.Open(file)
-	if err != nil {
-		return err
+func isTextProtoError(err error, code int) bool {
+	if e, ok := err.(*textproto.Error); ok {
+		return e.Code == code
 	}
-	defer f.Close()
-	return c.Stor(path, f)
+	return false
 }

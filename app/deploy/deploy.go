@@ -6,6 +6,7 @@ import (
 	"github.com/go-xiaohei/pugo-static/app/builder"
 	"gopkg.in/inconshreveable/log15.v2"
 	"gopkg.in/ini.v1"
+	"time"
 )
 
 type (
@@ -56,10 +57,12 @@ func New(file *ini.File) (*Deployer, error) {
 // if error, return error and stop
 func (dp *Deployer) Run(b *builder.Builder, ctx *builder.Context) error {
 	for _, task := range dp.tasks {
+		t := time.Now()
 		if err := task.Do(b, ctx); err != nil {
-			log15.Error("Deploy.Task.["+task.Name()+"]", "error", err.Error())
+			log15.Error("Deploy.Task.["+task.Name()+"]", "error", err.Error(), "duration", time.Since(t))
 			return err
 		}
+		log15.Info("Deploy.Task.["+task.Name()+"]", "duration", time.Since(t))
 	}
 	return nil
 }
@@ -69,9 +72,12 @@ func (dp *Deployer) Run(b *builder.Builder, ctx *builder.Context) error {
 func (dp *Deployer) RunAsync(b *builder.Builder, ctx *builder.Context) error {
 	for _, task := range dp.tasks {
 		go func(task DeployTask) {
+			t := time.Now()
 			if err := task.Do(b, ctx); err != nil {
-				log15.Error("Deploy.Task.["+task.Name()+"]", "error", err.Error())
+				log15.Error("Deploy.Task.["+task.Name()+"]", "error", err.Error(), "duration", time.Since(t))
+				return
 			}
+			log15.Info("Deploy.Task.["+task.Name()+"]", "duration", time.Since(t))
 		}(task)
 	}
 	return nil
