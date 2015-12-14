@@ -132,9 +132,7 @@ func uploadDiffFiles(client *ftp.ServerConn, ctx *builder.Context) error {
 		}
 
 		dirs := getDirs(path.Dir(rel))
-		for i := len(dirs) - 1; i >= 0; i-- {
-			client.MakeDir(dirs[i])
-		}
+		makeDir(client, dirs)
 
 		// upload file
 		f, err := os.Open(name)
