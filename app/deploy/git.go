@@ -111,31 +111,36 @@ func (g *GitTask) Do(b *builder.Builder, ctx *builder.Context) error {
 		ctx.DstDir,
 		"git",
 		[]string{"add", "--all"}...); err != nil {
-		log15.Debug("Deploy.Git.Error", "error", stderr)
+		log15.Error("Deploy.Git.Error", "error", stderr)
 		return err
 	}
+	log15.Debug("Deploy.[" + g.opt.RepoUrl + "].AddAll")
+
 	// commit message
+	message := gitMessageReplacer.Replace(opt.Message)
 	if _, stderr, err := com.ExecCmdDir(
-		ctx.DstDir, "git", []string{"commit", "-m",
-			gitMessageReplacer.Replace(opt.Message)}...); err != nil {
-		log15.Debug("Deploy.Git.Error", "error", stderr)
+		ctx.DstDir, "git", []string{"commit", "-m", message}...); err != nil {
+		log15.Error("Deploy.Git.Error", "error", stderr)
 		return err
 	}
+	log15.Debug("Deploy.[" + g.opt.RepoUrl + "].Commit.'" + message + "'")
+
 	// change remote url
 	if _, stderr, err := com.ExecCmdDir(ctx.DstDir, "git", []string{
 		"remote", "set-url", "origin", opt.remoteUrl(),
 	}...); err != nil {
-		log15.Debug("Deploy.Git.Error", "error", stderr)
+		log15.Error("Deploy.Git.Error", "error", stderr)
 		return err
 	}
 	// push to repo
 	if _, stderr, err := com.ExecCmdDir(ctx.DstDir, "git", []string{
 		"push", "--force", "origin", opt.Branch}...); err != nil {
-		log15.Debug("Deploy.Git.Error", "error", stderr)
+		log15.Error("Deploy.Git.Error", "error", stderr)
 		if stderr != "" {
 			return errors.New(stderr)
 		}
 		return err
 	}
+	log15.Debug("Deploy.[" + g.opt.RepoUrl + "].Push")
 	return nil
 }

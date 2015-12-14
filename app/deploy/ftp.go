@@ -12,6 +12,7 @@ import (
 
 	"github.com/go-xiaohei/pugo-static/app/builder"
 	"github.com/jlaffaye/ftp"
+	"gopkg.in/inconshreveable/log15.v2"
 	"gopkg.in/ini.v1"
 )
 
@@ -43,12 +44,9 @@ func (fopt *FtpOption) isValid() error {
 	if fopt.Address == "" || fopt.User == "" || fopt.Password == "" {
 		return errors.New("deploy to ft need addres, username and password")
 	}
-	u, err := url.Parse(fopt.Address)
-	if err != nil {
-		return err
-	}
-	fopt.url = u
-	return nil
+	var err error
+	fopt.url, err = url.Parse(fopt.Address)
+	return err
 }
 
 // new ftp task with section
@@ -90,13 +88,14 @@ func (ft *FtpTask) Do(b *builder.Builder, ctx *builder.Context) error {
 	if err != nil {
 		return err
 	}
+	log15.Debug("Deploy.[" + ft.opt.Address + "].Connect")
 	defer client.Quit()
 	if ft.opt.User != "" {
 		if err = client.Login(ft.opt.User, ft.opt.Password); err != nil {
 			return err
 		}
 	}
-
+	log15.Debug("Deploy.[" + ft.opt.Address + "].Logged")
 	ftpDir := strings.TrimPrefix(ft.opt.url.Path, "/")
 
 	if err = client.ChangeDir(ftpDir); err != nil {
@@ -109,10 +108,12 @@ func (ft *FtpTask) Do(b *builder.Builder, ctx *builder.Context) error {
 			if err = client.ChangeDir(ftpDir); err != nil {
 				return err
 			}
+			log15.Debug("Deploy.[" + ft.opt.Address + "].UploadAll")
 			return uploadAllFiles(client, ctx)
 		}
 	}
 
+	log15.Debug("Deploy.[" + ft.opt.Address + "].UploadDiff")
 	return uploadDiffFiles(client, ctx)
 }
 
@@ -157,6 +158,12 @@ func uploadAllFiles(client *ftp.ServerConn, ctx *builder.Context) error {
 	return ctx.Diff.Walk(func(name string, entry *builder.DiffEntry) error {
 		rel, _ := filepath.Rel(ctx.DstDir, name)
 		rel = filepath.ToSlash(rel)
+
+		// entry remove status, just remove it
+		// the other files, just upload ignore diff status
+		if entry.Behavior == builder.DIFF_REMOVE {
+			return client.Delete(rel)
+		}
 
 		// create directory recursive
 		dirs := getDirs(path.Dir(rel))
