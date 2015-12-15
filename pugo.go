@@ -9,16 +9,15 @@ import (
 	"path"
 )
 
-//go:generate go-bindata -o=app/asset/asset.go -pkg=asset source/... template/...
+//go:generate go-bindata -o=app/asset/asset.go -pkg=asset conf.ini source/... template/...
 
 const (
-	VERSION  = "0.8.0"
-	VER_DATE = "2015-11-30"
+	VERSION  = "0.8.4"
+	VER_DATE = "2015-12-15"
 
 	SRC_DIR   = "source"   // source contents dir
 	TPL_DIR   = "template" // template dir
 	MEDIA_DIR = "media"    // upload dir
-	DST_DIR   = "dest"     // destination dir
 )
 
 var (
@@ -29,7 +28,7 @@ var (
 func init() {
 	app.Name = "pugo"
 	app.Usage = "a beautiful site generator"
-	app.Author = "https://github.com/fuxiaohei"
+	app.Author = "fuxiaohei"
 	app.Email = "fuxiaohei@vip.qq.com"
 	app.Version = VERSION + "(" + VER_DATE + ")"
 	opt.SrcDir = SRC_DIR
