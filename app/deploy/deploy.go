@@ -33,8 +33,9 @@ func New(file *ini.File) (*Deployer, error) {
 	}
 	d := &Deployer{
 		registered: map[string]DeployTask{
-			TYPE_GIT: new(GitTask),
-			TYPE_FTP: new(FtpTask),
+			TYPE_GIT:  new(GitTask),
+			TYPE_FTP:  new(FtpTask),
+			TYPE_SFTP: new(SftpTask),
 		},
 	}
 	for _, name := range items {

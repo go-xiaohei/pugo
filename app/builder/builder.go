@@ -8,6 +8,7 @@ import (
 	"github.com/go-xiaohei/pugo-static/app/parser"
 	"github.com/go-xiaohei/pugo-static/app/render"
 	"gopkg.in/inconshreveable/log15.v2"
+	"sync/atomic"
 )
 
 var (
@@ -29,6 +30,7 @@ type (
 
 		Error   error
 		Version builderVersion
+		Count   uint32 // build count
 	}
 	// build task defines the build function to run in build process
 	BuildTask struct {
@@ -140,8 +142,9 @@ func (b *Builder) Build(dest string) {
 		b.context = ctx
 	}
 
-	log15.Info("Build.Finish", "duration", ctx.Duration())
 	b.isBuilding = false
+	atomic.AddUint32(&b.Count, 1)
+	log15.Info("Build.Finish", "duration", ctx.Duration(), "count", b.Count)
 
 	// after hook
 	if b.opt.After != nil {

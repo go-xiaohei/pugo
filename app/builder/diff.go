@@ -19,7 +19,7 @@ type (
 	}
 	DiffEntry struct {
 		Behavior int
-		t        time.Time
+		Time     time.Time
 	}
 )
 
@@ -31,7 +31,7 @@ func newDiff() *Diff {
 
 func (d *Diff) Add(file string, behavior int, t time.Time) {
 	file = filepath.ToSlash(file)
-	d.files[file] = &DiffEntry{Behavior: behavior, t: t}
+	d.files[file] = &DiffEntry{Behavior: behavior, Time: t}
 }
 
 func (d *Diff) Exist(file string) bool {

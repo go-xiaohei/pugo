@@ -2,7 +2,6 @@ package deploy
 
 import (
 	"errors"
-	"net/textproto"
 	"net/url"
 	"os"
 	"path"
@@ -98,41 +97,47 @@ func (ft *FtpTask) Do(b *builder.Builder, ctx *builder.Context) error {
 	log15.Debug("Deploy.[" + ft.opt.Address + "].Logged")
 	ftpDir := strings.TrimPrefix(ft.opt.url.Path, "/")
 
+	// make dir
+	makeFtpDir(client, getDirs(ftpDir))
+
+	// change  to directory
 	if err = client.ChangeDir(ftpDir); err != nil {
-		if isTextProtoError(err, ftp.StatusFileUnavailable) {
-			dirs := getDirs(ftpDir)
-			if err = makeDir(client, dirs); err != nil {
-				return err
-			}
-			// change  to directory again
-			if err = client.ChangeDir(ftpDir); err != nil {
-				return err
-			}
-			log15.Debug("Deploy.[" + ft.opt.Address + "].UploadAll")
-			return uploadAllFiles(client, ctx)
-		}
+		return err
+	}
+
+	if b.Count < 2 {
+		log15.Debug("Deploy.[" + ft.opt.Address + "].UploadAll")
+		return ft.uploadAllFiles(client, ctx)
 	}
 
 	log15.Debug("Deploy.[" + ft.opt.Address + "].UploadDiff")
-	return uploadDiffFiles(client, ctx)
+	return ft.uploadDiffFiles(client, ctx)
 }
 
 // upload files with checking diff status
-func uploadDiffFiles(client *ftp.ServerConn, ctx *builder.Context) error {
+func (ft *FtpTask) uploadDiffFiles(client *ftp.ServerConn, ctx *builder.Context) error {
 	return ctx.Diff.Walk(func(name string, entry *builder.DiffEntry) error {
 		rel, _ := filepath.Rel(ctx.DstDir, name)
 		rel = filepath.ToSlash(rel)
 
-		if entry.Behavior == builder.DIFF_KEEP {
-			return nil
-		}
-
 		if entry.Behavior == builder.DIFF_REMOVE {
+			log15.Debug("Deploy.Ftp.Delete", "file", rel)
 			return client.Delete(rel)
 		}
 
+		if entry.Behavior == builder.DIFF_KEEP {
+			if list, _ := client.List(rel); len(list) == 1 {
+				// entry file should be older than uploaded file
+				if entry.Time.Sub(list[0].Time).Seconds() < 0 {
+					return nil
+				}
+			}
+		}
+
 		dirs := getDirs(path.Dir(rel))
-		makeDir(client, dirs)
+		for i := len(dirs) - 1; i >= 0; i-- {
+			client.MakeDir(dirs[i])
+		}
 
 		// upload file
 		f, err := os.Open(name)
@@ -143,12 +148,13 @@ func uploadDiffFiles(client *ftp.ServerConn, ctx *builder.Context) error {
 		if err = client.Stor(rel, f); err != nil {
 			return err
 		}
+		log15.Debug("Deploy.Ftp.Stor", "file", rel)
 		return nil
 	})
 }
 
 // upload all files ignore diff status
-func uploadAllFiles(client *ftp.ServerConn, ctx *builder.Context) error {
+func (ft *FtpTask) uploadAllFiles(client *ftp.ServerConn, ctx *builder.Context) error {
 	var (
 		createdDirs = make(map[string]bool)
 		err         error
@@ -160,6 +166,7 @@ func uploadAllFiles(client *ftp.ServerConn, ctx *builder.Context) error {
 		// entry remove status, just remove it
 		// the other files, just upload ignore diff status
 		if entry.Behavior == builder.DIFF_REMOVE {
+			log15.Debug("Deploy.Ftp.Delete", "file", rel)
 			return client.Delete(rel)
 		}
 
@@ -169,10 +176,9 @@ func uploadAllFiles(client *ftp.ServerConn, ctx *builder.Context) error {
 			for i := len(dirs) - 1; i >= 0; i-- {
 				dir := dirs[i]
 				if !createdDirs[dir] {
-					if err = client.MakeDir(dir); err != nil {
-						return err
+					if err = client.MakeDir(dir); err == nil {
+						createdDirs[dir] = true
 					}
-					createdDirs[dir] = true
 				}
 			}
 		}
@@ -186,6 +192,7 @@ func uploadAllFiles(client *ftp.ServerConn, ctx *builder.Context) error {
 		if err = client.Stor(rel, f); err != nil {
 			return err
 		}
+		log15.Debug("Deploy.Ftp.Stor", "file", rel)
 		return nil
 	})
 }
@@ -205,18 +212,11 @@ func getDirs(dir string) []string {
 	return dirs
 }
 
-func makeDir(client *ftp.ServerConn, dirs []string) error {
+func makeFtpDir(client *ftp.ServerConn, dirs []string) error {
 	for i := len(dirs) - 1; i >= 0; i-- {
 		if err := client.MakeDir(dirs[i]); err != nil {
 			return err
 		}
 	}
 	return nil
-}
-
-func isTextProtoError(err error, code int) bool {
-	if e, ok := err.(*textproto.Error); ok {
-		return e.Code == code
-	}
-	return false
 }
