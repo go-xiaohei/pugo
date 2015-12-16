@@ -20,7 +20,7 @@ const (
 )
 
 var (
-	_ DeployTask = new(FtpTask)
+// _ DeployTask = new(FtpTask)
 )
 
 type (
@@ -49,7 +49,7 @@ func (fopt *FtpOption) isValid() error {
 }
 
 // new ftp task with section
-func (ft *FtpTask) New(name string, section *ini.Section) (DeployTask, error) {
+func (ft *FtpTask) New(name string, section *ini.Section) (*FtpTask, error) {
 	var (
 		f = &FtpTask{
 			name: name,
