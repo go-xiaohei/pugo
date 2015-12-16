@@ -6,11 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"gopkg.in/inconshreveable/log15.v2"
-	"gopkg.in/ini.v1"
-
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo-static/app/builder"
+	"gopkg.in/inconshreveable/log15.v2"
+	"gopkg.in/ini.v1"
 )
 
 const (

@@ -2,12 +2,12 @@ package server
 
 import (
 	"path"
+	"strings"
 
 	"github.com/Unknwon/com"
 	"github.com/lunny/log"
 	"github.com/lunny/tango"
 	"gopkg.in/inconshreveable/log15.v2"
-	"strings"
 )
 
 // simple built-in http server
@@ -81,8 +81,6 @@ func (s *Server) serveFiles(ctx *tango.Context, param string) bool {
 
 func (s *Server) globalHandler(ctx *tango.Context) {
 	param := ctx.Param("*name")
-
-	// favicon.ico and robots.txt
 	if param == "favicon.ico" || param == "robots.txt" {
 		if !s.serveFiles(ctx, param) {
 			ctx.NotFound()

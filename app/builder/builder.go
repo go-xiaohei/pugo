@@ -2,13 +2,13 @@ package builder
 
 import (
 	"errors"
+	"sync/atomic"
 	"time"
 
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo-static/app/parser"
 	"github.com/go-xiaohei/pugo-static/app/render"
 	"gopkg.in/inconshreveable/log15.v2"
-	"sync/atomic"
 )
 
 var (

@@ -2,16 +2,17 @@ package deploy
 
 import (
 	"errors"
-	"github.com/go-xiaohei/pugo-static/app/builder"
-	"github.com/pkg/sftp"
-	"golang.org/x/crypto/ssh"
-	"gopkg.in/inconshreveable/log15.v2"
-	"gopkg.in/ini.v1"
 	"io"
 	"net/url"
 	"os"
 	"path"
 	"path/filepath"
+
+	"github.com/go-xiaohei/pugo-static/app/builder"
+	"github.com/pkg/sftp"
+	"golang.org/x/crypto/ssh"
+	"gopkg.in/inconshreveable/log15.v2"
+	"gopkg.in/ini.v1"
 )
 
 const (
