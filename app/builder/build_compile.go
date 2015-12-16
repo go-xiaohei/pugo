@@ -9,22 +9,12 @@ import (
 	"github.com/go-xiaohei/pugo-static/app/helper"
 	"github.com/go-xiaohei/pugo-static/app/model"
 	"gopkg.in/inconshreveable/log15.v2"
-	"io/ioutil"
 	"strconv"
 	"time"
 )
 
 // compile data to html files
 func (b *Builder) Compile(ctx *Context) {
-	// fix sub directory case
-	if ctx.DstDir != ctx.DstOriginDir {
-		os.MkdirAll(ctx.DstDir, os.ModePerm)
-
-		// write redirect index.html
-		ioutil.WriteFile(path.Join(ctx.DstOriginDir, "index.html"),
-			[]byte(`<meta http-equiv="refresh" content="0; url=`+ctx.Meta.Base+`" />`),
-			os.ModePerm)
-	}
 	if b.compileSinglePost(ctx); ctx.Error != nil {
 		return
 	}

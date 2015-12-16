@@ -102,15 +102,7 @@ func (b *Builder) copyExtraAssets(ctx *Context) {
 			continue
 		}
 
-		// use origin dir, make these files existing in top directory
-		toFile := path.Join(ctx.DstOriginDir, f)
-		if err := com.Copy(srcFile, toFile); err != nil {
-			ctx.Error = err
-			return
-		}
-		ctx.Diff.Add(toFile, DIFF_ADD, time.Now())
-
-		toFile = path.Join(ctx.DstDir, f)
+		toFile := path.Join(ctx.DstDir, f)
 		if err := com.Copy(srcFile, toFile); err != nil {
 			ctx.Error = err
 			return

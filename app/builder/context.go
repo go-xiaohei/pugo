@@ -10,13 +10,12 @@ import (
 
 // build context, maintain parse data, posts, pages or others
 type Context struct {
-	Theme        *render.Theme
-	DstOriginDir string // provided destination directory
-	DstDir       string // read output destination, affected by root value in meta.md
-	Version      builderVersion
-	BeginTime    time.Time
-	Diff         *Diff
-	Error        error
+	Theme     *render.Theme
+	DstDir    string // read output destination
+	Version   builderVersion
+	BeginTime time.Time
+	Diff      *Diff
+	Error     error
 
 	Posts         []*model.Post
 	PostPageCount int

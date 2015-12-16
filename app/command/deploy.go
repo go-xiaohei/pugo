@@ -46,16 +46,7 @@ func deploySite(opt *builder.BuildOption) func(ctx *cli.Context) {
 		}
 
 		// add hook to opt
-		if opt.After == nil {
-			opt.After = afterFunc
-		} else {
-			opt.After = func(b *builder.Builder, ctx *builder.Context) error {
-				if err := opt.After(b, ctx); err != nil {
-					return err
-				}
-				return afterFunc(b, ctx)
-			}
-		}
+		opt.After(afterFunc)
 
 		// run build site
 		buildSite(opt, false)(ctx)

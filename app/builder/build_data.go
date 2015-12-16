@@ -24,10 +24,6 @@ func (b *Builder) ReadData(ctx *Context) {
 	if b.readContents(ctx); ctx.Error != nil {
 		return
 	}
-	// change dst dir if meta root is sub directory
-	if ctx.Meta.Base != "" {
-		ctx.DstDir = path.Join(ctx.DstDir, ctx.Meta.Base)
-	}
 	// load theme after data reading finished
 	b.render.SetFunc("url", func(str ...string) string {
 		return path.Join(append([]string{ctx.Meta.Base}, str...)...)
@@ -40,7 +36,6 @@ func (b *Builder) ReadData(ctx *Context) {
 		ctx.Error = err
 		return
 	}
-
 	ctx.Theme = theme
 }
 

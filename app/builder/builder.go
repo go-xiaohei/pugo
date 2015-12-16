@@ -52,12 +52,20 @@ type (
 		Version string
 		VerDate string
 
-		Before BuildHook
-		After  BuildHook
+		beforeHook []BuildHook
+		afterHook  []BuildHook
 	}
 	// hook func to build process
 	BuildHook func(b *Builder, ctx *Context) error
 )
+
+func (opt *BuildOption) Before(fn BuildHook) {
+	opt.beforeHook = append(opt.beforeHook, fn)
+}
+
+func (opt *BuildOption) After(fn BuildHook) {
+	opt.afterHook = append(opt.afterHook, fn)
+}
 
 // New builder with option
 func New(opt *BuildOption) *Builder {
@@ -107,20 +115,21 @@ func (b *Builder) Build(dest string) {
 	b.isBuilding = true
 
 	ctx := &Context{
-		DstDir:       dest,
-		DstOriginDir: dest,
-		Version:      b.Version,
-		BeginTime:    time.Now(),
-		Diff:         newDiff(),
+		DstDir:    dest,
+		Version:   b.Version,
+		BeginTime: time.Now(),
+		Diff:      newDiff(),
 	}
 	// before hook
-	if b.opt.Before != nil {
-		if err := b.opt.Before(b, ctx); err != nil {
-			log15.Error("Build.Before", "error", err.Error())
-			ctx.Error = err
-			b.isBuilding = false
-			b.context = ctx
-			return
+	if len(b.opt.beforeHook) > 0 {
+		for _, fn := range b.opt.beforeHook {
+			if err := fn(b, ctx); err != nil {
+				log15.Error("Build.Before", "error", err.Error())
+				ctx.Error = err
+				b.isBuilding = false
+				b.context = ctx
+				return
+			}
 		}
 	}
 
@@ -147,14 +156,16 @@ func (b *Builder) Build(dest string) {
 	log15.Info("Build.Finish", "duration", ctx.Duration(), "count", b.Count)
 
 	// after hook
-	if b.opt.After != nil {
-		if err := b.opt.After(b, ctx); err != nil {
-			log15.Error("Build.After", "error", err.Error())
-			if ctx.Error == nil {
-				ctx.Error = err
+	if len(b.opt.afterHook) > 0 {
+		for _, fn := range b.opt.afterHook {
+			if err := fn(b, ctx); err != nil {
+				log15.Error("Build.After", "error", err.Error())
+				if ctx.Error == nil {
+					ctx.Error = err
+				}
+				b.context = ctx
+				return
 			}
-			b.context = ctx
-			return
 		}
 	}
 }

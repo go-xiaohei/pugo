@@ -31,11 +31,15 @@ func New(dstDir string) *Server {
 	return &Server{
 		Tango:  t,
 		dstDir: dstDir,
+		prefix: "/",
 	}
 }
 
 // set prefix to trim url
 func (s *Server) SetPrefix(prefix string) {
+	if prefix == "" {
+		prefix = "/"
+	}
 	s.prefix = prefix
 }
 
@@ -57,20 +61,39 @@ func (s *Server) serveFile(ctx *tango.Context, file string) bool {
 	return false
 }
 
-func (s *Server) globalHandler(ctx *tango.Context) {
-	param := ctx.Param("*name")
-	if path.Ext(param) == "" {
+func (s *Server) serveFiles(ctx *tango.Context, param string) bool {
+	ext := path.Ext(param)
+	if ext == "" || ext == "." {
 		if !strings.HasSuffix(param, "/") {
 			if s.serveFile(ctx, path.Join(s.dstDir, param+".html")) {
-				return
+				return true
 			}
 		}
 		if s.serveFile(ctx, path.Join(s.dstDir, param, "index.html")) {
-			return
+			return true
 		}
 	}
 	if s.serveFile(ctx, path.Join(s.dstDir, param)) {
+		return true
+	}
+	return false
+}
+
+func (s *Server) globalHandler(ctx *tango.Context) {
+	param := ctx.Param("*name")
+
+	// favicon.ico and robots.txt
+	if param == "favicon.ico" || param == "robots.txt" {
+		if !s.serveFiles(ctx, param) {
+			ctx.NotFound()
+		}
 		return
 	}
-	ctx.Redirect("/")
+
+	if !strings.HasPrefix("/"+param, s.prefix) {
+		ctx.Redirect(s.prefix)
+		return
+	}
+	param = strings.TrimPrefix("/"+param, s.prefix)
+	s.serveFiles(ctx, param)
 }
