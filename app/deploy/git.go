@@ -24,8 +24,9 @@ var (
 type (
 	// Git Deployment task
 	GitTask struct {
-		name string
-		opt  *GitOption
+		name      string
+		opt       *GitOption
+		directory string
 	}
 	// git options
 	GitOption struct {
@@ -35,22 +36,35 @@ type (
 )
 
 // New GitTask with name and ini.Section options
-func (gt *GitTask) New(conf string) (*GitTask, error) {
+func (gt *GitTask) New(conf string) (DeployTask, error) {
 	// create a new GitTask
-	var (
-		g = &GitTask{
-			name: "git",
-			opt: &GitOption{
-				Message: "Site Updated at {now}",
-			},
-		}
-	)
+	g := &GitTask{
+		name: "git",
+		opt: &GitOption{
+			Message: "Site Updated at {now}",
+		},
+	}
+	dir := strings.TrimPrefix(conf, "git://")
+	if dir == "" {
+		return nil, errors.New("git deploy conf need be git://git_repository_directory")
+	}
+	g.directory = dir
 	return g, nil
 }
 
 // GitTask's name
 func (g *GitTask) Name() string {
-	return g.name
+	return TYPE_GIT
+}
+
+// GitTask's destination directory
+func (g *GitTask) Dir() string {
+	return g.directory
+}
+
+// is GitTask
+func (g *GitTask) Is(conf string) bool {
+	return strings.HasPrefix(conf, "git://")
 }
 
 // Git deployment action

@@ -4,13 +4,13 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/Unknwon/com"
 	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo-static/app/builder"
 	"github.com/go-xiaohei/pugo-static/app/deploy"
 	"gopkg.in/inconshreveable/log15.v2"
-	"time"
 )
 
 // build Command, need BuildOption
