@@ -1,6 +1,7 @@
 package deploy
 
 import (
+	"errors"
 	"net/url"
 	"os"
 	"path"
@@ -8,7 +9,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/fuxiaohei/tidb/Godeps/_workspace/src/github.com/juju/errors"
 	"github.com/go-xiaohei/pugo-static/app/builder"
 	"github.com/goftp/ftp"
 	"gopkg.in/inconshreveable/log15.v2"
@@ -39,6 +39,7 @@ type (
 
 // new ftp task with section
 func (ft *FtpTask) New(conf string) (DeployTask, error) {
+	conf = strings.TrimLeft(conf, "ftp://")
 	confData := strings.Split(conf, "@")
 	if len(confData) != 2 {
 		return nil, ErrDeployConfFormatError
@@ -65,7 +66,17 @@ func (ft *FtpTask) New(conf string) (DeployTask, error) {
 
 // ftp task's name
 func (ft *FtpTask) Name() string {
-	return ft.name
+	return TYPE_FTP
+}
+
+// ftp task's real directory
+func (ft *FtpTask) Dir() string {
+	return path.Base(ft.opt.url.Path)
+}
+
+// is ftp task
+func (ft *FtpTask) Is(conf string) bool {
+	return strings.HasPrefix(conf, "ftp://")
 }
 
 // ftp task do action

@@ -15,7 +15,7 @@ const (
 )
 
 var (
-	_ DeployTask = new(GitTask)
+	// _ DeployTask = new(GitTask)
 
 	ErrGitNotRepo      = errors.New("destination directory is not a git repository")
 	gitMessageReplacer = strings.NewReplacer("{now}", time.Now().Format(time.RFC3339))
@@ -35,7 +35,7 @@ type (
 )
 
 // New GitTask with name and ini.Section options
-func (gt *GitTask) New(conf string) (DeployTask, error) {
+func (gt *GitTask) New(conf string) (*GitTask, error) {
 	// create a new GitTask
 	var (
 		g = &GitTask{

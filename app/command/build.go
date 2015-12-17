@@ -8,7 +8,9 @@ import (
 	"github.com/Unknwon/com"
 	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo-static/app/builder"
+	"github.com/go-xiaohei/pugo-static/app/deploy"
 	"gopkg.in/inconshreveable/log15.v2"
+	"time"
 )
 
 // build Command, need BuildOption
@@ -43,6 +45,28 @@ func buildSite(opt *builder.BuildOption, mustWatch bool) func(ctx *cli.Context) 
 		}
 
 		targetDir := ctx.String("dest")
+		if targetDir == "template" || targetDir == "source" {
+			log15.Crit("Builder.Fail", "error", "destination directory should not be 'template' or 'source'")
+		}
+
+		// detect deploy callback
+		way, err := deploy.Detect(targetDir)
+		if err != nil {
+			log15.Crit("Deploy.Fail", "error", err.Error())
+		}
+		if way != nil {
+			targetDir = way.Dir()
+			opt.After(func(b *builder.Builder, ctx *builder.Context) error {
+				t := time.Now()
+				if err := way.Do(b, ctx); err != nil {
+					return err
+				}
+				log15.Info("Deploy.Finish", "duration", time.Since(t))
+				return nil
+			})
+		}
+
+		// make directory
 		log15.Info("Dest." + targetDir)
 		if com.IsDir(targetDir) {
 			log15.Warn("Dest." + targetDir + ".Existed")
