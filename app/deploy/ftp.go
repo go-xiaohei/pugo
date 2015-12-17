@@ -1,7 +1,6 @@
 package deploy
 
 import (
-	"errors"
 	"net/url"
 	"os"
 	"path"
@@ -9,10 +8,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/fuxiaohei/tidb/Godeps/_workspace/src/github.com/juju/errors"
 	"github.com/go-xiaohei/pugo-static/app/builder"
-	"github.com/jlaffaye/ftp"
+	"github.com/goftp/ftp"
 	"gopkg.in/inconshreveable/log15.v2"
-	"gopkg.in/ini.v1"
 )
 
 const (
@@ -20,7 +19,7 @@ const (
 )
 
 var (
-// _ DeployTask = new(FtpTask)
+	_ DeployTask = new(FtpTask)
 )
 
 type (
@@ -32,36 +31,34 @@ type (
 	// ftp deploy option
 	FtpOption struct {
 		url      *url.URL
-		Address  string `ini:"address"`
-		User     string `ini:"user"`
-		Password string `ini:"password"`
+		Address  string
+		User     string
+		Password string
 	}
 )
 
-// is option valid
-func (fopt *FtpOption) isValid() error {
-	if fopt.Address == "" || fopt.User == "" || fopt.Password == "" {
-		return errors.New("deploy to ft need addres, username and password")
-	}
-	var err error
-	fopt.url, err = url.Parse(fopt.Address)
-	return err
-}
-
 // new ftp task with section
-func (ft *FtpTask) New(name string, section *ini.Section) (*FtpTask, error) {
-	var (
-		f = &FtpTask{
-			name: name,
-			opt:  &FtpOption{},
-		}
-		err error
-	)
-	if err = section.MapTo(f.opt); err != nil {
-		return nil, err
+func (ft *FtpTask) New(conf string) (DeployTask, error) {
+	confData := strings.Split(conf, "@")
+	if len(confData) != 2 {
+		return nil, ErrDeployConfFormatError
 	}
-	if err = f.IsValid(); err != nil {
+	userData := strings.Split(confData[0], ":")
+	if len(userData) != 2 {
+		return nil, ErrDeployConfFormatError
+	}
+	f := &FtpTask{
+		name: TYPE_FTP,
+		opt: &FtpOption{
+			User:     userData[0],
+			Password: userData[1],
+			Address:  confData[1],
+		},
+	}
+	if u, err := url.Parse("ftp://" + f.opt.Address); err != nil {
 		return nil, err
+	} else {
+		f.opt.url = u
 	}
 	return f, nil
 }
@@ -69,16 +66,6 @@ func (ft *FtpTask) New(name string, section *ini.Section) (*FtpTask, error) {
 // ftp task's name
 func (ft *FtpTask) Name() string {
 	return ft.name
-}
-
-// ftp task's is valid
-func (ft *FtpTask) IsValid() error {
-	return ft.opt.isValid()
-}
-
-// ftp task's type
-func (ft *FtpTask) Type() string {
-	return TYPE_FTP
 }
 
 // ftp task do action
@@ -96,6 +83,15 @@ func (ft *FtpTask) Do(b *builder.Builder, ctx *builder.Context) error {
 	}
 	log15.Debug("Deploy.[" + ft.opt.Address + "].Logged")
 	ftpDir := strings.TrimPrefix(ft.opt.url.Path, "/")
+
+	// change to UTF-8 mode
+	if _, _, err = client.Exec(ftp.StatusCommandOK, "OPTS UTF8 ON"); err != nil {
+		return err
+	}
+
+	if _, ok := client.Features()["UTF8"]; !ok {
+		return errors.New("FTP server need utf-8 support")
+	}
 
 	// make dir
 	makeFtpDir(client, getDirs(ftpDir))
