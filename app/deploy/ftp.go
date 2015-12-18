@@ -25,8 +25,7 @@ var (
 type (
 	// ftp deployment task
 	FtpTask struct {
-		name string
-		opt  *FtpOption
+		opt *FtpOption
 	}
 	// ftp deploy option
 	FtpOption struct {
@@ -49,7 +48,6 @@ func (ft *FtpTask) New(conf string) (DeployTask, error) {
 		return nil, ErrDeployConfFormatError
 	}
 	f := &FtpTask{
-		name: TYPE_FTP,
 		opt: &FtpOption{
 			User:     userData[0],
 			Password: userData[1],

@@ -1,18 +1,17 @@
 package deploy
 
 import (
-	"errors"
 	"io"
 	"net/url"
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 
 	"github.com/go-xiaohei/pugo-static/app/builder"
 	"github.com/pkg/sftp"
 	"golang.org/x/crypto/ssh"
 	"gopkg.in/inconshreveable/log15.v2"
-	"gopkg.in/ini.v1"
 )
 
 const (
@@ -25,59 +24,62 @@ var (
 
 type (
 	SftpTask struct {
-		name string
-		opt  *SftpOption
+		opt *SftpOption
 	}
 	SftpOption struct {
 		url       *url.URL
-		Address   string `ini:"address"`
-		User      string `ini:"user"`
-		Password  string `ini:"password"`
-		Directory string `ini:"directory"`
+		Address   string
+		User      string
+		Password  string
+		Directory string
 	}
 )
 
-// is option valid
-func (fopt *SftpOption) isValid() error {
-	if fopt.Address == "" || fopt.User == "" || fopt.Password == "" {
-		return errors.New("deploy to ft need addres, username and password")
-	}
-	var err error
-	fopt.url, err = url.Parse(fopt.Address)
-	return err
-}
-
 // new sftp task with section
-func (ft *SftpTask) New(name string, section *ini.Section) (*SftpTask, error) {
-	var (
-		f = &SftpTask{
-			name: name,
-			opt:  &SftpOption{},
-		}
-		err error
-	)
-	if err = section.MapTo(f.opt); err != nil {
-		return nil, err
+func (ft *SftpTask) New(conf string) (DeployTask, error) {
+	conf = strings.TrimLeft(conf, "sftp://")
+	confData := strings.Split(conf, "@")
+	if len(confData) != 2 {
+		return nil, ErrDeployConfFormatError
 	}
-	if err = f.IsValid(); err != nil {
+	userData := strings.Split(confData[0], ":")
+	if len(userData) != 2 {
+		return nil, ErrDeployConfFormatError
+	}
+	f := &SftpTask{
+		opt: &SftpOption{
+			User:     userData[0],
+			Password: userData[1],
+			Address:  confData[1],
+		},
+	}
+	if u, err := url.Parse("ssh://" + f.opt.Address); err != nil {
 		return nil, err
+	} else {
+		f.opt.url = u
+	}
+	p := f.opt.url.Path
+	if strings.HasPrefix(p, "/~") {
+		f.opt.Directory = strings.TrimPrefix(p, "/~/")
+	} else {
+		f.opt.Directory = p
 	}
 	return f, nil
 }
 
 // sftp task's name
 func (ft *SftpTask) Name() string {
-	return ft.name
-}
-
-// sftp task's is valid
-func (ft *SftpTask) IsValid() error {
-	return ft.opt.isValid()
-}
-
-// sftp task's type
-func (ft *SftpTask) Type() string {
 	return TYPE_SFTP
+}
+
+// is sftp task's name
+func (ft *SftpTask) Is(conf string) bool {
+	return strings.HasPrefix(conf, "sftp://")
+}
+
+// sftp task's build directory
+func (ft *SftpTask) Dir() string {
+	return path.Base(ft.opt.Directory)
 }
 
 // sftp task do action
