@@ -8,7 +8,7 @@ import (
 
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo-static/app/helper"
-    "strings"
+	"strings"
 )
 
 // copy assets to target directory,
@@ -44,11 +44,11 @@ func (b *Builder) copyClean(ctx *Context) {
 		if fi.IsDir() {
 			return nil
 		}
-        rel, _ := filepath.Rel(ctx.DstDir, p)
-        // ignore git directory
-        if strings.HasPrefix(rel,".git"){
-            return nil
-        }
+		rel, _ := filepath.Rel(ctx.DstDir, p)
+		// ignore git directory
+		if strings.HasPrefix(rel, ".git") {
+			return nil
+		}
 		// not build file, clean it
 		if !ctx.Diff.Exist(p) {
 			ctx.Diff.Add(p, DIFF_REMOVE, time.Now())
