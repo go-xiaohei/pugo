@@ -2,9 +2,9 @@
 title = Welcome
 slug = welcome
 desc = welcome to try pugo.static site generator
-date = 2015-11-28
-update_date = 2015-11-28
-tags = pugo,welcome
+date = 2015-12-20
+update_date = 2015-12-20
+tags = pugo
 ```
 
 When you read the blog, `pugo` is running successfully. Then enjoy your blog journey.

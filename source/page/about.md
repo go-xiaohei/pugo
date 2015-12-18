@@ -1,8 +1,8 @@
 ```ini
 title = About Pugo.Static
-slug = about
+slug = about-pugo
 desc = some words about pugo.static
-date = 2015-11-12
+date = 2015-12-20
 author = pugo
 ; set nav to active status when this page
 hover = about

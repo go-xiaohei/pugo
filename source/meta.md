@@ -16,7 +16,7 @@ desc = pugo is a simple static site generator
 domain = localhost
 
 ; root path for site; if empty, build as http://{domain}/
-root = http://localhost
+root = http://localhost/
 
 ; nav data
 [nav]
