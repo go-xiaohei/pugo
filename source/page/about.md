@@ -1,6 +1,6 @@
 ```ini
 title = About Pugo.Static
-slug = about-pugo
+slug = about
 desc = some words about pugo.static
 date = 2015-12-20
 author = pugo
