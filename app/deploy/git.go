@@ -2,6 +2,7 @@ package deploy
 
 import (
 	"errors"
+	"net/url"
 	"path"
 	"strings"
 	"time"
@@ -32,6 +33,7 @@ type (
 	}
 	// git options
 	GitOption struct {
+		url     *url.URL
 		Branch  string // remote repository branch name
 		Message string // commit message, only support {now} time string
 	}
@@ -46,16 +48,28 @@ func (gt *GitTask) New(conf string) (DeployTask, error) {
 			Message: "Site Updated at {now}",
 		},
 	}
-	dir := strings.TrimPrefix(conf, "git://")
+
+	// parse git repo directory
+	u, err := url.Parse(conf)
+	if err != nil {
+		return nil, err
+	}
+	dir := u.Host
 	if dir == "" {
 		return nil, errors.New("git deploy conf need be git://git_repository_directory")
 	}
 	g.directory = dir
+
+	// set commit message
+	if commit := u.Query().Get("commit"); commit != "" {
+		g.opt.Message = commit
+	}
+	g.opt.url = u
 	return g, nil
 }
 
 // GitTask's name
-func (g *GitTask) Name() string {
+func (g *GitTask) Type() string {
 	return TYPE_GIT
 }
 
@@ -127,52 +141,4 @@ func (g *GitTask) Do(b *builder.Builder, ctx *builder.Context) error {
 	}
 	log15.Debug("Deploy.Git.[" + g.opt.Branch + "].Push")
 	return nil
-	/*
-		opt := g.opt
-		if opt.Directory == "" {
-			opt.Directory = ctx.DstDir // use context destination directory as default
-		}
-		// check git repo
-		gitDir := path.Join(opt.Directory, ".git")
-		if !com.IsDir(gitDir) {
-			return ErrGitNotRepo
-		}
-		// add files
-		if _, stderr, err := com.ExecCmdDir(
-			ctx.DstDir,
-			"git",
-			[]string{"add", "--all"}...); err != nil {
-			log15.Error("Deploy.Git.Error", "error", stderr)
-			return err
-		}
-		log15.Debug("Deploy.[" + g.opt.RepoUrl + "].AddAll")
-
-		// commit message
-		message := gitMessageReplacer.Replace(opt.Message)
-		if _, stderr, err := com.ExecCmdDir(
-			ctx.DstDir, "git", []string{"commit", "-m", message}...); err != nil {
-			log15.Error("Deploy.Git.Error", "error", stderr)
-			return err
-		}
-		log15.Debug("Deploy.[" + g.opt.RepoUrl + "].Commit.'" + message + "'")
-
-		// change remote url
-		if _, stderr, err := com.ExecCmdDir(ctx.DstDir, "git", []string{
-			"remote", "set-url", "origin", opt.remoteUrl(),
-		}...); err != nil {
-			log15.Error("Deploy.Git.Error", "error", stderr)
-			return err
-		}
-		// push to repo
-		if _, stderr, err := com.ExecCmdDir(ctx.DstDir, "git", []string{
-			"push", "--force", "origin", opt.Branch}...); err != nil {
-			log15.Error("Deploy.Git.Error", "error", stderr)
-			if stderr != "" {
-				return errors.New(stderr)
-			}
-			return err
-		}
-		log15.Debug("Deploy.[" + g.opt.RepoUrl + "].Push")
-		return nil
-	*/
 }

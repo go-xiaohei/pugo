@@ -68,7 +68,7 @@ func (ft *SftpTask) New(conf string) (DeployTask, error) {
 }
 
 // sftp task's name
-func (ft *SftpTask) Name() string {
+func (ft *SftpTask) Type() string {
 	return TYPE_SFTP
 }
 

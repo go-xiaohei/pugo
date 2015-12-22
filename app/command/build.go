@@ -50,7 +50,7 @@ func buildSite(opt *builder.BuildOption, mustWatch bool) func(ctx *cli.Context) 
 		}
 
 		// detect deploy callback
-		way, err := deploy.Detect(targetDir)
+		way, err := deploy.Detect(ctx)
 		if err != nil {
 			log15.Crit("Deploy.Fail", "error", err.Error())
 		}

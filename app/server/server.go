@@ -45,7 +45,7 @@ func (s *Server) SetPrefix(prefix string) {
 
 // set run
 func (s *Server) Run(addr string) {
-	log15.Debug("Server.Start." + addr)
+	log15.Info("Server.Start." + addr)
 	s.Tango.Use(logger())
 	s.Tango.Get("/", s.globalHandler)
 	s.Tango.Get("/*name", s.globalHandler)

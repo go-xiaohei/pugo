@@ -45,6 +45,9 @@ func logger() tango.HandlerFunc {
 			if strings.HasPrefix(p, path.Join(logBase, "/theme")) {
 				return
 			}
+			if p == "/favicon.ico" || p == "/robots.txt" {
+				return
+			}
 		}
 
 		statusCode := ctx.Status()
@@ -52,14 +55,14 @@ func logger() tango.HandlerFunc {
 			log15.Info(
 				fmt.Sprintf(logFormat, ctx.Req().Method, ctx.Status(), ctx.Req().URL.Path),
 				"path", p,
-				"remote", ctx.Req().RemoteAddr,
+				"remote", ctx.IP(),
 				"duration", time.Since(start).Seconds()*1000,
 			)
 		} else if statusCode < 500 {
 			log15.Warn(
 				fmt.Sprintf(logFormat, ctx.Req().Method, ctx.Status(), ctx.Req().URL.Path),
 				"path", p,
-				"remote", ctx.Req().RemoteAddr,
+				"remote", ctx.IP(),
 				"duration", time.Since(start).Seconds()*1000,
 				"error", ctx.Result,
 			)
@@ -67,7 +70,7 @@ func logger() tango.HandlerFunc {
 			log15.Error(
 				fmt.Sprintf(logFormat, ctx.Req().Method, ctx.Status(), ctx.Req().URL.Path),
 				"path", p,
-				"remote", ctx.Req().RemoteAddr,
+				"remote", ctx.IP(),
 				"duration", time.Since(start).Seconds()*1000,
 				"error", ctx.Result,
 			)

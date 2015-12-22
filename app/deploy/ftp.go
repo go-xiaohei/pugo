@@ -63,7 +63,7 @@ func (ft *FtpTask) New(conf string) (DeployTask, error) {
 }
 
 // ftp task's name
-func (ft *FtpTask) Name() string {
+func (ft *FtpTask) Type() string {
 	return TYPE_FTP
 }
 
