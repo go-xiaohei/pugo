@@ -37,27 +37,17 @@ type (
 
 // new sftp task with section
 func (ft *SftpTask) New(conf string) (DeployTask, error) {
-	conf = strings.TrimLeft(conf, "sftp://")
-	confData := strings.Split(conf, "@")
-	if len(confData) != 2 {
-		return nil, ErrDeployConfFormatError
-	}
-	userData := strings.Split(confData[0], ":")
-	if len(userData) != 2 {
-		return nil, ErrDeployConfFormatError
-	}
-	f := &SftpTask{
-		opt: &SftpOption{
-			User:     userData[0],
-			Password: userData[1],
-			Address:  confData[1],
-		},
-	}
-	if u, err := url.Parse("ssh://" + f.opt.Address); err != nil {
+	u, err := url.Parse(conf)
+	if err != nil {
 		return nil, err
-	} else {
-		f.opt.url = u
 	}
+	f := &SftpTask{opt: &SftpOption{Address: u.Host + u.Path}}
+	if u.User != nil {
+		f.opt.User = u.User.Username()
+		f.opt.Password, _ = u.User.Password()
+	}
+	f.opt.url = u
+
 	p := f.opt.url.Path
 	if strings.HasPrefix(p, "/~") {
 		f.opt.Directory = strings.TrimPrefix(p, "/~/")

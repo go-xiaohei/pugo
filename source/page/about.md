@@ -1,8 +1,8 @@
 ```ini
-title = About Pugo.Static
+title = About Pugo
 slug = about
-desc = some words about pugo.static
-date = 2015-12-20
+desc = some words about pugo
+date = 2015-12-24
 author = pugo
 ; set nav to active status when this page
 hover = about
@@ -21,26 +21,30 @@ metadata = this is meta data
 
 ### Quick start
 
-1. Download and extract from [Pugo Releases](http://pugo.io), Run `pugo[.exe]` directly.
+1. Download and extract from [Pugo Releases](http://pugo.io), Run `pugo[.exe]` server directly.
 2. Open `http://localhost:9899` to visit.
 
 
-### Configuration
+### Commands
 
-Add flags when run `pugo` executable file:
+Run a command when run `pugo` executable file:
 
-- `--addr=0.0.0.0:9999` set http server address
-- `--theme=abc` set theme directory in template dir
-- `--debug` set debug mode to print more information when running
+- `pugo new` create new site, post or page.
+- `pugo build` build static files.
+- `pugo server` build and serve static files.
+
+More details in [Commands](http://pugo.io/docs/command.html).
 
 ### Writing
 
-`Pugo` support two kinds of content, `post` and `page`. you can create any `.md` file in proper directories in `source` directory. Read the [wiki](#) to learn the layout format and more details.
+`Pugo` support two kinds of content, `post` and `page`. you can create any `.md` file in proper directories in `source` directory. Read the [wiki](http://pugo.io/docs/write.html) to learn the layout format and more details.
 
 ### Publish
 
 After you change your source `.md` files, just restart the server.
 
+Or run `pugo build --watch` to rebuild after changes.
+
 ### Customize
 
-- Theme: theme documentation is [wiki](http://pugo.io/docs/templates.html)
+- Theme: theme documentation is [wiki](http://pugo.io/docs/theme.html)

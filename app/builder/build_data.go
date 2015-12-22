@@ -3,6 +3,7 @@ package builder
 import (
 	"errors"
 	"io/ioutil"
+	"net/url"
 	"os"
 	"path"
 	"path/filepath"
@@ -26,6 +27,13 @@ func (b *Builder) ReadData(ctx *Context) {
 	}
 	// load theme after data reading finished
 	b.render.SetFunc("url", func(str ...string) string {
+		if len(str) > 0 {
+			if ur, _ := url.Parse(str[0]); ur != nil {
+				if ur.Host != "" {
+					return str[0]
+				}
+			}
+		}
 		return path.Join(append([]string{ctx.Meta.Base}, str...)...)
 	})
 	b.render.SetFunc("fullUrl", func(str ...string) string {
@@ -174,6 +182,12 @@ func (b *Builder) parseDir(dir string, filter func(string) bool) (map[string][]p
 // fix suffix to url,
 // must append suffix
 func fixSuffix(u string) string {
+	// if url has host, full path
+	if ur, _ := url.Parse(u); ur != nil {
+		if ur.Host != "" {
+			return u
+		}
+	}
 	if u == "/" {
 		return u
 	}

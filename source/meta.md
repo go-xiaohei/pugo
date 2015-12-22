@@ -1,16 +1,16 @@
 ```ini
 [meta]
 ; site title, show in <title>
-title = Pugo.Static
+title = Pugo
 
 ; subtitle, words after title, in description
-subtitle = site generator
+subtitle = Static Site Generator
 
 ; print in html <meta>
 keyword = pugo,golang,static,site,generator
 
 ; print in html <meta>
-desc = pugo is a simple static site generator
+desc = Pugo is a Simple Static Site Generator
 
 ; build links for feed, sitemap
 domain = localhost
@@ -46,6 +46,12 @@ i18n = about
 ; browser open in new tab
 blank = true
 hover = about
+
+[nav.source]
+link = http://pugo.io
+title = Source
+i18n = source
+blank = true
 
 ; author data
 [author]

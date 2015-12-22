@@ -38,27 +38,16 @@ type (
 
 // new ftp task with section
 func (ft *FtpTask) New(conf string) (DeployTask, error) {
-	conf = strings.TrimLeft(conf, "ftp://")
-	confData := strings.Split(conf, "@")
-	if len(confData) != 2 {
-		return nil, ErrDeployConfFormatError
-	}
-	userData := strings.Split(confData[0], ":")
-	if len(userData) != 2 {
-		return nil, ErrDeployConfFormatError
-	}
-	f := &FtpTask{
-		opt: &FtpOption{
-			User:     userData[0],
-			Password: userData[1],
-			Address:  confData[1],
-		},
-	}
-	if u, err := url.Parse("ftp://" + f.opt.Address); err != nil {
+	u, err := url.Parse(conf)
+	if err != nil {
 		return nil, err
-	} else {
-		f.opt.url = u
 	}
+	f := &FtpTask{opt: &FtpOption{Address: u.Host + u.Path}}
+	if u.User != nil {
+		f.opt.User = u.User.Username()
+		f.opt.Password, _ = u.User.Password()
+	}
+	f.opt.url = u
 	return f, nil
 }
 
