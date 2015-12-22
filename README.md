@@ -1,3 +1,5 @@
+## Deprecated,  Use master branch
+
 ### Introduction
 
 Simple blog engine by golang ,with tango and tidb , cross platform, easy use.
