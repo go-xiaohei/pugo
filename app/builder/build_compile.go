@@ -6,8 +6,8 @@ import (
 	"path"
 
 	"github.com/Unknwon/com"
-	"github.com/go-xiaohei/pugo-static/app/helper"
-	"github.com/go-xiaohei/pugo-static/app/model"
+	"github.com/go-xiaohei/pugo/app/helper"
+	"github.com/go-xiaohei/pugo/app/model"
 	"gopkg.in/inconshreveable/log15.v2"
 	"strconv"
 	"time"

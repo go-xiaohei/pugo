@@ -3,9 +3,9 @@ package builder
 import (
 	"time"
 
-	"github.com/go-xiaohei/pugo-static/app/helper"
-	"github.com/go-xiaohei/pugo-static/app/model"
-	"github.com/go-xiaohei/pugo-static/app/render"
+	"github.com/go-xiaohei/pugo/app/helper"
+	"github.com/go-xiaohei/pugo/app/model"
+	"github.com/go-xiaohei/pugo/app/render"
 )
 
 // build context, maintain parse data, posts, pages or others

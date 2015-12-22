@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/go-xiaohei/pugo-static/app/builder"
+	"github.com/go-xiaohei/pugo/app/builder"
 	"github.com/pkg/sftp"
 	"golang.org/x/crypto/ssh"
 	"gopkg.in/inconshreveable/log15.v2"

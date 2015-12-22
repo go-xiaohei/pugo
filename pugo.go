@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/codegangsta/cli"
-	"github.com/go-xiaohei/pugo-static/app/builder"
-	"github.com/go-xiaohei/pugo-static/app/command"
+	"github.com/go-xiaohei/pugo/app/builder"
+	"github.com/go-xiaohei/pugo/app/command"
 	"gopkg.in/inconshreveable/log15.v2"
 	"gopkg.in/inconshreveable/log15.v2/ext"
 	"path"
@@ -12,8 +12,8 @@ import (
 //go:generate go-bindata -o=app/asset/asset.go -pkg=asset source/... template/...
 
 const (
-	VERSION  = "0.8.4"
-	VER_DATE = "2015-12-15"
+	VERSION  = "0.8.5"
+	VER_DATE = "2015-12-22"
 
 	SRC_DIR   = "source"   // source contents dir
 	TPL_DIR   = "template" // template dir

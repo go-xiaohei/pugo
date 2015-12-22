@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/codegangsta/cli"
-	"github.com/go-xiaohei/pugo-static/app/builder"
+	"github.com/go-xiaohei/pugo/app/builder"
 	"gopkg.in/inconshreveable/log15.v2"
 )
 

@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-xiaohei/pugo-static/app/builder"
+	"github.com/go-xiaohei/pugo/app/builder"
 	"github.com/goftp/ftp"
 	"gopkg.in/inconshreveable/log15.v2"
 )

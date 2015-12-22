@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/codegangsta/cli"
-	"github.com/go-xiaohei/pugo-static/app/asset"
+	"github.com/go-xiaohei/pugo/app/asset"
 	"gopkg.in/inconshreveable/log15.v2"
 	"io/ioutil"
 	"net/url"

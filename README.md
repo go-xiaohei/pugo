@@ -2,13 +2,9 @@
 
 A simple and beautiful site generator built in [Go](http://golang.org).
 
-##### Stable
+**Stable  - 0.8.0.1205**
 
-**v0.8.0.1205**
-
-##### Alpha
-
-**0.8.4.1222**
+**Develop - 0.8.5.1222**
 
 [![Build Status](https://drone.io/github.com/go-xiaohei/pugo-static/status.png)](https://drone.io/github.com/go-xiaohei/pugo-static/latest)
 
@@ -32,3 +28,7 @@ Thanks to
 
 - [wuwen.org](http://wuwen.org) , the author of Gogs
 - [lunny.info](http://lunny.info) , the author of xorm
+
+**note**
+
+The old `pugo` dynamic blog engine based on `tidb` is deprecated in [old_project](https://github.com/go-xiaohei/pugo/tree/old_project).

@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/go-xiaohei/pugo-static/app/helper"
-	"github.com/go-xiaohei/pugo-static/app/parser"
+	"github.com/go-xiaohei/pugo/app/helper"
+	"github.com/go-xiaohei/pugo/app/parser"
 	"path"
 	"strings"
 )

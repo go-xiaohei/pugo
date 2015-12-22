@@ -6,8 +6,8 @@ import (
 	"path"
 	"testing"
 
-	"github.com/go-xiaohei/pugo-static/app/model"
-	"github.com/go-xiaohei/pugo-static/app/render"
+	"github.com/go-xiaohei/pugo/app/model"
+	"github.com/go-xiaohei/pugo/app/render"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

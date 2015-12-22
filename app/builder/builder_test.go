@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/Unknwon/com"
-	"github.com/go-xiaohei/pugo-static/app/builder"
+	"github.com/go-xiaohei/pugo/app/builder"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

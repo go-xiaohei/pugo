@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/go-xiaohei/pugo-static/app/model"
-	"github.com/go-xiaohei/pugo-static/app/parser"
+	"github.com/go-xiaohei/pugo/app/model"
+	"github.com/go-xiaohei/pugo/app/parser"
 	. "github.com/smartystreets/goconvey/convey"
 )
 

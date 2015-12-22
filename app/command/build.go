@@ -8,8 +8,8 @@ import (
 
 	"github.com/Unknwon/com"
 	"github.com/codegangsta/cli"
-	"github.com/go-xiaohei/pugo-static/app/builder"
-	"github.com/go-xiaohei/pugo-static/app/deploy"
+	"github.com/go-xiaohei/pugo/app/builder"
+	"github.com/go-xiaohei/pugo/app/deploy"
 	"gopkg.in/inconshreveable/log15.v2"
 )
 
