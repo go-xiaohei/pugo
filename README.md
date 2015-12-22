@@ -6,7 +6,7 @@ A simple and beautiful site generator built in [Go](http://golang.org).
 
 **Develop - 0.8.5.1222**
 
-[![Build Status](https://drone.io/github.com/go-xiaohei/pugo-static/status.png)](https://drone.io/github.com/go-xiaohei/pugo-static/latest)
+[![Build Status](https://travis-ci.org/go-xiaohei/pugo.svg?branch=master)](https://travis-ci.org/go-xiaohei/pugo)
 
 ### Overview
 
