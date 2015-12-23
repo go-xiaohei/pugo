@@ -2,7 +2,6 @@ package model
 
 import (
 	"errors"
-
 	"net/url"
 	"strings"
 	"sync"
@@ -17,18 +16,27 @@ var (
 )
 
 // Meta contains basic info in site
-type Meta struct {
-	Title    string `ini:"title"`
-	Subtitle string `ini:"subtitle"`
-	Keyword  string `ini:"keyword"`
-	Desc     string `ini:"desc"`
-	Domain   string `ini:"domain"`
-	Root     string `ini:"root"`
-	Base     string `ini:"-"`
-}
+type (
+	Meta struct {
+		Title    string `ini:"title"`
+		Subtitle string `ini:"subtitle"`
+		Keyword  string `ini:"keyword"`
+		Desc     string `ini:"desc"`
+		Domain   string `ini:"domain"`
+		Root     string `ini:"root"`
+		Base     string `ini:"-"`
+	}
+	MetaTotal struct {
+		Meta    *Meta
+		Nav     Navs
+		Authors AuthorMap
+		Comment *Comment
+		Conf    *Conf
+	}
+)
 
 // blocks to Meta
-func NewAllMeta(blocks []parser.Block) (meta *Meta, navbar Navs, au AuthorMap, cmt *Comment, err error) {
+func NewAllMeta(blocks []parser.Block) (total MetaTotal, err error) {
 	if len(blocks) != 1 {
 		err = ErrMetaBlockWrong
 		return
@@ -40,7 +48,8 @@ func NewAllMeta(blocks []parser.Block) (meta *Meta, navbar Navs, au AuthorMap, c
 	}
 
 	// build meta
-	meta = new(Meta)
+	total = MetaTotal{}
+	meta := new(Meta)
 	if err = block.MapTo("meta", meta); err != nil {
 		return
 	}
@@ -56,6 +65,7 @@ func NewAllMeta(blocks []parser.Block) (meta *Meta, navbar Navs, au AuthorMap, c
 	if meta.Base == "/" {
 		meta.Base = ""
 	}
+	total.Meta = meta
 
 	// build nav
 	navs := make([]*Nav, 0)
@@ -88,7 +98,7 @@ func NewAllMeta(blocks []parser.Block) (meta *Meta, navbar Navs, au AuthorMap, c
 		}
 		navs = append(navs, nav)
 	}
-	navbar = Navs(navs)
+	total.Nav = Navs(navs)
 
 	// build Authors
 	authors := make(map[string]*Author)
@@ -107,10 +117,10 @@ func NewAllMeta(blocks []parser.Block) (meta *Meta, navbar Navs, au AuthorMap, c
 		}
 		authors[k] = author
 	}
-	au = AuthorMap(authors)
+	total.Authors = AuthorMap(authors)
 
 	// build comment
-	cmt = new(Comment)
+	cmt := new(Comment)
 
 	// disqus
 	disqus := new(CommentDisqus)
@@ -120,11 +130,20 @@ func NewAllMeta(blocks []parser.Block) (meta *Meta, navbar Navs, au AuthorMap, c
 	if disqus.Site != "" {
 		cmt.Disqus = disqus
 	}
+	total.Comment = cmt
+
+	// conf
+	cnf := new(Conf)
+	hash := block.MapHash("build.ignore")
+	for _, h := range hash {
+		cnf.BuildIgnore = append(cnf.BuildIgnore, h)
+	}
+	total.Conf = cnf
 
 	return
 }
 
-// Nav defines items in navigatior
+// Nav defines items in navigation
 type Nav struct {
 	Link    string `ini:"link"`
 	Title   string `ini:"title"`
@@ -198,3 +217,8 @@ type Author struct {
 }
 
 type AuthorMap map[string]*Author
+
+// Options in meta, control building and deploying process
+type Conf struct {
+	BuildIgnore []string
+}

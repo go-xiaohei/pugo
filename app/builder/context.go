@@ -30,6 +30,7 @@ type Context struct {
 	Meta    *model.Meta
 	Authors model.AuthorMap
 	Comment *model.Comment
+	Conf    *model.Conf
 }
 
 // return global view data for template compilation

@@ -6,7 +6,6 @@ import (
 
 var (
 	_ Parser = (*MdParser)(nil)
-	_ Parser = (*CommonParser)(nil)
 )
 
 type (

@@ -77,7 +77,6 @@ func New(opt *BuildOption) *Builder {
 	}
 	builder := &Builder{
 		parsers: []parser.Parser{
-			parser.NewCommonParser(),
 			parser.NewMdParser(),
 		},
 		Version: builderVersion{

@@ -45,9 +45,11 @@ func (b *Builder) copyClean(ctx *Context) {
 			return nil
 		}
 		rel, _ := filepath.Rel(ctx.DstDir, p)
-		// ignore git directory
-		if strings.HasPrefix(rel, ".git") {
-			return nil
+		// ignore directory
+		for _, ignore := range ctx.Conf.BuildIgnore {
+			if strings.HasPrefix(rel, ignore) {
+				return nil
+			}
 		}
 		// not build file, clean it
 		if !ctx.Diff.Exist(p) {

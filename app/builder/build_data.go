@@ -50,17 +50,31 @@ func (b *Builder) ReadData(ctx *Context) {
 // read meta data, from meta.md,nav.md and comment.md
 // they are global values.
 func (b *Builder) readMeta(ctx *Context) {
-	blocks, err := b.parseFile("meta.md")
+	bytes, err := ioutil.ReadFile(path.Join(b.opt.SrcDir, "meta.ini"))
+	if err != nil {
+		ctx.Error = err
+		return
+	}
+	fileBytes := []byte("```ini\n")
+	fileBytes = append(fileBytes, bytes...)
+	fileBytes = append(fileBytes, []byte("\n```\n")...)
+	blocks, err := b.parseBytes(fileBytes)
 	if err != nil {
 		ctx.Error = err
 		return
 	}
 
-	ctx.Meta, ctx.Navs, ctx.Authors, ctx.Comment, err = model.NewAllMeta(blocks)
+	total, err := model.NewAllMeta(blocks)
 	if err != nil {
 		ctx.Error = err
 		return
 	}
+	ctx.Meta = total.Meta
+	ctx.Navs = total.Nav
+	ctx.Authors = total.Authors
+	ctx.Comment = total.Comment
+	ctx.Conf = total.Conf
+
 	for _, n := range ctx.Navs {
 		n.Link = fixSuffix(n.Link)
 	}
@@ -118,6 +132,19 @@ func (b *Builder) readContents(ctx *Context) {
 	}
 }
 
+// parse bytes to blocks
+func (b *Builder) parseBytes(data []byte) ([]parser.Block, error) {
+	p := b.getParser(data[:32]) // read first 32 bytes to find current parser
+	if p == nil {
+		return nil, ErrParserMissing
+	}
+	blocks, err := p.Parse(data)
+	if err != nil {
+		return nil, err
+	}
+	return blocks, nil
+}
+
 // parse file to blocks
 func (b *Builder) parseFile(file string) ([]parser.Block, error) {
 	file = path.Join(b.opt.SrcDir, file)
@@ -125,15 +152,7 @@ func (b *Builder) parseFile(file string) ([]parser.Block, error) {
 	if err != nil {
 		return nil, err
 	}
-	p := b.getParser(fileData[:32]) // read first 32 bytes to find current parser
-	if p == nil {
-		return nil, ErrParserMissing
-	}
-	blocks, err := p.Parse(fileData)
-	if err != nil {
-		return nil, err
-	}
-	return blocks, nil
+	return b.parseBytes(fileData)
 }
 
 // parse files to blocks, return a map with file and blocks
