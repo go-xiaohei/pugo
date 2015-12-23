@@ -17,8 +17,7 @@ type demoData struct {
 }
 
 var (
-	p  = parser.NewCommonParser()
-	p2 = parser.NewMdParser()
+	p = parser.NewMdParser()
 )
 
 func TestIniBlock(t *testing.T) {
@@ -77,20 +76,11 @@ func TestParser(t *testing.T) {
 
 		Convey("is common parser", func() {
 			flag := p.Is([]byte(parser.MD_PARSER_PREFIX))
-			So(flag, ShouldBeFalse)
-
-			flag = p.Is([]byte(parser.COMMON_PARSER_PREFIX))
-			So(flag, ShouldBeTrue)
-
-			flag = p2.Is([]byte(parser.MD_PARSER_PREFIX))
 			So(flag, ShouldBeTrue)
 		})
 
 		Convey("detect block", func() {
 			block := p.Detect([]byte("xxx"))
-			So(block, ShouldBeNil)
-
-			block = p2.Detect([]byte("xxx"))
 			So(block, ShouldBeNil)
 
 			block = p.Detect([]byte("ini"))
@@ -99,16 +89,12 @@ func TestParser(t *testing.T) {
 		})
 
 		Convey("first block error", func() {
-			blocks, err := p.Parse([]byte("-----xxx\ncontent"))
-			So(blocks, ShouldBeNil)
-			So(err, ShouldNotBeNil)
-
-			blocks, err = p2.Parse([]byte("```xxx\ncontent```"))
+			blocks, err := p.Parse([]byte("```xxx\ncontent```"))
 			So(blocks, ShouldBeNil)
 			So(err, ShouldNotBeNil)
 		})
 
-		blocks, err := p.Parse([]byte("\n\n-----ini\ncontent"))
+		blocks, err := p.Parse([]byte("```ini\ncontent`\n```"))
 		So(err, ShouldBeNil)
 		So(blocks, ShouldNotBeNil)
 	})
@@ -116,9 +102,12 @@ func TestParser(t *testing.T) {
 
 func TestParseMeta(t *testing.T) {
 	Convey("parse meta", t, func() {
-		bytes, err := ioutil.ReadFile("../../source/meta.md")
+		bytes, err := ioutil.ReadFile("../../source/meta.ini")
 		So(err, ShouldBeNil)
-		blocks, err := p2.Parse(bytes)
+		data := []byte("```ini\n")
+		data = append(data, bytes...)
+		data = append(data, []byte("\n```\n")...)
+		blocks, err := p.Parse(data)
 		So(err, ShouldBeNil)
 
 		Convey("check meta block", func() {
@@ -130,9 +119,9 @@ func TestParseMeta(t *testing.T) {
 				So(ok, ShouldBeTrue)
 				So(b.Item("meta", "title"), ShouldEqual, "Pugo")
 
-				meta, _, _, _, err := model.NewAllMeta(blocks)
+				metaTotal, err := model.NewAllMeta(blocks)
 				So(err, ShouldBeNil)
-				So(meta.Title, ShouldEqual, b.Item("meta", "title"))
+				So(metaTotal.Meta.Title, ShouldEqual, b.Item("meta", "title"))
 			})
 		})
 	})
@@ -142,7 +131,7 @@ func TestPostMeta(t *testing.T) {
 	Convey("parse post", t, func() {
 		bytes, err := ioutil.ReadFile("../../source/post/welcome.md")
 		So(err, ShouldBeNil)
-		blocks, err := p2.Parse(bytes)
+		blocks, err := p.Parse(bytes)
 		So(err, ShouldBeNil)
 
 		Convey("check post blocks", func() {
@@ -168,7 +157,7 @@ func TestPageMeta(t *testing.T) {
 	Convey("parse page with MdParser", t, func() {
 		bytes, err := ioutil.ReadFile("../../source/page/about.md")
 		So(err, ShouldBeNil)
-		blocks, err := p2.Parse(bytes)
+		blocks, err := p.Parse(bytes)
 		So(err, ShouldBeNil)
 		So(blocks, ShouldHaveLength, 2)
 

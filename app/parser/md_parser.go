@@ -43,6 +43,9 @@ func (mp *MdParser) Detect(mark []byte) Block {
 
 // parse bytes to blocks
 func (mp *MdParser) Parse(src []byte) ([]Block, error) {
+	if len(src) == 0 {
+		return nil, nil
+	}
 	buf := bytes.NewBuffer(src)
 	return mp.ParseReader(buf)
 }
