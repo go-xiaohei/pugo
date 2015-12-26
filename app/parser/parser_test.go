@@ -117,7 +117,7 @@ func TestParseMeta(t *testing.T) {
 			Convey("use meta block", func() {
 				b, ok := blocks[0].(parser.MetaBlock)
 				So(ok, ShouldBeTrue)
-				So(b.Item("meta", "title"), ShouldEqual, "Pugo")
+				So(b.Item("meta", "title"), ShouldEqual, "PuGo")
 
 				metaTotal, err := model.NewAllMeta(blocks)
 				So(err, ShouldBeNil)
@@ -168,7 +168,7 @@ func TestPageMeta(t *testing.T) {
 			Convey("use page blocks", func() {
 				b, ok := blocks[0].(parser.MetaBlock)
 				So(ok, ShouldBeTrue)
-				So(b.Item("title"), ShouldEqual, "About Pugo")
+				So(b.Item("title"), ShouldEqual, "About PuGo")
 
 				fi, _ := os.Stat("../../source/page/about.md")
 				page, err := model.NewPage(blocks, fi)
