@@ -31,7 +31,7 @@ func (b *Builder) WriteFeed(ctx *Context) {
 		for _, c := range p.Tags {
 			buf.WriteString(fmt.Sprintf("<category>%s</category>", c.Name))
 		}
-		buf.WriteString(fmt.Sprintf("<description><![CDATA[ %s ]]></description>", p.ContentHTML()))
+		buf.WriteString(fmt.Sprintf("<description><![CDATA[ %s ]]></description>", p.ContentHTML))
 		buf.WriteString("</item>")
 	}
 	buf.WriteString("</channel>")

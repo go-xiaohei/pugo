@@ -40,7 +40,7 @@ type (
 	}
 )
 
-// new theme with dir, functions and extenions
+// new theme with dir, functions and extensions
 func NewTheme(dir string, funcMap template.FuncMap, extension []string) *Theme {
 	theme := &Theme{
 		dir:        dir,

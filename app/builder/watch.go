@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	watchingExt       = []string{".md", ".html", ".css", ".js"}
+	watchingExt       = []string{".md", ".ini", ".html", ".css", ".js"}
 	watchScheduleTime int64
 )
 

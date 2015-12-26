@@ -25,20 +25,24 @@ type Post struct {
 	Permalink string  `ini:"-"`
 	Url       string  `ini:"-"`
 	Desc      string  `ini:"desc"` // description in a sentence
+	Thumb     string  `ini:"thumb"`
 	Created   Time    `ini:"-"`
 	Updated   Time    `ini:"-"`
 	Author    *Author `ini:"-"`
 	Tags      []*Tag  `ini:"-"`
-	Raw       []byte  ``
-	rawType   string
+	Raw       []byte  `ini:"-"`
+	RawType   string  `ini:"-"`
+
+	ContentHTML template.HTML
+	PreviewHTML template.HTML
 
 	fileName string
 	fileTime time.Time
 }
 
 // post's content html
-func (p *Post) ContentHTML() template.HTML {
-	if p.rawType == "markdown" {
+func (p *Post) contentHTML() template.HTML {
+	if p.RawType == "markdown" {
 		return template.HTML(helper.Markdown(p.Raw))
 	}
 	return template.HTML(p.Raw)
@@ -46,9 +50,9 @@ func (p *Post) ContentHTML() template.HTML {
 
 // post's preview html,
 // use "<!--more-->" to separate, return first part
-func (p *Post) PreviewHTML() template.HTML {
+func (p *Post) previewHTML() template.HTML {
 	bytes := bytes.Split(p.Raw, []byte("<!--more-->"))[0]
-	if p.rawType == "markdown" {
+	if p.RawType == "markdown" {
 		return template.HTML(helper.Markdown(bytes))
 	}
 	return template.HTML(bytes)
@@ -95,13 +99,16 @@ func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 	}
 
 	// parse markdown block
-	p.rawType = blocks[1].Type()
+	p.RawType = blocks[1].Type()
 	p.Raw = blocks[1].Bytes()
 
 	// build url
 	p.Permalink = fmt.Sprintf("/%d/%d/%d/%s", p.Created.Year, p.Created.Month, p.Created.Day, p.Slug)
 	p.Url = p.Permalink + ".html"
 
+	// compile content
+	p.ContentHTML = p.contentHTML()
+	p.PreviewHTML = p.previewHTML()
 	return p, nil
 }
 

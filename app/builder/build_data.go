@@ -8,9 +8,12 @@ import (
 	"path"
 	"path/filepath"
 	"sort"
+	"strings"
 
+	"bytes"
 	"github.com/go-xiaohei/pugo/app/model"
 	"github.com/go-xiaohei/pugo/app/parser"
+	"html/template"
 )
 
 var (
@@ -22,10 +25,8 @@ func (b *Builder) ReadData(ctx *Context) {
 	if b.readMeta(ctx); ctx.Error != nil {
 		return
 	}
-	if b.readContents(ctx); ctx.Error != nil {
-		return
-	}
-	// load theme after data reading finished
+
+	// load theme after meta data reading finished
 	b.render.SetFunc("url", func(str ...string) string {
 		if len(str) > 0 {
 			if ur, _ := url.Parse(str[0]); ur != nil {
@@ -39,12 +40,25 @@ func (b *Builder) ReadData(ctx *Context) {
 	b.render.SetFunc("fullUrl", func(str ...string) string {
 		return ctx.Meta.Root + path.Join(str...)
 	})
+
+	// read theme
+	// if error, do not need to load contents
 	theme, err := b.render.Load(b.opt.Theme)
 	if err != nil {
 		ctx.Error = err
 		return
 	}
 	ctx.Theme = theme
+
+	// assign copy directory
+	staticDir := ctx.Theme.Static()
+	ctx.copy2MediaDir = path.Join(ctx.Meta.Base, path.Base(staticDir), path.Base(b.opt.MediaDir))
+	ctx.copy2StaticDir = path.Join(ctx.Meta.Base, path.Base(staticDir))
+
+	// load contents
+	if b.readContents(ctx); ctx.Error != nil {
+		return
+	}
 }
 
 // read meta data, from meta.md,nav.md and comment.md
@@ -82,9 +96,13 @@ func (b *Builder) readMeta(ctx *Context) {
 
 // read contents, including posts and pages
 func (b *Builder) readContents(ctx *Context) {
-	filter := func(p string) bool {
-		return path.Ext(p) == ".md"
-	}
+	var (
+		replacer     = replaceGlobalVars(b, ctx)
+		htmlReplacer = replaceHtmlVars(b, ctx)
+		filter       = func(p string) bool {
+			return path.Ext(p) == ".md"
+		}
+	)
 	postData, infoData, err := b.parseDir("post", filter)
 	if err != nil {
 		ctx.Error = err
@@ -100,6 +118,10 @@ func (b *Builder) readContents(ctx *Context) {
 		if author, ok := ctx.Authors[post.Author.Name]; ok {
 			post.Author = author
 		}
+		post.Slug = string(replacer([]byte(post.Slug)))
+		post.Thumb = string(replacer([]byte(post.Thumb)))
+		post.PreviewHTML = template.HTML(htmlReplacer([]byte(post.PreviewHTML)))
+		post.ContentHTML = template.HTML(htmlReplacer([]byte(post.ContentHTML)))
 		ctx.Posts = append(ctx.Posts, post)
 	}
 	sort.Sort(model.Posts(ctx.Posts))
@@ -128,6 +150,9 @@ func (b *Builder) readContents(ctx *Context) {
 		if author, ok := ctx.Authors[page.Author.Name]; ok {
 			page.Author = author
 		}
+		page.Slug = string(replacer([]byte(page.Slug)))
+		page.Thumb = string(replacer([]byte(page.Thumb)))
+		page.ContentHTML = template.HTML(htmlReplacer([]byte(page.ContentHTML)))
 		ctx.Pages = append(ctx.Pages, page)
 	}
 }
@@ -214,4 +239,35 @@ func fixSuffix(u string) string {
 		return u
 	}
 	return u + ".html"
+}
+
+// global vars replacer
+func replaceGlobalVars(b *Builder, ctx *Context) func([]byte) []byte {
+	return func(str []byte) []byte {
+		replacer := strings.NewReplacer(
+			"@media/", "/"+ctx.copy2MediaDir+"/",
+			"@static/", "/"+ctx.copy2StaticDir+"/",
+		)
+		return []byte(replacer.Replace(string(str)))
+	}
+}
+
+// global vars replacer
+func replaceMarkdownVars(b *Builder, ctx *Context) func([]byte) []byte {
+	return func(data []byte) []byte {
+		data = bytes.Replace(data, []byte("(@media/"), []byte("(/"+ctx.copy2MediaDir+"/"), -1)
+		data = bytes.Replace(data, []byte("(@static/"), []byte("(/"+ctx.copy2StaticDir+"/"), -1)
+		return data
+	}
+}
+
+// global vars replacer
+func replaceHtmlVars(b *Builder, ctx *Context) func([]byte) []byte {
+	return func(data []byte) []byte {
+		data = bytes.Replace(data, []byte(`href="@media/`), []byte(`href="/`+ctx.copy2MediaDir+"/"), -1)
+		data = bytes.Replace(data, []byte(`href="@static/`), []byte(`href="/`+ctx.copy2StaticDir+"/"), -1)
+        data = bytes.Replace(data, []byte(`src="@media/`), []byte(`src="/`+ctx.copy2MediaDir+"/"), -1)
+        data = bytes.Replace(data, []byte(`src="@static/`), []byte(`src="/`+ctx.copy2StaticDir+"/"), -1)
+		return data
+	}
 }

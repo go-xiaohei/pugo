@@ -1,13 +1,33 @@
 ```ini
+
+; post title, required
 title = Welcome
+
+; post slug, use to build permalink and url, required
 slug = welcome
-desc = welcome to try pugo.static site generator
-date = 2015-12-20
-update_date = 2015-12-20
+
+; post description, show in header meta
+desc = welcome to try pugo site generator
+
+; post created time, support
+; 2015-11-28, 2015-11-28 12:28, 2015-11-28 12:28:38
+date = 2015-12-20 12:20:20
+
+; post updated time, optional
+; if null, use created time
+update_date = 2015-12-20 12:30:30
+
+; author identifier, reference to meta.md [author.pugo], required
+author = pugo
+
+; thumbnails to the post
+thumb = @media/golang.png
+
+; tags, optional
 tags = pugo
 ```
 
-When you read the blog, `pugo` is running successfully. Then enjoy your blog journey.
+When you read the blog, `PuGo` is running successfully. Then enjoy your blog journey.
 
 This blog is generated from file `source/welcome.md`. You can learn it and try to write your own blog article with following guide together.
 
@@ -17,10 +37,10 @@ Blog's meta data, such as title, author, are created by first `ini` section with
 
 ```ini
 ; post title, required
-title = Welcome to Pugo.Static
+title = Welcome
 
 ; post slug, use to build permalink and url, required
-slug = welcome-pugo-static
+slug = welcome
 
 ; post created time, support
 ; 2015-11-28, 2015-11-28 12:28, 2015-11-28 12:28:38
@@ -29,6 +49,9 @@ date = 2015-11-28 11:28
 ; post updated time, optional
 ; if null, use created time
 update_date = 2015-11-28 12:28
+
+; post description, show in header meta
+desc = welcome to try pugo.static site generator
 
 ; author identifier, reference to meta.md [author.pugo], required
 author = pugo-robot

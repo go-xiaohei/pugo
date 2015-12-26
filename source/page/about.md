@@ -1,5 +1,5 @@
 ```ini
-title = About Pugo
+title = About PuGo
 slug = about
 desc = some words about pugo
 date = 2015-12-24
@@ -15,13 +15,13 @@ metadata = this is meta data
 
 ### Introduction
 
-`Pugo` is a simple static site generator by [Golang](https://golang.org). It compiled [markdown](https://help.github.com/articles/markdown-basics/) content to site pages with beautiful theme. No dependencies, cross platform and very fast.
+`PuGo` is a simple static site generator by [Golang](https://golang.org). It compiled [markdown](https://help.github.com/articles/markdown-basics/) content to site pages with beautiful theme. No dependencies, cross platform and very fast.
 
-![golang](/static/media/golang.png)
+![golang](@media/golang.png)
 
 ### Quick start
 
-1. Download and extract from [Pugo Releases](http://pugo.io), Run `pugo[.exe]` server directly.
+1. Download and extract from [PuGo Releases](http://pugo.io), Run `pugo[.exe]` server directly.
 2. Open `http://localhost:9899` to visit.
 
 
@@ -37,7 +37,7 @@ More details in [Commands](http://pugo.io/docs/command.html).
 
 ### Writing
 
-`Pugo` support two kinds of content, `post` and `page`. you can create any `.md` file in proper directories in `source` directory. Read the [wiki](http://pugo.io/docs/write.html) to learn the layout format and more details.
+`PuGo` support two kinds of content, `post` and `page`. you can create any `.md` file in proper directories in `source` directory. Read the [wiki](http://pugo.io/docs/write.html) to learn the layout format and more details.
 
 ### Publish
 

@@ -14,27 +14,29 @@ import (
 
 // Page contains fields for a page
 type Page struct {
-	Title      string  `ini:"title"`
-	Slug       string  `ini:"slug"`
-	Url        string  `ini:"-"`
-	Permalink  string  `ini:"-"`
-	HoverClass string  `ini:"hover"`
-	Template   string  `ini:"template"` // page's template for render
-	Desc       string  `ini:"desc"`
-	Created    Time    `ini:"-"`
-	Updated    Time    `ini:"-"`
-	Author     *Author `ini:"-"`
-	Raw        []byte
-	rawType    string
-	Meta       map[string]string // page's extra meta data
+	Title       string  `ini:"title"`
+	Slug        string  `ini:"slug"`
+	Url         string  `ini:"-"`
+	Permalink   string  `ini:"-"`
+	HoverClass  string  `ini:"hover"`
+	Template    string  `ini:"template"` // page's template for render
+	Desc        string  `ini:"desc"`
+	Thumb       string  `ini:"thumb"`
+	Created     Time    `ini:"-"`
+	Updated     Time    `ini:"-"`
+	Author      *Author `ini:"-"`
+	Raw         []byte
+	RawType     string
+	Meta        map[string]string // page's extra meta data
+	ContentHTML template.HTML
 
 	fileName string
 	fileTime time.Time
 }
 
 // page's html content
-func (p *Page) ContentHTML() template.HTML {
-	if p.rawType == "markdown" {
+func (p *Page) contentHTML() template.HTML {
+	if p.RawType == "markdown" {
 		return template.HTML(helper.Markdown(p.Raw))
 	}
 	return template.HTML(p.Raw)
@@ -80,7 +82,7 @@ func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 	p.Meta = block.MapHash("meta")
 
 	// parse markdown block
-	p.rawType = blocks[1].Type()
+	p.RawType = blocks[1].Type()
 	p.Raw = blocks[1].Bytes()
 
 	// build url
@@ -95,5 +97,7 @@ func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 		}
 		p.Meta = block.MapHash("")
 	}
+
+	p.ContentHTML = p.contentHTML()
 	return p, nil
 }

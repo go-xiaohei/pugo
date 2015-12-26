@@ -25,7 +25,7 @@ func (mr *MarkdownRender) BlockCode(out *bytes.Buffer, text []byte, lang string)
 	out.Write(bytes.Replace(tmp.Bytes(), tab, spaces, -1))
 }
 
-// Mardown converts markdown bytes to html bytes
+// Markdown converts markdown bytes to html bytes
 func Markdown(raw []byte) []byte {
 	htmlFlags := 0 |
 		blackfriday.HTML_USE_XHTML |

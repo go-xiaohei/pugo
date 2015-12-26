@@ -31,6 +31,9 @@ type Context struct {
 	Authors model.AuthorMap
 	Comment *model.Comment
 	Conf    *model.Conf
+
+	copy2StaticDir string
+	copy2MediaDir  string
 }
 
 // return global view data for template compilation
