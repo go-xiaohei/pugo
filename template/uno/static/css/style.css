@@ -1,3 +1,125 @@
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+form,
+fieldset,
+legend,
+input,
+textarea,
+p,
+blockquote,
+th,
+td {
+    margin: 0;
+    padding: 0
+}
+
+header,
+footer,
+section,
+article,
+aside,
+nav,
+address,
+figure,
+figcaption,
+menu,
+details {
+    display: block
+}
+
+audio,
+canvas,
+video {
+    display: inline-block
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0
+}
+
+fieldset,
+img {
+    border: 0
+}
+
+address,
+caption,
+cite,
+code,
+dfn,
+em,
+th,
+var {
+    font-style: normal;
+    font-weight: normal
+}
+
+ol,
+ul {
+    list-style: none
+}
+
+caption,
+th {
+    text-align: left
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-size: 100%;
+    font-weight: normal
+}
+
+q:before,
+q:after {
+    content: ''
+}
+
+abbr,
+acronym {
+    border: 0;
+    font-variant: normal
+}
+
+sup {
+    vertical-align: text-top
+}
+
+sub {
+    vertical-align: text-bottom
+}
+
+input,
+textarea,
+select {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit
+}
+
+legend {
+    color: #000
+}
+
 html, body {
     font-family: "PingHei", "Lucida Grande", "Lucida Sans Unicode", Helvetica, Tahoma, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "Microsoft YaHei", STXihei, STHeiti, Heiti, SimSun, sans-serif;
 }
@@ -6,286 +128,290 @@ pre code {
     font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', "Microsoft Yahei", Helvetica, Arial, sans-serif;
 }
 
+html,
 body {
-    padding-top: 24px;
-    /*background: url("../img/bg.jpg") no-repeat top center;*/
-    background-color: #FCFCFC;
+    font-size: 14px;
+    line-height: 30px;
+    color: #333;
+    background-color: #fbfbfb;
+    width: 100%;
+    height: 100%;
+}
+
+a {
+    text-decoration: none;
+    color: #0079bc
+}
+
+a:hover {
+    color: #005b9b
+}
+
+p {
+    margin-bottom: 6px
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    padding: 0;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+h1 {
+    font-size: 28px
+}
+
+h2 {
+    font-size: 24px
+}
+
+h3 {
+    font-size: 21px
+}
+
+h4 {
+    font-size: 19px
+}
+
+h5 {
+    font-size: 16px
+}
+
+h6 {
+    font-size: 14px
+}
+
+.text-left {
+    text-align: left
+}
+
+.text-right {
+    text-align: right
+}
+
+.text-center {
+    text-align: center
+}
+
+.left {
+    float: left
+}
+
+.right {
+    float: right
+}
+
+.absolute {
+    position: absolute
+}
+
+.relative {
+    position: relative
+}
+
+.clear:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0
+}
+
+.vertical-middle {
+    vertical-align: middle
+}
+
+.inline {
+    display: inline
+}
+
+.inline-block {
+    display: inline-block
+}
+
+.block {
+    display: block
+}
+
+.fade-out {
+    opacity: 0
+}
+
+.hide {
+    display: none !important
+}
+
+/* cover */
+
+.cover {
+    width: 360px;
+    height: 100%;
+    text-align: center;
+    color: #f8f8f8;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .4);
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    background: -webkit-linear-gradient(300deg, rgba(95, 44, 130, .1) 30%, rgba(73, 160, 157, .2) 70%) 0 0/cover fixed;
+    background: linear-gradient(150deg, rgba(95, 44, 130, .1) 30%, rgba(73, 160, 157, .2) 70%) 0 0/cover fixed;
+    position: fixed;
+    z-index: 111;
+    border-right: 1px solid #ccc;
+    box-shadow: 10.5px -10px 1px -9px #ddd;
+}
+
+.cover.index {
+    width: 100%;
+}
+
+#avatar-link img.avatar {
+    width: 120px;
+    height: 120px;
+    box-shadow: 0 0 3px 3px rgba(0, 0, 0, .25);
+    border-radius: 50%;
+}
+
+#avatar-link {
+    color: #FCFCFC;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.cover .profile {
+    width: 600px;
+}
+
+.cover .divider {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, .14);
+    margin: 12px auto;
+    height: 0;
+}
+
+.cover .divider.long {
+    width: 30%;
+}
+
+.cover .divider.short {
+    width: 15%;
+}
+
+.cover .navigation {
+    padding-top: 18px;
+}
+
+.cover .navigation li,
+.cover .social li {
+    display: inline-block;
+    font-size: 16px;
+}
+
+.cover .navigation li a {
+    padding: .5rem 1rem;
+    color: #FAFAFA;
+    border: 1px solid rgba(255, 255, 255, .6);
+    border-radius: 20px;
+    opacity: .8;
+    margin: 6px;
+    display: block;
+}
+
+.cover .navigation li a:hover,
+.cover .social li a:hover {
+    opacity: 1;
+    color: #fbffc0;
+}
+
+.cover .social {
+    padding-top: 30px;
+}
+
+.cover .social li a {
+    font-size: 24px;
+    color: #FAFAFA;
 }
 
 #main {
-    margin-top: 5em;
+    margin-left: 370px;
+    padding: 6rem 11rem;
 }
 
-#site-title {
-    margin-top: 0;
-    line-height: 50px;
+#main.index{
+    display: none;
 }
 
-#site-nav {
-    font-size: 1.2em;
+.article .title {
+    font-size: 40px;
+    line-height: 40px;
+    margin-bottom: 20px;
+    font-family: "PT Serif", "Lucida Sans Unicode", Helvetica, Tahoma, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "Microsoft YaHei", STXihei, STHeiti, Heiti, SimSun, sans-serif;
 }
 
-#site-nav .nav li a .fa {
-    margin-right: 6px;
+.article .title a {
+    color: #333;
 }
 
-#site-title sup {
-    font-size: 0.5em;
-    padding-left: 4px;
-    color: #888;
-}
-
-#site-title a {
-    color: #555;
-    text-decoration: none;
-}
-
-#site-title a:hover {
+.article .title a:hover {
     color: #111;
 }
 
-/*#hero*/
-
-#hero {
-    padding: 5em 5em 6em 5em;
+.article .aside {
+    color: #999;
 }
 
-#hero-image {
-    padding: 6px;
-    background-color: #FFF;
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
-    border-radius: 8px;
+.article pre code {
+    font-size: 90%;
 }
 
-/*#article-list*/
-
-.article {
-    margin-bottom: 7em;
-    position: relative;
+.article .tags .tag {
+    text-transform: uppercase;
+    background-color: rgba(0, 68, 204, .7);
+    border-radius: .25rem;
+    transition: all 350ms;
+    padding: .167rem .25rem;
+    font-size: .55rem;
+    color: #f8f8f8;
+    margin-left: 6px;
 }
 
-.article .panel {
-    padding-left: 30px;
-    padding-right: 30px;
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+.article .tags .tag:hover {
+    background-color: rgb(0, 68, 204);
 }
 
-.article .panel:hover {
-    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.2), 0 4px 16px 0 rgba(0, 0, 0, 0.19);
+.article p code{
+    font-family: Consolas, "Microsoft YaHei", "Courier New", Arial,monospace;
+    background: rgba(128,128,128,.2);
+    padding: 2px 6px;
+    font-size: 95%;
+    border-radius: 4px;
 }
 
-.article .header {
-    position: relative;
-    margin-bottom: 12px;
-    border-bottom: 1px dashed #DDD;
-}
-
-.article .header .title {
-    padding-right: 78px;
-    line-height: 1.5;
-}
-
-.article .header a {
-    color: #444;
-}
-
-.article .header a:hover {
-    color: #0a6ebd;
-    text-decoration: none;
-}
-
-.article .header .meta {
-    position: absolute;
-    top: -10px;
-    right: 0;
-}
-
-.article .meta .date {
-    color: #CCC;
-}
-
-.article .meta .date .month {
-    font-size: 3em;
-}
-
-.article .meta .date .day {
-    vertical-align: top;
-    font-size: 1.3em;
-    text-decoration: underline;
-    margin-top: .6em;
-    display: inline-block;
-}
-
-.article .brief {
-    line-height: 1.75;
-    font-size: 16px;
-    margin-bottom: 18px;
-    padding-bottom: 12px;
-    border-bottom: 1px dashed #DDD;
-}
-
-.article .brief > *:last-child {
-    margin-bottom: 0 !important;
-}
-
-.article .brief h1 {
-    font-size: 26px;
-    border-bottom: 1px dashed #DDD;
-    padding-bottom: 11.5px;
-}
-
-.article .brief h2 {
-    font-size: 24px;
-    border-bottom: 1px dashed #DDD;
-    padding-bottom: 11.5px;
-    margin-top: 18px;
-}
-
-.article .brief h3 {
-    font-size: 22px;
-    border-bottom: 1px dashed #DDD;
-    padding-bottom: 11.5px;
-    margin-top: 18px;
-}
-
-.article .brief h4 {
-    font-size: 20px;
-    border-bottom: 1px dashed #DDD;
-    padding-bottom: 11.5px;
-    margin-top: 18px;
-}
-
-.article .brief h5,
-.article .brief h6 {
-    font-size: 18px;
-}
-
-.article .brief h1,
-.article .brief h2,
-.article .brief h3,
-.article .brief h4,
-.article .brief h5,
-.article .brief h6 {
-    font-weight: 700;
-}
-
-.article .brief img {
-    max-width: 100%;
-}
-
-.article-pager .btn {
-    font-size: 1.8em;
-    margin: 0 1em;
-}
-
-.article .brief pre code {
-    font-size: 14px;
-}
-
-.article .brief pre {
-    box-shadow: none !important;
-    border-top-color: #DDD;
-    border-right-color: #DDD;
-    border-bottom-color: #DDD;
-}
-
-.article .brief p > code,
-.article .brief li > code {
-    color: #333;
-    background-color: #f1f1f1;
-}
-
-.article .aside .tag {
-    margin-right: 1em;
-    font-size: 14px;
-}
-
-.article .aside .stat {
-    font-size: 14px;
-}
-
-.article .admin-btn {
-    position: absolute;
-    top: -1.4em;
-    right: -2em;
-}
-
-.article .admin-btn .btn {
-    margin-left: 1em;
-}
-
-#article-single .aside {
-    padding-top: 8px;
-    border-bottom: 1px dashed #DDD;
-    padding-bottom: 18px;
-    margin-bottom: 18px;
-}
-
-#article-single .brief {
-    margin-bottom: 40px;
-}
-
-#article-list .aside {
-    padding-bottom: 24px;
-}
-
-#article-list h2.tag {
-    margin: 0 auto 30px auto;
-}
-
-#page-single .article {
-    margin-bottom: 0;
-}
-
-#comment {
-    margin-top: -4em;
-}
-
-/*
-#archive-list
-*/
-
-#archive-list .panel {
-    padding-bottom: 3em;
-}
-
-.archive .date {
-    margin-right: 1em;
-    font-size: .8em;
-    color: #DDD;
-    display: inline-block;
-    width: 3em;
-}
-
-.archive h4 {
-    line-height: 40px;
-}
-
-/*
-#footer
-*/
-
-#footer {
-    font-size: 16px;
-    color: #CCC;
-    margin-top: 6em;
-    margin-bottom: 2em;
-}
-
-#footer p {
-    margin-bottom: .2em;
-}
-
-#footer a {
+#footer{
+    margin-top: 36px;
+    padding-top: 24px;
+    border-top: 2px solid rgba(128,128,128,.3);
     color: #AAA;
 }
 
-/*
-#admin-bar
-*/
+#footer a{
+    color: #AAA;
+}
 
-#admin-bar {
-    position: fixed;
-    top: 24px;
-    left: 24px;
+#footer a:hover{
+    color: #666;
 }

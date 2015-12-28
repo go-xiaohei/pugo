@@ -25,6 +25,7 @@ type (
 		Domain   string `ini:"domain"`
 		Root     string `ini:"root"`
 		Base     string `ini:"-"`
+		Cover    string `ini:"cover"`
 	}
 	MetaTotal struct {
 		Meta    *Meta
@@ -212,12 +213,12 @@ func (c *Comment) IsOK() bool {
 
 // Author of post or page
 type Author struct {
-	Name      string `ini:"name"`
-	Nick      string `ini:"nick"`
-	Email     string `ini:"email"`
-	Url       string `ini:"url"`
-	AvatarUrl string `ini:"avatar"` // todo: auto fill this field with gravatar
-	IsOwner   bool   // must be the first author
+	Name    string `ini:"name"`
+	Nick    string `ini:"nick"`
+	Email   string `ini:"email"`
+	Url     string `ini:"url"`
+	Avatar  string `ini:"avatar"` // todo: auto fill this field with gravatar
+	IsOwner bool   // must be the first author
 }
 
 type AuthorMap map[string]*Author

@@ -56,6 +56,8 @@ func (b *Builder) ReadData(ctx *Context) {
 	ctx.staticPath = path.Join(ctx.Meta.Base, path.Base(staticDir))
 
 	replacer := replaceGlobalVars(b, ctx)
+
+	ctx.Meta.Cover = string(replacer([]byte(ctx.Meta.Cover)))
 	// fix meta data
 	for _, n := range ctx.Navs {
 		n.Link = fixSuffix(n.Link)
@@ -65,7 +67,7 @@ func (b *Builder) ReadData(ctx *Context) {
 		if a.IsOwner {
 			ctx.Owner = a
 		}
-		a.AvatarUrl = string(replacer([]byte(a.AvatarUrl)))
+		a.Avatar = string(replacer([]byte(a.Avatar)))
 	}
 
 	// load contents

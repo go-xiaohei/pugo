@@ -1,19 +1,15 @@
 {{template "meta.html" .}}
 <body>
 {{template "cover.html" .}}
-<section id="main">
+<section id="main" class="{{.PostType}}">
     <div class="container">
         <div id="article-list">{{if .Tag}}
             <h2 class="tag text-center">{{.Tag.Name}}</h2>{{end}}{{range .Posts}}
             <article class="article">
                 <div class="row">
-                    <div class="col-md-10 col-md-offset-1 panel panel-default">
+                    <div class="">
                         <header class="header">
                             <div class="meta">
-                        <span class="date">
-                            <span class="month">{{.Created.Month}}</span>
-                            <span class="day">{{.Created.Day}}</span>
-                        </span>
                             </div>
                             <h3 class="title">
                                 <a href="{{url .Url}}">{{.Title}}</a>
@@ -21,17 +17,35 @@
                         </header>
                         <section class="brief">{{.PreviewHTML}}</section>
                         <aside class="aside clearfix">
+                            <span class="date">
+                                <span class="year">{{.Created.Year}}</span>/
+                                <span class="month">{{.Created.Month}}</span>/
+                                <span class="day">{{.Created.Day}}</span>
+                            </span>
+                            <span class="tags">{{range .Tags}}
+                                <a class="tag" href="{{url .Url}}">{{.Name}}</a>{{end}}
+                            </span>
                             <a class="btn btn-primary btn-lg pull-right" href="{{url .Url}}">Read More</a>
                         </aside>
                     </div>
                 </div>
-            </article>
-            {{end}}
+            </article>{{end}}
             <div class="article-pager text-center">
                 {{if .Pager.Prev}}<a class="btn btn-lg btn-info" href="{{url .Pager.PrevUrl}}">prev</a>{{end}}
                 {{if .Pager.Next}}<a class="btn btn-lg btn-info" href="{{url .Pager.NextUrl}}">next</a>{{end}}
             </div>
         </div>
+        {{template "footer.html" .}}
     </div>
 </section>
-{{template "footer.html" .}}
+<script>
+    $(function () {
+        $(".navigation li.active a").on("click", function () {
+            var $cover = $('.cover');
+            var $main = $('#main');
+            $cover.hasClass("index") ? $cover.removeClass("index") && $main.show() : $cover.addClass("index") && $main.hide();
+            return false;
+        });
+    })
+</script>
+{{template "footer_js.html" .}}
