@@ -1,0 +1,26 @@
+{{template "meta.html" .}}
+<body>
+{{template "header.html" .}}
+<section id="main">
+    <div class="container">
+        <div id="archive-list">
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1 panel panel-default">
+                    {{range .Archives}}
+                    <div class="archive">
+                        <h3>{{.Year}}</h3>
+                        <hr/>
+                        {{range .Posts}}
+                        <h4>
+                            <span class="date">{{.Created.Month}}.{{.Created.Day}}</span>
+                            <a href="{{url .Url}}">{{.Title}}</a>
+                        </h4>
+                        {{end}}
+                    </div>
+                    {{end}}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{{template "footer.html" .}}

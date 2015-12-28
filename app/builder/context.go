@@ -28,12 +28,13 @@ type Context struct {
 
 	Navs    model.Navs
 	Meta    *model.Meta
+	Owner   *model.Author
 	Authors model.AuthorMap
 	Comment *model.Comment
 	Conf    *model.Conf
 
-	copy2StaticDir string
-	copy2MediaDir  string
+	staticPath string
+	mediaPath  string
 }
 
 // return global view data for template compilation
@@ -46,6 +47,7 @@ func (ctx *Context) ViewData() map[string]interface{} {
 		"Desc":    ctx.Meta.Desc,
 		"Comment": ctx.Comment,
 		"Root":    ctx.Meta.Base,
+		"Owner":   ctx.Owner,
 	}
 	return m
 }

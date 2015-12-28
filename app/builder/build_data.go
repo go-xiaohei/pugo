@@ -1,7 +1,9 @@
 package builder
 
 import (
+	"bytes"
 	"errors"
+	"html/template"
 	"io/ioutil"
 	"net/url"
 	"os"
@@ -10,10 +12,8 @@ import (
 	"sort"
 	"strings"
 
-	"bytes"
 	"github.com/go-xiaohei/pugo/app/model"
 	"github.com/go-xiaohei/pugo/app/parser"
-	"html/template"
 )
 
 var (
@@ -52,8 +52,21 @@ func (b *Builder) ReadData(ctx *Context) {
 
 	// assign copy directory
 	staticDir := ctx.Theme.Static()
-	ctx.copy2MediaDir = path.Join(ctx.Meta.Base, path.Base(staticDir), path.Base(b.opt.MediaDir))
-	ctx.copy2StaticDir = path.Join(ctx.Meta.Base, path.Base(staticDir))
+	ctx.mediaPath = path.Join(ctx.Meta.Base, path.Base(staticDir), path.Base(b.opt.MediaDir))
+	ctx.staticPath = path.Join(ctx.Meta.Base, path.Base(staticDir))
+
+	replacer := replaceGlobalVars(b, ctx)
+	// fix meta data
+	for _, n := range ctx.Navs {
+		n.Link = fixSuffix(n.Link)
+	}
+
+	for _, a := range ctx.Authors {
+		if a.IsOwner {
+			ctx.Owner = a
+		}
+		a.AvatarUrl = string(replacer([]byte(a.AvatarUrl)))
+	}
 
 	// load contents
 	if b.readContents(ctx); ctx.Error != nil {
@@ -88,10 +101,6 @@ func (b *Builder) readMeta(ctx *Context) {
 	ctx.Authors = total.Authors
 	ctx.Comment = total.Comment
 	ctx.Conf = total.Conf
-
-	for _, n := range ctx.Navs {
-		n.Link = fixSuffix(n.Link)
-	}
 }
 
 // read contents, including posts and pages
@@ -245,8 +254,8 @@ func fixSuffix(u string) string {
 func replaceGlobalVars(b *Builder, ctx *Context) func([]byte) []byte {
 	return func(str []byte) []byte {
 		replacer := strings.NewReplacer(
-			"@media/", "/"+ctx.copy2MediaDir+"/",
-			"@static/", "/"+ctx.copy2StaticDir+"/",
+			"@media/", "/"+ctx.mediaPath+"/",
+			"@static/", "/"+ctx.staticPath+"/",
 		)
 		return []byte(replacer.Replace(string(str)))
 	}
@@ -255,8 +264,8 @@ func replaceGlobalVars(b *Builder, ctx *Context) func([]byte) []byte {
 // global vars replacer
 func replaceMarkdownVars(b *Builder, ctx *Context) func([]byte) []byte {
 	return func(data []byte) []byte {
-		data = bytes.Replace(data, []byte("(@media/"), []byte("(/"+ctx.copy2MediaDir+"/"), -1)
-		data = bytes.Replace(data, []byte("(@static/"), []byte("(/"+ctx.copy2StaticDir+"/"), -1)
+		data = bytes.Replace(data, []byte("(@media/"), []byte("(/"+ctx.mediaPath+"/"), -1)
+		data = bytes.Replace(data, []byte("(@static/"), []byte("(/"+ctx.staticPath+"/"), -1)
 		return data
 	}
 }
@@ -264,10 +273,10 @@ func replaceMarkdownVars(b *Builder, ctx *Context) func([]byte) []byte {
 // global vars replacer
 func replaceHtmlVars(b *Builder, ctx *Context) func([]byte) []byte {
 	return func(data []byte) []byte {
-		data = bytes.Replace(data, []byte(`href="@media/`), []byte(`href="/`+ctx.copy2MediaDir+"/"), -1)
-		data = bytes.Replace(data, []byte(`href="@static/`), []byte(`href="/`+ctx.copy2StaticDir+"/"), -1)
-        data = bytes.Replace(data, []byte(`src="@media/`), []byte(`src="/`+ctx.copy2MediaDir+"/"), -1)
-        data = bytes.Replace(data, []byte(`src="@static/`), []byte(`src="/`+ctx.copy2StaticDir+"/"), -1)
+		data = bytes.Replace(data, []byte(`href="@media/`), []byte(`href="/`+ctx.mediaPath+"/"), -1)
+		data = bytes.Replace(data, []byte(`href="@static/`), []byte(`href="/`+ctx.staticPath+"/"), -1)
+		data = bytes.Replace(data, []byte(`src="@media/`), []byte(`src="/`+ctx.mediaPath+"/"), -1)
+		data = bytes.Replace(data, []byte(`src="@static/`), []byte(`src="/`+ctx.staticPath+"/"), -1)
 		return data
 	}
 }

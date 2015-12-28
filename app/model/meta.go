@@ -116,6 +116,9 @@ func NewAllMeta(blocks []parser.Block) (total MetaTotal, err error) {
 			author.Nick = author.Name
 		}
 		authors[k] = author
+		if len(authors) == 1 {
+			author.IsOwner = true
+		}
 	}
 	total.Authors = AuthorMap(authors)
 
@@ -213,7 +216,8 @@ type Author struct {
 	Nick      string `ini:"nick"`
 	Email     string `ini:"email"`
 	Url       string `ini:"url"`
-	AvatarUrl string `ini:"avatar"` // todo: fill this field with gravatar
+	AvatarUrl string `ini:"avatar"` // todo: auto fill this field with gravatar
+	IsOwner   bool   // must be the first author
 }
 
 type AuthorMap map[string]*Author
