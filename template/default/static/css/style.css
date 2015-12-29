@@ -246,13 +246,13 @@ body {
 */
 
 #archive-list .panel {
-    padding-bottom: 3em;
+    padding: 2em 3em;
 }
 
 .archive .date {
     margin-right: 1em;
     font-size: .8em;
-    color: #DDD;
+    color: #BBB;
     display: inline-block;
     width: 3em;
 }
@@ -278,14 +278,4 @@ body {
 
 #footer a {
     color: #AAA;
-}
-
-/*
-#admin-bar
-*/
-
-#admin-bar {
-    position: fixed;
-    top: 24px;
-    left: 24px;
 }

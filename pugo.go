@@ -12,8 +12,8 @@ import (
 //go:generate go-bindata -o=app/asset/asset.go -pkg=asset source/... template/...
 
 const (
-	VERSION  = "0.8.5.1223"
-	VER_DATE = "2015-12-22"
+	VERSION  = "0.8.6.1229"
+	VER_DATE = "2015-12-29"
 
 	SRC_DIR   = "source"   // source contents dir
 	TPL_DIR   = "template" // template dir
@@ -26,7 +26,7 @@ var (
 )
 
 func init() {
-	app.Name = "pugo"
+	app.Name = "PuGo"
 	app.Usage = "a static website generator & deployer in Go"
 	app.Author = "fuxiaohei"
 	app.Email = "fuxiaohei@vip.qq.com"

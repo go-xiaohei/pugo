@@ -28,6 +28,7 @@ type Context struct {
 
 	Navs    model.Navs
 	Meta    *model.Meta
+	I18n    *helper.I18n // use i18n tool
 	Owner   *model.Author
 	Authors model.AuthorMap
 	Comment *model.Comment
@@ -48,6 +49,7 @@ func (ctx *Context) ViewData() map[string]interface{} {
 		"Comment": ctx.Comment,
 		"Root":    ctx.Meta.Base,
 		"Owner":   ctx.Owner,
+		"I18n":    ctx.I18n,
 	}
 	return m
 }

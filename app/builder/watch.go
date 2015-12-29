@@ -7,6 +7,7 @@ import (
 
 	"gopkg.in/fsnotify.v1"
 	"gopkg.in/inconshreveable/log15.v2"
+	"path/filepath"
 )
 
 var (
@@ -45,7 +46,7 @@ func (b *Builder) Watch(dstDir string) {
 				for _, e := range watchingExt {
 					if e == ext {
 						if event.Op != fsnotify.Chmod && !b.IsBuilding() {
-							log15.Info("Watch.Rebuild", "change", event.String())
+							log15.Info("Watch.Rebuild", "change", filepath.ToSlash(event.String()))
 							watchScheduleTime = time.Now().Add(time.Second).UnixNano()
 						}
 						break

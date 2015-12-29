@@ -12,8 +12,12 @@ import (
 	"sort"
 	"strings"
 
+	"fmt"
+	"github.com/Unknwon/com"
+	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/go-xiaohei/pugo/app/model"
 	"github.com/go-xiaohei/pugo/app/parser"
+	"gopkg.in/inconshreveable/log15.v2"
 )
 
 var (
@@ -41,33 +45,9 @@ func (b *Builder) ReadData(ctx *Context) {
 		return ctx.Meta.Root + path.Join(str...)
 	})
 
-	// read theme
-	// if error, do not need to load contents
-	theme, err := b.render.Load(b.opt.Theme)
-	if err != nil {
-		ctx.Error = err
+	// post meta process
+	if b.afterMeta(ctx); ctx.Error != nil {
 		return
-	}
-	ctx.Theme = theme
-
-	// assign copy directory
-	staticDir := ctx.Theme.Static()
-	ctx.mediaPath = path.Join(ctx.Meta.Base, path.Base(staticDir), path.Base(b.opt.MediaDir))
-	ctx.staticPath = path.Join(ctx.Meta.Base, path.Base(staticDir))
-
-	replacer := replaceGlobalVars(b, ctx)
-
-	ctx.Meta.Cover = string(replacer([]byte(ctx.Meta.Cover)))
-	// fix meta data
-	for _, n := range ctx.Navs {
-		n.Link = fixSuffix(n.Link)
-	}
-
-	for _, a := range ctx.Authors {
-		if a.IsOwner {
-			ctx.Owner = a
-		}
-		a.Avatar = string(replacer([]byte(a.Avatar)))
 	}
 
 	// load contents
@@ -103,6 +83,68 @@ func (b *Builder) readMeta(ctx *Context) {
 	ctx.Authors = total.Authors
 	ctx.Comment = total.Comment
 	ctx.Conf = total.Conf
+}
+
+// do works after meta data,
+// generate proper path, link and owner
+func (b *Builder) afterMeta(ctx *Context) {
+	// read theme
+	// if error, do not need to load contents
+	theme, err := b.render.Load(b.opt.Theme)
+	if err != nil {
+		ctx.Error = err
+		return
+	}
+	ctx.Theme = theme
+
+	// assign copy directory
+	staticDir := ctx.Theme.Static()
+	ctx.mediaPath = path.Join(ctx.Meta.Base, path.Base(staticDir), path.Base(b.opt.MediaDir))
+	ctx.staticPath = path.Join(ctx.Meta.Base, path.Base(staticDir))
+
+	replacer := replaceGlobalVars(b, ctx)
+
+	ctx.Meta.Cover = string(replacer([]byte(ctx.Meta.Cover)))
+
+	// load i18n data
+	langFile := path.Join(b.opt.SrcDir, "lang", ctx.Meta.Lang+".ini")
+	langSection := ""
+	if !com.IsFile(langFile) {
+		langFile = path.Join(b.opt.SrcDir, "lang.ini")
+		langSection = ctx.Meta.Lang
+		if !com.IsFile(langFile) {
+			ctx.Error = fmt.Errorf("lang '%s' file is missing", ctx.Meta.Lang)
+			return
+		}
+	}
+	ctx.I18n, ctx.Error = helper.NewI18n(langFile, langSection)
+	if ctx.Error != nil {
+		return
+	}
+	if ctx.I18n == nil {
+		ctx.Error = fmt.Errorf("lang '%s' can't be loaded", ctx.Meta.Lang)
+		return
+	}
+	log15.Debug("Lang." + ctx.Meta.Lang)
+
+	// fix meta link suffix
+	var title string
+	for _, n := range ctx.Navs {
+		n.Link = fixSuffix(n.Link)
+		title = ctx.I18n.Tr("nav." + n.I18n)
+		if title != "" {
+			n.Title = title
+		}
+		title = ""
+	}
+
+	// get owner, fix owner avatar link
+	for _, a := range ctx.Authors {
+		if a.IsOwner {
+			ctx.Owner = a
+		}
+		a.Avatar = string(replacer([]byte(a.Avatar)))
+	}
 }
 
 // read contents, including posts and pages

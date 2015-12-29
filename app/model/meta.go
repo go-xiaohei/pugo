@@ -26,6 +26,7 @@ type (
 		Root     string `ini:"root"`
 		Base     string `ini:"-"`
 		Cover    string `ini:"cover"`
+		Lang     string `ini:"lang"`
 	}
 	MetaTotal struct {
 		Meta    *Meta
@@ -65,6 +66,9 @@ func NewAllMeta(blocks []parser.Block) (total MetaTotal, err error) {
 	meta.Base = u.Path
 	if meta.Base == "/" {
 		meta.Base = ""
+	}
+	if len(meta.Lang) == 0 {
+		meta.Lang = "en" // use "en" as default
 	}
 	total.Meta = meta
 
