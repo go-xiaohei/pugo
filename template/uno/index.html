@@ -3,36 +3,32 @@
 {{template "cover.html" .}}
 <section id="main" class="{{.PostType}}">
     <div class="container">
-        <div id="article-list">{{if .Tag}}
-            <h2 class="tag text-center">{{.Tag.Name}}</h2>{{end}}{{range .Posts}}
+        <div id="article-list">{{range .Posts}}
             <article class="article">
                 <div class="row">
-                    <div class="">
-                        <header class="header">
-                            <div class="meta">
-                            </div>
-                            <h3 class="title">
-                                <a href="{{url .Url}}">{{.Title}}</a>
-                            </h3>
-                        </header>
-                        <section class="brief">{{.PreviewHTML}}</section>
-                        <aside class="aside clearfix">
-                            <span class="date">
-                                <span class="year">{{.Created.Year}}</span>/
-                                <span class="month">{{.Created.Month}}</span>/
-                                <span class="day">{{.Created.Day}}</span>
-                            </span>
-                            <span class="tags">{{range .Tags}}
-                                <a class="tag" href="{{url .Url}}">{{.Name}}</a>{{end}}
-                            </span>
-                            <a class="btn btn-primary btn-lg pull-right" href="{{url .Url}}">Read More</a>
-                        </aside>
-                    </div>
+                    <header class="header">
+                        <h3 class="title">
+                            <a href="{{url .Url}}">{{.Title}}</a>
+                        </h3>
+                    </header>
+                    <section class="brief">{{.PreviewHTML}}</section>
+                    <aside class="aside clearfix">
+                        <span class="date">
+                            <span class="year">{{.Created.Year}}</span>/
+                            <span class="month">{{.Created.Month}}</span>/
+                            <span class="day">{{.Created.Day}}</span>
+                        </span>
+                        <span class="tags">{{range .Tags}}
+                            <a class="tag" href="{{url .Url}}">{{.Name}}</a>{{end}}
+                        </span>
+                        <a class="btn btn-primary btn-lg pull-right" href="{{url .Url}}">Read More</a>
+                    </aside>
                 </div>
             </article>{{end}}
-            <div class="article-pager text-center">
-                {{if .Pager.Prev}}<a class="btn btn-lg btn-info" href="{{url .Pager.PrevUrl}}">prev</a>{{end}}
-                {{if .Pager.Next}}<a class="btn btn-lg btn-info" href="{{url .Pager.NextUrl}}">next</a>{{end}}
+            <div class="article-pager">
+                {{if .Pager.Prev}}<a href="{{url .Pager.PrevUrl}}">← Newer Posts</a>{{end}}
+                <span class="current">Page {{.Pager.Current}} of {{.Pager.Pages}}</span>
+                {{if .Pager.Next}}<a href="{{url .Pager.NextUrl}}">Older Posts →</a>{{end}}
             </div>
         </div>
         {{template "footer.html" .}}

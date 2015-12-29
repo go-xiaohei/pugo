@@ -159,27 +159,27 @@ h5,
 h6 {
     padding: 0;
     font-weight: bold;
-    margin-bottom: 8px;
+    margin: 1rem 0;
 }
 
 h1 {
-    font-size: 28px
+    font-size: 22px
 }
 
 h2 {
-    font-size: 24px
+    font-size: 20px
 }
 
 h3 {
-    font-size: 21px
+    font-size: 18px
 }
 
 h4 {
-    font-size: 19px
+    font-size: 16px
 }
 
 h5 {
-    font-size: 16px
+    font-size: 15px
 }
 
 h6 {
@@ -348,18 +348,26 @@ h6 {
 
 #main {
     margin-left: 370px;
-    padding: 6rem 11rem;
+    padding: 4rem 11rem;
 }
 
-#main.index{
+#main.index {
     display: none;
 }
 
+.article {
+    border-bottom: 1px dashed #CCC;
+    padding-bottom: 3rem;
+    margin-bottom: 3rem;
+}
+
 .article .title {
-    font-size: 40px;
+    font-size: 26px;
     line-height: 40px;
     margin-bottom: 20px;
     font-family: "PT Serif", "Lucida Sans Unicode", Helvetica, Tahoma, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "Microsoft YaHei", STXihei, STHeiti, Heiti, SimSun, sans-serif;
+    border-left: 4px solid rgba(0, 68, 204, .7);
+    padding-left: 2rem;
 }
 
 .article .title a {
@@ -378,40 +386,98 @@ h6 {
     font-size: 90%;
 }
 
-.article .tags .tag {
+.article .tags .tag,
+.article a.author {
     text-transform: uppercase;
     background-color: rgba(0, 68, 204, .7);
     border-radius: .25rem;
     transition: all 350ms;
-    padding: .167rem .25rem;
+    padding: .2rem .36rem;
     font-size: .55rem;
     color: #f8f8f8;
     margin-left: 6px;
 }
 
-.article .tags .tag:hover {
+.article .tags .tag:hover,
+.article a.author:hover {
     background-color: rgb(0, 68, 204);
 }
 
-.article p code{
-    font-family: Consolas, "Microsoft YaHei", "Courier New", Arial,monospace;
-    background: rgba(128,128,128,.2);
+.article .brief h1,
+.article .brief h2 {
+    border-left: 4px solid rgba(0, 68, 204, .5);
+    padding-left: 2rem;
+}
+
+.article .brief h3,
+.article .brief h4 {
+    border-left: 4px solid rgba(0, 68, 204, .3);
+    padding-left: 2rem;
+}
+
+.article .brief h5,
+.article .brief h6 {
+    border-left: 4px solid rgba(0, 68, 204, .1);
+    padding-left: 2rem;
+}
+
+.article p code {
+    font-family: Consolas, "Microsoft YaHei", "Courier New", Arial, monospace;
+    background: rgba(128, 128, 128, .2);
     padding: 2px 6px;
     font-size: 95%;
     border-radius: 4px;
 }
 
-#footer{
+#article-list .top-tag {
+    font-size: 32px;
+    color: #AAA;
+    border-bottom: 1px solid #DDD;
+    padding-bottom: 2rem;
+    margin-bottom: 2rem;
+}
+
+#footer {
     margin-top: 36px;
     padding-top: 24px;
-    border-top: 2px solid rgba(128,128,128,.3);
+    border-top: 1px solid rgba(128, 128, 128, .3);
     color: #AAA;
 }
 
-#footer a{
+.article-pager > * {
+    margin-right: 8px;
+}
+
+.article-pager a {
+    padding: 8px 12px;
+    font-size: .8em;
+    border: 1px solid rgba(0, 68, 204, .7);
+    border-radius: 20px;
+    -webkit-font-smoothing: antialiased;
+    color: rgba(0, 68, 204, .7);
+}
+
+.article-pager a:hover {
+    color: rgb(0, 68, 204);
+}
+
+#article-single .aside {
+    margin-bottom: 20px;
+}
+
+#footer a {
     color: #AAA;
 }
 
-#footer a:hover{
+#footer a:hover {
     color: #666;
+}
+
+.archive h4{
+    margin-left: 1rem;
+}
+
+.archive .date{
+    color: #AAA;
+    margin-right: 2rem;
 }

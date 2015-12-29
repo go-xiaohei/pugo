@@ -5,16 +5,18 @@ import "fmt"
 type (
 	// PagerCursor creates Pager with each page number
 	PagerCursor struct {
-		all  int
-		size int
+		all   int
+		size  int
+		pages int
 	}
 	// Pager contains pagination data when on a page number
 	Pager struct {
-		Begin int
-		End   int
-		Prev  int
-		Next  int
-		Page  int
+		Begin   int
+		End     int
+		Prev    int
+		Next    int
+		Current int
+		Pages   int
 
 		layout string
 	}
@@ -22,10 +24,16 @@ type (
 
 // NewPagerCursor with size and all count
 func NewPagerCursor(size, all int) *PagerCursor {
-	return &PagerCursor{
+	pc := &PagerCursor{
 		all:  all,
 		size: size,
 	}
+	if all%size == 0 {
+		pc.pages = all / size
+	} else {
+		pc.pages = all/size + 1
+	}
+	return pc
 }
 
 // create Pager on a page number
@@ -38,10 +46,11 @@ func (p *PagerCursor) Page(i int) *Pager {
 		return nil // no pager when begin number over all
 	}
 	pager := &Pager{
-		Begin: begin,
-		Prev:  i - 1,
-		Next:  i + 1,
-		Page:  i,
+		Begin:   begin,
+		Prev:    i - 1,
+		Next:    i + 1,
+		Current: i,
+		Pages:   p.pages,
 	}
 	end := begin + p.size
 	if end >= p.all {

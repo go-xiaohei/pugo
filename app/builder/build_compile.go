@@ -77,10 +77,10 @@ func (b *Builder) compilePagedPost(ctx *Context) {
 		currentPosts = ctx.Posts[pager.Begin:pager.End]
 		pager.SetLayout("/" + layout + ".html")
 
-		dstFile := path.Join(ctx.DstDir, fmt.Sprintf(layout+".html", pager.Page))
+		dstFile := path.Join(ctx.DstDir, fmt.Sprintf(layout+".html", pager.Current))
 
 		viewData := ctx.ViewData()
-		viewData["Title"] = fmt.Sprintf("Page %d - %s", pager.Page, ctx.Meta.Title)
+		viewData["Title"] = fmt.Sprintf("Page %d - %s", pager.Current, ctx.Meta.Title)
 		viewData["Posts"] = currentPosts
 		viewData["Pager"] = pager
 		viewData["PostType"] = "post-list"
