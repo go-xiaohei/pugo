@@ -2,18 +2,18 @@
 title = Commands
 slug = docs/commands
 date = 2015-11-15
-update_date = 2015-12-20
+update_date = 2015-12-30
 author = fuxiaohei
 author_email = fuxiaohei@vip.qq.com
 hover = docs
 template =
 
 [meta]
-Source = "https://github.com/go-xiaohei/pugo-io/blob/master/source/page/prolog/command.md"
-Version = ">=0.8.5"
+Source = "https://github.com/go-xiaohei/pugo/blob/master/doc/source/page/prolog/command.md"
+Version = "0.9.0"
 ```
 
-`Pugo.Static` provides `new`, `build` , `server` and `deploy`.
+`Pugo.Static` provides `new`, `build`, `server`, `deploy`, and `doc`.
 
 ### New
 
@@ -70,3 +70,12 @@ The `server` command always watches changes of sources and templates and rebuild
 The usage of `--watch`, `--theme` and `--debug` are same to `build` command.
 
 Read more in [Deploy](/docs/deploy).
+
+### Doc
+
+`doc` command provides documentation site, same to **http://pugo.io**.
+
+    $ ./pugo doc
+    $ ./pugo doc --addr="0.0.0.0:9899" --debug
+
+Visit `http://localhost:9899` to read documentation site.

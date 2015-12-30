@@ -2,197 +2,255 @@ html,
 body {
     font-family: "PingHei", "Lucida Grande", "Lucida Sans Unicode", Helvetica, Tahoma, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "Microsoft YaHei", STXihei, STHeiti, Heiti, SimSun, sans-serif;
 }
+
 pre code {
     font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', "Microsoft Yahei", Helvetica, Arial, sans-serif;
 }
+
 body {
-  /*background: url("../img/bg.jpg") no-repeat top center;*/
-  background-color: #FCFCFC;
+    /*background: url("../img/bg.jpg") no-repeat top center;*/
+    background-color: #FCFCFC;
 }
+
 #index {
-  text-align: center;
-  margin: 8em auto;
+    text-align: center;
+    margin: 8em auto;
 }
+
 #index-title {
-  font-size: 48px;
+    font-size: 48px;
 }
+
 #index-title sup {
-  margin-left: 8px;
-  color: #888;
-  font-size: .55em;
+    margin-left: 8px;
+    color: #888;
+    font-size: .55em;
 }
+
 #index-desc {
-  padding: 2em 0;
-  font-size: 22px;
+    padding: 2em 0;
+    font-size: 22px;
 }
+
 .popover {
-  max-width: 100%;
+    max-width: 100%;
 }
+
 .centered-pills {
-  text-align: center;
+    text-align: center;
 }
+
 .centered-pills ul.nav-pills {
-  display: inline-block;
+    display: inline-block;
 }
+
 .centered-pills li {
-  display: inline;
+    display: inline;
 }
+
 .centered-pills a {
-  float: left;
+    float: left;
 }
+
 * html .centered-pills ul.nav-pills {
-  display: inline;
+    display: inline;
 }
 
 /* IE6 */
 
 * + html .centered-pills ul.nav-pills {
-  display: inline;
+    display: inline;
 }
 
 /* IE7 */
 
 #index-download {
-  display: none;
+    display: none;
 }
+
 #index-download-container {
-  width: 480px;
-  text-align: center;
+    width: 480px;
+    text-align: center;
 }
+
 #index-download-container .fa {
-  font-size: 48px;
-  padding: 24px;
-  color: #333;
+    font-size: 48px;
+    padding: 24px;
+    color: #333;
 }
+
 #index-nav-container {
-  width: 520px;
-  text-align: center;
+    width: 600px;
+    text-align: center;
 }
+
 #index-nav {
-  padding: 150px 0 60px 0;
+    padding: 150px 0 60px 0;
 }
+
 #index-nav .nav li {
-  margin: 0 6px;
+    margin: 0 6px;
 }
+
 #index-nav .nav li a {
-  color: #666;
+    color: #666;
 }
+
 #index-nav .nav li a .fa, #site-nav .nav li a .fa {
-  padding-right: 6px;
+    padding-right: 6px;
 }
+
 #index-nav .nav li.active a {
-  color: #FFF;
-  background-color: #93a1b0;
+    color: #FFF;
+    background-color: #93a1b0;
 }
+
 #footer {
-  margin-top: 40px;
-  color: #AAA;
+    margin-top: 40px;
+    color: #AAA;
 }
+
 #footer a, #index-release-note a {
-  color: #999;
+    color: #999;
 }
+
 #main {
-  padding-top: 18px;
+    padding-top: 18px;
 }
+
 #site-nav {
-  border-radius: 0 !important;
+    border-radius: 0 !important;
 }
+
 #site-nav li.active a {
-  color: #fbffc0;
+    color: #fbffc0;
 }
+
 #page-list h5 {
-  font-weight: 800;
-  margin-top: 0;
-  font-size: 1.3em;
+    font-weight: 800;
+    margin-top: 0;
+    font-size: 1.3em;
 }
+
 #page-list .list-group-item {
-  padding: 24px;
+    padding: 24px;
 }
+
 #page-list li {
-  line-height: 30px;
-  padding-left: .5em;
+    line-height: 30px;
+    padding-left: .5em;
 }
+
 #page-list li a {
-  color: #555;
+    color: #555;
 }
+
 #page-list li a:hover {
-  color: #222;
+    color: #222;
 }
+
 .article .panel {
-  padding: 24px;
+    padding: 24px;
 }
+
 .article h3.title {
-  margin-top: 0;
-  margin-bottom: 12px;
-  padding-bottom: 12px;
-  border-bottom: 1px dashed #DDD;
-  font-weight: 700;
-  font-family: "Open Sans", Helvetica Neue, "Microsoft Yahei", Helvetica, Arial, sans-serif;
+    margin-top: 0;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #DDD;
+    font-weight: 700;
+    font-family: "Open Sans", Helvetica Neue, "Microsoft Yahei", Helvetica, Arial, sans-serif;
 }
+
 .article .aside {
-  margin-bottom: 12px;
-  padding-bottom: 12px;
-  border-bottom: 1px dashed #DDD;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #DDD;
 }
+
 .article .brief {
-  line-height: 1.8;
+    line-height: 1.8;
 }
+
 .article .brief > *:last-child {
-  margin-bottom: 0 !important;
+    margin-bottom: 0 !important;
 }
+
 .article .brief h1 {
-  font-size: 26px;
-  border-bottom: 1px dashed #DDD;
-  padding-bottom: 11.5px;
+    font-size: 22px;
+    padding-left: 16px;
+    border-left: 4px solid #AAA;
+    line-height: 30px;
 }
+
 .article .brief h2 {
-  font-size: 24px;
-  border-bottom: 1px dashed #DDD;
-  padding-bottom: 11.5px;
-  margin-top: 18px;
+    font-size: 20px;
+    padding-left: 16px;
+    border-left: 4px solid #BBB;
+    line-height: 30px;
 }
+
 .article .brief h3 {
-  font-size: 22px;
-  border-bottom: 1px dashed #DDD;
-  padding-bottom: 11.5px;
-  margin-top: 18px;
+    font-size: 18px;
+    padding-left: 16px;
+    border-left: 4px solid #CCC;
+    line-height: 30px;
 }
+
 .article .brief h4 {
-  font-size: 20px;
-  border-bottom: 1px dashed #DDD;
-  padding-bottom: 11.5px;
-  margin-top: 18px;
+    font-size: 17px;
+    padding-left: 16px;
+    border-left: 4px solid #DDD;
 }
+
 .article .brief h5, .article .brief h6 {
-  font-size: 18px;
+    font-size: 16px;
+    padding-left: 24px;
+    border-left: 2px solid #DDD;
 }
+
 .article .brief h1, .article .brief h2, .article .brief h3, .article .brief h4, .article .brief h5, .article .brief h6 {
-  font-weight: 700;
+    font-weight: 700;
 }
+
 .article .brief pre code {
-  font-size: 14px;
+    font-size: 14px;
 }
+
 .article .brief pre {
-  box-shadow: none !important;
-  border-top-color: #DDD;
-  border-right-color: #DDD;
-  border-bottom-color: #DDD;
+    box-shadow: none !important;
+    border-top-color: #DDD;
+    border-right-color: #DDD;
+    border-bottom-color: #DDD;
 }
-.article .brief table{
+
+.article .brief table {
     width: 100%;
 }
+
 .article .row {
-  position: relative;
+    position: relative;
 }
+
 .article .row .meta {
-  position: absolute;
-  top: .8em;
-  right: 1em;
-  font-size: 24px;
-  color: #AAA;
-  font-weight: bold;
+    position: absolute;
+    top: .8em;
+    right: 1em;
+    font-size: 24px;
+    color: #AAA;
+    font-weight: bold;
 }
+
+.article .aside > * {
+    margin-right: 12px;
+    font-weight: bold;
+}
+
+.article .aside .author{
+    color: #444;
+}
+
 #comment .row {
-  margin-left: 0;
-  margin-right: 0
+    margin-left: 0;
+    margin-right: 0
 }

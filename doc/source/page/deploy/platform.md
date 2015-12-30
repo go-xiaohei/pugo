@@ -1,23 +1,23 @@
 ```ini
-title = Deploy to Platform
+title = Deploy to Third Party
 slug = docs/deploy-platform
 date = 2015-11-28
-update_date = 2015-12-22
+update_date = 2015-12-30
 author = fuxiaohei
 author_url = http://fuxiaohei.me/
 hover = docs
 template =
 
 [meta]
-Source = "https://github.com/go-xiaohei/pugo-io/blob/master/source/page/deploy/platform.md"
-Version = ">=0.8.5"
+Source = "https://github.com/go-xiaohei/pugo/blob/master/doc/source/page/deploy/platform.md"
+Version = "0.9.0"
 ```
 
-`Pugo.Static` support to sync static files with third-party platforms, `git`, `ftp` and `sftp`.
+`PuGo` support to sync static files with third-party platforms, `git`, `ftp` and `sftp`.
 
 ### Git
 
-You need clone the repository with `git://` or `https://{user}:{password@github.com/username/repo-name`. So that `Pugo` can push commits without password requirement.
+You need clone the repository with `git://` or `https://{user}:{password}@github.com/username/repo-name`. So that `Pugo` can push commits without password requirement.
 
 Then checkout to your proper branch ( such as `gh-pages` for github pages).
 

@@ -1,13 +1,9 @@
 {{template "meta.html" .}}
 <div id="index">
-    <h1 id="index-title">
-        {{.Meta.Title}}
-    </h1>
-    <p id="index-desc">
-        An Simple & Beautiful Static Site Generator
-    </p>
+    <h1 id="index-title">{{.Meta.Title}}</h1>
+    <p id="index-desc">A Static Site Generator & Deployer</p>
     <p id="index-version">
-        <a class="btn btn-primary" id="index-download-btn">0.8.0 stable (2015-11-28)</a>
+        <a class="btn btn-primary" id="index-download-btn">0.9.0 stable (2016-01-01)</a>
     </p>
     <p id="index-release-note">
         <a href="{{.Root}}/posts/1">Release notes</a>
@@ -34,8 +30,9 @@
         <div class="container centered-pills" id="index-nav-container">
             <ul class="nav nav-pills">
                 <li role="presentation"><a href="http://fuxiaohei.me" target="_blank"><i class="fa fa-user"></i>Author</a></li>
-                <li role="presentation" class="active"><a href="{{.Root}}/docs.html"><i class="fa fa-book"></i>Documentation</a></li>
+                <li role="presentation"><a href="{{.Root}}/docs.html"><i class="fa fa-book"></i>Documentation</a></li>
                 <li role="presentation"><a href="https://github.com/go-xiaohei/pugo-static" target="_blank"><i class="fa fa-github"></i>Github</a></li>
+                <li role="presentation"><a href="{{.Root}}/showcases.html" target="_blank"><i class="fa fa-users"></i>Showcases</a></li>
             </ul>
         </div>
     </div>

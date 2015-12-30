@@ -2,15 +2,15 @@
 title = Theme Variables
 slug = docs/template-vars
 date = 2015-11-11
-update_date = 2015-12-20
+update_date = 2015-12-30
 author = fuxiaohei
 author_url = http://fuxiaohei.me/
 hover = docs
 template =
 
 [meta]
-Source = "https://github.com/go-xiaohei/pugo-io/blob/master/source/page/customize/template_var.md"
-Version = ">=0.8.5"
+Source = "https://github.com/go-xiaohei/pugo/blob/master/doc/source/page/customize/template_var.md"
+Version = "0.9.0"
 ```
 
 ### Global Vars
@@ -22,9 +22,23 @@ Global vars are registered in all pages:
 - **{{.Title}}**    `string`  Title of this page, changing with current data. If a post ,use post title. If a page, use page title.
 - **{{.Desc}}** `string` Description of this page, changing with current data. Same to title.
 - **{{.Root}}** `string`    Root path for global url. If you set sub directory, need fix by this var.
-- **{{.Version}}** `string` Pugo's version string
+- **{{.Version}}** `string` PuGo's version string
 - **{{.Permalink}}** `string` Permalink of the page, existing in whole each pages.
+- **{{.Owner}}**    `*model.Author` the owner of the site, first author in meta.ini.
 - **{{.Comment}}**  `*model.Comment`    Comment settings from `comment.md`, used in `comment.html`.
+- **{{.I18n}}** `*helper.I18n`  I18n support
+
+```html
+<!-- read more or 阅读更多 -->
+read more : {{.I18n.Tr "post.readmore"}}
+
+<!-- read more about %s -->
+read more : {{.I18n.Trf "post.readmore" .Post.Title}}
+
+<!-- use html content -->
+<p>{{.I18n.TrHTML "post.readmore"}}</p>
+<!-- <p><a href="#">title</a></p> -->
+```
 
 ### Post Vars
 

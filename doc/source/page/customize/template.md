@@ -2,20 +2,20 @@
 title = Theme
 slug = docs/templates
 date = 2015-11-14
-update_date = 2015-12-20
+update_date = 2015-12-30
 author = fuxiaohei
 author_url = http://fuxiaohei.me/
 hover = docs
 template =
 
 [meta]
-Source = "https://github.com/go-xiaohei/pugo-io/blob/master/source/page/customize/template.md"
-Version = ">=0.8.5"
+Source = "https://github.com/go-xiaohei/pugo/blob/master/doc/source/page/customize/template.md"
+Version = "0.9.0"
 ```
 
-The default theme is provided in `/template/default`. You can create a new directory such as `xxx` to `/template/xxx`.
+The default theme is in `/template/default`. You can create a new directory such as `xxx` to `/template/xxx`.
 
-then you can use it via :
+then use it via :
 
 ```bash
 $./pugo build --theme=xxx

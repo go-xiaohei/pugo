@@ -1,35 +1,46 @@
 ```ini
-title = Meta, Navigation & Comment
+title = Site Meta
 slug = docs/meta
 date = 2015-11-11
-update_date = 2015-12-20
+update_date = 2015-12-30
 author = fuxiaohei
 author_url = http://fuxiaohei.me/
 hover = docs
 template =
 
 [meta]
-Source = "https://github.com/go-xiaohei/pugo-io/blob/master/source/page/writing/meta.md"
-Version = ">=0.8.5"
+Source = "https://github.com/go-xiaohei/pugo/blob/master/doc/source/page/writing/meta.md"
+Version = "0.9.0"
 ```
 
-The site information are saved in file `meta.md` in source directory including site meta, navigation.
+The site information are saved in file `meta.ini` in source directory including site meta, navigation.
 
 ### Meta
 
 ```ini
-; must be in [meta] block
-[meta]
-title = Pugo.Static
-subtitle = generator
+; site title, show in <title>
+title = PuGo
+
+; subtitle, words after title, in description
+subtitle = Static Site Generator
+
 ; print in html <meta>
 keyword = pugo,golang,static,site,generator
+
 ; print in html <meta>
-desc = pugo is a simple static site generator
+desc = PuGo is a Simple Static Site Generator
+
 ; build links for feed, sitemap
-domain = pugo.io
-; root path for site, if empty, build as http://{domain}/
+domain = localhost
+
+; root path for site; if empty, build as http://{domain}/
 root = http://pugo.io/
+
+; cover page for homepage
+cover = @media/cover.jpg
+
+; global language
+lang = en
 ```
 
 `meta` data can use in template via go template syntax:
@@ -94,5 +105,35 @@ blank = true
 [comment.disqus]
 ; site name of disqus
 site = fuxiaohei
+
+```
+
+### Authors
+
+```ini
+
+; author data
+[author]
+-:pugo
+
+[author.pugo]
+name = pugo-robot
+email =
+url = http://pugo.io
+avatar = @media/author.png
+bio = the robot of pugo, who generates all default contents.
+
+```
+
+In post or page, you can use `author = pugo-robot` to reference this author.
+
+### Build Settings
+
+```ini
+
+; ignore files to build or copy
+[build.ignore]
+-:CNAME
+-:.git
 
 ```

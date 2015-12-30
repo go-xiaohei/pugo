@@ -15,9 +15,9 @@
                                 <h3 class="title">{{.Page.Title}}</h3>
                             </header>
                             <aside class="aside clearfix">
-                                 <span class="date label label-success">{{.Page.Updated.Month}}/{{.Page.Updated.Day}} UPDATED</span>
-                                <a class="ver label label-info" href="#">{{.Page.Meta.Version}}</a>
-                                <a class="stat label label-default pull-right" href="{{.Page.Author.Url}}" target="_blank">{{.Page.Author.Name}}</a>
+                                <a class="author" href="{{.Page.Author.Url}}" target="_blank">{{.Page.Author.Name}}</a>
+                                <span class="date">{{.Page.Updated.Month}}/{{.Page.Updated.Day}}</span>
+                                <span class="ver">{{.Page.Meta.Version}}</span>
                             </aside>
                             <section class="brief">{{.Page.ContentHTML}}</section>
                         </div>
