@@ -8,6 +8,7 @@ _obj
 _test
 dest
 upload
+doc/dest
 
 # Architecture specific extensions/prefixes
 *.[568vq]

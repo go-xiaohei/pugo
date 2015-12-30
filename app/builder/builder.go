@@ -44,10 +44,11 @@ type (
 	}
 	// build option to builder
 	BuildOption struct {
-		SrcDir   string
-		TplDir   string
-		MediaDir string
-		Theme    string
+		SrcDir    string
+		TplDir    string
+		MediaDir  string
+		Theme     string
+		TargetDir string
 
 		Version string
 		VerDate string

@@ -1,0 +1,29 @@
+{{template "meta.html" .}}
+{{template "header.html" .}}
+<section id="main">
+    <div class="container">
+        <div id="article-single">
+            <article class="article">
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1 panel panel-default">
+                        <header class="header">
+                            <div class="meta">
+                                <span class="date">{{.Post.Created.Year}}/{{.Post.Created.Month}}/{{.Post.Created.Day}}</span>
+                            </div>
+                            <h3 class="title">
+                                <a href="{{.Post.Url}}">{{.Post.Title}}</a>
+                            </h3>
+                        </header>
+                        <aside class="aside clearfix">{{range .Post.Tags}}
+                            <a class="tag label label-info" href="{{.Url}}">{{.Name}}</a>{{end}}
+                            <a class="stat label label-default pull-right">{{.Post.Author.Name}}</a>
+                        </aside>
+                        <section class="brief">{{.Post.ContentHTML}}</section>
+                    </div>
+                </div>
+            </article>
+        </div>
+        {{template "comment.html" .}}
+    </div>
+</section>
+{{template "footer.html" .}}

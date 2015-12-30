@@ -1,0 +1,43 @@
+{{template "meta.html" .}}
+<div id="index">
+    <h1 id="index-title">
+        {{.Meta.Title}}
+    </h1>
+    <p id="index-desc">
+        An Simple & Beautiful Static Site Generator
+    </p>
+    <p id="index-version">
+        <a class="btn btn-primary" id="index-download-btn">0.8.0 stable (2015-11-28)</a>
+    </p>
+    <p id="index-release-note">
+        <a href="{{.Root}}/posts/1">Release notes</a>
+    </p>
+    <div id="index-download">
+        <div class="container" id="index-download-container">
+            <div class="row">
+                <div class="col-md-4">
+                    <i class="fa fa-linux"> </i>
+                    <p><a href="https://github.com/go-xiaohei/pugo-static/releases/download/0.7.0/linux_386.zip" target="_blank">32bit</a> / <a href="https://github.com/go-xiaohei/pugo-static/releases/download/0.7.0/linux_amd64.zip" target="_blank">64bit</a></p>
+                </div>
+                <div class="col-md-4">
+                    <i class="fa fa-apple"></i>
+                    <p><a href="https://github.com/go-xiaohei/pugo-static/releases/download/0.7.0/darwin_amd64.zip" target="_blank">64bit</a></p>
+                </div>
+                <div class="col-md-4">
+                    <i class="fa fa-windows"></i>
+                    <p><a href="https://github.com/go-xiaohei/pugo-static/releases/download/0.7.0/windows_386.zip" target="_blank">32bit</a> / <a href="https://github.com/go-xiaohei/pugo-static/releases/download/0.7.0/windows_amd64.zip" target="_blank">64bit</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="index-nav">
+        <div class="container centered-pills" id="index-nav-container">
+            <ul class="nav nav-pills">
+                <li role="presentation"><a href="http://fuxiaohei.me" target="_blank"><i class="fa fa-user"></i>Author</a></li>
+                <li role="presentation" class="active"><a href="{{.Root}}/docs.html"><i class="fa fa-book"></i>Documentation</a></li>
+                <li role="presentation"><a href="https://github.com/go-xiaohei/pugo-static" target="_blank"><i class="fa fa-github"></i>Github</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{{template "footer.html" .}}

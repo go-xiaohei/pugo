@@ -1,6 +1,9 @@
 package command
 
 import (
+	"net/http"
+	_ "net/http/pprof"
+
 	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo/app/builder"
 	"github.com/go-xiaohei/pugo/app/server"
@@ -26,8 +29,19 @@ func Server(opt *builder.BuildOption) cli.Command {
 
 func serveSite(opt *builder.BuildOption) func(ctx *cli.Context) {
 	return func(ctx *cli.Context) {
-		s := server.New(ctx.String("dest"))
+		if ctx.Bool("debug") {
+			go http.ListenAndServe("0.0.0.0:6060", nil)
+		}
 
+        // set target dir
+        if targetDir := ctx.String("dest"); targetDir != "" {
+            opt.TargetDir = targetDir
+        }
+        if opt.TargetDir == "template" || opt.TargetDir == "source" {
+            log15.Crit("Builder.Fail", "error", "destination directory should not be 'template' or 'source'")
+        }
+
+		s := server.New(opt.TargetDir)
 		opt.After(func(b *builder.Builder, ctx *builder.Context) error {
 			s.SetPrefix(ctx.Meta.Base)
 			log15.Debug("Server.Prefix." + ctx.Meta.Base)

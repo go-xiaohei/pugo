@@ -1,0 +1,41 @@
+<header id="header">
+    <nav class="navbar navbar-inverse" id="site-nav">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#site-nav-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{.Root}}/">{{.Meta.Title}}</a>
+            </div>
+            <div class="collapse navbar-collapse" id="site-nav-collapse">
+                <ul class="nav navbar-nav ">{{range .Nav}}
+                    <li role="presentation" class="{{if .IsHover}}active{{end}}{{if .SubNav}} dropdown{{end}}">
+                        <a href="{{$.Root}}{{.Link}}" class="{{if .SubNav}} dropdown-toggle{{end}}" {{if .SubNav}}
+                           data-toggle="dropdown" {{end}}{{if .IsBlank}} target="_blank" {{end}}>{{if .IconClass}}
+                            <i class="{{.IconClass}}"></i>{{end}}{{.Title}}{{if .SubNav}}<span class="caret"></span>{{end}}
+                        </a>{{if .SubNav}}
+                        <ul class="dropdown-menu">{{range .SubNav}}{{if .IsSeparator}}
+                            <li class="divider"></li>
+                            {{else}}
+                            <li><a href="{{$.Root}}{{.Link}}" {{if .IsBlank}} target="_blank" {{end}}>{{if .IconClass}}
+                                <i class="{{.IconClass}}"></i>{{end}}{{.Title}}</a>
+                            </li>
+                            {{end}}{{end}}
+                        </ul>
+                        {{end}}
+                    </li>
+                    {{end}}
+                </ul>
+                <ul class="nav navbar-nav pull-right">
+                    <li class="pull-right">
+                        <a>Current - <strong>{{.Version.Num}}</strong></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>

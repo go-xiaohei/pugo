@@ -37,16 +37,22 @@ func buildSite(opt *builder.BuildOption, mustWatch bool) func(ctx *cli.Context) 
 		signalChan := make(chan os.Signal)
 		signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
 
-		opt.Theme = ctx.String("theme")
+		if theme := ctx.String("theme"); theme != "" {
+			opt.Theme = theme
+		}
+		if opt.TargetDir == "" {
+			// set target dir
+			if targetDir := ctx.String("dest"); targetDir != "" {
+				opt.TargetDir = targetDir
+			}
+			if opt.TargetDir == "template" || opt.TargetDir == "source" {
+				log15.Crit("Builder.Fail", "error", "destination directory should not be 'template' or 'source'")
+			}
+		}
 
 		b := builder.New(opt)
 		if b.Error != nil {
 			log15.Crit("Builder.Fail", "error", b.Error.Error())
-		}
-
-		targetDir := ctx.String("dest")
-		if targetDir == "template" || targetDir == "source" {
-			log15.Crit("Builder.Fail", "error", "destination directory should not be 'template' or 'source'")
 		}
 
 		// detect deploy callback
@@ -55,7 +61,7 @@ func buildSite(opt *builder.BuildOption, mustWatch bool) func(ctx *cli.Context) 
 			log15.Crit("Deploy.Fail", "error", err.Error())
 		}
 		if way != nil {
-			targetDir = way.Dir()
+			opt.TargetDir = way.Dir()
 			opt.After(func(b *builder.Builder, ctx *builder.Context) error {
 				t := time.Now()
 				if err := way.Do(b, ctx); err != nil {
@@ -67,19 +73,19 @@ func buildSite(opt *builder.BuildOption, mustWatch bool) func(ctx *cli.Context) 
 		}
 
 		// make directory
-		log15.Info("Dest." + targetDir)
-		if com.IsDir(targetDir) {
-			log15.Warn("Dest." + targetDir + ".Existed")
+		log15.Info("Dest." + opt.TargetDir)
+		if com.IsDir(opt.TargetDir) {
+			log15.Warn("Dest." + opt.TargetDir + ".Existed")
 		}
 
 		// auto watching
-		b.Build(targetDir)
+		b.Build(opt.TargetDir)
 		if err := b.Context().Error; err != nil {
 			log15.Crit("Build.Fail", "error", err.Error())
 		}
 
 		if ctx.Bool("watch") || mustWatch {
-			b.Watch(targetDir)
+			b.Watch(opt.TargetDir)
 			<-signalChan
 		}
 

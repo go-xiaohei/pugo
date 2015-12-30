@@ -46,6 +46,7 @@ func main() {
 		command.New(SRC_DIR, TPL_DIR),
 		command.Build(opt),
 		command.Server(opt),
+		command.Doc(opt),
 	}
 	app.RunAndExitOnError()
 }
