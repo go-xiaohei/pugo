@@ -9,7 +9,7 @@ import (
 	"path"
 )
 
-//go:generate go-bindata -o=app/asset/asset.go -pkg=asset source/... template/...
+//go:generate go-bindata -o=app/asset/asset.go -pkg=asset source/... template/... doc/...
 
 const (
 	VERSION  = "0.8.6.1229"
