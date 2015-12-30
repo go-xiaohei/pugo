@@ -4,9 +4,9 @@
     <div class="pure-u-1">
         <div class="content">
             <div class="page-header">
-                <h1>所有文章</h1>
+                <h1>{{.I18n.Tr "post.list"}}</h1>
             </div>
-            {{if .Tag}}<h2>标签：{{.Tag.Name}}</h2>{{end}}{{range .Posts}}
+            {{if .Tag}}<h2>{{.i18n.Tr "post.tags"}}：{{.Tag.Name}}</h2>{{end}}{{range .Posts}}
             <div class="post">
                 <h3 class="post-header"><a href="{{url .Url}}">{{.Title}}</a></h3>
                 <div class="post-meta">
@@ -14,15 +14,15 @@
                 </div>
                 <div class="post-description">{{.PreviewHTML}}</div>
                 <div class="more">
-                    <a href="{{url .Url}}" class="btn pure-button pure-button-primary">read more..</a>
+                    <a href="{{url .Url}}" class="btn pure-button pure-button-primary">{{$.I18n.Tr "post.readmore"}}..</a>
                 </div>
             </div>
             {{end}}
         </div>
         <div class="pagination pure-g">
             <ul>
-                {{if .Pager.Prev}}<li class="prev pure-u-1-3"><a href="{{url .Pager.PrevUrl}}">← 更新的</a></li>{{end}}
-                {{if .Pager.Next}}<li class="next pure-u-1-3"><a href="{{url .Pager.NextUrl}}">以前的 →</a></li>{{end}}
+                {{if .Pager.Prev}}<li class="prev pure-u-1-3"><a href="{{url .Pager.PrevUrl}}">← {{.I18n.Tr "pager.prev"}}</a></li>{{end}}
+                {{if .Pager.Next}}<li class="next pure-u-1-3"><a href="{{url .Pager.NextUrl}}">{{.I18n.Tr "pager.next"}} →</a></li>{{end}}
             </ul>
         </div>
         {{template "footer.html" .}}

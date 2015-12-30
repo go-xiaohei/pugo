@@ -3,6 +3,7 @@ package helper
 import (
 	"fmt"
 	"gopkg.in/ini.v1"
+	"html/template"
 )
 
 type I18n struct {
@@ -10,10 +11,11 @@ type I18n struct {
 }
 
 func (i *I18n) Tr(str string) string {
-	if v, ok := i.values[str]; ok {
-		return v
-	}
-	return ""
+	return i.values[str]
+}
+
+func (i *I18n) TrHTML(str string) template.HTML {
+	return template.HTML(i.Tr(str))
 }
 
 func (i *I18n) Trf(str string, values ...interface{}) string {
@@ -21,6 +23,10 @@ func (i *I18n) Trf(str string, values ...interface{}) string {
 		return fmt.Sprintf(v, values...)
 	}
 	return ""
+}
+
+func (i *I18n) TrfHTML(str string, values ...interface{}) template.HTML {
+	return template.HTML(i.Trf(str, values...))
 }
 
 func NewI18n(file, key string) (*I18n, error) {
