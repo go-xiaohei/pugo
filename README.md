@@ -1,6 +1,6 @@
 # PuGo
 
-A simple and beautiful site generator built in [Go](http://golang.org).
+[**PuGo**](http://pugo.io) is a simple and beautiful site generator built in [Go](http://golang.org).
 
 **Stable  - 0.9.0.0101**
 
