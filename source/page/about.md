@@ -41,10 +41,16 @@ More details in [Commands](http://pugo.io/docs/command.html).
 
 ### Publish
 
-After you change your source `.md` files, just restart the server.
+After you change your source `.md` files, run
 
-Or run `pugo build --watch` to rebuild after changes.
+```bash
+$ ./pugo build
+```
+
+To build static files.
+
+If you want to deploy your site, read this [documentation](http://pugo.io/docs/deploy-platform.html).
 
 ### Customize
 
-- Theme: theme documentation is [wiki](http://pugo.io/docs/theme.html)
+- Theme: theme documentation is [Here](http://pugo.io/docs/theme.html)

@@ -6,6 +6,7 @@ import (
 	"path"
 
 	"github.com/Unknwon/com"
+	"github.com/go-xiaohei/pugo/app/helper"
 )
 
 var (
@@ -21,11 +22,14 @@ type Render struct {
 
 // new render in directory
 func New(dir string) *Render {
-	return &Render{
+	r := &Render{
 		dir:        dir,
 		extensions: []string{".html"},
 		funcMap:    make(template.FuncMap),
 	}
+	r.funcMap["HTML"] = helper.Str2HTML
+	r.funcMap["HTMLbyte"] = helper.Bytes2HTML
+	return r
 }
 
 // load theme by name

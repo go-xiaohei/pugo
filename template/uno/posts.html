@@ -28,7 +28,7 @@
             </article>{{end}}
             <div class="article-pager">
                 {{if .Pager.Prev}}<a href="{{url .Pager.PrevUrl}}">← {{.I18n.Tr "pager.prev"}}</a>{{end}}
-                <span class="current">Page {{.Pager.Current}} of {{.Pager.Pages}}</span>
+                {{if .Tag}}{{else}}<span class="current">Page {{.Pager.Current}} of {{.Pager.Pages}}</span>{{end}}
                 {{if .Pager.Next}}<a href="{{url .Pager.NextUrl}}">{{.I18n.Tr "pager.next"}} →</a>{{end}}
             </div>
         </div>

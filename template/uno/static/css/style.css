@@ -421,7 +421,8 @@ h6 {
     padding-left: 2rem;
 }
 
-.article p code {
+.article p code,
+.article li code{
     font-family: Consolas, "Microsoft YaHei", "Courier New", Arial, monospace;
     background: rgba(128, 128, 128, .2);
     padding: 2px 6px;
