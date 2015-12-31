@@ -2,9 +2,9 @@
 
 A simple and beautiful site generator built in [Go](http://golang.org).
 
-**Stable  - 0.8.0.1205**
+**Stable  - 0.9.0.0101**
 
-**Develop - 0.8.6.1229**
+**Develop - 0.9.0.0101**
 
 [![Build Status](https://travis-ci.org/go-xiaohei/pugo.svg?branch=master)](https://travis-ci.org/go-xiaohei/pugo)
 

@@ -9,11 +9,11 @@ import (
 	"path"
 )
 
-//go:generate go-bindata -o=app/asset/asset.go -pkg=asset source/... template/... doc/...
+//go:generate go-bindata -o=app/asset/asset.go -pkg=asset source/... template/... doc/source/... doc/template/...
 
 const (
-	VERSION  = "0.8.6.1229"
-	VER_DATE = "2015-12-29"
+	VERSION  = "0.9.0.0101"
+	VER_DATE = "2016-01-01"
 
 	SRC_DIR   = "source"   // source contents dir
 	TPL_DIR   = "template" // template dir

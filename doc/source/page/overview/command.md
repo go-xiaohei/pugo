@@ -9,11 +9,11 @@ hover = docs
 template =
 
 [meta]
-Source = "https://github.com/go-xiaohei/pugo/blob/master/doc/source/page/prolog/command.md"
+Source = "https://github.com/go-xiaohei/pugo/blob/master/doc/source/page/overview/command.md"
 Version = "0.9.0"
 ```
 
-`Pugo.Static` provides `new`, `build`, `server`, `deploy`, and `doc`.
+`PuGo` provides `new`, `build`, `server`, `deploy`, and `doc`.
 
 ### New
 

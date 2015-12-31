@@ -169,7 +169,7 @@ body {
 }
 
 .article .brief {
-    line-height: 1.8;
+    line-height: 2.4;
 }
 
 .article .brief > *:last-child {
@@ -222,6 +222,7 @@ body {
     border-top-color: #DDD;
     border-right-color: #DDD;
     border-bottom-color: #DDD;
+    margin-bottom: 2.4rem;
 }
 
 .article .brief table {
@@ -253,4 +254,8 @@ body {
 #comment .row {
     margin-left: 0;
     margin-right: 0
+}
+
+#article-list .tag{
+    margin-bottom: 2.5rem;
 }

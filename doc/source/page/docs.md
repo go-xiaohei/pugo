@@ -9,17 +9,17 @@ hover = docs
 template =
 
 [meta]
-Source = "https://github.com/go-xiaohei/pugo-io/blob/master/source/page/docs.md"
-Version = ">=0.8.5"
+Source = "https://github.com/go-xiaohei/pugo-io/blob/master/doc/source/page/docs.md"
+Version = "0.9.0"
 ```
 
-`Pugo.Static` is a simple static site generator by [Golang](https://golang.org). It compiled [markdown](#) content to site pages with beautiful theme. No dependencies, cross platform and very fast.
+`PuGo` is a simple static site generator by [Golang](https://golang.org). It compiled [markdown](https://help.github.com/articles/markdown-basics/) content to site pages with beautiful theme. No dependencies, cross platform and very fast.
 
 ### Why create it
 
-I wanted to write a dynamic blog engine with golang. But because of the lack of golang, it can't make blog extensible and scalable, such as plugin system. And site generators are growing in trend, for example, `jeklly`, `hexo`. So I try to write a site generator.
+I wanted to write a dynamic blog engine with golang. But because of the lack of golang, it can't make blog extensible and scalable, such as plugin system. And site generators are growing in trend, for example, `Jeklly`, `Hexo`. So I try to write a site generator.
 
-After days working, `Pugo.Static` has completed major features:
+After days working, `PuGo` has completed major features:
 
 - build and serve markdown file as posts or pages
 - hot re-build when source file changes
@@ -28,7 +28,7 @@ After days working, `Pugo.Static` has completed major features:
 
 ### Development
 
-`Pugo.Static` keep developing now, but it's available to use in production with following tips:
+`PuGo` keep developing now, but it's available to use in production with following tips:
 
 - please use release version, not master branch
 - if upgrade, read release-note carefully to migrate data if needed
