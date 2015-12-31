@@ -86,7 +86,7 @@ i18n = documentation
 hover = docs
 
 [nav.github]
-link = https://github.com/go-xiaohei/pugo-static
+link = https://github.com/go-xiaohei/pugo
 title = Github
 i18n = github
 
