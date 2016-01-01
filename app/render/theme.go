@@ -18,8 +18,6 @@ import (
 var (
 	re_defineTag   *regexp.Regexp = regexp.MustCompile("{{ ?define \"([^\"]*)\" ?\"?([a-zA-Z0-9]*)?\"? ?}}")
 	re_templateTag *regexp.Regexp = regexp.MustCompile("{{ ?template \"([^\"]*)\" ?([^ ]*)? ?}}")
-
-	ErrTemplateMissing = errors.New("template-missing")
 )
 
 type (
@@ -191,7 +189,7 @@ func (t *Theme) add(path string) error {
 func (t *Theme) Execute(w io.Writer, name string, data interface{}) error {
 	tpl := t.Template(name)
 	if tpl == nil {
-		return ErrTemplateMissing
+		return errorFileMissing.New(name)
 	}
 	return tpl.ExecuteTemplate(w, name, data)
 }

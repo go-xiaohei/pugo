@@ -1,7 +1,7 @@
 package render
 
 import (
-	"errors"
+	"fmt"
 	"html/template"
 	"path"
 
@@ -9,16 +9,34 @@ import (
 	"github.com/go-xiaohei/pugo/app/helper"
 )
 
+const (
+	ErrRenderDirMissing int = 1 // error of template directory missing
+	ErrTemplateMissing  int = 2 // error of template file missing
+)
+
 var (
-	ErrRenderDirMissing = errors.New("render-dir-missing") // error of template directory missing
+	errorDirMissing = RenderError{
+		Message: "template dir '%s' is missing",
+		Type:    ErrRenderDirMissing,
+	}
+	errorFileMissing = RenderError{
+		Message: "template file '%s' is missing",
+		Type:    ErrTemplateMissing,
+	}
 )
 
 // render struct
-type Render struct {
-	dir        string
-	extensions []string
-	funcMap    template.FuncMap
-}
+type (
+	Render struct {
+		dir        string
+		extensions []string
+		funcMap    template.FuncMap
+	}
+	RenderError struct {
+		Message string
+		Type    int
+	}
+)
 
 // new render in directory
 func New(dir string) *Render {
@@ -36,7 +54,7 @@ func New(dir string) *Render {
 func (r *Render) Load(name string) (*Theme, error) {
 	dir := path.Join(r.dir, name)
 	if !com.IsDir(dir) {
-		return nil, ErrRenderDirMissing
+		return nil, errorDirMissing.New(name)
 	}
 	theme := NewTheme(dir, r.funcMap, r.extensions)
 	return theme, theme.Load()
@@ -54,4 +72,15 @@ func (r *Render) SetFunc(name string, fn interface{}) {
 		return
 	}
 	r.funcMap[name] = fn
+}
+
+// error implementation
+func (err RenderError) Error() string {
+	return err.Message
+}
+
+// new message error
+func (err RenderError) New(values ...interface{}) RenderError {
+	err.Message = fmt.Sprintf(err.Message, values...)
+	return err
 }

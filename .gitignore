@@ -4,6 +4,7 @@
 *.so
 
 # Folders
+.vscode
 _obj
 _test
 dest
