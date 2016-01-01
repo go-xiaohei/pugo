@@ -16,8 +16,8 @@
                             <span class="year">{{.Post.Created.Year}}</span>/
                             <span class="month">{{.Post.Created.Month}}</span>/
                             <span class="day">{{.Post.Created.Day}}</span>
-                        </span>
-                        <a class="author"{{if .Post.Author.Url}} href="{{.Post.Author.Url}}" target="_blank"{{end}}>{{.Post.Author.Name}}</a>
+                        </span>{{if .Post.Author}}
+                        <a class="author"{{if .Post.Author.Url}} href="{{.Post.Author.Url}}" target="_blank"{{end}}>{{.Post.Author.Name}}</a>{{end}}
                         <span class="tags">{{range .Post.Tags}}
                             <a class="tag" href="{{url .Url}}">{{.Name}}</a>{{end}}
                         </span>

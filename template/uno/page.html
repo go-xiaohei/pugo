@@ -16,8 +16,8 @@
                             <span class="year">{{.Page.Created.Year}}</span>/
                             <span class="month">{{.Page.Created.Month}}</span>/
                             <span class="day">{{.Page.Created.Day}}</span>
-                        </span>
-                        <a class="author"{{if .Page.Author.Url}} href="{{.Page.Author.Url}}" target="_blank"{{end}}>{{.Page.Author.Name}}</a>
+                        </span>{{if .Page.Author}}
+                        <a class="author"{{if .Page.Author.Url}} href="{{.Page.Author.Url}}" target="_blank"{{end}}>{{.Page.Author.Name}}</a>{{end}}
                     </aside>
                     <section class="brief">{{.Page.ContentHTML}}</section>
                 </div>

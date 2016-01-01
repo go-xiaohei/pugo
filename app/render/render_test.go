@@ -37,7 +37,7 @@ func TestRender(t *testing.T) {
 		So(theme, ShouldHaveSameTypeAs, new(render.Theme))
 
 		_, err = r.Load("xxxxxx")
-		So(err, ShouldEqual, render.ErrRenderDirMissing)
+		So(err.(render.RenderError).Type, ShouldEqual, render.ErrRenderDirMissing)
 	})
 }
 
@@ -50,7 +50,7 @@ func TestTheme(t *testing.T) {
 		Convey("render file", func() {
 			var buf bytes.Buffer
 			err := theme.Execute(&buf, "xxxxxx.html", nil)
-			So(err, ShouldEqual, render.ErrTemplateMissing)
+			So(err.(render.RenderError).Type, ShouldEqual, render.ErrTemplateMissing)
 
 			buf.Reset()
 			err = theme.Execute(&buf, "post.html", map[string]interface{}{

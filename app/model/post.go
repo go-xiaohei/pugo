@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"html/template"
 	"os"
+	"path"
 	"strings"
 	"time"
 
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/go-xiaohei/pugo/app/parser"
-	"path"
 )
 
 var (
@@ -96,6 +96,10 @@ func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 		Name:  block.Item("author"),
 		Email: block.Item("author_email"),
 		Url:   block.Item("author_url"),
+	}
+	// author can be nil
+	if p.Author.Name == "" {
+		p.Author = nil
 	}
 
 	// parse markdown block

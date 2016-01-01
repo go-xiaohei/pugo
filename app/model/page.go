@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"html/template"
 	"os"
+	"path"
+	"strings"
 	"time"
 
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/go-xiaohei/pugo/app/parser"
-	"path"
-	"strings"
 )
 
 // Page contains fields for a page
@@ -78,6 +78,9 @@ func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 		Name:  block.Item("author"),
 		Email: block.Item("author_email"),
 		Url:   block.Item("author_url"),
+	}
+	if p.Author.Name == "" {
+		p.Author = nil
 	}
 	p.Meta = block.MapHash("meta")
 

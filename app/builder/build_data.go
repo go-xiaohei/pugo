@@ -3,6 +3,7 @@ package builder
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"html/template"
 	"io/ioutil"
 	"net/url"
@@ -12,7 +13,6 @@ import (
 	"sort"
 	"strings"
 
-	"fmt"
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/go-xiaohei/pugo/app/model"
@@ -167,9 +167,16 @@ func (b *Builder) readContents(ctx *Context) {
 			ctx.Error = err
 			return
 		}
-		// use named author
-		if author, ok := ctx.Authors[post.Author.Name]; ok {
-			post.Author = author
+		// if author name can find in ctx.Authors, use this named author,
+		// if nil author but owner is set, use owner as author
+		if post.Author != nil {
+			if author, ok := ctx.Authors[post.Author.Name]; ok {
+				post.Author = author
+			}
+		} else {
+			if ctx.Owner != nil {
+				post.Author = ctx.Owner
+			}
 		}
 		post.Slug = string(replacer([]byte(post.Slug)))
 		post.Thumb = string(replacer([]byte(post.Thumb)))
