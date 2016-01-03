@@ -1,15 +1,16 @@
 package helper
 
 import (
-	"github.com/Unknwon/com"
 	"io"
 	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
+
+	"github.com/Unknwon/com"
 )
 
-// remove all sub dirs and files in directory
+// RemoveDir removes all sub dirs and files in directory
 func RemoveDir(dir string) error {
 	if !com.IsDir(dir) {
 		return nil
@@ -28,7 +29,7 @@ func RemoveDir(dir string) error {
 	return os.RemoveAll(dir)
 }
 
-// copy file
+// CopyFile copies file
 func CopyFile(srcFile, destFile string) error {
 	os.MkdirAll(filepath.Dir(destFile), os.ModePerm)
 

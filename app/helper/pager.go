@@ -36,13 +36,13 @@ func NewPagerCursor(size, all int) *PagerCursor {
 	return pc
 }
 
-// create Pager on a page number
-func (p *PagerCursor) Page(i int) *Pager {
+// Page creates Pager on a page number
+func (pg *PagerCursor) Page(i int) *Pager {
 	if i < 1 {
 		return nil
 	}
-	begin := (i - 1) * p.size
-	if begin > p.all {
+	begin := (i - 1) * pg.size
+	if begin > pg.all {
 		return nil // no pager when begin number over all
 	}
 	pager := &Pager{
@@ -50,33 +50,33 @@ func (p *PagerCursor) Page(i int) *Pager {
 		Prev:    i - 1,
 		Next:    i + 1,
 		Current: i,
-		Pages:   p.pages,
+		Pages:   pg.pages,
 	}
-	end := begin + p.size
-	if end >= p.all {
-		end = p.all
+	end := begin + pg.size
+	if end >= pg.all {
+		end = pg.all
 		pager.Next = 0 // no next
 	}
 	pager.End = end
 	return pager
 }
 
-// set pager layout string,
+// SetLayout sets pager layout string,
 // use to print url
 func (pg *Pager) SetLayout(layout string) {
 	pg.layout = layout
 }
 
-// prev url
-func (pg *Pager) PrevUrl() string {
+// PrevURL returns prev url
+func (pg *Pager) PrevURL() string {
 	if pg.Prev > 0 {
 		return fmt.Sprintf(pg.layout, pg.Prev)
 	}
 	return ""
 }
 
-// next url
-func (pg *Pager) NextUrl() string {
+// NextURL returns next url
+func (pg *Pager) NextURL() string {
 	if pg.Next > 0 {
 		return fmt.Sprintf(pg.layout, pg.Next)
 	}

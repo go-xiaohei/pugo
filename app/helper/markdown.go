@@ -18,7 +18,7 @@ type MarkdownRender struct {
 	blackfriday.Renderer
 }
 
-// override code block
+// BlockCode overrides code block
 func (mr *MarkdownRender) BlockCode(out *bytes.Buffer, text []byte, lang string) {
 	var tmp bytes.Buffer
 	mr.Renderer.BlockCode(&tmp, text, lang)
