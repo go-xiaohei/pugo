@@ -13,8 +13,8 @@ import (
 	"gopkg.in/inconshreveable/log15.v2"
 )
 
-// build Command, need BuildOption
-func Build(opt *builder.BuildOption) cli.Command {
+// Build returns build Command, need builder.Option
+func Build(opt *builder.Option) cli.Command {
 	return cli.Command{
 		Name:     "build",
 		Usage:    "build static files and watch updating",
@@ -31,7 +31,7 @@ func Build(opt *builder.BuildOption) cli.Command {
 }
 
 // build site function
-func buildSite(opt *builder.BuildOption, mustWatch bool) func(ctx *cli.Context) {
+func buildSite(opt *builder.Option, mustWatch bool) func(ctx *cli.Context) {
 	return func(ctx *cli.Context) {
 		// ctrl+C capture
 		signalChan := make(chan os.Signal)

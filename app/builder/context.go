@@ -8,11 +8,11 @@ import (
 	"github.com/go-xiaohei/pugo/app/render"
 )
 
-// build context, maintain parse data, posts, pages or others
+// Context maintains parse data, posts, pages or others
 type Context struct {
 	Theme     *render.Theme
 	DstDir    string // read output destination
-	Version   builderVersion
+	Version   string
 	BeginTime time.Time
 	Diff      *Diff
 	Error     error
@@ -38,7 +38,7 @@ type Context struct {
 	mediaPath  string
 }
 
-// return global view data for template compilation
+// ViewData returns global view data for template compilation
 func (ctx *Context) ViewData() map[string]interface{} {
 	m := map[string]interface{}{
 		"Version": ctx.Version,
@@ -54,7 +54,7 @@ func (ctx *Context) ViewData() map[string]interface{} {
 	return m
 }
 
-// return duration
+// Duration returns duration of build process
 func (ctx *Context) Duration() time.Duration {
 	return time.Since(ctx.BeginTime)
 }

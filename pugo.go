@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "net/http/pprof"
 	"path"
 
 	"github.com/codegangsta/cli"
@@ -26,7 +27,7 @@ const (
 
 var (
 	app = cli.NewApp()
-	opt = new(builder.BuildOption)
+	opt = new(builder.Option)
 )
 
 func init() {

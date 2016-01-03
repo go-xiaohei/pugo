@@ -3,19 +3,21 @@ package builder
 import (
 	"io/ioutil"
 	"path"
+	"path/filepath"
 	"time"
 
 	"gopkg.in/fsnotify.v1"
 	"gopkg.in/inconshreveable/log15.v2"
-	"path/filepath"
 )
 
 var (
-	watchingExt       = []string{".md", ".ini", ".html", ".css", ".js"}
+	// watchingExt sets the suffix that watching to
+	watchingExt = []string{".md", ".ini", ".html", ".css", ".js"}
+	// watchScheduleTime sets watching timer duration
 	watchScheduleTime int64
 )
 
-// watch source dir changes and build to destination directory if updated
+// Watch begins to watch source dir changes and build to destination directory if updated
 func (b *Builder) Watch(dstDir string) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {

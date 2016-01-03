@@ -4,15 +4,14 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo/app/helper"
-	"strings"
 )
 
-// copy assets to target directory,
-// favicon, robots.txt, error pages and all static asset if ctx.isCopyAllAssets
+// CopyAssets copy assets to target directory
 func (b *Builder) CopyAssets(ctx *Context) {
 	// copy static files
 	staticDir := ctx.Theme.Static()
@@ -53,7 +52,7 @@ func (b *Builder) copyClean(ctx *Context) {
 		}
 		// not build file, clean it
 		if !ctx.Diff.Exist(p) {
-			ctx.Diff.Add(p, DIFF_REMOVE, time.Now())
+			ctx.Diff.Add(p, DiffRemove, time.Now())
 			return os.Remove(p)
 		}
 		return nil
@@ -76,13 +75,13 @@ func (b *Builder) copyAssets(ctx *Context, srcDir string, dstDir string) error {
 		if com.IsFile(toFile) {
 			if fi2, _ := os.Stat(toFile); fi2 != nil {
 				if fi2.ModTime().Sub(fi.ModTime()).Seconds() > 0 {
-					ctx.Diff.Add(toFile, DIFF_KEEP, fi2.ModTime())
+					ctx.Diff.Add(toFile, DiffKeep, fi2.ModTime())
 					return nil
 				}
 				if err := helper.CopyFile(p, toFile); err != nil {
 					return err
 				}
-				ctx.Diff.Add(toFile, DIFF_UPDATE, time.Now())
+				ctx.Diff.Add(toFile, DiffUpdate, time.Now())
 				return nil
 			}
 		}
@@ -91,7 +90,7 @@ func (b *Builder) copyAssets(ctx *Context, srcDir string, dstDir string) error {
 		if err := helper.CopyFile(p, toFile); err != nil {
 			return err
 		}
-		ctx.Diff.Add(toFile, DIFF_ADD, time.Now())
+		ctx.Diff.Add(toFile, DiffAdd, time.Now())
 		return nil
 	})
 }
@@ -115,6 +114,6 @@ func (b *Builder) copyExtraAssets(ctx *Context) {
 			ctx.Error = err
 			return
 		}
-		ctx.Diff.Add(toFile, DIFF_ADD, time.Now())
+		ctx.Diff.Add(toFile, DiffAdd, time.Now())
 	}
 }

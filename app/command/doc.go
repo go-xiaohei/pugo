@@ -5,8 +5,8 @@ import (
 	"github.com/go-xiaohei/pugo/app/builder"
 )
 
-// Server command serve files
-func Doc(opt *builder.BuildOption) cli.Command {
+// Doc returns doc command function
+func Doc(opt *builder.Option) cli.Command {
 	return cli.Command{
 		Name:     "doc",
 		Usage:    "build and serve documentation",

@@ -12,38 +12,36 @@ import (
 )
 
 var (
+	//ErrSrcDirMissing means SrcDir is missing
 	ErrSrcDirMissing = errors.New("builder-src-dir-missing")
+	//ErrTplDirMissing means ThemeDir is missing
 	ErrTplDirMissing = errors.New("builder-tpl-dir-missing")
 )
 
 type (
-	// builder object, provides api to build and watch sources and templates
+	// Builder is builder object, provides api to build and watch sources and templates
 	Builder struct {
 		isBuilding bool
 		isWatching bool
-		opt        *BuildOption
+		opt        *Option
 
 		render  *render.Render
 		context *Context
 		parsers []parser.Parser
-		tasks   []*BuildTask
+		tasks   []*Task
 
 		Error   error
-		Version builderVersion
+		Version string
 		Count   uint32 // build count
 	}
-	// build task defines the build function to run in build process
-	BuildTask struct {
+	// Task means steps when run in build process
+	Task struct {
 		Name  string
 		Fn    func(*Context)
 		Print func(*Context) string
 	}
-	builderVersion struct {
-		Num  string
-		Date string
-	}
-	// build option to builder
-	BuildOption struct {
+	// Option is build option to builder
+	Option struct {
 		SrcDir    string
 		TplDir    string
 		MediaDir  string
@@ -56,20 +54,22 @@ type (
 		beforeHook []BuildHook
 		afterHook  []BuildHook
 	}
-	// hook func to build process
+	// BuildHook is hook func to build process
 	BuildHook func(b *Builder, ctx *Context) error
 )
 
-func (opt *BuildOption) Before(fn BuildHook) {
+// Before set hook before builder run
+func (opt *Option) Before(fn BuildHook) {
 	opt.beforeHook = append(opt.beforeHook, fn)
 }
 
-func (opt *BuildOption) After(fn BuildHook) {
+// After set hook after builder run
+func (opt *Option) After(fn BuildHook) {
 	opt.afterHook = append(opt.afterHook, fn)
 }
 
 // New builder with option
-func New(opt *BuildOption) *Builder {
+func New(opt *Option) *Builder {
 	if !com.IsDir(opt.SrcDir) {
 		return &Builder{Error: ErrSrcDirMissing}
 	}
@@ -80,14 +80,11 @@ func New(opt *BuildOption) *Builder {
 		parsers: []parser.Parser{
 			parser.NewMdParser(),
 		},
-		Version: builderVersion{
-			Num:  opt.Version,
-			Date: opt.VerDate,
-		},
-		opt: opt,
+		Version: opt.Version,
+		opt:     opt,
 	}
 	builder.render = render.New(builder.opt.TplDir)
-	builder.tasks = []*BuildTask{
+	builder.tasks = []*Task{
 		{"Data", builder.ReadData, nil},
 		{"Compile", builder.Compile, nil},
 		{"Feed", builder.WriteFeed, nil},
@@ -99,12 +96,12 @@ func New(opt *BuildOption) *Builder {
 	return builder
 }
 
-// get render in builder
+// Render returns render in builder
 func (b *Builder) Render() *render.Render {
 	return b.render
 }
 
-// build to dest directory
+// Build builds to dest directory
 func (b *Builder) Build(dest string) {
 	// if on build, do not again
 	if b.isBuilding {
@@ -180,23 +177,24 @@ func (b *Builder) getParser(data []byte) parser.Parser {
 	return nil
 }
 
-// is builder run building
+// IsBuilding shows builder run building
 func (b *Builder) IsBuilding() bool {
 	return b.isBuilding
 }
 
-// is builder watching changes
+// IsWatching shows is builder watching changes
 func (b *Builder) IsWatching() bool {
 	return b.isWatching
 }
 
-// get last context in builder
+// Context returns last context in builder
 func (b *Builder) Context() *Context {
 	return b.context
 }
 
-// get option if nil, or set option with non-nil opt.
-func (b *Builder) Option(opt *BuildOption) *BuildOption {
+// Option gets option
+// if nil, or set option with non-nil opt.
+func (b *Builder) Option(opt *Option) *Option {
 	if opt == nil {
 		return b.opt
 	}

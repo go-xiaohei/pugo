@@ -111,16 +111,16 @@ func (ft *FtpTask) Do(b *builder.Builder, ctx *builder.Context) error {
 
 // upload files with checking diff status
 func (ft *FtpTask) uploadDiffFiles(client *ftp.ServerConn, ctx *builder.Context) error {
-	return ctx.Diff.Walk(func(name string, entry *builder.DiffEntry) error {
+	return ctx.Diff.Walk(func(name string, entry *builder.Entry) error {
 		rel, _ := filepath.Rel(ctx.DstDir, name)
 		rel = filepath.ToSlash(rel)
 
-		if entry.Behavior == builder.DIFF_REMOVE {
+		if entry.Behavior == builder.DiffRemove {
 			log15.Debug("Deploy.Ftp.Delete", "file", rel)
 			return client.Delete(rel)
 		}
 
-		if entry.Behavior == builder.DIFF_KEEP {
+		if entry.Behavior == builder.DiffKeep {
 			if list, _ := client.List(rel); len(list) == 1 {
 				// entry file should be older than uploaded file
 				if entry.Time.Sub(list[0].Time).Seconds() < 0 {
@@ -154,13 +154,13 @@ func (ft *FtpTask) uploadAllFiles(client *ftp.ServerConn, ctx *builder.Context) 
 		createdDirs = make(map[string]bool)
 		err         error
 	)
-	return ctx.Diff.Walk(func(name string, entry *builder.DiffEntry) error {
+	return ctx.Diff.Walk(func(name string, entry *builder.Entry) error {
 		rel, _ := filepath.Rel(ctx.DstDir, name)
 		rel = filepath.ToSlash(rel)
 
 		// entry remove status, just remove it
 		// the other files, just upload ignore diff status
-		if entry.Behavior == builder.DIFF_REMOVE {
+		if entry.Behavior == builder.DiffRemove {
 			log15.Debug("Deploy.Ftp.Delete", "file", rel)
 			return client.Delete(rel)
 		}

@@ -3,18 +3,19 @@ package command
 import (
 	"bytes"
 	"fmt"
-	"github.com/codegangsta/cli"
-	"github.com/go-xiaohei/pugo/app/asset"
-	"gopkg.in/inconshreveable/log15.v2"
 	"io/ioutil"
 	"net/url"
 	"os"
 	"path"
 	"strings"
 	"time"
+
+	"github.com/codegangsta/cli"
+	"github.com/go-xiaohei/pugo/app/asset"
+	"gopkg.in/inconshreveable/log15.v2"
 )
 
-// New commands create default site, page or post
+// New return command that create default site, page or post
 func New(srcDir, tplDir string) cli.Command {
 	return cli.Command{
 		Name:  "new",

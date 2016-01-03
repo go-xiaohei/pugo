@@ -21,10 +21,11 @@ import (
 )
 
 var (
+	//ErrParserMissing means that it can't detect proper parser
 	ErrParserMissing = errors.New("Parser-Unknown")
 )
 
-// parse data to context, if parsed all data to context for renders
+// ReadData parses data to context, if parsed all data to context for renders
 func (b *Builder) ReadData(ctx *Context) {
 	if b.readMeta(ctx); ctx.Error != nil {
 		return
@@ -151,7 +152,7 @@ func (b *Builder) afterMeta(ctx *Context) {
 func (b *Builder) readContents(ctx *Context) {
 	var (
 		replacer     = replaceGlobalVars(b, ctx)
-		htmlReplacer = replaceHtmlVars(b, ctx)
+		htmlReplacer = replaceHTMLVars(b, ctx)
 		filter       = func(p string) bool {
 			return path.Ext(p) == ".md"
 		}
@@ -321,8 +322,8 @@ func replaceMarkdownVars(b *Builder, ctx *Context) func([]byte) []byte {
 	}
 }
 
-// global vars replacer
-func replaceHtmlVars(b *Builder, ctx *Context) func([]byte) []byte {
+// global vars replacer in HTML
+func replaceHTMLVars(b *Builder, ctx *Context) func([]byte) []byte {
 	return func(data []byte) []byte {
 		data = bytes.Replace(data, []byte(`href="@media/`), []byte(`href="/`+ctx.mediaPath+"/"), -1)
 		data = bytes.Replace(data, []byte(`href="@static/`), []byte(`href="/`+ctx.staticPath+"/"), -1)

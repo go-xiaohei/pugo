@@ -2,7 +2,6 @@ package command
 
 import (
 	"net/http"
-	_ "net/http/pprof"
 
 	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo/app/builder"
@@ -10,8 +9,8 @@ import (
 	"gopkg.in/inconshreveable/log15.v2"
 )
 
-// Server command serve files
-func Server(opt *builder.BuildOption) cli.Command {
+// Server returns command serve files
+func Server(opt *builder.Option) cli.Command {
 	return cli.Command{
 		Name:     "server",
 		Usage:    "build source and server static files",
@@ -27,7 +26,7 @@ func Server(opt *builder.BuildOption) cli.Command {
 	}
 }
 
-func serveSite(opt *builder.BuildOption) func(ctx *cli.Context) {
+func serveSite(opt *builder.Option) func(ctx *cli.Context) {
 	return func(ctx *cli.Context) {
 		if ctx.Bool("debug") {
 			go http.ListenAndServe("0.0.0.0:6060", nil)

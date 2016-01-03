@@ -103,11 +103,11 @@ func (ft *SftpTask) uploadAllFiles(client *sftp.Client, ctx *builder.Context) er
 		createdDirs = make(map[string]bool)
 		err         error
 	)
-	return ctx.Diff.Walk(func(name string, entry *builder.DiffEntry) error {
+	return ctx.Diff.Walk(func(name string, entry *builder.Entry) error {
 		rel, _ := filepath.Rel(ctx.DstDir, name)
 		rel = filepath.ToSlash(rel)
 
-		if entry.Behavior == builder.DIFF_REMOVE {
+		if entry.Behavior == builder.DiffRemove {
 			log15.Debug("Deploy.Sftp.Delete", "file", rel)
 			return client.Remove(path.Join(ft.opt.Directory, rel))
 		}
@@ -148,17 +148,17 @@ func (ft *SftpTask) uploadAllFiles(client *sftp.Client, ctx *builder.Context) er
 
 // upload different context files
 func (ft *SftpTask) uploadDiffFiles(client *sftp.Client, ctx *builder.Context) error {
-	return ctx.Diff.Walk(func(name string, entry *builder.DiffEntry) error {
+	return ctx.Diff.Walk(func(name string, entry *builder.Entry) error {
 		rel, _ := filepath.Rel(ctx.DstDir, name)
 		rel = filepath.ToSlash(rel)
 
-		if entry.Behavior == builder.DIFF_REMOVE {
+		if entry.Behavior == builder.DiffRemove {
 			log15.Debug("Deploy.Sftp.Delete", "file", rel)
 			return client.Remove(path.Join(ft.opt.Directory, rel))
 		}
 
 		target := path.Join(ft.opt.Directory, rel)
-		if entry.Behavior == builder.DIFF_KEEP {
+		if entry.Behavior == builder.DiffKeep {
 			if fi, _ := client.Stat(target); fi != nil {
 				// entry file should be older than uploaded file
 				if entry.Time.Sub(fi.ModTime()).Seconds() < 0 {

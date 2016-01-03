@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"strconv"
+	"time"
 
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/go-xiaohei/pugo/app/model"
 	"gopkg.in/inconshreveable/log15.v2"
-	"strconv"
-	"time"
 )
 
-// compile data to html files
+// Compile builds data to html files
 func (b *Builder) Compile(ctx *Context) {
 	if b.compileSinglePost(ctx); ctx.Error != nil {
 		return
@@ -62,10 +62,10 @@ func (b *Builder) compileSinglePost(ctx *Context) {
 func (b *Builder) compilePagedPost(ctx *Context) {
 	// post pagination
 	var (
-		currentPosts []*model.Post = nil
-		cursor                     = helper.NewPagerCursor(4, len(ctx.Posts))
-		page         int           = 1
-		layout                     = "posts/%d"
+		currentPosts []*model.Post
+		cursor       = helper.NewPagerCursor(4, len(ctx.Posts))
+		page         = 1
+		layout       = "posts/%d"
 	)
 	for {
 		pager := cursor.Page(page)
@@ -187,9 +187,9 @@ func (b *Builder) compileIndex(ctx *Context) {
 // compile template by data and write to dest file.
 func (b *Builder) compileTemplate(ctx *Context, file string, viewData map[string]interface{}, destFile string) error {
 	if com.IsFile(destFile) {
-		ctx.Diff.Add(destFile, DIFF_UPDATE, time.Now())
+		ctx.Diff.Add(destFile, DiffUpdate, time.Now())
 	} else {
-		ctx.Diff.Add(destFile, DIFF_ADD, time.Now())
+		ctx.Diff.Add(destFile, DiffAdd, time.Now())
 	}
 
 	os.MkdirAll(path.Dir(destFile), os.ModePerm)
