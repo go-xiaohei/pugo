@@ -10,24 +10,27 @@ import (
 )
 
 var (
-	registeredDeployWay      map[string]DeployTask
+	registeredDeployWay map[string]Task
+
+	// ErrDeployConfFormatError means deploy task conf string is wrong
 	ErrDeployConfFormatError = errors.New("deploy format need be type:conf_string")
-	ErrDeployUnknown         = errors.New("deploy way is unknown")
+	// ErrDeployUnknown means unknown deploy task way
+	ErrDeployUnknown = errors.New("deploy way is unknown")
 )
 
 func init() {
-	registeredDeployWay = map[string]DeployTask{
-		TYPE_GIT:  new(GitTask),
-		TYPE_FTP:  new(FtpTask),
-		TYPE_SFTP: new(SftpTask),
+	registeredDeployWay = map[string]Task{
+		TypeGit:  new(GitTask),
+		TypeFtp:  new(FtpTask),
+		TypeSftp: new(SftpTask),
 	}
 }
 
 type (
-	// DeployTask defines the methods of a deploy task
-	DeployTask interface {
+	// Task defines the methods of a deploy task
+	Task interface {
 		Is(conf string) bool                               // is this deploy task
-		New(conf string) (DeployTask, error)               // new instance
+		New(conf string) (Task, error)                     // new instance
 		Type() string                                      // task type name
 		Dir() string                                       // the build target directory for the deployment
 		Do(b *builder.Builder, ctx *builder.Context) error // deploy logic
@@ -35,7 +38,7 @@ type (
 )
 
 // Detect the deploy task to run
-func Detect(ctx *cli.Context) (DeployTask, error) {
+func Detect(ctx *cli.Context) (Task, error) {
 	// need protocol separator
 	conf := ctx.String("dest")
 	if !strings.Contains(conf, "://") {
@@ -49,4 +52,9 @@ func Detect(ctx *cli.Context) (DeployTask, error) {
 		}
 	}
 	return nil, ErrDeployUnknown
+}
+
+// Register new Deploy Task
+func Register(task Task) {
+	registeredDeployWay[task.Type()] = task
 }

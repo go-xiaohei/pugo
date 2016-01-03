@@ -15,17 +15,20 @@ import (
 )
 
 const (
-	TYPE_SFTP = "sftp"
+	// TypeSftp returns SftpTask's type
+	TypeSftp = "sftp"
 )
 
 var (
-// _ DeployTask = new(SftpTask)
+	_ Task = new(SftpTask)
 )
 
 type (
+	// SftpTask defines sftp deploy task
 	SftpTask struct {
 		opt *SftpOption
 	}
+	// SftpOption defines sftp options
 	SftpOption struct {
 		url       *url.URL
 		Address   string
@@ -35,8 +38,8 @@ type (
 	}
 )
 
-// new sftp task with section
-func (ft *SftpTask) New(conf string) (DeployTask, error) {
+// New returns new sftp task with section
+func (ft *SftpTask) New(conf string) (Task, error) {
 	u, err := url.Parse(conf)
 	if err != nil {
 		return nil, err
@@ -57,22 +60,22 @@ func (ft *SftpTask) New(conf string) (DeployTask, error) {
 	return f, nil
 }
 
-// sftp task's name
+// Type returns sftp task's name
 func (ft *SftpTask) Type() string {
-	return TYPE_SFTP
+	return TypeSftp
 }
 
-// is sftp task's name
+// Is checkes sftp task's name
 func (ft *SftpTask) Is(conf string) bool {
 	return strings.HasPrefix(conf, "sftp://")
 }
 
-// sftp task's build directory
+// Dir returns sftp task's build directory
 func (ft *SftpTask) Dir() string {
 	return path.Base(ft.opt.Directory)
 }
 
-// sftp task do action
+// Do executes sftp task do action
 func (ft *SftpTask) Do(b *builder.Builder, ctx *builder.Context) error {
 	conn, client, err := connectSftp(ft.opt)
 	if err != nil {
@@ -94,6 +97,7 @@ func (ft *SftpTask) Do(b *builder.Builder, ctx *builder.Context) error {
 	return ft.uploadDiffFiles(client, ctx)
 }
 
+// upload all files in context
 func (ft *SftpTask) uploadAllFiles(client *sftp.Client, ctx *builder.Context) error {
 	var (
 		createdDirs = make(map[string]bool)
@@ -142,6 +146,7 @@ func (ft *SftpTask) uploadAllFiles(client *sftp.Client, ctx *builder.Context) er
 	})
 }
 
+// upload different context files
 func (ft *SftpTask) uploadDiffFiles(client *sftp.Client, ctx *builder.Context) error {
 	return ctx.Diff.Walk(func(name string, entry *builder.DiffEntry) error {
 		rel, _ := filepath.Rel(ctx.DstDir, name)
@@ -204,6 +209,7 @@ func connectSftp(opt *SftpOption) (*ssh.Client, *sftp.Client, error) {
 	return client, s, err
 }
 
+// make sftp directories
 func makeSftpDir(client *sftp.Client, dirs []string) error {
 	for i := len(dirs) - 1; i >= 0; i-- {
 		if err := client.Mkdir(dirs[i]); err != nil {

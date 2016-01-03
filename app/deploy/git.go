@@ -13,25 +13,30 @@ import (
 )
 
 const (
-	TYPE_GIT = "git"
+	// TypeGit is git task string
+	TypeGit = "git"
 )
 
 var (
-	// _ DeployTask = new(GitTask)
+	_ Task = new(GitTask)
 
-	ErrGitNotRepo      = errors.New("destination directory is not a git repository")
-	ErrGitNoBranch     = errors.New("can not read git respository's branch")
+	// ErrGitNotRepo shows the directory is not git repository
+	ErrGitNotRepo = errors.New("destination directory is not a git repository")
+	// ErrGitNoBranch shows that it cant't read repository's branch
+	ErrGitNoBranch = errors.New("can not read git respository's branch")
+
+	// default git commit message
 	gitMessageReplacer = strings.NewReplacer("{now}", time.Now().Format(time.RFC3339))
 )
 
 type (
-	// Git Deployment task
+	// GitTask is  git deployment task
 	GitTask struct {
 		name      string
 		opt       *GitOption
 		directory string
 	}
-	// git options
+	// GitOption is git options
 	GitOption struct {
 		url     *url.URL
 		Branch  string // remote repository branch name
@@ -39,8 +44,8 @@ type (
 	}
 )
 
-// New GitTask with name and ini.Section options
-func (gt *GitTask) New(conf string) (DeployTask, error) {
+// New returns new GitTask with name and ini.Section options
+func (gt *GitTask) New(conf string) (Task, error) {
 	// create a new GitTask
 	g := &GitTask{
 		name: "git",
@@ -68,23 +73,23 @@ func (gt *GitTask) New(conf string) (DeployTask, error) {
 	return g, nil
 }
 
-// GitTask's name
-func (g *GitTask) Type() string {
-	return TYPE_GIT
+// Type returns GitTask's name
+func (gt *GitTask) Type() string {
+	return TypeGit
 }
 
-// GitTask's destination directory
-func (g *GitTask) Dir() string {
-	return g.directory
+// Dir returns GitTask's destination directory
+func (gt *GitTask) Dir() string {
+	return gt.directory
 }
 
-// is GitTask
-func (g *GitTask) Is(conf string) bool {
+// Is checks GitTask
+func (gt *GitTask) Is(conf string) bool {
 	return strings.HasPrefix(conf, "git://")
 }
 
-// readRepo branch
-func (g *GitTask) readRepo(dest string) error {
+// read repository's branch
+func (gt *GitTask) readRepo(dest string) error {
 	content, _, err := com.ExecCmdDir(dest, "git", []string{"branch"}...)
 	if err != nil {
 		return err
@@ -93,24 +98,24 @@ func (g *GitTask) readRepo(dest string) error {
 	for _, cnt := range contentData {
 		if strings.HasPrefix(cnt, "*") {
 			cntData := strings.Split(cnt, " ")
-			g.opt.Branch = cntData[len(cntData)-1]
+			gt.opt.Branch = cntData[len(cntData)-1]
 			return nil
 		}
 	}
 	return nil
 }
 
-// Git deployment action
-func (g *GitTask) Do(b *builder.Builder, ctx *builder.Context) error {
+// Do executes git deploy action
+func (gt *GitTask) Do(b *builder.Builder, ctx *builder.Context) error {
 	gitDir := path.Join(ctx.DstDir, ".git")
 	if !com.IsDir(gitDir) {
 		return ErrGitNotRepo
 	}
 	var err error
-	if err = g.readRepo(ctx.DstDir); err != nil {
+	if err = gt.readRepo(ctx.DstDir); err != nil {
 		return err
 	}
-	if g.opt.Branch == "" {
+	if gt.opt.Branch == "" {
 		return ErrGitNoBranch
 	}
 
@@ -119,19 +124,19 @@ func (g *GitTask) Do(b *builder.Builder, ctx *builder.Context) error {
 		log15.Error("Deploy.Git.Error", "error", stderr)
 		return err
 	}
-	log15.Debug("Deploy.Git.[" + g.opt.Branch + "].AddFiles")
+	log15.Debug("Deploy.Git.[" + gt.opt.Branch + "].AddFiles")
 
 	// commit message
-	message := gitMessageReplacer.Replace(g.opt.Message)
+	message := gitMessageReplacer.Replace(gt.opt.Message)
 	if _, stderr, err := com.ExecCmdDir(ctx.DstDir, "git", []string{"commit", "-m", message}...); err != nil {
 		log15.Error("Deploy.Git.Error", "error", stderr)
 		return err
 	}
-	log15.Debug("Deploy.Git.[" + g.opt.Branch + "].Commit.'" + message + "'")
+	log15.Debug("Deploy.Git.[" + gt.opt.Branch + "].Commit.'" + message + "'")
 
 	// push to repo
 	_, stderr, err := com.ExecCmdDir(ctx.DstDir, "git", []string{
-		"push", "--force", "origin", g.opt.Branch}...)
+		"push", "--force", "origin", gt.opt.Branch}...)
 	if err != nil {
 		log15.Error("Deploy.Git.Error", "error", stderr)
 		if stderr != "" {
@@ -139,6 +144,6 @@ func (g *GitTask) Do(b *builder.Builder, ctx *builder.Context) error {
 		}
 		return err
 	}
-	log15.Debug("Deploy.Git.[" + g.opt.Branch + "].Push")
+	log15.Debug("Deploy.Git.[" + gt.opt.Branch + "].Push")
 	return nil
 }

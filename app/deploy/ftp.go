@@ -15,19 +15,20 @@ import (
 )
 
 const (
-	TYPE_FTP = "ftp"
+	// TypeFtp is FtpTask's type string
+	TypeFtp = "ftp"
 )
 
 var (
-	_ DeployTask = new(FtpTask)
+	_ Task = new(FtpTask)
 )
 
 type (
-	// ftp deployment task
+	// FtpTask is ftp deployment task
 	FtpTask struct {
 		opt *FtpOption
 	}
-	// ftp deploy option
+	// FtpOption is ftp deploy option
 	FtpOption struct {
 		url      *url.URL
 		Address  string
@@ -36,8 +37,8 @@ type (
 	}
 )
 
-// new ftp task with section
-func (ft *FtpTask) New(conf string) (DeployTask, error) {
+// New creates ftp task with section
+func (ft *FtpTask) New(conf string) (Task, error) {
 	u, err := url.Parse(conf)
 	if err != nil {
 		return nil, err
@@ -51,22 +52,22 @@ func (ft *FtpTask) New(conf string) (DeployTask, error) {
 	return f, nil
 }
 
-// ftp task's name
+// Type returns ftp task's name
 func (ft *FtpTask) Type() string {
-	return TYPE_FTP
+	return TypeFtp
 }
 
-// ftp task's real directory
+// Dir returns ftp task's real directory
 func (ft *FtpTask) Dir() string {
 	return path.Base(ft.opt.url.Path)
 }
 
-// is ftp task
+// Is checks ftp task
 func (ft *FtpTask) Is(conf string) bool {
 	return strings.HasPrefix(conf, "ftp://")
 }
 
-// ftp task do action
+// Do executes ftp action
 func (ft *FtpTask) Do(b *builder.Builder, ctx *builder.Context) error {
 	client, err := ftp.DialTimeout(ft.opt.url.Host, time.Second*10)
 	if err != nil {
@@ -191,6 +192,7 @@ func (ft *FtpTask) uploadAllFiles(client *ftp.ServerConn, ctx *builder.Context) 
 	})
 }
 
+// get dirs and subdirs
 func getDirs(dir string) []string {
 	if dir == "." || dir == "/" {
 		return nil
@@ -206,6 +208,8 @@ func getDirs(dir string) []string {
 	return dirs
 }
 
+// make ftp directories,
+// need make sub and parent directories
 func makeFtpDir(client *ftp.ServerConn, dirs []string) error {
 	for i := len(dirs) - 1; i >= 0; i-- {
 		if err := client.MakeDir(dirs[i]); err != nil {
