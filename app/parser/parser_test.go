@@ -75,7 +75,7 @@ func TestParser(t *testing.T) {
 		})
 
 		Convey("is common parser", func() {
-			flag := p.Is([]byte(parser.MD_PARSER_PREFIX))
+			flag := p.Is([]byte(parser.MdParserPrefix))
 			So(flag, ShouldBeTrue)
 		})
 
@@ -85,7 +85,7 @@ func TestParser(t *testing.T) {
 
 			block = p.Detect([]byte("ini"))
 			So(block, ShouldNotBeNil)
-			So(block.Type(), ShouldEqual, parser.BLOCK_INI)
+			So(block.Type(), ShouldEqual, parser.BlockIni)
 		})
 
 		Convey("first block error", func() {
@@ -112,7 +112,7 @@ func TestParseMeta(t *testing.T) {
 
 		Convey("check meta block", func() {
 			So(blocks, ShouldHaveLength, 1)
-			So(blocks[0].Type(), ShouldEqual, parser.BLOCK_INI)
+			So(blocks[0].Type(), ShouldEqual, parser.BlockIni)
 
 			Convey("use meta block", func() {
 				b, ok := blocks[0].(parser.MetaBlock)
@@ -136,8 +136,8 @@ func TestPostMeta(t *testing.T) {
 
 		Convey("check post blocks", func() {
 			So(blocks, ShouldHaveLength, 2)
-			So(blocks[0].Type(), ShouldEqual, parser.BLOCK_INI)
-			So(blocks[1].Type(), ShouldEqual, parser.BLOCK_MARKDOWN)
+			So(blocks[0].Type(), ShouldEqual, parser.BlockIni)
+			So(blocks[1].Type(), ShouldEqual, parser.BlockMarkdown)
 
 			Convey("use post blocks", func() {
 				b, ok := blocks[0].(parser.MetaBlock)
@@ -162,8 +162,8 @@ func TestPageMeta(t *testing.T) {
 		So(blocks, ShouldHaveLength, 2)
 
 		Convey("check page blocks", func() {
-			So(blocks[0].Type(), ShouldEqual, parser.BLOCK_INI)
-			So(blocks[1].Type(), ShouldEqual, parser.BLOCK_MARKDOWN)
+			So(blocks[0].Type(), ShouldEqual, parser.BlockIni)
+			So(blocks[1].Type(), ShouldEqual, parser.BlockMarkdown)
 
 			Convey("use page blocks", func() {
 				b, ok := blocks[0].(parser.MetaBlock)

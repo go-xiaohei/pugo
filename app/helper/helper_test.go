@@ -26,18 +26,18 @@ func TestPager(t *testing.T) {
 		Convey("each pager", func() {
 			p := cursor.Page(1)
 			So(p.Prev, ShouldEqual, 0)
-			So(p.PrevUrl(), ShouldBeEmpty)
+			So(p.PrevURL(), ShouldBeEmpty)
 
 			p = cursor.Page(20)
 			So(p.Prev, ShouldEqual, 19)
 			So(p.Next, ShouldEqual, 0)
 			So(p.End, ShouldEqual, 99)
-			So(p.NextUrl(), ShouldBeEmpty)
+			So(p.NextURL(), ShouldBeEmpty)
 
 			p = cursor.Page(10)
 			p.SetLayout("page%d")
-			So(p.PrevUrl(), ShouldEqual, "page9")
-			So(p.NextUrl(), ShouldEqual, "page11")
+			So(p.PrevURL(), ShouldEqual, "page9")
+			So(p.NextURL(), ShouldEqual, "page11")
 		})
 	})
 }

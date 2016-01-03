@@ -11,11 +11,11 @@
                                 <span class="date">{{.Post.Created.Year}}/{{.Post.Created.Month}}/{{.Post.Created.Day}}</span>
                             </div>
                             <h3 class="title">
-                                <a href="{{.Post.Url}}">{{.Post.Title}}</a>
+                                <a href="{{url .Post.URL}}">{{.Post.Title}}</a>
                             </h3>
                         </header>
                         <aside class="aside clearfix">{{range .Post.Tags}}
-                            <a class="tag label label-info" href="{{.Url}}">{{.Name}}</a>{{end}}
+                            <a class="tag label label-info" href="{{url .URL}}">{{.Name}}</a>{{end}}
                             <a class="stat label label-default pull-right">{{.Post.Author.Name}}</a>
                         </aside>
                         <section class="brief">{{.Post.ContentHTML}}</section>

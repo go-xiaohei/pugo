@@ -8,7 +8,7 @@
                 <div class="row">
                     <header class="header">
                         <h3 class="title">
-                            <a href="{{url .Post.Url}}">{{.Post.Title}}</a>
+                            <a href="{{url .Post.URL}}">{{.Post.Title}}</a>
                         </h3>
                     </header>
                     <aside class="aside clearfix">
@@ -17,9 +17,9 @@
                             <span class="month">{{.Post.Created.Month}}</span>/
                             <span class="day">{{.Post.Created.Day}}</span>
                         </span>{{if .Post.Author}}
-                        <a class="author"{{if .Post.Author.Url}} href="{{.Post.Author.Url}}" target="_blank"{{end}}>{{.Post.Author.Name}}</a>{{end}}
+                        <a class="author"{{if .Post.Author.URL}} href="{{.Post.Author.URL}}" target="_blank"{{end}}>{{.Post.Author.Name}}</a>{{end}}
                         <span class="tags">{{range .Post.Tags}}
-                            <a class="tag" href="{{url .Url}}">{{.Name}}</a>{{end}}
+                            <a class="tag" href="{{url .URL}}">{{.Name}}</a>{{end}}
                         </span>
                     </aside>
                     <section class="brief">{{.Post.ContentHTML}}</section>

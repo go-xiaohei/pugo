@@ -27,7 +27,7 @@ func init() {
 }
 
 func TestRender(t *testing.T) {
-	r := render.New("../../template")
+	r := render.New("../../theme")
 	for name, fn := range funcMap {
 		r.SetFunc(name, fn)
 	}
@@ -37,12 +37,12 @@ func TestRender(t *testing.T) {
 		So(theme, ShouldHaveSameTypeAs, new(render.Theme))
 
 		_, err = r.Load("xxxxxx")
-		So(err.(render.RenderError).Type, ShouldEqual, render.ErrRenderDirMissing)
+		So(err.(render.Error).Type, ShouldEqual, render.ErrRenderDirMissing)
 	})
 }
 
 func TestTheme(t *testing.T) {
-	theme := render.NewTheme("../../template/default", funcMap, []string{".html"})
+	theme := render.NewTheme("../../theme/default", funcMap, []string{".html"})
 	Convey("load theme", t, func() {
 		err := theme.Load()
 		So(err, ShouldBeNil)
@@ -50,7 +50,7 @@ func TestTheme(t *testing.T) {
 		Convey("render file", func() {
 			var buf bytes.Buffer
 			err := theme.Execute(&buf, "xxxxxx.html", nil)
-			So(err.(render.RenderError).Type, ShouldEqual, render.ErrTemplateMissing)
+			So(err.(render.Error).Type, ShouldEqual, render.ErrTemplateMissing)
 
 			buf.Reset()
 			err = theme.Execute(&buf, "post.html", map[string]interface{}{

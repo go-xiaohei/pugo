@@ -12,9 +12,9 @@ import (
 )
 
 var (
-	opt = &builder.BuildOption{
+	opt = &builder.Option{
 		SrcDir:   "../../source",
-		TplDir:   "../../template",
+		TplDir:   "../../theme",
 		MediaDir: "../../source/media",
 		Version:  "0.1.1",
 		VerDate:  "2015-12-22",
@@ -81,7 +81,7 @@ func TestBuilderErrors(t *testing.T) {
 	})
 
 	Convey("Build Fail", t, func() {
-		opt.TplDir = "../../template"
+		opt.TplDir = "../../theme"
 		opt.SrcDir = "./testdata"
 
 		b := builder.New(opt)

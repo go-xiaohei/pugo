@@ -8,7 +8,7 @@
                 <div class="row">
                     <header class="header">
                         <h3 class="title">
-                            <a href="{{url .Url}}">{{.Title}}</a>
+                            <a href="{{url .URL}}">{{.Title}}</a>
                         </h3>
                     </header>
                     <section class="brief">{{.PreviewHTML}}</section>
@@ -19,16 +19,16 @@
                             <span class="day">{{.Created.Day}}</span>
                         </span>
                         <span class="tags">{{range .Tags}}
-                            <a class="tag" href="{{url .Url}}">{{.Name}}</a>{{end}}
+                            <a class="tag" href="{{url .URL}}">{{.Name}}</a>{{end}}
                         </span>
-                        <a class="btn btn-primary btn-lg pull-right" href="{{url .Url}}">{{$.I18n.Tr "post.readmore"}}</a>
+                        <a class="btn btn-primary btn-lg pull-right" href="{{url .URL}}">{{$.I18n.Tr "post.readmore"}}</a>
                     </aside>
                 </div>
             </article>{{end}}
             <div class="article-pager">
-                {{if .Pager.Prev}}<a href="{{url .Pager.PrevUrl}}">← {{.I18n.Tr "pager.prev"}}</a>{{end}}
+                {{if .Pager.Prev}}<a href="{{url .Pager.PrevURL}}">← {{.I18n.Tr "pager.prev"}}</a>{{end}}
                 <span class="current">Page {{.Pager.Current}} of {{.Pager.Pages}}</span>
-                {{if .Pager.Next}}<a href="{{url .Pager.NextUrl}}">{{.I18n.Tr "pager.next"}} →</a>{{end}}
+                {{if .Pager.Next}}<a href="{{url .Pager.NextURL}}">{{.I18n.Tr "pager.next"}} →</a>{{end}}
             </div>
         </div>
         {{template "footer.html" .}}
