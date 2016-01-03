@@ -13,7 +13,7 @@ import (
 //go:generate go-bindata -o=app/asset/asset.go -pkg=asset source/... theme/... doc/source/... doc/theme/...
 
 const (
-	VERSION  = "0.9.0.0101"
+	VERSION  = "0.9.0.0103"
 	VER_DATE = "2016-01-01"
 
 	SRC_DIR   = "source" // source contents dir
