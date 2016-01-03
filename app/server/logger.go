@@ -2,11 +2,12 @@ package server
 
 import (
 	"fmt"
-	"github.com/lunny/tango"
-	"gopkg.in/inconshreveable/log15.v2"
 	"path"
 	"strings"
 	"time"
+
+	"github.com/lunny/tango"
+	"gopkg.in/inconshreveable/log15.v2"
 )
 
 var (

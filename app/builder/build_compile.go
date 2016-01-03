@@ -39,7 +39,7 @@ func (b *Builder) Compile(ctx *Context) {
 func (b *Builder) compileSinglePost(ctx *Context) {
 	log15.Debug("Post." + strconv.Itoa(len(ctx.Posts)))
 	for _, p := range ctx.Posts {
-		dstFile := path.Join(ctx.DstDir, p.Url)
+		dstFile := path.Join(ctx.DstDir, p.URL)
 		if path.Ext(dstFile) == "" {
 			dstFile += ".html"
 		}
@@ -121,7 +121,7 @@ func (b *Builder) compileArchive(ctx *Context) {
 func (b *Builder) compilePages(ctx *Context) {
 	log15.Debug("Pages." + strconv.Itoa(len(ctx.Pages)))
 	for _, p := range ctx.Pages {
-		dstFile := path.Join(ctx.DstDir, p.Url)
+		dstFile := path.Join(ctx.DstDir, p.URL)
 		if path.Ext(dstFile) == "" {
 			dstFile += ".html"
 		}

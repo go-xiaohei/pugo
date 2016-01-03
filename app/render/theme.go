@@ -16,12 +16,12 @@ import (
 )
 
 var (
-	re_defineTag   *regexp.Regexp = regexp.MustCompile("{{ ?define \"([^\"]*)\" ?\"?([a-zA-Z0-9]*)?\"? ?}}")
-	re_templateTag *regexp.Regexp = regexp.MustCompile("{{ ?template \"([^\"]*)\" ?([^ ]*)? ?}}")
+	reDefineTag   = regexp.MustCompile("{{ ?define \"([^\"]*)\" ?\"?([a-zA-Z0-9]*)?\"? ?}}")
+	reTemplateTag = regexp.MustCompile("{{ ?template \"([^\"]*)\" ?([^ ]*)? ?}}")
 )
 
 type (
-	// theme object, maintains a sort of templates for whole site data
+	// Theme object, maintains a sort of templates for whole site data
 	Theme struct {
 		dir        string
 		lock       sync.Mutex
@@ -38,7 +38,7 @@ type (
 	}
 )
 
-// new theme with dir, functions and extensions
+// NewTheme returns new theme with dir, functions and extensions
 func NewTheme(dir string, funcMap template.FuncMap, extension []string) *Theme {
 	theme := &Theme{
 		dir:        dir,
@@ -55,7 +55,7 @@ func NewTheme(dir string, funcMap template.FuncMap, extension []string) *Theme {
 	return theme
 }
 
-// load templates
+// Load loads templates
 func (th *Theme) Load() error {
 	return th.loadTemplates()
 }
@@ -84,8 +84,8 @@ func (th *Theme) loadTemplates() error {
 					defineIdx := 0
 					// From the beginning (which should) most specifc we look for definitions
 					for _, nt := range th.cache {
-						nt.Src = re_defineTag.ReplaceAllStringFunc(nt.Src, func(raw string) string {
-							parsed := re_defineTag.FindStringSubmatch(raw)
+						nt.Src = reDefineTag.ReplaceAllStringFunc(nt.Src, func(raw string) string {
+							parsed := reDefineTag.FindStringSubmatch(raw)
 							name := parsed[1]
 							if name != t {
 								return raw
@@ -95,8 +95,7 @@ func (th *Theme) loadTemplates() error {
 								found = true
 								return raw
 							}
-
-							defineIdx += 1
+							defineIdx++
 
 							return fmt.Sprintf("{{ define \"%s_invalidated_#%d\" }}", name, defineIdx)
 						})
@@ -136,16 +135,16 @@ func (th *Theme) loadTemplates() error {
 	return err
 }
 
-func (t *Theme) add(path string) error {
+func (th *Theme) add(path string) error {
 	// Get file content
 	tplSrc, err := getFileContent(path)
 	if err != nil {
 		return err
 	}
-	tplName := generateTemplateName(t.dir, path)
+	tplName := generateTemplateName(th.dir, path)
 	// Make sure template is not already included
 	alreadyIncluded := false
-	for _, nt := range t.cache {
+	for _, nt := range th.cache {
 		if nt.Name == tplName {
 			alreadyIncluded = true
 			break
@@ -160,42 +159,42 @@ func (t *Theme) add(path string) error {
 		Name: tplName,
 		Src:  tplSrc,
 	}
-	t.cache = append(t.cache, nt)
+	th.cache = append(th.cache, nt)
 
 	// Check for any template block
-	for _, raw := range re_templateTag.FindAllString(nt.Src, -1) {
-		parsed := re_templateTag.FindStringSubmatch(raw)
+	for _, raw := range reTemplateTag.FindAllString(nt.Src, -1) {
+		parsed := reTemplateTag.FindStringSubmatch(raw)
 		templatePath := parsed[1]
 		ext := getExt(templatePath)
 		if !strings.Contains(templatePath, ext) {
-			t.regularTemplateDefs = append(t.regularTemplateDefs, templatePath)
+			th.regularTemplateDefs = append(th.regularTemplateDefs, templatePath)
 			continue
 		}
 
 		// Add this template and continue looking for more template blocks
-		t.add(filepath.Join(t.dir, templatePath))
+		th.add(filepath.Join(th.dir, templatePath))
 	}
 	return nil
 }
 
-// execute template by name with data,
+// Execute executes template by name with data,
 // write into a Writer
-func (t *Theme) Execute(w io.Writer, name string, data interface{}) error {
-	tpl := t.Template(name)
+func (th *Theme) Execute(w io.Writer, name string, data interface{}) error {
+	tpl := th.Template(name)
 	if tpl == nil {
 		return errorFileMissing.New(name)
 	}
 	return tpl.ExecuteTemplate(w, name, data)
 }
 
-// static dir in the theme
-func (t *Theme) Static() string {
-	return path.Join(t.dir, "static")
+// Static gets static dir in the theme
+func (th *Theme) Static() string {
+	return path.Join(th.dir, "static")
 }
 
-// get template by name
-func (t *Theme) Template(name string) *template.Template {
-	return t.templates[name]
+// Template gets template by name
+func (th *Theme) Template(name string) *template.Template {
+	return th.templates[name]
 }
 
 func generateTemplateName(base, path string) string {

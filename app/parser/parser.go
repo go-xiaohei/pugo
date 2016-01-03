@@ -15,6 +15,9 @@ type (
 		Parse([]byte) ([]Block, error)          // parse bytes
 		ParseReader(io.Reader) ([]Block, error) // parse io.Reader
 	}
+
+	// Block defines block in each content,
+	// Parser can parse file to several Block
 	Block interface {
 		New() Block               // new block
 		Type() string             // the type of block

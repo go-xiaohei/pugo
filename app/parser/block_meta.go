@@ -7,11 +7,12 @@ import (
 )
 
 const (
-	BLOCK_INI = "ini"
+	// BlockIni is IniBlock's type
+	BlockIni = "ini"
 )
 
 type (
-	// meta block defines how to read items from block,
+	// MetaBlock defines how to read items from block,
 	// use to read map items
 	MetaBlock interface {
 		Block                                      // need block interface
@@ -22,41 +23,41 @@ type (
 	}
 )
 
-// iniBlock parses block with ini content
+// IniBlock parses block with ini content
 type IniBlock struct {
 	data      []byte
 	iniObject *ini.File
 }
 
-// new ini block
+// New returns new ini block
 func (ib *IniBlock) New() Block {
 	return new(IniBlock)
 }
 
-// get ini's block type,
+// Type get ini's block type,
 // implement Block
 func (ib *IniBlock) Type() string {
-	return BLOCK_INI
+	return BlockIni
 }
 
-// check is block type
+// Is checks is block type
 func (ib *IniBlock) Is(mark []byte) bool {
-	return bytes.Equal(mark, []byte(BLOCK_INI))
+	return bytes.Equal(mark, []byte(BlockIni))
 }
 
-// write bytes to this block
+// Write writes bytes to this block
 func (ib *IniBlock) Write(data []byte) error {
 	ib.data = append(ib.data, data...)
 	ib.iniObject = nil // todo: need locker
 	return nil
 }
 
-// read bytes in this block
+// Bytes reads bytes in this block
 func (ib *IniBlock) Bytes() []byte {
 	return bytes.TrimRight(ib.data, "\n")
 }
 
-// map section data to struct
+// MapTo maps section data to struct
 func (ib *IniBlock) MapTo(section string, v interface{}) error {
 	if ib.iniObject == nil {
 		var err error
@@ -71,7 +72,7 @@ func (ib *IniBlock) MapTo(section string, v interface{}) error {
 	return ib.iniObject.Section(section).MapTo(v)
 }
 
-// get section data as k-v map
+// MapHash gets section data as k-v map
 func (ib *IniBlock) MapHash(section string) map[string]string {
 	if ib.iniObject == nil {
 		var err error
@@ -86,7 +87,7 @@ func (ib *IniBlock) MapHash(section string) map[string]string {
 	return ib.iniObject.Section(section).KeysHash()
 }
 
-// get keys in section
+// Keys gets keys in section
 func (ib *IniBlock) Keys(section string) []string {
 	if ib.iniObject == nil {
 		var err error
@@ -101,7 +102,7 @@ func (ib *IniBlock) Keys(section string) []string {
 	return ib.iniObject.Section(section).KeyStrings()
 }
 
-// get item with keys
+// Item gets item with keys
 func (ib *IniBlock) Item(k1 string, keys ...string) string {
 	if ib.iniObject == nil {
 		var err error

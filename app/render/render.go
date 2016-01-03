@@ -10,35 +10,38 @@ import (
 )
 
 const (
-	ErrRenderDirMissing int = 1 // error of template directory missing
-	ErrTemplateMissing  int = 2 // error of template file missing
+	// ErrRenderDirMissing is error of template directory missing
+	ErrRenderDirMissing int = 1
+	// ErrTemplateMissing is error of template file missing
+	ErrTemplateMissing int = 2
 )
 
 var (
-	errorDirMissing = RenderError{
+	errorDirMissing = Error{
 		Message: "template dir '%s' is missing",
 		Type:    ErrRenderDirMissing,
 	}
-	errorFileMissing = RenderError{
+	errorFileMissing = Error{
 		Message: "template file '%s' is missing",
 		Type:    ErrTemplateMissing,
 	}
 )
 
-// render struct
 type (
+	// Render struct
 	Render struct {
 		dir        string
 		extensions []string
 		funcMap    template.FuncMap
 	}
-	RenderError struct {
+	// Error is error type of render
+	Error struct {
 		Message string
 		Type    int
 	}
 )
 
-// new render in directory
+// New returns new render in directory
 func New(dir string) *Render {
 	r := &Render{
 		dir:        dir,
@@ -50,7 +53,7 @@ func New(dir string) *Render {
 	return r
 }
 
-// load theme by name
+// Load loads a theme by name
 func (r *Render) Load(name string) (*Theme, error) {
 	dir := path.Join(r.dir, name)
 	if !com.IsDir(dir) {
@@ -60,12 +63,12 @@ func (r *Render) Load(name string) (*Theme, error) {
 	return theme, theme.Load()
 }
 
-// set extensions
+// SetExtensions sets extensions
 func (r *Render) SetExtensions(ex []string) {
 	r.extensions = ex
 }
 
-// set func map by name
+// SetFunc sets func map by name
 func (r *Render) SetFunc(name string, fn interface{}) {
 	if fn == nil {
 		delete(r.funcMap, name)
@@ -74,13 +77,13 @@ func (r *Render) SetFunc(name string, fn interface{}) {
 	r.funcMap[name] = fn
 }
 
-// error implementation
-func (err RenderError) Error() string {
+// Error is error implementation
+func (err Error) Error() string {
 	return err.Message
 }
 
-// new message error
-func (err RenderError) New(values ...interface{}) RenderError {
+// New returns new message error
+func (err Error) New(values ...interface{}) Error {
 	err.Message = fmt.Sprintf(err.Message, values...)
 	return err
 }

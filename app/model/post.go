@@ -15,6 +15,7 @@ import (
 )
 
 var (
+	// ErrPostBlockError means error when parse blocks
 	ErrPostBlockError = errors.New("post-block-wrong")
 )
 
@@ -23,7 +24,7 @@ type Post struct {
 	Title     string  `ini:"title"`
 	Slug      string  `ini:"slug"`
 	Permalink string  `ini:"-"`
-	Url       string  `ini:"-"`
+	URL       string  `ini:"-"`
 	Desc      string  `ini:"desc"` // description in a sentence
 	Thumb     string  `ini:"thumb"`
 	Created   Time    `ini:"-"`
@@ -58,7 +59,7 @@ func (p *Post) previewHTML() template.HTML {
 	return template.HTML(bytes)
 }
 
-// blocks  to Post
+// NewPost parses blocks to Post
 func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 	if len(blocks) != 2 {
 		return nil, ErrPostBlockError
@@ -95,7 +96,7 @@ func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 	p.Author = &Author{
 		Name:  block.Item("author"),
 		Email: block.Item("author_email"),
-		Url:   block.Item("author_url"),
+		URL:   block.Item("author_url"),
 	}
 	// author can be nil
 	if p.Author.Name == "" {
@@ -108,7 +109,7 @@ func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 
 	// build url
 	p.Permalink = fmt.Sprintf("/%d/%d/%d/%s", p.Created.Year, p.Created.Month, p.Created.Day, p.Slug)
-	p.Url = p.Permalink + ".html"
+	p.URL = p.Permalink + ".html"
 
 	// compile content
 	p.ContentHTML = p.contentHTML()
@@ -116,7 +117,7 @@ func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
 	return p, nil
 }
 
-// posts list
+// Posts are posts list
 type Posts []*Post
 
 // implement sort.Sort interface
@@ -124,13 +125,13 @@ func (p Posts) Len() int           { return len(p) }
 func (p Posts) Less(i, j int) bool { return p[i].Created.Raw.Unix() > p[j].Created.Raw.Unix() }
 func (p Posts) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 
-// archive stat for posts
+// Archive is archive set for posts
 type Archive struct {
 	Year  int // each list by year
 	Posts []*Post
 }
 
-// posts to archive
+// NewArchive converts posts to archive
 func NewArchive(posts []*Post) []*Archive {
 	archives := []*Archive{}
 	var (

@@ -26,7 +26,7 @@ func (b *Builder) WriteFeed(ctx *Context) {
 	for _, p := range ctx.Posts {
 		buf.WriteString("<item>")
 		buf.WriteString(fmt.Sprintf("<title>%s</title>", p.Title))
-		buf.WriteString(fmt.Sprintf("<link>%s</link>", baseURL+p.Url))
+		buf.WriteString(fmt.Sprintf("<link>%s</link>", baseURL+p.URL))
 		// buf.WriteString(fmt.Sprintf("<comments>%s</comments>", fi.Comments))
 		buf.WriteString(fmt.Sprintf("<pubDate>%s</pubDate>", p.Created.Raw.Format(time.RFC1123Z)))
 		for _, c := range p.Tags {
@@ -63,7 +63,7 @@ func (b *Builder) WriteFeed(ctx *Context) {
 
 	for _, p := range ctx.Pages {
 		buf.WriteString("<url>")
-		buf.WriteString(fmt.Sprintf("<loc>%s</loc>", baseURL+p.Url))
+		buf.WriteString(fmt.Sprintf("<loc>%s</loc>", baseURL+p.URL))
 		buf.WriteString(fmt.Sprintf("<lastmod>%s/</lastmod>", p.Created.Raw.Format(time.RFC3339)))
 		buf.WriteString("<changefreq>weekly</changefreq>")
 		buf.WriteString("<priority>0.5</priority>")
@@ -72,7 +72,7 @@ func (b *Builder) WriteFeed(ctx *Context) {
 
 	for _, p := range ctx.Posts {
 		buf.WriteString("<url>")
-		buf.WriteString(fmt.Sprintf("<loc>%s</loc>", baseURL+p.Url))
+		buf.WriteString(fmt.Sprintf("<loc>%s</loc>", baseURL+p.URL))
 		buf.WriteString(fmt.Sprintf("<lastmod>%s/</lastmod>", p.Created.Raw.Format(time.RFC3339)))
 		buf.WriteString("<changefreq>daily</changefreq>")
 		buf.WriteString("<priority>0.6</priority>")
@@ -96,7 +96,7 @@ func (b *Builder) WriteFeed(ctx *Context) {
 
 	for _, t := range ctx.Tags {
 		buf.WriteString("<url>")
-		buf.WriteString(fmt.Sprintf("<loc>%s</loc>", baseURL+t.Url))
+		buf.WriteString(fmt.Sprintf("<loc>%s</loc>", baseURL+t.URL))
 		buf.WriteString(fmt.Sprintf("<lastmod>%s/</lastmod>", time.Now().Format(time.RFC3339)))
 		buf.WriteString("<changefreq>weekly</changefreq>")
 		buf.WriteString("<priority>0.5</priority>")

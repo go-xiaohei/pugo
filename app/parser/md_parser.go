@@ -8,7 +8,8 @@ import (
 )
 
 const (
-	MD_PARSER_PREFIX = "```"
+	// MdParserPrefix is prefix of MdParser
+	MdParserPrefix = "```"
 )
 
 type (
@@ -25,13 +26,13 @@ func NewMdParser() *MdParser {
 	}
 }
 
-// check data can be parsed by MdParser
+// Is checks data can be parsed by MdParser
 func (mp *MdParser) Is(data []byte) bool {
 	data = bytes.TrimLeft(data, "\n")
-	return bytes.HasPrefix(data, []byte(MD_PARSER_PREFIX))
+	return bytes.HasPrefix(data, []byte(MdParserPrefix))
 }
 
-// detect block to save bytes
+// Detect detects block to save bytes
 func (mp *MdParser) Detect(mark []byte) Block {
 	for _, b := range mp.blocks {
 		if b.Is(mark) {
@@ -41,7 +42,7 @@ func (mp *MdParser) Detect(mark []byte) Block {
 	return nil
 }
 
-// parse bytes to blocks
+// Parse parses bytes to blocks
 func (mp *MdParser) Parse(src []byte) ([]Block, error) {
 	if len(src) == 0 {
 		return nil, nil
@@ -50,12 +51,12 @@ func (mp *MdParser) Parse(src []byte) ([]Block, error) {
 	return mp.ParseReader(buf)
 }
 
-// parser Reader to blocks
+// ParseReader parsers Reader to blocks
 func (mp *MdParser) ParseReader(r io.Reader) ([]Block, error) {
 	var (
-		currentBlock Block   = nil
-		blocks       []Block = nil
-		reader               = bufio.NewReader(r)
+		currentBlock Block
+		blocks       []Block
+		reader       = bufio.NewReader(r)
 		isLined      bool
 	)
 	for {
@@ -66,7 +67,7 @@ func (mp *MdParser) ParseReader(r io.Reader) ([]Block, error) {
 			}
 			if len(blocks) == 0 {
 				// the first block need be MetaBlock
-				if currentBlock = mp.Detect(bytes.TrimLeft(lineData, MD_PARSER_PREFIX)); currentBlock == nil {
+				if currentBlock = mp.Detect(bytes.TrimLeft(lineData, MdParserPrefix)); currentBlock == nil {
 					return nil, errors.New("block-parse-first-error")
 				}
 				continue
@@ -74,7 +75,7 @@ func (mp *MdParser) ParseReader(r io.Reader) ([]Block, error) {
 		}
 
 		// when parsing first block, check end mark to close the block.
-		if len(blocks) == 0 && bytes.Equal(lineData, []byte(MD_PARSER_PREFIX)) {
+		if len(blocks) == 0 && bytes.Equal(lineData, []byte(MdParserPrefix)) {
 			blocks = append(blocks, currentBlock)
 			currentBlock = new(MarkdownBlock).New()
 			continue

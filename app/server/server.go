@@ -10,7 +10,7 @@ import (
 	"gopkg.in/inconshreveable/log15.v2"
 )
 
-// simple built-in http server
+// Server is simple built-in http server
 type Server struct {
 	Tango *tango.Tango // use tango
 
@@ -18,7 +18,7 @@ type Server struct {
 	prefix string
 }
 
-// new server
+// New returns new server
 // set dstDir to make sure read correct static file
 func New(dstDir string) *Server {
 	t := tango.New([]tango.Handler{
@@ -35,7 +35,7 @@ func New(dstDir string) *Server {
 	}
 }
 
-// set prefix to trim url
+// SetPrefix sets prefix to trim url
 func (s *Server) SetPrefix(prefix string) {
 	if prefix == "" {
 		prefix = "/"
@@ -43,7 +43,7 @@ func (s *Server) SetPrefix(prefix string) {
 	s.prefix = prefix
 }
 
-// set run
+// Run starts server
 func (s *Server) Run(addr string) {
 	log15.Info("Server.Start." + addr)
 	s.Tango.Use(logger())

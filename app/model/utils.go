@@ -2,7 +2,7 @@ package model
 
 import "time"
 
-// custom time struct, use to display more time data without function calling
+// Time is custom time struct, use to display more time data without function calling
 type Time struct {
 	Raw   time.Time
 	Year  int
@@ -10,7 +10,7 @@ type Time struct {
 	Day   int
 }
 
-// layout time string
+// Format returns layouted time string
 func (t Time) Format(layout string) string {
 	return t.Raw.Format(layout)
 }

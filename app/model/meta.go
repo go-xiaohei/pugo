@@ -10,13 +10,14 @@ import (
 )
 
 var (
+	// ErrMetaBlockWrong is error of meta block
 	ErrMetaBlockWrong = errors.New("meta-blocks-wrong")
 
 	navLock sync.Mutex
 )
 
-// Meta contains basic info in site
 type (
+	// Meta contains basic info in site
 	Meta struct {
 		Title    string `ini:"title"`
 		Subtitle string `ini:"subtitle"`
@@ -28,6 +29,7 @@ type (
 		Cover    string `ini:"cover"`
 		Lang     string `ini:"lang"`
 	}
+	//MetaTotal contains all object in Meta
 	MetaTotal struct {
 		Meta    *Meta
 		Nav     Navs
@@ -37,7 +39,7 @@ type (
 	}
 )
 
-// blocks to Meta
+// NewAllMeta parses blocks to MetaTotal
 func NewAllMeta(blocks []parser.Block) (total MetaTotal, err error) {
 	if len(blocks) != 1 {
 		err = ErrMetaBlockWrong
@@ -73,7 +75,7 @@ func NewAllMeta(blocks []parser.Block) (total MetaTotal, err error) {
 	total.Meta = meta
 
 	// build nav
-	navs := make([]*Nav, 0)
+	var navs []*Nav
 	keys := block.Keys("nav")
 	for _, k := range keys {
 		k = block.Item("nav", k)
@@ -166,8 +168,10 @@ type Nav struct {
 	IsHover     bool   `ini:"-"`
 }
 
+// Navs is collection of Nav
 type Navs []*Nav
 
+// Hover sets hover item
 func (navs Navs) Hover(name string) {
 	navLock.Lock()
 	defer navLock.Unlock()
@@ -178,6 +182,7 @@ func (navs Navs) Hover(name string) {
 	}
 }
 
+// Reset sets hover item to null
 func (navs Navs) Reset() {
 	navLock.Lock()
 	defer navLock.Unlock()
@@ -191,7 +196,7 @@ type Comment struct {
 	Disqus *CommentDisqus `ini:"disqus"`
 }
 
-// Comment options of Disqus
+// CommentDisqus options of Disqus
 type CommentDisqus struct {
 	Site string `ini:"site"`
 }
@@ -220,14 +225,15 @@ type Author struct {
 	Name    string `ini:"name"`
 	Nick    string `ini:"nick"`
 	Email   string `ini:"email"`
-	Url     string `ini:"url"`
+	URL     string `ini:"url"`
 	Avatar  string `ini:"avatar"` // todo: auto fill this field with gravatar
 	IsOwner bool   // must be the first author
 }
 
+// AuthorMap is collection of Authors
 type AuthorMap map[string]*Author
 
-// Options in meta, control building and deploying process
+// Conf in meta, control building and deploying process
 type Conf struct {
 	BuildIgnore []string
 }

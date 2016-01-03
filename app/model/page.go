@@ -16,7 +16,7 @@ import (
 type Page struct {
 	Title       string  `ini:"title"`
 	Slug        string  `ini:"slug"`
-	Url         string  `ini:"-"`
+	URL         string  `ini:"-"`
 	Permalink   string  `ini:"-"`
 	HoverClass  string  `ini:"hover"`
 	Template    string  `ini:"template"` // page's template for render
@@ -42,7 +42,7 @@ func (p *Page) contentHTML() template.HTML {
 	return template.HTML(p.Raw)
 }
 
-// blocks to Page
+// NewPage parses blocks to Page
 func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 	if len(blocks) < 2 {
 		return nil, ErrPostBlockError
@@ -77,7 +77,7 @@ func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 	p.Author = &Author{
 		Name:  block.Item("author"),
 		Email: block.Item("author_email"),
-		Url:   block.Item("author_url"),
+		URL:   block.Item("author_url"),
 	}
 	if p.Author.Name == "" {
 		p.Author = nil
@@ -90,7 +90,7 @@ func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 
 	// build url
 	p.Permalink = fmt.Sprintf("/%s", p.Slug)
-	p.Url = p.Permalink + ".html"
+	p.URL = p.Permalink + ".html"
 
 	if len(blocks) > 2 {
 		// parse meta block

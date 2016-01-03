@@ -6,10 +6,13 @@ import (
 )
 
 const (
-	BLOCK_MARKDOWN = "markdown"
+	// BlockMarkdown is markdown block type string
+	BlockMarkdown = "markdown"
 )
 
 type (
+	// ContentBlock defines a block to save content
+	// not using yet
 	ContentBlock interface {
 		Block
 		Preview() []byte            // preview bytes
@@ -17,27 +20,28 @@ type (
 		PreviewHTML() template.HTML // preview HTML
 		ContentHTML() template.HTML // content HTML
 	}
+	// MarkdownBlock is ContentBlock of markdown
 	MarkdownBlock struct {
 		// todo: implement ContentBlock and use in builder
 		buf *bytes.Buffer
 	}
 )
 
-// new MarkdownBlock
+// New returns new MarkdownBlock
 func (mb *MarkdownBlock) New() Block {
 	return &MarkdownBlock{
 		buf: bytes.NewBuffer(nil),
 	}
 }
 
-// get MarkdownBlock type
+// Type get MarkdownBlock type
 func (mb *MarkdownBlock) Type() string {
-	return BLOCK_MARKDOWN
+	return BlockMarkdown
 }
 
-// check is MarkdownBlock
+// Is checks is MarkdownBlock
 func (mb *MarkdownBlock) Is(mark []byte) bool {
-	return bytes.Equal(mark, []byte(BLOCK_MARKDOWN))
+	return bytes.Equal(mark, []byte(BlockMarkdown))
 }
 
 // write data to MarkdownBlock
@@ -46,7 +50,7 @@ func (mb *MarkdownBlock) Write(data []byte) error {
 	return err
 }
 
-// get bytes in MarkdownBlock
+// Bytes get bytes in MarkdownBlock
 func (mb *MarkdownBlock) Bytes() []byte {
 	return mb.buf.Bytes()
 }
