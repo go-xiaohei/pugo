@@ -45,18 +45,12 @@ func NewTheme(dir string, funcMap template.FuncMap, extension []string) *Theme {
 		funcMap:    funcMap,
 		extensions: extension,
 	}
-	theme.funcMap["include"] = func(tpl string, data interface{}) template.HTML {
+	theme.funcMap["Include"] = func(tpl string, data interface{}) template.HTML {
 		var buf bytes.Buffer
 		if err := theme.Execute(&buf, tpl, data); err != nil {
 			return template.HTML("<!-- template " + tpl + " error:" + err.Error() + "-->")
 		}
 		return template.HTML(string(buf.Bytes()))
-	}
-	theme.funcMap["html"] = func(str string) template.HTML {
-		return template.HTML(str)
-	}
-	theme.funcMap["js"] = func(str string) template.JS {
-		return template.JS(str)
 	}
 	return theme
 }

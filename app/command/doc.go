@@ -16,9 +16,10 @@ func Doc(opt *builder.BuildOption) cli.Command {
 			debugFlag,
 		},
 		Action: func() func(*cli.Context) {
+			// clone option
 			opt2 := *opt
 			opt2.SrcDir = "doc/source"
-			opt2.TplDir = "doc/template"
+			opt2.TplDir = "doc/theme"
 			opt2.Theme = "default"
 			opt2.TargetDir = "doc/dest"
 			return serveSite(&opt2)

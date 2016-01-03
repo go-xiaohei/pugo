@@ -1,23 +1,24 @@
 package main
 
 import (
+	"path"
+
 	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo/app/builder"
 	"github.com/go-xiaohei/pugo/app/command"
 	"gopkg.in/inconshreveable/log15.v2"
 	"gopkg.in/inconshreveable/log15.v2/ext"
-	"path"
 )
 
-//go:generate go-bindata -o=app/asset/asset.go -pkg=asset source/... template/... doc/source/... doc/template/...
+//go:generate go-bindata -o=app/asset/asset.go -pkg=asset source/... theme/... doc/source/... doc/theme/...
 
 const (
 	VERSION  = "0.9.0.0101"
 	VER_DATE = "2016-01-01"
 
-	SRC_DIR   = "source"   // source contents dir
-	TPL_DIR   = "template" // template dir
-	MEDIA_DIR = "media"    // upload dir
+	SRC_DIR   = "source" // source contents dir
+	TPL_DIR   = "theme"  // template dir
+	MEDIA_DIR = "media"  // upload dir
 )
 
 var (
