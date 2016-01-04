@@ -204,14 +204,21 @@ body {
     font-size: 14px;
 }
 
-.article .admin-btn {
-    position: absolute;
-    top: -1.4em;
-    right: -2em;
+.article table{
+    width: 100%;
+    margin: .5rem 1rem;
+    line-height: 3rem;
 }
 
-.article .admin-btn .btn {
-    margin-left: 1em;
+.article td{
+    border-top: 1px solid #DDD;
+    padding:0 .5rem;
+}
+
+.article th{
+    font-weight: bold;
+    padding:0 .5rem;
+    text-align: left;
 }
 
 #article-single .aside {

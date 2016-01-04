@@ -127,7 +127,7 @@ small {
 
 .post-description {
     color: #444;
-    line-height: 1.5em;
+    line-height: 1.8em;
 }
 
 .post-meta {
@@ -164,8 +164,10 @@ small {
 
 .footer {
     text-align: center;
-    padding: 0 1em;
-    font-size: 80%
+    padding: 2em 0;
+    font-size: 80%;
+    color:#888;
+    border-top: 1px solid #DDD;
 }
 
 @media (max-width: 767px) {
@@ -193,6 +195,14 @@ small {
     }
 }
 
+h1.post-header{
+    font-size: 2.5em;
+}
+
+h3.post-header{
+    font-size: 1.5em;
+}
+
 .post-category:hover {
     background-color: #fff;
     border: 1px solid #555;
@@ -214,6 +224,23 @@ small {
 
 .post-description pre {
     font-size: 90% !important;
+}
+
+.post-description table{
+    width: 100%;
+    margin: .5rem 1rem;
+    line-height: 2rem;
+}
+
+.post-description td{
+    border-top: 1px solid #DDD;
+    padding:0 .5rem;
+}
+
+.post-description th{
+    font-weight: bold;
+    padding:0 .5rem;
+    text-align: left;
 }
 
 .pagination {

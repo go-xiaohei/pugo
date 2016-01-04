@@ -430,6 +430,21 @@ h6 {
     border-radius: 4px;
 }
 
+.article table{
+    width: 100%;
+    margin: .5rem 1rem;
+}
+
+.article td{
+    border-top: 1px solid #DDD;
+    padding:0 .5rem;
+}
+
+.article th{
+    font-weight: bold;
+    padding:0 .5rem;
+}
+
 #article-list .top-tag {
     font-size: 32px;
     color: #AAA;
