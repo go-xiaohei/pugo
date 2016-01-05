@@ -133,14 +133,12 @@ func NewAllMeta(blocks []parser.Block) (total MetaTotal, err error) {
 	cmt := new(Comment)
 
 	// disqus
-	disqus := new(CommentDisqus)
-	if err = block.MapTo("comment.disqus", disqus); err != nil {
+	if err = block.MapTo("comment", cmt); err != nil {
 		return
 	}
-	if disqus.Site != "" {
-		cmt.Disqus = disqus
+	if cmt.IsOK() {
+		total.Comment = cmt
 	}
-	total.Comment = cmt
 
 	// conf
 	cnf := new(Conf)
@@ -193,20 +191,19 @@ func (navs Navs) Reset() {
 
 // Comment options
 type Comment struct {
-	Disqus *CommentDisqus `ini:"disqus"`
-}
-
-// CommentDisqus options of Disqus
-type CommentDisqus struct {
-	Site string `ini:"site"`
+	Disqus  string `ini:"disqus"`
+	Duoshuo string `ini:"duoshuo"`
 }
 
 // Comment pasred third-party comments system,
 // return as disqus,duoshuo, or empty string
 func (c *Comment) String() string {
 	using := []string{}
-	if c.Disqus != nil {
+	if c.Disqus != "" {
 		using = append(using, "disqus")
+	}
+	if c.Duoshuo != "" {
+		using = append(using, "duoshuo")
 	}
 	return strings.Join(using, ",")
 }
@@ -214,7 +211,7 @@ func (c *Comment) String() string {
 // IsOK means is comment enabled,
 // not empty settings
 func (c *Comment) IsOK() bool {
-	if c.Disqus != nil {
+	if c.Disqus != "" || c.Duoshuo != "" {
 		return true
 	}
 	return false

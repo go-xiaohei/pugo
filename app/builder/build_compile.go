@@ -49,6 +49,7 @@ func (b *Builder) compileSinglePost(ctx *Context) {
 		viewData["Desc"] = p.Desc
 		viewData["Post"] = p
 		viewData["Permalink"] = p.Permalink
+		viewData["PermaKey"] = p.Slug
 		viewData["PostType"] = "post"
 
 		if err := b.compileTemplate(ctx, "post.html", viewData, dstFile); err != nil {
@@ -84,6 +85,7 @@ func (b *Builder) compilePagedPost(ctx *Context) {
 		viewData["Posts"] = currentPosts
 		viewData["Pager"] = pager
 		viewData["PostType"] = "post-list"
+		viewData["PermaKey"] = fmt.Sprintf("post-page-%d", pager.Current)
 
 		if err := b.compileTemplate(ctx, "posts.html", viewData, dstFile); err != nil {
 			ctx.Error = err
@@ -107,6 +109,7 @@ func (b *Builder) compileArchive(ctx *Context) {
 	viewData["Title"] = fmt.Sprintf("Archive - %s", ctx.Meta.Title)
 	viewData["Archives"] = archives
 	viewData["PostType"] = "post-archive"
+	viewData["PermaKey"] = "post-archive"
 
 	ctx.Navs.Hover("archive")
 	defer ctx.Navs.Reset()
@@ -132,6 +135,7 @@ func (b *Builder) compilePages(ctx *Context) {
 		viewData["Desc"] = p.Desc
 		viewData["Page"] = p
 		viewData["Permalink"] = p.Permalink
+		viewData["PermaKey"] = p.Slug
 		viewData["PostType"] = "page"
 
 		if err := b.compileTemplate(ctx, p.Template, viewData, dstFile); err != nil {
@@ -154,6 +158,7 @@ func (b *Builder) compileTags(ctx *Context) {
 		viewData["Tag"] = ctx.Tags[t]
 		viewData["Posts"] = posts
 		viewData["PostType"] = "post-tag"
+		viewData["PermaKey"] = fmt.Sprintf("tag-%s", ctx.Tags[t].Name)
 
 		if err := b.compileTemplate(ctx, "posts.html", viewData, dstFile); err != nil {
 			ctx.Error = err
@@ -177,6 +182,7 @@ func (b *Builder) compileIndex(ctx *Context) {
 	viewData["Posts"] = ctx.indexPosts
 	viewData["Pager"] = ctx.indexPager
 	viewData["PostType"] = "index"
+	viewData["PermaKey"] = "index"
 
 	if err := b.compileTemplate(ctx, template, viewData, dstFile); err != nil {
 		ctx.Error = err
