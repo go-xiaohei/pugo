@@ -26,13 +26,14 @@ type Context struct {
 	Tags     map[string]*model.Tag
 	tagPosts map[string][]*model.Post
 
-	Navs    model.Navs
-	Meta    *model.Meta
-	I18n    *helper.I18n // use i18n tool
-	Owner   *model.Author
-	Authors model.AuthorMap
-	Comment *model.Comment
-	Conf    *model.Conf
+	Navs      model.Navs
+	Meta      *model.Meta
+	I18n      *helper.I18n // use i18n tool
+	Owner     *model.Author
+	Authors   model.AuthorMap
+	Comment   *model.Comment
+	Conf      *model.Conf
+	Analytics *model.Analytics
 
 	staticPath string
 	mediaPath  string
@@ -41,15 +42,16 @@ type Context struct {
 // ViewData returns global view data for template compilation
 func (ctx *Context) ViewData() map[string]interface{} {
 	m := map[string]interface{}{
-		"Version": ctx.Version,
-		"Nav":     ctx.Navs,
-		"Meta":    ctx.Meta,
-		"Title":   ctx.Meta.Title + " - " + ctx.Meta.Subtitle,
-		"Desc":    ctx.Meta.Desc,
-		"Comment": ctx.Comment,
-		"Root":    ctx.Meta.Base,
-		"Owner":   ctx.Owner,
-		"I18n":    ctx.I18n,
+		"Version":   ctx.Version,
+		"Nav":       ctx.Navs,
+		"Meta":      ctx.Meta,
+		"Title":     ctx.Meta.Title + " - " + ctx.Meta.Subtitle,
+		"Desc":      ctx.Meta.Desc,
+		"Comment":   ctx.Comment,
+		"Root":      ctx.Meta.Base,
+		"Owner":     ctx.Owner,
+		"I18n":      ctx.I18n,
+		"Analytics": ctx.Analytics,
 	}
 	return m
 }

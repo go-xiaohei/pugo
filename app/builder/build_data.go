@@ -84,6 +84,7 @@ func (b *Builder) readMeta(ctx *Context) {
 	ctx.Authors = total.Authors
 	ctx.Comment = total.Comment
 	ctx.Conf = total.Conf
+	ctx.Analytics = total.Analytics
 }
 
 // do works after meta data,

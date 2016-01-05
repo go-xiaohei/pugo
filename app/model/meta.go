@@ -31,11 +31,58 @@ type (
 	}
 	//MetaTotal contains all object in Meta
 	MetaTotal struct {
-		Meta    *Meta
-		Nav     Navs
-		Authors AuthorMap
-		Comment *Comment
-		Conf    *Conf
+		Meta      *Meta
+		Nav       Navs
+		Authors   AuthorMap
+		Comment   *Comment
+		Conf      *Conf
+		Analytics *Analytics
+	}
+
+	// Nav defines items in navigation
+	Nav struct {
+		Link    string `ini:"link"`
+		Title   string `ini:"title"`
+		IsBlank bool   `ini:"blank"`
+
+		IconClass  string `ini:"icon"`
+		HoverClass string `ini:"hover"`
+		I18n       string `ini:"i18n"`
+
+		SubNav      []*Nav `ini:"-"` // todo : no support yed
+		IsSeparator bool   `ini:"-"`
+		IsHover     bool   `ini:"-"`
+	}
+	// Navs is collection of Nav
+	Navs []*Nav
+
+	// Comment options
+	Comment struct {
+		Disqus  string `ini:"disqus"`
+		Duoshuo string `ini:"duoshuo"`
+	}
+
+	// Author of post or page
+	Author struct {
+		Name    string `ini:"name"`
+		Nick    string `ini:"nick"`
+		Email   string `ini:"email"`
+		URL     string `ini:"url"`
+		Avatar  string `ini:"avatar"` // todo: auto fill this field with gravatar
+		IsOwner bool   // must be the first author
+	}
+	// AuthorMap is collection of Authors
+	AuthorMap map[string]*Author
+
+	// Conf in meta, control building and deploying process
+	Conf struct {
+		BuildIgnore []string
+	}
+
+	// Analytics contains site analytics provider
+	Analytics struct {
+		Google string `ini:"google"`
+		Baidu  string `ini:"baidu"`
 	}
 )
 
@@ -129,15 +176,22 @@ func NewAllMeta(blocks []parser.Block) (total MetaTotal, err error) {
 	}
 	total.Authors = AuthorMap(authors)
 
-	// build comment
+	// comment
 	cmt := new(Comment)
-
-	// disqus
 	if err = block.MapTo("comment", cmt); err != nil {
 		return
 	}
 	if cmt.IsOK() {
 		total.Comment = cmt
+	}
+
+	// analytics
+	ana := new(Analytics)
+	if err = block.MapTo("analytics", ana); err != nil {
+		return
+	}
+	if ana.IsOK() {
+		total.Analytics = ana
 	}
 
 	// conf
@@ -150,24 +204,6 @@ func NewAllMeta(blocks []parser.Block) (total MetaTotal, err error) {
 
 	return
 }
-
-// Nav defines items in navigation
-type Nav struct {
-	Link    string `ini:"link"`
-	Title   string `ini:"title"`
-	IsBlank bool   `ini:"blank"`
-
-	IconClass  string `ini:"icon"`
-	HoverClass string `ini:"hover"`
-	I18n       string `ini:"i18n"`
-
-	SubNav      []*Nav `ini:"-"` // todo : no support yed
-	IsSeparator bool   `ini:"-"`
-	IsHover     bool   `ini:"-"`
-}
-
-// Navs is collection of Nav
-type Navs []*Nav
 
 // Hover sets hover item
 func (navs Navs) Hover(name string) {
@@ -189,25 +225,6 @@ func (navs Navs) Reset() {
 	}
 }
 
-// Comment options
-type Comment struct {
-	Disqus  string `ini:"disqus"`
-	Duoshuo string `ini:"duoshuo"`
-}
-
-// Comment pasred third-party comments system,
-// return as disqus,duoshuo, or empty string
-func (c *Comment) String() string {
-	using := []string{}
-	if c.Disqus != "" {
-		using = append(using, "disqus")
-	}
-	if c.Duoshuo != "" {
-		using = append(using, "duoshuo")
-	}
-	return strings.Join(using, ",")
-}
-
 // IsOK means is comment enabled,
 // not empty settings
 func (c *Comment) IsOK() bool {
@@ -217,20 +234,11 @@ func (c *Comment) IsOK() bool {
 	return false
 }
 
-// Author of post or page
-type Author struct {
-	Name    string `ini:"name"`
-	Nick    string `ini:"nick"`
-	Email   string `ini:"email"`
-	URL     string `ini:"url"`
-	Avatar  string `ini:"avatar"` // todo: auto fill this field with gravatar
-	IsOwner bool   // must be the first author
-}
-
-// AuthorMap is collection of Authors
-type AuthorMap map[string]*Author
-
-// Conf in meta, control building and deploying process
-type Conf struct {
-	BuildIgnore []string
+// IsOK means is Analytics enabled,
+// not empty settings
+func (a *Analytics) IsOK() bool {
+	if a.Google != "" || a.Baidu != "" {
+		return true
+	}
+	return false
 }
