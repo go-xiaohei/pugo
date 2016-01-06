@@ -44,7 +44,7 @@ func New(srcDir, tplDir string) cli.Command {
 func newSite() func(ctx *cli.Context) {
 	return func(ctx *cli.Context) {
 		log15.Info("New.Extract.Assets")
-		dirs := []string{"source", "template", "doc"}
+		dirs := []string{"source", "theme", "doc"}
 		isSuccess := true
 		for _, dir := range dirs {
 			if err := asset.RestoreAssets("./", dir); err != nil {

@@ -21,6 +21,11 @@ var (
 		Value: "dest",
 		Usage: "set compiling to directory",
 	}
+	srcFlag = cli.StringFlag{
+		Name:  "src",
+		Value: "",
+		Usage: "migrate from source",
+	}
 	addrFlag = cli.StringFlag{
 		Name:  "addr",
 		Value: "0.0.0.0:9899",

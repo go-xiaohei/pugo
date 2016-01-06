@@ -12,8 +12,6 @@ import (
 var (
 	registeredDeployWay map[string]Task
 
-	// ErrDeployConfFormatError means deploy task conf string is wrong
-	ErrDeployConfFormatError = errors.New("deploy format need be type:conf_string")
 	// ErrDeployUnknown means unknown deploy task way
 	ErrDeployUnknown = errors.New("deploy way is unknown")
 )
