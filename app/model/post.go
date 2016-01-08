@@ -44,7 +44,7 @@ type Post struct {
 // post's content html
 func (p *Post) contentHTML() template.HTML {
 	if p.RawType == "markdown" {
-		return template.HTML(helper.Markdown(p.Raw))
+		return helper.Bytes2MarkdownHTML(p.Raw)
 	}
 	return template.HTML(p.Raw)
 }
@@ -54,7 +54,7 @@ func (p *Post) contentHTML() template.HTML {
 func (p *Post) previewHTML() template.HTML {
 	bytes := bytes.Split(p.Raw, []byte("<!--more-->"))[0]
 	if p.RawType == "markdown" {
-		return template.HTML(helper.Markdown(bytes))
+		return helper.Bytes2MarkdownHTML(bytes)
 	}
 	return template.HTML(bytes)
 }

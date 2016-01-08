@@ -37,7 +37,7 @@ type Page struct {
 // page's html content
 func (p *Page) contentHTML() template.HTML {
 	if p.RawType == "markdown" {
-		return template.HTML(helper.Markdown(p.Raw))
+		return helper.Bytes2MarkdownHTML(p.Raw)
 	}
 	return template.HTML(p.Raw)
 }

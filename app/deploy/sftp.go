@@ -65,7 +65,7 @@ func (ft *SftpTask) Type() string {
 	return TypeSftp
 }
 
-// Is checkes sftp task's name
+// Is checks sftp task's name
 func (ft *SftpTask) Is(conf string) bool {
 	return strings.HasPrefix(conf, "sftp://")
 }

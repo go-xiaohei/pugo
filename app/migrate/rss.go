@@ -1,13 +1,19 @@
 package migrate
 
 import (
+	"bytes"
 	"fmt"
-	"github.com/codegangsta/cli"
-	rss "github.com/jteeuwen/go-pkg-rss"
-	"gopkg.in/inconshreveable/log15.v2"
+	"html"
 	"net/url"
 	"os"
+	"path"
 	"strings"
+	"time"
+
+	"github.com/codegangsta/cli"
+	"github.com/go-xiaohei/pugo/app/helper"
+	rss "github.com/jteeuwen/go-pkg-rss"
+	"gopkg.in/inconshreveable/log15.v2"
 )
 
 const (
@@ -17,14 +23,19 @@ const (
 var (
 	_ Task = new(RSSTask)
 
-	ErrRSSProtocolWrong = fmt.Errorf("Migrate RSS need protocol 'rss+http://' or 'rss+https://'")
+	ErrRSSSchemaWrong = fmt.Errorf("Migrate RSS need schema 'rss+http://' or 'rss+https://'")
+
+	purlRSSEncodeBeginTag = "<http://purl.org/rss/1.0/modules/content/:encoded>"
+	purlRSSEncodeEndTag   = "</http://purl.org/rss/1.0/modules/content/:encoded>"
 )
 
 type (
 	RSSTask struct {
-		opt *RSSOption
+		opt    *RSSOption
+		result map[string]*bytes.Buffer
 	}
 	RSSOption struct {
+		Dest     string
 		Source   string
 		IsRemote bool
 	}
@@ -40,9 +51,11 @@ func (rs *RSSTask) New(ctx *cli.Context) (Task, error) {
 		return nil, err
 	}
 
-	opt := &RSSOption{}
+	opt := &RSSOption{
+		Dest: ctx.String("dest"),
+	}
 	if len(u.Scheme) <= 4 {
-		return nil, ErrRSSProtocolWrong
+		return nil, ErrRSSSchemaWrong
 	}
 	// get real schema, to get remote rss source
 	u.Scheme = u.Scheme[4:]
@@ -62,20 +75,77 @@ func (rs *RSSTask) Dir() string {
 	return "dir"
 }
 
-func (rs *RSSTask) Do() error {
-	feed := rss.New(10, true, chanHandler, itemHandler)
+func (rs *RSSTask) Do() (map[string]*bytes.Buffer, error) {
+	rs.result = make(map[string]*bytes.Buffer)
+
+	feed := rss.New(10, true, rs.chanHandler, nil)
 	log15.Debug("RSS.Read." + rs.opt.Source)
 	if err := feed.Fetch(rs.opt.Source, nil); err != nil {
 		fmt.Fprintf(os.Stderr, "[e] %s: %s\n", rs.opt.Source, err)
-		return err
+		return nil, err
 	}
-	return nil
+	return rs.result, nil
 }
 
-func chanHandler(feed *rss.Feed, newChannel []*rss.Channel) {
-	fmt.Printf("%d new channel(s) in %s\n", len(newChannel), feed.Url)
-}
+func (rs *RSSTask) chanHandler(feed *rss.Feed, newChannel []*rss.Channel) {
+	if len(newChannel) == 0 {
+		return
+	}
+	cn := newChannel[0]
 
-func itemHandler(feed *rss.Feed, ch *rss.Channel, newItem []*rss.Item) {
-	fmt.Printf("%d new item(s) in %s\n", len(newItem), feed.Url)
+	// parse posts
+	// it seems no way to find out whether rss item is post or page
+	// so make them as post
+	for _, item := range cn.Items {
+		b := bytes.NewBuffer(nil)
+		b.WriteString("```ini\n\n")
+
+		b.WriteString(fmt.Sprintf("title = %s\n\n", item.Title))
+
+		u, _ := url.Parse(item.Links[0].Href)
+		slug := path.Base(u.Path)
+		ext := path.Ext(slug)
+		slug = strings.TrimSuffix(slug, ext)
+		b.WriteString(fmt.Sprintf("slug = %s\n\n", slug))
+		b.WriteString(fmt.Sprintf("desc = \n\n"))
+
+		t, _ := time.Parse(time.RFC1123Z, item.PubDate)
+		b.WriteString(fmt.Sprintf("date = %s\n\n", t.Format("2006-01-02 15:04:05")))
+
+		if item.Author.Name != "" {
+			b.WriteString(fmt.Sprintf("author = %s\n\n", item.Author.Name))
+		}
+
+		tags := make([]string, len(item.Categories))
+		for i, c := range item.Categories {
+			tags[i] = c.Text
+		}
+		b.WriteString(fmt.Sprintf("tags = %s\n\n", strings.Join(tags, ",")))
+
+		b.WriteString("```\n\n")
+
+		var content string
+		if item.Content != nil {
+			content = item.Content.Text
+		}
+		if content == "" {
+			content = item.Description
+		}
+		if content != "" {
+			if strings.HasPrefix(content, purlRSSEncodeBeginTag) {
+				content = strings.TrimPrefix(content, purlRSSEncodeBeginTag)
+			}
+			if strings.HasSuffix(content, purlRSSEncodeEndTag) {
+				content = strings.TrimSuffix(content, purlRSSEncodeEndTag)
+			}
+			content = html.UnescapeString(content)
+			content = helper.HTML2Markdown(content)
+			b.WriteString(content)
+		}
+
+		fileName := fmt.Sprintf("post/%s/%s.md", t.Format("2006"), slug)
+		rs.result[fileName] = b
+	}
+
+	// fmt.Println(rs.result)
 }

@@ -1,6 +1,10 @@
 package command
 
 import (
+	"io/ioutil"
+	"os"
+	"path"
+
 	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo/app/migrate"
 	"gopkg.in/inconshreveable/log15.v2"
@@ -31,8 +35,14 @@ func migrateSite() func(ctx *cli.Context) {
 		if task == nil {
 			log15.Crit("Migrate.Fail", "error", migrate.ErrMigrateUnknown.Error())
 		}
-		if err = task.Do(); err != nil {
+		files, err := task.Do()
+		if err != nil {
 			log15.Crit("Migrate.Fail", "error", err.Error())
+		}
+		for filename, b := range files {
+			file := path.Join("rss", filename)
+			os.MkdirAll(path.Dir(file), os.ModePerm)
+			ioutil.WriteFile(file, b.Bytes(), os.ModePerm)
 		}
 		log15.Info("Migrate.Done.[" + task.Type() + "]")
 	}

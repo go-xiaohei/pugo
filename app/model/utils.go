@@ -10,7 +10,7 @@ type Time struct {
 	Day   int
 }
 
-// Format returns layouted time string
+// Format returns layout time string
 func (t Time) Format(layout string) string {
 	return t.Raw.Format(layout)
 }

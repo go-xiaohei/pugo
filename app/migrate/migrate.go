@@ -1,10 +1,12 @@
 package migrate
 
 import (
+	"bytes"
 	"fmt"
+	"strings"
+
 	"github.com/codegangsta/cli"
 	"gopkg.in/inconshreveable/log15.v2"
-	"strings"
 )
 
 var (
@@ -26,7 +28,7 @@ type (
 		New(ctx *cli.Context) (Task, error)
 		Type() string
 		Dir() string
-		Do() error
+		Do() (map[string]*bytes.Buffer, error)
 	}
 )
 

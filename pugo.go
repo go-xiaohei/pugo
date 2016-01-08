@@ -36,6 +36,7 @@ func init() {
 	app.Author = "fuxiaohei"
 	app.Email = "fuxiaohei@vip.qq.com"
 	app.Version = Version
+
 	opt.SrcDir = SrcDir
 	opt.TplDir = ThemeDir
 	opt.MediaDir = path.Join(SrcDir, MediaDir)

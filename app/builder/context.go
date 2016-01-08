@@ -39,6 +39,17 @@ type Context struct {
 	mediaPath  string
 }
 
+// NewContext creates new build context with destination directory and version string
+func NewContext(dest, ver string) *Context {
+	ctx := &Context{
+		DstDir:    dest,
+		Version:   ver,
+		BeginTime: time.Now(),
+		Diff:      newDiff(),
+	}
+	return ctx
+}
+
 // ViewData returns global view data for template compilation
 func (ctx *Context) ViewData() map[string]interface{} {
 	m := map[string]interface{}{

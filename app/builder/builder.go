@@ -3,7 +3,6 @@ package builder
 import (
 	"errors"
 	"sync/atomic"
-	"time"
 
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo/app/parser"
@@ -111,12 +110,7 @@ func (b *Builder) Build(dest string) {
 	log15.Debug("Build.Start")
 	b.isBuilding = true
 
-	ctx := &Context{
-		DstDir:    dest,
-		Version:   b.Version,
-		BeginTime: time.Now(),
-		Diff:      newDiff(),
-	}
+	ctx := NewContext(dest, b.Version)
 	// before hook
 	if len(b.opt.beforeHook) > 0 {
 		for _, fn := range b.opt.beforeHook {
