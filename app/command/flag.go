@@ -35,6 +35,10 @@ var (
 		Name:  "watch",
 		Usage: "watch changes and auto-rebuild",
 	}
+	toFlag = cli.StringFlag{
+		Name:  "to",
+		Usage: "output to directory",
+	}
 )
 
 func setDebugMode(ctx *cli.Context) error {

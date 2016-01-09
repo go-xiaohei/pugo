@@ -12,8 +12,23 @@ import (
 var (
 	registeredTask map[string]Task
 
+	// OutputDirectory set migrate ouput directory in global
+	OutputDirectory = "source"
+
 	ErrMigrateArgsError = fmt.Errorf("migrate args need be 'pugo migrate <type> <source>'")
 	ErrMigrateUnknown   = fmt.Errorf("migrate type unknown")
+
+	migrateMetaExtraString = `[comment]
+disqus =
+duoshuo =
+
+[analytics]
+google =
+baidu =
+
+[build.ignore]
+-:CNAME
+-:.git`
 )
 
 func init() {
@@ -27,7 +42,6 @@ type (
 		Is(conf string) bool
 		New(ctx *cli.Context) (Task, error)
 		Type() string
-		Dir() string
 		Do() (map[string]*bytes.Buffer, error)
 	}
 )

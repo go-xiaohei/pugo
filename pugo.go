@@ -51,7 +51,7 @@ func main() {
 		command.New(SrcDir, ThemeDir),
 		command.Build(opt),
 		command.Server(opt),
-		command.Migrate(),
+		command.Migrate(SrcDir),
 		command.Doc(opt),
 	}
 	app.RunAndExitOnError()

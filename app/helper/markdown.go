@@ -58,6 +58,7 @@ func Bytes2MarkdownHTML(raw []byte) template.HTML {
 }
 
 // HTML2Markdown converts to HTML string
-func HTML2Markdown(html string) string {
-	return htmldown.Markdown(html)
+func HTML2Markdown(html string) (string, error) {
+	doc := htmldown.NewDocument(strings.NewReader(html))
+	return doc.Markdown()
 }
