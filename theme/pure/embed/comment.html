@@ -1,4 +1,4 @@
-{{if .Comment.IsOK}}
+{{if .Comment}}
 <div id="comment">
     {{if .Comment.Disqus}}
     <div id="disqus_thread"></div>
@@ -20,5 +20,19 @@
         Disqus.</a></noscript>
     <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
     {{end}}
+    {{if .Comment.Duoshuo}}<div class="row">
+        <div class="ds-thread" data-thread-key="{{.PermaKey}}" data-title="{{.Title}}" data-url="{{fullUrl .Permalink}}"></div>
+        <script type="text/javascript">
+            var duoshuoQuery = {short_name:"{{.Comment.Duoshuo}}"};
+            (function() {
+                var ds = document.createElement('script');
+                ds.type = 'text/javascript';ds.async = true;
+                ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+                ds.charset = 'UTF-8';
+                (document.getElementsByTagName('head')[0]
+                || document.getElementsByTagName('body')[0]).appendChild(ds);
+            })();
+        </script>
+    </div>{{end}}
 </div>
 {{end}}

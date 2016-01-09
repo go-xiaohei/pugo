@@ -14,7 +14,10 @@ type I18n struct {
 
 // Tr converts string
 func (i *I18n) Tr(str string) string {
-	return i.values[str]
+	if v := i.values[str]; v != "" {
+		return v
+	}
+	return str
 }
 
 // TrHTML converts string to html
@@ -27,7 +30,7 @@ func (i *I18n) Trf(str string, values ...interface{}) string {
 	if v, ok := i.values[str]; ok {
 		return fmt.Sprintf(v, values...)
 	}
-	return ""
+	return str
 }
 
 // TrfHTML converts html string with arguments

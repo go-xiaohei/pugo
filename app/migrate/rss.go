@@ -156,6 +156,7 @@ func (rs *RSSTask) chanHandler(feed *rss.Feed, newChannel []*rss.Channel) {
 
 		fileName := fmt.Sprintf("post/%s/%s.md", t.Format("2006"), slug)
 		rs.result[fileName] = b
+		log15.Debug("RSS.Generate.[" + fileName + "]")
 	}
 
 	// add meta.ini
@@ -198,6 +199,7 @@ func (rs *RSSTask) chanHandler(feed *rss.Feed, newChannel []*rss.Channel) {
 
 	rs.result["meta.ini"] = b
 	rs.result["page/about.md"] = nil // use nil value to create empty directory
+	log15.Debug("RSS.Generate.[meta.ini]")
 }
 
 var (

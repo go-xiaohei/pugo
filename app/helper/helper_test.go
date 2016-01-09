@@ -1,6 +1,7 @@
 package helper_test
 
 import (
+	"html/template"
 	"testing"
 
 	"github.com/go-xiaohei/pugo/app/helper"
@@ -40,4 +41,34 @@ func TestPager(t *testing.T) {
 			So(p.NextURL(), ShouldEqual, "page11")
 		})
 	})
+}
+
+func TestI18n(t *testing.T) {
+	i18n, err := helper.NewI18n("../../source/lang/en.ini", "")
+	Convey("test i18n init", t, func() {
+		So(err, ShouldBeNil)
+	})
+
+	Convey("test i18n translate", t, func() {
+		v := i18n.Tr("post.list")
+		So(v, ShouldEqual, "All Posts")
+
+		v = i18n.Trf("post.list")
+		So(v, ShouldEqual, "All Posts")
+
+		v2 := i18n.TrHTML("post.list")
+		So(v2, ShouldHaveSameTypeAs, template.HTML(""))
+
+		v2 = i18n.TrfHTML("post.list")
+		So(v2, ShouldHaveSameTypeAs, template.HTML(""))
+
+		v3 := i18n.Tr("post.null")
+		So(v3, ShouldEqual, "post.null")
+	})
+
+	Convey("test i18n inti error", t, func() {
+		_, err := helper.NewI18n("xxx.ini", "")
+		So(err, ShouldNotBeNil)
+	})
+
 }

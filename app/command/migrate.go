@@ -6,6 +6,7 @@ import (
 	"path"
 	"time"
 
+	"github.com/Unknwon/com"
 	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo/app/migrate"
 	"gopkg.in/inconshreveable/log15.v2"
@@ -49,6 +50,9 @@ func migrateSite(toDir string) func(ctx *cli.Context) {
 		}
 		for filename, b := range files {
 			file := path.Join(migrate.OutputDirectory, filename)
+			if com.IsFile(file) {
+				log15.Warn("Migrate.Conflict", "file", file)
+			}
 			os.MkdirAll(path.Dir(file), os.ModePerm)
 			if b != nil {
 				ioutil.WriteFile(file, b.Bytes(), os.ModePerm)
