@@ -3,7 +3,6 @@ package builder
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"html/template"
 	"io/ioutil"
 	"net/url"
@@ -109,25 +108,23 @@ func (b *Builder) afterMeta(ctx *Context) {
 	ctx.Meta.Cover = string(replacer([]byte(ctx.Meta.Cover)))
 
 	// load i18n data
-	langFile := path.Join(b.opt.SrcDir, "lang", ctx.Meta.Lang+".ini")
-	langSection := ""
-	if !com.IsFile(langFile) {
-		langFile = path.Join(b.opt.SrcDir, "lang.ini")
-		langSection = ctx.Meta.Lang
-		if !com.IsFile(langFile) {
-			ctx.Error = fmt.Errorf("lang '%s' file is missing", ctx.Meta.Lang)
-			return
+	if ctx.Meta.Lang != "" {
+		languages := helper.NewI18nLanguageCode(ctx.Meta.Lang)
+		for _, lang := range languages {
+			langFile := path.Join(b.opt.SrcDir, "lang", lang+".ini")
+			if com.IsFile(langFile) {
+				if ctx.I18n, ctx.Error = helper.NewI18n(langFile, ""); ctx.Error != nil {
+					return
+				}
+				log15.Info("Lang." + lang)
+				break
+			}
 		}
 	}
-	ctx.I18n, ctx.Error = helper.NewI18n(langFile, langSection)
-	if ctx.Error != nil {
-		return
-	}
 	if ctx.I18n == nil {
-		ctx.Error = fmt.Errorf("lang '%s' can't be loaded", ctx.Meta.Lang)
-		return
+		log15.Warn("Lang." + ctx.Meta.Lang + ".Missing")
+		ctx.I18n = helper.NewI18nEmpty()
 	}
-	log15.Debug("Lang." + ctx.Meta.Lang)
 
 	// fix meta link suffix
 	var title string

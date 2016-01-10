@@ -3,6 +3,7 @@ package helper
 import (
 	"fmt"
 	"html/template"
+	"strings"
 
 	"gopkg.in/ini.v1"
 )
@@ -53,4 +54,26 @@ func NewI18n(file, key string) (*I18n, error) {
 		return nil, nil
 	}
 	return &I18n{values: maps}, nil
+}
+
+// NewI18nEmpty creates new empty i18n object,
+// it will keep i18 tool working, but no translated value
+func NewI18nEmpty() *I18n {
+	return &I18n{
+		values: make(map[string]string),
+	}
+}
+
+// NewI18nLanguageCode returns correct language code possibly
+// en-US -> [en-US,en-us,en]
+func NewI18nLanguageCode(lang string) []string {
+	languages := []string{lang} // [en-US]
+	lower := strings.ToLower(lang)
+	if lower != lang {
+		languages = append(languages, lower) // use lowercase language code, [en-us]
+	}
+	if strings.Contains(lang, "-") {
+		languages = append(languages, strings.Split(lang, "-")[0]) // use first word if en-US, [en]
+	}
+	return languages
 }

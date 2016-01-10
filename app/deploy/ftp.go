@@ -59,7 +59,7 @@ func (ft *FtpTask) Type() string {
 
 // Dir returns ftp task's real directory
 func (ft *FtpTask) Dir() string {
-	return path.Base(ft.opt.url.Path)
+	return "dest"
 }
 
 // Is checks ftp task

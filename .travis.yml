@@ -16,4 +16,6 @@ script:
   - ./pugo.exe build --theme=uno --dest="uno-test"
   - ./pugo.exe new post
   - ./pugo.exe new page
-  - ./pugo.exe migrate --src="rss+http://fuxiaohei.me/feed.xml" --to="migrate-rss"
+  - ./pugo.exe migrate --src="rss+http://fuxiaohei.me/feed.xml" --to="migrate-rss" --debug
+  - rm -rf default-dest pure-dest uno-dest migrate-rss
+  - ./pugo.exe build --debug

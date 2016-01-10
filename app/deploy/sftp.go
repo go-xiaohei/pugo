@@ -72,7 +72,7 @@ func (ft *SftpTask) Is(conf string) bool {
 
 // Dir returns sftp task's build directory
 func (ft *SftpTask) Dir() string {
-	return path.Base(ft.opt.Directory)
+	return "dest"
 }
 
 // Do executes sftp task do action
