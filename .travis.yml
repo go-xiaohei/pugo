@@ -10,4 +10,10 @@ sudo: false
 script:
   - go get github.com/smartystreets/goconvey
   - go test -cover ./...
-  - go build -o pugo.exe pugo.go && ./pugo.exe build --debug
+  - go build -o pugo.exe pugo.go 
+  - ./pugo.exe build --debug --theme=default --dest="default-dest"
+  - ./pugo.exe build --theme=pure --dest="pure-dest"
+  - ./pugo.exe build --theme=uno --dest="uno-test"
+  - ./pugo.exe new post
+  - ./pugo.exe new page
+  - ./pugo.exe migrate --src="rss+http://fuxiaohei.me/feed.xml" --to="migrate-rss"
