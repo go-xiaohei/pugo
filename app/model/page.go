@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"encoding/json"
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/go-xiaohei/pugo/app/parser"
 )
@@ -108,8 +107,8 @@ func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 	return p, nil
 }
 
-// page node group
 type (
+	// PageNodeGroup defins page nodes
 	PageNodeGroup map[string]map[string]*pageNode
 	pageNode      struct {
 		URL       string
@@ -117,6 +116,7 @@ type (
 	}
 )
 
+// NewPageNodeGroup generates page nodes from pages
 func NewPageNodeGroup(pages []*Page) PageNodeGroup {
 	m := make(map[string]map[string]*pageNode)
 	for _, page := range pages {
@@ -128,11 +128,10 @@ func NewPageNodeGroup(pages []*Page) PageNodeGroup {
 			Permalink: page.Permalink,
 		}
 	}
-	b, _ := json.MarshalIndent(m, "", "  ")
-	fmt.Println(string(b))
 	return PageNodeGroup(m)
 }
 
+// URL returns node url by slug and language
 func (png PageNodeGroup) URL(slug string, lang string) string {
 	languages := helper.NewI18nLanguageCode(lang)
 	for _, l := range languages {
@@ -146,6 +145,7 @@ func (png PageNodeGroup) URL(slug string, lang string) string {
 	return ""
 }
 
+// Permalink returns node permalink by slug and language
 func (png PageNodeGroup) Permalink(slug string, lang string) string {
 	languages := helper.NewI18nLanguageCode(lang)
 	for _, l := range languages {

@@ -3,9 +3,12 @@ package model
 import (
 	"errors"
 	"net/url"
+	"path"
+	"path/filepath"
 	"strings"
 	"sync"
 
+	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/go-xiaohei/pugo/app/parser"
 )
 
@@ -14,6 +17,7 @@ var (
 	ErrMetaBlockWrong = errors.New("meta-blocks-wrong")
 
 	navLock sync.Mutex
+	navLang string
 )
 
 type (
@@ -41,9 +45,10 @@ type (
 
 	// Nav defines items in navigation
 	Nav struct {
-		Link    string `ini:"link"`
-		Title   string `ini:"title"`
-		IsBlank bool   `ini:"blank"`
+		Link        string `ini:"link"`
+		Title       string `ini:"title"`
+		OriginTitle string `ini:"-"`
+		IsBlank     bool   `ini:"blank"`
 
 		IconClass  string `ini:"icon"`
 		HoverClass string `ini:"hover"`
@@ -133,6 +138,7 @@ func NewAllMeta(blocks []parser.Block) (total MetaTotal, err error) {
 		if nav.Link == "" {
 			continue
 		}
+		nav.OriginTitle = nav.Title
 		sub := strings.Split(block.Item(k, "sub"), ",")
 		if len(sub) > 0 && sub[0] != "" {
 			for _, s := range sub {
@@ -205,6 +211,23 @@ func NewAllMeta(blocks []parser.Block) (total MetaTotal, err error) {
 	return
 }
 
+// I18n set i18n to navs
+func (navs Navs) I18n(i18n *helper.I18n) {
+	if navLang == i18n.Lang {
+		return
+	}
+	navLock.Lock()
+	defer navLock.Unlock()
+	for _, n := range navs {
+		if i18n.Lang == "nil" {
+			n.Title = n.OriginTitle
+		} else {
+			n.Title = i18n.Tr("nav." + n.I18n)
+		}
+	}
+	navLang = i18n.Lang
+}
+
 // Hover sets hover item
 func (navs Navs) Hover(name string) {
 	navLock.Lock()
@@ -241,4 +264,35 @@ func (a *Analytics) IsOK() bool {
 		return true
 	}
 	return false
+}
+
+// I18nGroup saves the i18n object from ini files in source/lang
+type I18nGroup map[string]*helper.I18n
+
+// NewI18nGroup reads ini files in dir and creates I18nGroup
+func NewI18nGroup(dir string) (I18nGroup, error) {
+	files, err := filepath.Glob(path.Join(dir, "*.ini"))
+	if err != nil {
+		return nil, err
+	}
+	group := make(I18nGroup)
+	for _, file := range files {
+		i18n, err := helper.NewI18n(file, "")
+		if err != nil {
+			return nil, err
+		}
+		group[i18n.Lang] = i18n
+	}
+	return group, nil
+}
+
+// Find try to find the I18n object by language code
+func (group I18nGroup) Find(lang string) *helper.I18n {
+	langs := helper.NewI18nLanguageCode(lang)
+	for _, l := range langs {
+		if group[l] != nil {
+			return group[l]
+		}
+	}
+	return nil
 }

@@ -12,7 +12,6 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/go-xiaohei/pugo/app/model"
 	"github.com/go-xiaohei/pugo/app/parser"
@@ -107,35 +106,28 @@ func (b *Builder) afterMeta(ctx *Context) {
 
 	ctx.Meta.Cover = string(replacer([]byte(ctx.Meta.Cover)))
 
-	// load i18n data
+	// read i18n data
+	i18nGroup, err := model.NewI18nGroup(path.Join(b.opt.SrcDir, "lang"))
+	if err != nil {
+		ctx.Error = err
+		return
+	}
+	ctx.I18nGroup = i18nGroup
 	if ctx.Meta.Lang != "" {
-		languages := helper.NewI18nLanguageCode(ctx.Meta.Lang)
-		for _, lang := range languages {
-			langFile := path.Join(b.opt.SrcDir, "lang", lang+".ini")
-			if com.IsFile(langFile) {
-				if ctx.I18n, ctx.Error = helper.NewI18n(langFile, ""); ctx.Error != nil {
-					return
-				}
-				log15.Info("Lang." + lang)
-				break
-			}
-		}
+		ctx.I18n = ctx.I18nGroup.Find(ctx.Meta.Lang)
 	}
 	if ctx.I18n == nil {
 		log15.Warn("Lang." + ctx.Meta.Lang + ".Missing")
 		ctx.I18n = helper.NewI18nEmpty()
+	} else {
+		log15.Info("Lang." + ctx.I18n.Lang)
 	}
 
 	// fix meta link suffix
-	var title string
 	for _, n := range ctx.Navs {
 		n.Link = fixSuffix(n.Link)
-		title = ctx.I18n.Tr("nav." + n.I18n)
-		if title != "" {
-			n.Title = title
-		}
-		title = ""
 	}
+	ctx.Navs.I18n(ctx.I18n)
 
 	// get owner, fix owner avatar link
 	for _, a := range ctx.Authors {

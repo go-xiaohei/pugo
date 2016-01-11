@@ -3,6 +3,7 @@ package helper
 import (
 	"fmt"
 	"html/template"
+	"path"
 	"strings"
 
 	"gopkg.in/ini.v1"
@@ -10,6 +11,7 @@ import (
 
 // I18n object
 type I18n struct {
+	Lang   string // language string
 	values map[string]string
 }
 
@@ -53,13 +55,19 @@ func NewI18n(file, key string) (*I18n, error) {
 	if len(maps) == 0 {
 		return nil, nil
 	}
-	return &I18n{values: maps}, nil
+	lang := path.Base(file)
+	lang = strings.TrimSuffix(lang, path.Ext(lang))
+	return &I18n{
+		Lang:   lang,
+		values: maps,
+	}, nil
 }
 
 // NewI18nEmpty creates new empty i18n object,
 // it will keep i18 tool working, but no translated value
 func NewI18nEmpty() *I18n {
 	return &I18n{
+		Lang:   "nil",
 		values: make(map[string]string),
 	}
 }

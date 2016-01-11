@@ -138,6 +138,15 @@ func (b *Builder) compilePages(ctx *Context) {
 		viewData["PermaKey"] = p.Slug
 		viewData["PostType"] = "page"
 
+		if p.Lang != "" {
+			// change i18n in page for template vars
+			if i18n := ctx.I18nGroup.Find(p.Lang); i18n != nil {
+				ctx.Navs.I18n(i18n)
+				viewData["I18n"] = i18n
+				viewData["Lang"] = i18n.Lang
+			}
+		}
+
 		if err := b.compileTemplate(ctx, p.Template, viewData, dstFile); err != nil {
 			ctx.Error = err
 			ctx.Navs.Reset()

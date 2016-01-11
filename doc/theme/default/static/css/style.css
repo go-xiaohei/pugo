@@ -85,7 +85,7 @@ body {
 }
 
 #index-nav {
-    padding: 150px 0 60px 0;
+    padding: 120px 0 60px 0;
 }
 
 #index-nav .nav li {
@@ -97,7 +97,7 @@ body {
 }
 
 #index-nav .nav li a .fa, #site-nav .nav li a .fa {
-    padding-right: 6px;
+    padding-right: 8px;
 }
 
 #index-nav .nav li.active a {

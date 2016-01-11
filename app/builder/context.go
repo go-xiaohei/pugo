@@ -27,13 +27,25 @@ type Context struct {
 	Tags     map[string]*model.Tag
 	tagPosts map[string][]*model.Post
 
-	Navs      model.Navs
-	Meta      *model.Meta
-	I18n      *helper.I18n // use i18n tool
-	Owner     *model.Author
-	Authors   model.AuthorMap
-	Comment   *model.Comment
-	Conf      *model.Conf
+	// site meta
+	Navs model.Navs
+	Meta *model.Meta
+
+	// i18n
+	I18n      *helper.I18n
+	I18nGroup model.I18nGroup
+
+	// Author
+	Owner   *model.Author
+	Authors model.AuthorMap
+
+	// Comment
+	Comment *model.Comment
+
+	// Build Configuration
+	Conf *model.Conf
+
+	// Analytics
 	Analytics *model.Analytics
 
 	staticPath string
@@ -65,7 +77,9 @@ func (ctx *Context) ViewData() map[string]interface{} {
 		"I18n":      ctx.I18n,
 		"Analytics": ctx.Analytics,
 		"Node":      ctx.PageNodes,
+		"Lang":      ctx.Meta.Lang,
 	}
+	ctx.Navs.I18n(ctx.I18n)
 	return m
 }
 
