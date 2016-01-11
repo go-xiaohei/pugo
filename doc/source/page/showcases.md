@@ -5,7 +5,8 @@ date = 2015-12-30
 update_date = 2016-01-02
 author = fuxiaohei
 author_url ＝ http://fuxiaohei.me/
-hover = 
+hover =
+lang =
 template = showcase.html
 
 [meta]

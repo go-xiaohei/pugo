@@ -6,6 +6,7 @@ update_date = 2015-12-20
 author = fuxiaohei
 author_url ＝ http://fuxiaohei.me/
 hover = docs
+lang = en
 template =
 
 [meta]

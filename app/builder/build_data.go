@@ -214,6 +214,8 @@ func (b *Builder) readContents(ctx *Context) {
 		page.ContentHTML = template.HTML(htmlReplacer([]byte(page.ContentHTML)))
 		ctx.Pages = append(ctx.Pages, page)
 	}
+
+	ctx.PageNodes = model.NewPageNodeGroup(ctx.Pages)
 }
 
 // parse bytes to blocks
