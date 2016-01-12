@@ -9,12 +9,12 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{{.Root}}/">{{.Meta.Title}}</a>
+                <a class="navbar-brand" href="{{.Root}}/{{.Lang}}/">{{.Meta.Title}}</a>
             </div>
             <div class="collapse navbar-collapse" id="site-nav-collapse">
                 <ul class="nav navbar-nav ">{{range .Nav}}
                     <li role="presentation" class="{{if .IsHover}}active{{end}}">
-                        <a href="{{$.Root}}{{.Link}}" {{if .IsBlank}} target="_blank" {{end}}>{{if .IconClass}}
+                        <a href="{{.LangLink $.Lang | url}}" {{if .IsBlank}} target="_blank" {{end}}>{{if .IconClass}}
                             <i class="{{.IconClass}}"></i>{{end}}{{.Title}}
                         </a>
                     </li>

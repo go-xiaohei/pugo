@@ -193,9 +193,22 @@ func (b *Builder) compileIndex(ctx *Context) {
 	viewData["PostType"] = "index"
 	viewData["PermaKey"] = "index"
 
-	if err := b.compileTemplate(ctx, template, viewData, dstFile); err != nil {
-		ctx.Error = err
-		return
+	langs := ctx.I18nGroup.Langs()
+	langBuild := map[string]*helper.I18n{
+		dstFile: ctx.I18n,
+	}
+	for _, l := range langs {
+		dstFile := path.Join(ctx.DstDir, l, "index.html")
+		langBuild[dstFile] = ctx.I18nGroup.Find(l)
+	}
+	for dstFile, i18n := range langBuild {
+		viewData["I18n"] = i18n
+		viewData["Lang"] = i18n.Lang
+		ctx.Navs.I18n(i18n)
+		if err := b.compileTemplate(ctx, template, viewData, dstFile); err != nil {
+			ctx.Error = err
+			return
+		}
 	}
 }
 
@@ -216,5 +229,6 @@ func (b *Builder) compileTemplate(ctx *Context, file string, viewData map[string
 	if err := ctx.Theme.Execute(f, file, viewData); err != nil {
 		return err
 	}
+	log15.Debug("Build.To.[" + destFile + "]")
 	return nil
 }

@@ -3,7 +3,7 @@ package helper
 import (
 	"fmt"
 	"html/template"
-	"path"
+	"path/filepath"
 	"strings"
 
 	"gopkg.in/ini.v1"
@@ -55,8 +55,8 @@ func NewI18n(file, key string) (*I18n, error) {
 	if len(maps) == 0 {
 		return nil, nil
 	}
-	lang := path.Base(file)
-	lang = strings.TrimSuffix(lang, path.Ext(lang))
+	lang := filepath.Base(file)
+	lang = strings.TrimSuffix(lang, filepath.Ext(lang))
 	return &I18n{
 		Lang:   lang,
 		values: maps,

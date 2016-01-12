@@ -57,6 +57,7 @@ type (
 		SubNav      []*Nav `ini:"-"` // todo : no support yed
 		IsSeparator bool   `ini:"-"`
 		IsHover     bool   `ini:"-"`
+		IsRemote    bool   `ini:"-"`
 	}
 	// Navs is collection of Nav
 	Navs []*Nav
@@ -90,6 +91,18 @@ type (
 		Baidu  string `ini:"baidu"`
 	}
 )
+
+// LangLink builds nav link with language code
+func (n *Nav) LangLink(lang string) string {
+	if n.IsRemote {
+		return n.Link
+	}
+	u := path.Join(lang, n.Link)
+	if !strings.HasPrefix(u, "/") {
+		u = "/" + u
+	}
+	return u
+}
 
 // NewAllMeta parses blocks to MetaTotal
 func NewAllMeta(blocks []parser.Block) (total MetaTotal, err error) {
@@ -139,6 +152,11 @@ func NewAllMeta(blocks []parser.Block) (total MetaTotal, err error) {
 			continue
 		}
 		nav.OriginTitle = nav.Title
+		if u, _ := url.Parse(nav.Link); u != nil {
+			if u.Host != "" {
+				nav.IsRemote = true
+			}
+		}
 		sub := strings.Split(block.Item(k, "sub"), ",")
 		if len(sub) > 0 && sub[0] != "" {
 			for _, s := range sub {
@@ -288,6 +306,12 @@ func NewI18nGroup(dir string) (I18nGroup, error) {
 
 // Find try to find the I18n object by language code
 func (group I18nGroup) Find(lang string) *helper.I18n {
+	// try directly
+	if i18n, ok := group[lang]; ok {
+		return i18n
+	}
+
+	// then use familiar codes
 	langs := helper.NewI18nLanguageCode(lang)
 	for _, l := range langs {
 		if group[l] != nil {
@@ -295,4 +319,13 @@ func (group I18nGroup) Find(lang string) *helper.I18n {
 		}
 	}
 	return nil
+}
+
+// Langs returns loaded languages from ini files
+func (groups I18nGroup) Langs() []string {
+	var langs []string
+	for k, _ := range groups {
+		langs = append(langs, k)
+	}
+	return langs
 }

@@ -1,12 +1,12 @@
 {{template "meta.html" .}}
 <div id="index">
     <h1 id="index-title">{{.Meta.Title}}</h1>
-    <p id="index-desc">A Static Site Generator & Deployer</p>
+    <p id="index-desc">{{.I18n.Tr "index.subtitle"}}</p>
     <p id="index-version">
-        <a class="btn btn-primary" id="index-download-btn">0.9.0 stable (2016-01-01)</a>
+        <a class="btn btn-primary btn-lg" id="index-download-btn">0.9.0 stable (2016-01-01)</a>
     </p>
     <p id="index-release-note">
-        <a href="{{.Root}}/posts/1">Release notes</a>
+        <a href="{{.Root}}/posts/1">{{.I18n.Tr "index.releases"}}</a>
     </p>
     <div id="index-download">
         <div class="container" id="index-download-container">

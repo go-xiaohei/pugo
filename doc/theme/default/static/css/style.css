@@ -62,10 +62,12 @@ body {
     display: inline;
 }
 
-/* IE7 */
-
 #index-download {
     display: none;
+}
+
+#index-download-btn{
+    font-size: 14px;
 }
 
 #index-download-container {
@@ -80,11 +82,12 @@ body {
 }
 
 #index-nav-container {
-    width: 600px;
+    width: 900px;
     text-align: center;
 }
 
 #index-nav {
+    font-size: 16px;
     padding: 120px 0 60px 0;
 }
 
@@ -118,6 +121,14 @@ body {
     padding-top: 18px;
 }
 
+#main .col-md-3{
+    padding-left: 0;
+}
+
+#main .col-md-9{
+    padding-right: 0;
+}
+
 #site-nav {
     border-radius: 0 !important;
 }
@@ -126,8 +137,13 @@ body {
     padding: 0
 }
 
-#site-nav li.active a {
-    color: #fbffc0;
+#site-nav li.active a,
+#site-nav .navbar-brand{
+    color: #444;
+}
+
+#site-nav .navbar-brand{
+    font-weight: bold;
 }
 
 #page-list h5 {

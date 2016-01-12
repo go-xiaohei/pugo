@@ -88,6 +88,24 @@ func (b *Builder) readMeta(ctx *Context) {
 // do works after meta data,
 // generate proper path, link and owner
 func (b *Builder) afterMeta(ctx *Context) {
+	// read i18n data
+	i18nGroup, err := model.NewI18nGroup(path.Join(b.opt.SrcDir, "lang"))
+	if err != nil {
+		ctx.Error = err
+		return
+	}
+	ctx.I18nGroup = i18nGroup
+	log15.Debug("Lang.Load.[" + strings.Join(ctx.I18nGroup.Langs(), ".") + "]")
+	if ctx.Meta.Lang != "" {
+		ctx.I18n = ctx.I18nGroup.Find(ctx.Meta.Lang)
+	}
+	if ctx.I18n == nil {
+		log15.Warn("Lang." + ctx.Meta.Lang + ".Missing")
+		ctx.I18n = helper.NewI18nEmpty()
+	} else {
+		log15.Info("Lang." + ctx.I18n.Lang)
+	}
+
 	// read theme
 	// if error, do not need to load contents
 	theme, err := b.render.Load(b.opt.Theme)
@@ -105,23 +123,6 @@ func (b *Builder) afterMeta(ctx *Context) {
 	replacer := replaceGlobalVars(b, ctx)
 
 	ctx.Meta.Cover = string(replacer([]byte(ctx.Meta.Cover)))
-
-	// read i18n data
-	i18nGroup, err := model.NewI18nGroup(path.Join(b.opt.SrcDir, "lang"))
-	if err != nil {
-		ctx.Error = err
-		return
-	}
-	ctx.I18nGroup = i18nGroup
-	if ctx.Meta.Lang != "" {
-		ctx.I18n = ctx.I18nGroup.Find(ctx.Meta.Lang)
-	}
-	if ctx.I18n == nil {
-		log15.Warn("Lang." + ctx.Meta.Lang + ".Missing")
-		ctx.I18n = helper.NewI18nEmpty()
-	} else {
-		log15.Info("Lang." + ctx.I18n.Lang)
-	}
 
 	// fix meta link suffix
 	for _, n := range ctx.Navs {

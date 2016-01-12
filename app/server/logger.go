@@ -2,8 +2,6 @@ package server
 
 import (
 	"fmt"
-	"path"
-	"strings"
 	"time"
 
 	"github.com/lunny/tango"
@@ -40,12 +38,6 @@ func logger() tango.HandlerFunc {
 
 		// skip static files
 		if ctx.Req().Method == "GET" {
-			if strings.HasPrefix(p, path.Join(logBase, "/static")) {
-				return
-			}
-			if strings.HasPrefix(p, path.Join(logBase, "/theme")) {
-				return
-			}
 			if p == "/favicon.ico" || p == "/robots.txt" {
 				return
 			}
