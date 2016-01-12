@@ -1,9 +1,17 @@
 <footer id="footer">
     <div class="container text-center">
-        <p>© 2015 {{.Meta.Title}}.
-            <a href="http://creativecommons.org/licenses/by/3.0/">Some rights reserved </a> |
-            <a href="{{.Root}}/sitemap.xml">Sitemap</a>
-        </p>
+        <div>© 2015 FuXiaohei |
+            <a href="{{.Root}}/sitemap.xml">Sitemap</a> 
+            {{if eq .PostType "index"}} |
+            <div class="footer-lang">
+                <i class="fa fa-globe"></i>
+                <span class="language-text">{{.I18n.Tr "lang"}}</span>
+                <select name="lang" id="language">{{range .I18ns}}
+                    <option value="/{{.Lang}}"{{if eq $.I18n.Lang .Lang}} selected{{end}}>{{.Tr "lang"}}</option>{{end}}
+                </select>
+            </div>
+            {{end}}
+        </div>
         <p>Powered by <a href="https://github.com/go-xiaohei/pugo">Pugo {{.Version}}</a></p>
     </div>
 </footer>
@@ -17,6 +25,10 @@
             content:$('#index-download').html(),
             html:true,
             placement:"bottom"
+        });
+        $('#language').on("change",function(e){
+            window.location.href = e.target.value;
+            e.preventDefault();
         })
     })
 </script>

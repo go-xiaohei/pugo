@@ -12,19 +12,22 @@
                 <a class="navbar-brand" href="{{.Root}}/{{.Lang}}/">{{.Meta.Title}}</a>
             </div>
             <div class="collapse navbar-collapse" id="site-nav-collapse">
-                <ul class="nav navbar-nav ">{{range .Nav}}
+                <ul class="nav navbar-nav">{{range .Nav}}
                     <li role="presentation" class="{{if .IsHover}}active{{end}}">
                         <a href="{{.LangLink $.Lang | url}}" {{if .IsBlank}} target="_blank" {{end}}>{{if .IconClass}}
                             <i class="{{.IconClass}}"></i>{{end}}{{.Title}}
                         </a>
                     </li>
                     {{end}}
-                </ul>
-                <!--<ul class="nav navbar-nav pull-right">
-                    <li class="pull-right">
-                        <a>Current - <strong>{{.Version}}</strong></a>
+                </ul>{{if eq .PostType "page"}}
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="header-lang">
+                        <a>
+                            <i class="fa fa-globe"></i>
+                            <span class="language-text">{{.I18n.Tr "lang"}}</span>
+                        </a>
                     </li>
-                </ul>-->
+                </ul>{{end}}
             </div>
         </div>
     </nav>

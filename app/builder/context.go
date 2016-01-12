@@ -75,6 +75,7 @@ func (ctx *Context) ViewData() map[string]interface{} {
 		"Root":      ctx.Meta.Base,
 		"Owner":     ctx.Owner,
 		"I18n":      ctx.I18n,
+		"I18ns":     ctx.I18nGroup,
 		"Analytics": ctx.Analytics,
 		"Node":      ctx.PageNodes,
 		"Lang":      ctx.Meta.Lang,

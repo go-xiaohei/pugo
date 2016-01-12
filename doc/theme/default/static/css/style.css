@@ -117,6 +117,10 @@ body {
     color: #999;
 }
 
+#footer > .container > *{
+    margin-bottom: 1.2rem;
+}
+
 #main {
     padding-top: 18px;
 }
@@ -278,4 +282,17 @@ body {
 
 #article-list .tag{
     margin-bottom: 2.5rem;
+}
+
+#language{
+    opacity:0;
+    position: absolute;
+    top:0;
+    right: 0;
+    -webkit-appearance:menulist-button;
+}
+
+.footer-lang{
+    position: relative;
+    display: inline-block
 }
