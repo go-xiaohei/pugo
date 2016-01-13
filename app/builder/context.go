@@ -20,7 +20,7 @@ type Context struct {
 	Posts         []*model.Post
 	PostPageCount int
 	Pages         []*model.Page
-	PageNodes     model.PageNodeGroup
+	Node          model.NodeGroup
 	indexPosts    []*model.Post // temp posts for index page
 	indexPager    *helper.Pager
 
@@ -77,7 +77,7 @@ func (ctx *Context) ViewData() map[string]interface{} {
 		"I18n":      ctx.I18n,
 		"I18ns":     ctx.I18nGroup,
 		"Analytics": ctx.Analytics,
-		"Node":      ctx.PageNodes,
+		"Node":      model.NodeGroupPub(ctx.Node),
 		"Lang":      ctx.Meta.Lang,
 	}
 	ctx.Navs.I18n(ctx.I18n)

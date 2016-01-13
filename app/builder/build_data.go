@@ -208,7 +208,7 @@ func (b *Builder) readContents(ctx *Context) {
 		ctx.Pages = append(ctx.Pages, page)
 	}
 
-	ctx.PageNodes = model.NewPageNodeGroup(ctx.Pages)
+	ctx.Node = model.NewNodeGroup()
 }
 
 // parse bytes to blocks

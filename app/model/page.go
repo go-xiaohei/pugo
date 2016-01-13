@@ -12,6 +12,21 @@ import (
 	"github.com/go-xiaohei/pugo/app/parser"
 )
 
+const (
+	// NodePage is type of page node
+	NodePage = "page"
+	// NodePost is type of post node
+	NodePost = "post"
+	// NodeArchive is type of archive node of posts
+	NodeArchive = "post-archive"
+	// NodePostTag is type of tag node of tagged posts
+	NodePostTag = "post-tag"
+	// NodePostList is type of listed posts node
+	NodePostList = "post-list"
+	// NodeIndex is type of index node
+	NodeIndex = "index"
+)
+
 // Page contains fields for a page
 type Page struct {
 	Title     string `ini:"title"`
@@ -108,52 +123,62 @@ func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
 }
 
 type (
-	// PageNodeGroup defins page nodes
-	PageNodeGroup map[string]map[string]*pageNode
-	pageNode      struct {
+	// NodeGroup save nodes of all pages
+	NodeGroup map[string]map[string]*Node
+	// NodeGroupPub use to template for exported just URL and Permalink methods
+	NodeGroupPub NodeGroup
+	// Node define a node of page
+	Node struct {
 		URL       string
 		Permalink string
+		Type      string
 	}
 )
 
-// NewPageNodeGroup generates page nodes from pages
-func NewPageNodeGroup(pages []*Page) PageNodeGroup {
-	m := make(map[string]map[string]*pageNode)
-	for _, page := range pages {
-		if len(m[page.Slug]) == 0 {
-			m[page.Slug] = make(map[string]*pageNode)
-		}
-		m[page.Slug][page.Lang] = &pageNode{
-			URL:       page.URL,
-			Permalink: page.Permalink,
-		}
+// NewNodeGroup generates empty nodes
+func NewNodeGroup() NodeGroup {
+	m := make(map[string]map[string]*Node)
+	return NodeGroup(m)
+}
+
+// Add adds new node
+func (ng NodeGroup) Add(slug, url, permalink, nodeType, lang string) {
+	if len(ng[slug]) == 0 {
+		ng[slug] = make(map[string]*Node)
 	}
-	return PageNodeGroup(m)
+	if lang == "" {
+		lang = "-"
+	}
+	ng[slug][lang] = &Node{
+		URL:       url,
+		Permalink: permalink,
+		Type:      nodeType,
+	}
 }
 
 // URL returns node url by slug and language
-func (png PageNodeGroup) URL(slug string, lang string) string {
+func (ng NodeGroupPub) URL(slug string, lang string) string {
 	languages := helper.NewI18nLanguageCode(lang)
 	for _, l := range languages {
-		if url, ok := png[slug][l]; ok {
+		if url, ok := ng[slug][l]; ok {
 			return url.URL
 		}
 	}
-	if url := png[slug]["-"]; url != nil {
+	if url := ng[slug]["-"]; url != nil {
 		return url.URL
 	}
 	return ""
 }
 
 // Permalink returns node permalink by slug and language
-func (png PageNodeGroup) Permalink(slug string, lang string) string {
+func (ng NodeGroupPub) Permalink(slug string, lang string) string {
 	languages := helper.NewI18nLanguageCode(lang)
 	for _, l := range languages {
-		if url, ok := png[slug][l]; ok {
+		if url, ok := ng[slug][l]; ok {
 			return url.Permalink
 		}
 	}
-	if url := png[slug]["-"]; url != nil {
+	if url := ng[slug]["-"]; url != nil {
 		return url.Permalink
 	}
 	return ""

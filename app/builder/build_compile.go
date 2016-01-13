@@ -50,12 +50,14 @@ func (b *Builder) compileSinglePost(ctx *Context) {
 		viewData["Post"] = p
 		viewData["Permalink"] = p.Permalink
 		viewData["PermaKey"] = p.Slug
-		viewData["PostType"] = "post"
+		viewData["PostType"] = model.NodePost
 
 		if err := b.compileTemplate(ctx, "post.html", viewData, dstFile); err != nil {
 			ctx.Error = err
 			return
 		}
+
+		ctx.Node.Add("post-"+p.Slug, p.URL, p.Permalink, model.NodePost, "")
 	}
 }
 
@@ -67,6 +69,7 @@ func (b *Builder) compilePagedPost(ctx *Context) {
 		cursor       = helper.NewPagerCursor(4, len(ctx.Posts))
 		page         = 1
 		layout       = "posts/%d"
+		permaKey     = ""
 	)
 	for {
 		pager := cursor.Page(page)
@@ -81,16 +84,22 @@ func (b *Builder) compilePagedPost(ctx *Context) {
 		dstFile := path.Join(ctx.DstDir, fmt.Sprintf(layout+".html", pager.Current))
 
 		viewData := ctx.ViewData()
+		permaKey = fmt.Sprintf("post-page-%d", pager.Current)
 		viewData["Title"] = fmt.Sprintf("Page %d - %s", pager.Current, ctx.Meta.Title)
 		viewData["Posts"] = currentPosts
 		viewData["Pager"] = pager
-		viewData["PostType"] = "post-list"
-		viewData["PermaKey"] = fmt.Sprintf("post-page-%d", pager.Current)
+		viewData["PostType"] = model.NodePostList
+		viewData["PermaKey"] = permaKey
 
 		if err := b.compileTemplate(ctx, "posts.html", viewData, dstFile); err != nil {
 			ctx.Error = err
 			return
 		}
+
+		ctx.Node.Add(permaKey,
+			fmt.Sprintf(layout, pager.Current),
+			fmt.Sprintf(layout, pager.Current),
+			model.NodePostList, "true")
 
 		if page == 1 {
 			ctx.indexPosts = currentPosts
@@ -108,7 +117,7 @@ func (b *Builder) compileArchive(ctx *Context) {
 	viewData := ctx.ViewData()
 	viewData["Title"] = fmt.Sprintf("Archive - %s", ctx.Meta.Title)
 	viewData["Archives"] = archives
-	viewData["PostType"] = "post-archive"
+	viewData["PostType"] = model.NodeArchive
 	viewData["PermaKey"] = "post-archive"
 
 	ctx.Navs.Hover("archive")
@@ -118,6 +127,8 @@ func (b *Builder) compileArchive(ctx *Context) {
 		ctx.Error = err
 		return
 	}
+
+	ctx.Node.Add("post-archive", "archive", "archive", model.NodeArchive, "")
 }
 
 // compile pages
@@ -136,7 +147,7 @@ func (b *Builder) compilePages(ctx *Context) {
 		viewData["Page"] = p
 		viewData["Permalink"] = p.Permalink
 		viewData["PermaKey"] = p.Slug
-		viewData["PostType"] = "page"
+		viewData["PostType"] = model.NodePage
 
 		if p.Lang != "" {
 			// change i18n in page for template vars
@@ -153,6 +164,8 @@ func (b *Builder) compilePages(ctx *Context) {
 			return
 		}
 		ctx.Navs.Reset()
+
+		ctx.Node.Add(p.Slug, p.URL, p.Permalink, model.NodePage, p.Lang)
 	}
 }
 
@@ -166,13 +179,22 @@ func (b *Builder) compileTags(ctx *Context) {
 		viewData["Title"] = fmt.Sprintf("%s - %s", t, ctx.Meta.Title)
 		viewData["Tag"] = ctx.Tags[t]
 		viewData["Posts"] = posts
-		viewData["PostType"] = "post-tag"
+		viewData["PostType"] = model.NodePostTag
 		viewData["PermaKey"] = fmt.Sprintf("tag-%s", ctx.Tags[t].Name)
 
 		if err := b.compileTemplate(ctx, "posts.html", viewData, dstFile); err != nil {
 			ctx.Error = err
 			return
 		}
+
+		ctx.Node.Add(
+			fmt.Sprintf("post-tag-%s", ctx.Tags[t].Name),
+			fmt.Sprintf("tags/%s", ctx.Tags[t].Name),
+			fmt.Sprintf("tags/%s", ctx.Tags[t].Name),
+			model.NodePostTag,
+			"",
+		)
+
 	}
 }
 
@@ -190,7 +212,7 @@ func (b *Builder) compileIndex(ctx *Context) {
 	viewData := ctx.ViewData()
 	viewData["Posts"] = ctx.indexPosts
 	viewData["Pager"] = ctx.indexPager
-	viewData["PostType"] = "index"
+	viewData["PostType"] = model.NodeIndex
 	viewData["PermaKey"] = "index"
 
 	langs := ctx.I18nGroup.Langs()
@@ -209,7 +231,16 @@ func (b *Builder) compileIndex(ctx *Context) {
 			ctx.Error = err
 			return
 		}
+		ctx.Node.Add("index",
+			fmt.Sprintf("%s/index", i18n.Lang),
+			fmt.Sprintf("%s/index", i18n.Lang),
+			model.NodeIndex,
+			i18n.Lang,
+		)
 	}
+
+	ctx.Node.Add("index", "index", "index", model.NodeIndex, "")
+
 }
 
 // compile template by data and write to dest file.
