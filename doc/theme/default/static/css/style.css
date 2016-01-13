@@ -183,7 +183,7 @@ body {
     padding-bottom: 12px;
     border-bottom: 1px dashed #DDD;
     font-weight: 700;
-    font-family: "Open Sans", Helvetica Neue, "Microsoft Yahei", Helvetica, Arial, sans-serif;
+    font-size: 28px;
 }
 
 .article .aside {
@@ -295,4 +295,8 @@ body {
 .footer-lang{
     position: relative;
     display: inline-block
+}
+
+.header-lang #language{
+    top:12px;
 }

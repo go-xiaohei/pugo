@@ -20,6 +20,7 @@ func Doc(opt *builder.Option) cli.Command {
 			opt2 := *opt
 			opt2.SrcDir = "doc/source"
 			opt2.TplDir = "doc/theme"
+			opt2.MediaDir = "doc/source/media"
 			opt2.Theme = "default"
 			opt2.TargetDir = "doc/dest"
 			return serveSite(&opt2)

@@ -1,0 +1,24 @@
+<ul class="list-group" id="page-list">
+    <li class="list-group-item">
+        <ul class="list-unstyled">
+            <li><a href="{{.Node.URL `start/intro` .Lang | url}}">{{.I18n.Tr "bar.intro"}}</a></li>
+            <li><a href="{{.Node.URL `start/install` .Lang | url}}">{{.I18n.Tr "bar.install"}}</a></li>
+            <li><a href="#">{{.I18n.Tr "bar.overview"}}</a></li>
+        </ul>
+    </li>
+    <li class="list-group-item">
+        <h5>Writing</h5>
+        <ul class="list-unstyled">
+            <li><a href="#">{{.I18n.Tr "bar.write_post"}}</a></li>
+            <li><a href="#">{{.I18n.Tr "bar.write_page"}}</a></li>
+            <li><a href="#">{{.I18n.Tr "bar.change_meta"}}</a></li>
+            <li><a href="#">{{.I18n.Tr "bar.change_nav"}}</a></li>
+        </ul>
+    </li>
+    <li class="list-group-item">
+        <h5>Publish</h5>
+        <ul class="list-unstyled">
+            <li><a href="#">{{.I18n.Tr "bar.build"}}</a></li>
+        </ul>
+    </li>
+</ul>

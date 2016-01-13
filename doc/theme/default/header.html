@@ -26,6 +26,9 @@
                             <i class="fa fa-globe"></i>
                             <span class="language-text">{{.I18n.Tr "lang"}}</span>
                         </a>
+                        <select name="lang" id="language">{{range .I18ns}}
+                            <option value="{{$.Node.URL $.Page.Slug .Lang | url}}"{{if eq $.I18n.Lang .Lang}} selected{{end}}>{{.Tr "lang"}}</option>{{end}}
+                        </select>
                     </li>
                 </ul>{{end}}
             </div>
