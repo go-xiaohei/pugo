@@ -4,69 +4,58 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/lunny/tango"
+	"net/http"
+
 	"gopkg.in/inconshreveable/log15.v2"
 )
 
 var (
-	logBase   = ""
 	logFormat = "Http.%s.%d.%s" // Http.Method.Url from&duration
 )
 
 // log middleware handler
-func logger() tango.HandlerFunc {
-	return func(ctx *tango.Context) {
-		start := time.Now()
-		p := ctx.Req().URL.Path
-		if len(ctx.Req().URL.RawQuery) > 0 {
-			p = p + "?" + ctx.Req().URL.RawQuery
-		}
-		if action := ctx.Action(); action != nil {
-			if l, ok := action.(tango.LogInterface); ok {
-				l.SetLogger(ctx.Logger)
-			}
-		}
+func logger(w *responseWriter, r *http.Request) {
+	p := r.URL.Path
+	if len(r.URL.RawQuery) > 0 {
+		p = p + "?" + r.URL.RawQuery
+	}
 
-		ctx.Next()
+	if w.status == 0 {
+		http.NotFound(w, r)
+	}
 
-		if !ctx.Written() {
-			if ctx.Result == nil {
-				ctx.Result = tango.NotFound()
-			}
-			ctx.HandleError()
-		}
-
-		// skip static files
-		if ctx.Req().Method == "GET" {
-			if p == "/favicon.ico" || p == "/robots.txt" {
-				return
-			}
-		}
-
-		statusCode := ctx.Status()
-		if statusCode >= 200 && statusCode < 400 {
-			log15.Info(
-				fmt.Sprintf(logFormat, ctx.Req().Method, ctx.Status(), ctx.Req().URL.Path),
-				"path", p,
-				"remote", ctx.IP(),
-				"duration", time.Since(start).Seconds()*1000,
-			)
-		} else if statusCode < 500 {
-			log15.Warn(
-				fmt.Sprintf(logFormat, ctx.Req().Method, ctx.Status(), ctx.Req().URL.Path),
-				"path", p,
-				"remote", ctx.IP(),
-				"duration", time.Since(start).Seconds()*1000,
-				"error", ctx.Result,
-			)
-		} else {
-			log15.Error(
-				fmt.Sprintf(logFormat, ctx.Req().Method, ctx.Status(), ctx.Req().URL.Path),
-				"path", p,
-				"remote", ctx.IP(),
-				"duration", time.Since(start).Seconds()*1000,
-				"error", ctx.Result,
-			)
+	// skip static files
+	if r.Method == "GET" {
+		if p == "/favicon.ico" || p == "/robots.txt" {
+			return
 		}
 	}
+
+	statusCode := w.status
+	if statusCode >= 200 && statusCode < 400 {
+		log15.Info(
+			fmt.Sprintf(logFormat, r.Method, statusCode, r.URL.Path),
+			"path", p,
+			"remote", r.RemoteAddr,
+			"duration", time.Since(w.startTime).Seconds()*1000,
+		)
+		return
+	}
+	if statusCode < 500 {
+		log15.Warn(
+			fmt.Sprintf(logFormat, r.Method, statusCode, r.URL.Path),
+			"path", p,
+			"remote", r.RemoteAddr,
+			"duration", time.Since(w.startTime).Seconds()*1000,
+			"error", w.error,
+		)
+		return
+	}
+	log15.Error(
+		fmt.Sprintf(logFormat, r.Method, statusCode, r.URL.Path),
+		"path", p,
+		"remote", r.RemoteAddr,
+		"duration", time.Since(w.startTime).Seconds()*1000,
+		"error", w.error,
+	)
 }

@@ -1,38 +1,25 @@
 package server
 
 import (
+	"github.com/Unknwon/com"
+	"gopkg.in/inconshreveable/log15.v2"
+	"net/http"
 	"path"
 	"strings"
-
-	"github.com/Unknwon/com"
-	"github.com/lunny/log"
-	"github.com/lunny/tango"
-	"gopkg.in/inconshreveable/log15.v2"
+	"time"
 )
 
-// Server is simple built-in http server
 type Server struct {
-	Tango *tango.Tango // use tango
-
 	dstDir string
 	prefix string
 }
 
-// New returns new server
-// set dstDir to make sure read correct static file
 func New(dstDir string) *Server {
-	t := tango.New([]tango.Handler{
-		tango.Return(),
-		tango.Param(),
-		tango.Contexts(),
-		tango.Recovery(true),
-	}...)
-	t.Logger().(*log.Logger).SetOutputLevel(log.Lerror)
-	return &Server{
-		Tango:  t,
+	s := &Server{
 		dstDir: dstDir,
-		prefix: "/",
 	}
+	s.SetPrefix("")
+	return s
 }
 
 // SetPrefix sets prefix to trim url
@@ -43,55 +30,77 @@ func (s *Server) SetPrefix(prefix string) {
 	s.prefix = prefix
 }
 
-// Run starts server
-func (s *Server) Run(addr string) {
-	log15.Info("Server.Start." + addr)
-	s.Tango.Use(logger())
-	s.Tango.Get("/", s.globalHandler)
-	s.Tango.Get("/*name", s.globalHandler)
-	s.Tango.Run(addr)
-}
-
-func (s *Server) serveFile(ctx *tango.Context, file string) bool {
-	log15.Debug("Dest.File." + file)
+func (s *Server) serveFile(w http.ResponseWriter, r *http.Request, file string) bool {
 	if com.IsFile(file) {
-		ctx.ServeFile(file)
+		log15.Debug("Dest.File.[" + file + "]")
+		http.ServeFile(w, r, file)
 		return true
 	}
 	return false
 }
 
-func (s *Server) serveFiles(ctx *tango.Context, param string) bool {
+func (s *Server) serveFiles(w http.ResponseWriter, r *http.Request, param string) bool {
 	ext := path.Ext(param)
 	if ext == "" || ext == "." {
 		if !strings.HasSuffix(param, "/") {
-			if s.serveFile(ctx, path.Join(s.dstDir, param+".html")) {
+			if s.serveFile(w, r, path.Join(s.dstDir, param+".html")) {
 				return true
 			}
 		}
-		if s.serveFile(ctx, path.Join(s.dstDir, param, "index.html")) {
+		if s.serveFile(w, r, path.Join(s.dstDir, param, "index.html")) {
 			return true
 		}
 	}
-	if s.serveFile(ctx, path.Join(s.dstDir, param)) {
+	if s.serveFile(w, r, path.Join(s.dstDir, param)) {
 		return true
 	}
 	return false
 }
 
-func (s *Server) globalHandler(ctx *tango.Context) {
-	param := ctx.Param("*name")
+func (s *Server) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+	w := &responseWriter{
+		ResponseWriter: rw,
+		startTime:      time.Now(),
+	}
+
+	defer func() {
+		if err := recover(); err != nil {
+			w.error = err
+			if w.status == 0 {
+				http.Error(w, http.StatusText(http.StatusServiceUnavailable), http.StatusServiceUnavailable)
+			}
+		}
+		logger(w, r)
+	}()
+
+	param := r.URL.Path
 	if param == "favicon.ico" || param == "robots.txt" {
-		if !s.serveFiles(ctx, param) {
-			ctx.NotFound()
+		if !s.serveFiles(w, r, param) {
+			http.NotFound(w, r)
 		}
 		return
 	}
-
-	if !strings.HasPrefix("/"+param, s.prefix) {
-		ctx.Redirect(s.prefix)
+	if !strings.HasPrefix(param, s.prefix) {
+		http.Redirect(w, r, s.prefix, 302)
 		return
 	}
-	param = strings.TrimPrefix("/"+param, s.prefix)
-	s.serveFiles(ctx, param)
+	param = strings.TrimPrefix(param, s.prefix)
+	s.serveFiles(w, r, param)
+}
+
+func (s *Server) Run(addr string) {
+	log15.Info("Server.Start." + addr)
+	http.ListenAndServe(addr, s)
+}
+
+type responseWriter struct {
+	http.ResponseWriter
+	status    int
+	startTime time.Time
+	error     interface{}
+}
+
+func (r *responseWriter) WriteHeader(status int) {
+	r.status = status
+	r.ResponseWriter.WriteHeader(status)
 }
