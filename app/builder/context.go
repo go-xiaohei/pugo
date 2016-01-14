@@ -23,6 +23,7 @@ type Context struct {
 	Node          model.NodeGroup
 	indexPosts    []*model.Post // temp posts for index page
 	indexPager    *helper.Pager
+	Data          map[string]*model.Data // custom data from other ini file
 
 	Tags     map[string]*model.Tag
 	tagPosts map[string][]*model.Post

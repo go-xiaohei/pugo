@@ -16,6 +16,7 @@ import (
 	"github.com/go-xiaohei/pugo/app/model"
 	"github.com/go-xiaohei/pugo/app/parser"
 	"gopkg.in/inconshreveable/log15.v2"
+	"gopkg.in/ini.v1"
 )
 
 var (
@@ -46,6 +47,11 @@ func (b *Builder) ReadData(ctx *Context) {
 
 	// post meta process
 	if b.afterMeta(ctx); ctx.Error != nil {
+		return
+	}
+
+	// read extra ini files
+	if b.readExtraData(ctx); ctx.Error != nil {
 		return
 	}
 
@@ -136,6 +142,31 @@ func (b *Builder) afterMeta(ctx *Context) {
 			ctx.Owner = a
 		}
 		a.Avatar = string(replacer([]byte(a.Avatar)))
+	}
+}
+
+func (b *Builder) readExtraData(ctx *Context) {
+	files, err := filepath.Glob(filepath.Join(b.opt.SrcDir, "*.ini"))
+	if err != nil {
+		ctx.Error = err
+		return
+	}
+	if len(ctx.Data) == 0 {
+		ctx.Data = make(map[string]*model.Data)
+	}
+	for _, file := range files {
+		base := filepath.Base(file)
+		if base == "meta.ini" {
+			continue
+		}
+		i, err := ini.Load(file)
+		if err != nil {
+			ctx.Error = err
+			return
+		}
+		base = strings.TrimSuffix(base, path.Ext(base))
+		ctx.Data[base] = model.NewData(i)
+		log15.Debug("ExtraData.Load.[" + file + "]")
 	}
 }
 
