@@ -30,6 +30,10 @@ func (s *Server) SetPrefix(prefix string) {
 	s.prefix = prefix
 }
 
+func (s *Server) GetPrefix() string {
+	return s.prefix
+}
+
 func (s *Server) serveFile(w http.ResponseWriter, r *http.Request, file string) bool {
 	if com.IsFile(file) {
 		log15.Debug("Dest.File.[" + file + "]")

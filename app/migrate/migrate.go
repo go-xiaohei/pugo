@@ -12,7 +12,7 @@ import (
 var (
 	registeredTask map[string]Task
 
-	// OutputDirectory set migrate ouput directory in global
+	// OutputDirectory set migrate output directory in global
 	OutputDirectory = "source"
 
 	ErrMigrateArgsError = fmt.Errorf("migrate args need be 'pugo migrate <type> <source>'")
@@ -33,7 +33,8 @@ baidu =
 
 func init() {
 	registeredTask = map[string]Task{
-		TypeRSS: new(RSSTask),
+		TypeRSS:  new(RSSTask),
+		TypeHexo: new(HexoTask),
 	}
 }
 

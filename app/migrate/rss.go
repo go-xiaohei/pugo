@@ -10,10 +10,13 @@ import (
 	"strings"
 	"time"
 
+	"errors"
 	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo/app/helper"
 	rss "github.com/jteeuwen/go-pkg-rss"
 	"gopkg.in/inconshreveable/log15.v2"
+	"io"
+	"net/http"
 )
 
 const (
@@ -87,7 +90,19 @@ func (rs *RSSTask) Do() (map[string]*bytes.Buffer, error) {
 
 	feed := rss.New(10, true, rs.chanHandler, nil)
 	log15.Debug("RSS.Read." + rs.opt.Source)
-	if err := feed.Fetch(rs.opt.Source, nil); err != nil {
+
+	r, err := http.Get(rs.opt.Source)
+	if err != nil {
+		return nil, err
+	}
+	if r.StatusCode >= 400 {
+		log15.Error("RSS.Read.Fail", "status", r.StatusCode)
+		return nil, errors.New(http.StatusText(r.StatusCode))
+	}
+
+	var buf bytes.Buffer
+	io.Copy(&buf, r.Body)
+	if err := feed.FetchBytes(rs.opt.Source, buf.Bytes(), nil); err != nil {
 		fmt.Fprintf(os.Stderr, "[e] %s: %s\n", rs.opt.Source, err)
 		return nil, err
 	}
