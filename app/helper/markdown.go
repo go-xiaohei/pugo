@@ -46,7 +46,7 @@ func Bytes2Markdown(raw []byte) []byte {
 		blackfriday.EXTENSION_FENCED_CODE |
 		blackfriday.EXTENSION_AUTOLINK |
 		blackfriday.EXTENSION_STRIKETHROUGH |
-		blackfriday.EXTENSION_SPACE_HEADERS |
+		blackfriday.EXTENSION_AUTO_HEADER_IDS |
 		blackfriday.EXTENSION_HEADER_IDS
 
 	return blackfriday.Markdown(raw, renderer, extensions)

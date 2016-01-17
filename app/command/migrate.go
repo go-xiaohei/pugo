@@ -51,7 +51,9 @@ func migrateSite(toDir string) func(ctx *cli.Context) {
 		for filename, b := range files {
 			file := path.Join(migrate.OutputDirectory, filename)
 			if com.IsFile(file) {
-				log15.Warn("Migrate.Conflict", "file", file)
+				log15.Warn("Migrate.OverWrite", "file", file)
+			} else {
+				log15.Debug("Migrate.Write", "file", file)
 			}
 			os.MkdirAll(path.Dir(file), os.ModePerm)
 			if b != nil {
