@@ -22,7 +22,9 @@ func new() *Builder {
 	return &Builder{
 		IsBuilding: false,
 		IsWatching: false,
-		handlers:   []Handler{},
+		handlers: []Handler{
+			readSource,
+		},
 	}
 }
 
@@ -42,8 +44,8 @@ func Build(ctx *Context) {
 	log15.Info("Build|Start")
 	for _, h := range b.handlers {
 		if h(ctx); ctx.Err != nil {
-			log15.Crit("Build|Fail|%s", ctx.Err.Error)
+			log15.Crit("Build|Fail|%s", ctx.Err.Error())
 		}
 	}
-	log15.Info("Build|Done|%s|%s", "a", "b")
+	log15.Info("Build|Done")
 }

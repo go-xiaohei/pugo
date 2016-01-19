@@ -26,7 +26,9 @@ func LogfmtFormat() log15.Format {
 		case log15.LvlDebug:
 			color = 36
 		}
-		t := r.Time.Format("01-02 15:04:05.999")
+
+		r.Ctx = cleanLogCtx(r.Ctx)
+		t := r.Time.Format("01-02 15:04:05.9999")
 		b := &bytes.Buffer{}
 		lvl := strings.ToUpper(r.Lvl.String())
 		format := ""
@@ -42,8 +44,17 @@ func LogfmtFormat() log15.Format {
 }
 
 func friendTime(t string) string {
-	if len(t) < 18 {
-		return t + strings.Repeat(" ", 18-len(t))
+	if len(t) < 19 {
+		return t + strings.Repeat("0", 19-len(t))
 	}
 	return t
+}
+
+func cleanLogCtx(ctx []interface{}) []interface{} {
+	for i, v := range ctx {
+		if v == nil {
+			return ctx[:i]
+		}
+	}
+	return ctx
 }
