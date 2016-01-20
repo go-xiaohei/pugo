@@ -2,159 +2,99 @@ package model
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
-	"html/template"
-	"os"
+	"io/ioutil"
 	"path"
 	"strings"
 	"time"
 
 	"github.com/go-xiaohei/pugo/app/helper"
-	"github.com/go-xiaohei/pugo/app/parser"
+	"github.com/naoina/toml"
 )
 
 var (
-	// ErrPostBlockError means error when parse blocks
-	ErrPostBlockError = errors.New("post-block-wrong")
+	tomlPrefix         = []byte("toml")
+	titleReplacer      = strings.NewReplacer(" ", "-")
+	postBlockSeparator = []byte("```")
+	postBriefSeparator = []byte("<!--more-->")
+	postTimeLayout     = "2006-01-02 15:04:05"
 )
 
-// Post contains data for a post
+// Post contain all fields of a post content
 type Post struct {
-	Title     string  `ini:"title"`
-	Slug      string  `ini:"slug"`
-	Permalink string  `ini:"-"`
-	URL       string  `ini:"-"`
-	Desc      string  `ini:"desc"` // description in a sentence
-	Thumb     string  `ini:"thumb"`
-	Created   Time    `ini:"-"`
-	Updated   Time    `ini:"-"`
-	Author    *Author `ini:"-"`
-	Tags      []*Tag  `ini:"-"`
-	Raw       []byte  `ini:"-"`
-	RawType   string  `ini:"-"`
+	Title      string   `toml:"title"`
+	Slug       string   `toml:"slug"`
+	Desc       string   `toml:"desc"`
+	Date       string   `toml:"date"`
+	Update     string   `toml:"update_date"`
+	AuthorName string   `toml:"author"`
+	Thumb      string   `toml:"thumb"`
+	Tags       []string `toml:"tags"`
+	Author     *Author  `toml:"-"`
 
-	ContentHTML template.HTML
-	PreviewHTML template.HTML
+	dateTime   time.Time
+	updateTime time.Time
 
-	fileName string
-	fileTime time.Time
+	Bytes        []byte
+	contentBytes []byte
+	briefBytes   []byte
+	permaURL     string
+	postURL      string
 }
 
-// post's content html
-func (p *Post) contentHTML() template.HTML {
-	if p.RawType == "markdown" {
-		return helper.Bytes2MarkdownHTML(p.Raw)
-	}
-	return template.HTML(p.Raw)
+// FixURL fix path when assemble posts
+func (p *Post) FixURL(prefix string) {
+	p.permaURL = path.Join(prefix, p.permaURL)
+	p.postURL = path.Join(prefix, p.postURL)
 }
 
-// post's preview html,
-// use "<!--more-->" to separate, return first part
-func (p *Post) previewHTML() template.HTML {
-	bytes := bytes.Split(p.Raw, []byte("<!--more-->"))[0]
-	if p.RawType == "markdown" {
-		return helper.Bytes2MarkdownHTML(bytes)
-	}
-	return template.HTML(bytes)
+// FixPlaceholer fix @placeholder in post values
+func (p *Post) FixPlaceholer(r, hr *strings.Replacer) {
+	p.Thumb = r.Replace(p.Thumb)
+	p.contentBytes = []byte(hr.Replace(string(p.contentBytes)))
+	p.briefBytes = []byte(hr.Replace(string(p.briefBytes)))
 }
 
-// NewPost parses blocks to Post
-func NewPost(blocks []parser.Block, fi os.FileInfo) (*Post, error) {
-	if len(blocks) != 2 {
-		return nil, ErrPostBlockError
+func (p *Post) normalize() error {
+	if p.Slug == "" {
+		p.Slug = titleReplacer.Replace(p.Title)
 	}
-	p := &Post{
-		fileName: fi.Name(),
-		fileTime: fi.ModTime(),
+	var err error
+	if p.dateTime, err = time.Parse(postTimeLayout, p.Date); err != nil {
+		return err
 	}
+	if p.Update == "" {
+		p.Update = p.Date
+		p.updateTime = p.dateTime
+	} else {
+		if p.updateTime, err = time.Parse(postTimeLayout, p.Update); err != nil {
+			return err
+		}
+	}
+	p.contentBytes = helper.Markdown(p.Bytes)
+	p.briefBytes = helper.Markdown(bytes.Split(p.Bytes, postBriefSeparator)[0])
+	p.permaURL = fmt.Sprintf("/%d/%d/%d/%s", p.dateTime.Year(), p.dateTime.Month(), p.dateTime.Day(), p.Slug)
+	p.postURL = p.permaURL + ".html"
+	return nil
+}
 
-	block, ok := blocks[0].(parser.MetaBlock)
-	if !ok {
-		return nil, ErrMetaBlockWrong
-	}
-	if err := block.MapTo("", p); err != nil {
+// NewPostOfMarkdown create new post from markdown file
+func NewPostOfMarkdown(file string) (*Post, error) {
+	fileBytes, err := ioutil.ReadFile(file)
+	if err != nil {
 		return nil, err
 	}
-	if p.Slug == "" {
-		ext := path.Ext(fi.Name())
-		p.Slug = strings.TrimSuffix(fi.Name(), ext)
+	dataSlice := bytes.SplitN(fileBytes, postBlockSeparator, 3)
+	if len(dataSlice) != 3 {
+		return nil, fmt.Errorf("post need toml block and markdown block")
 	}
-	tags := strings.Split(block.Item("tags"), ",")
-	for _, t := range tags {
-		t = strings.TrimSpace(t)
-		if t != "" {
-			p.Tags = append(p.Tags, NewTag(t))
-		}
+	if !bytes.HasPrefix(dataSlice[1], tomlPrefix) {
+		return nil, fmt.Errorf("post need toml block at first")
 	}
-
-	p.Created = NewTime(block.Item("date"), p.fileTime)
-	p.Updated = p.Created
-	if upStr := block.Item("update_date"); upStr != "" {
-		p.Updated = NewTime(upStr, p.fileTime)
+	post := new(Post)
+	if err = toml.Unmarshal(dataSlice[1][4:], post); err != nil {
+		return nil, err
 	}
-	p.Author = &Author{
-		Name:  block.Item("author"),
-		Email: block.Item("author_email"),
-		URL:   block.Item("author_url"),
-	}
-	// author can be nil
-	if p.Author.Name == "" {
-		p.Author = nil
-	}
-
-	// parse markdown block
-	p.RawType = blocks[1].Type()
-	p.Raw = blocks[1].Bytes()
-
-	// build url
-	p.Permalink = fmt.Sprintf("/%d/%d/%d/%s", p.Created.Year, p.Created.Month, p.Created.Day, p.Slug)
-	p.URL = p.Permalink + ".html"
-
-	// compile content
-	p.ContentHTML = p.contentHTML()
-	p.PreviewHTML = p.previewHTML()
-	return p, nil
-}
-
-// Posts are posts list
-type Posts []*Post
-
-// implement sort.Sort interface
-func (p Posts) Len() int           { return len(p) }
-func (p Posts) Less(i, j int) bool { return p[i].Created.Raw.Unix() > p[j].Created.Raw.Unix() }
-func (p Posts) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
-
-// Archive is archive set for posts
-type Archive struct {
-	Year  int // each list by year
-	Posts []*Post
-}
-
-// NewArchive converts posts to archive
-func NewArchive(posts []*Post) []*Archive {
-	archives := []*Archive{}
-	var (
-		last, lastYear int
-	)
-	for _, p := range posts {
-		if len(archives) == 0 {
-			archives = append(archives, &Archive{
-				Year:  p.Created.Year,
-				Posts: []*Post{p},
-			})
-			continue
-		}
-		last = len(archives) - 1
-		lastYear = archives[last].Year
-		if lastYear == p.Created.Year {
-			archives[last].Posts = append(archives[last].Posts, p)
-			continue
-		}
-		archives = append(archives, &Archive{
-			Year:  p.Created.Year,
-			Posts: []*Post{p},
-		})
-	}
-	return archives
+	post.Bytes = bytes.Trim(dataSlice[2], "\n")
+	return post, post.normalize()
 }

@@ -3,6 +3,7 @@ package model
 import (
 	"errors"
 	"net/url"
+	"path"
 )
 
 type (
@@ -20,6 +21,13 @@ type (
 	// NavGroup is group if items of navigation
 	NavGroup []*Nav
 )
+
+// FixURL fix url path of all navigation items
+func (ng NavGroup) FixURL(prefix string) {
+	for _, n := range ng {
+		n.Link = path.Join(prefix, n.Link)
+	}
+}
 
 func (ng NavGroup) normalize() error {
 	for _, n := range ng {

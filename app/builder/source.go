@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/Unknwon/com"
-	"github.com/go-xiaohei/pugo/app2/model"
+	"github.com/go-xiaohei/pugo/app/model"
 	"github.com/naoina/toml"
 	"gopkg.in/inconshreveable/log15.v2"
 )
@@ -53,8 +53,6 @@ func ReadSource(ctx *Context) {
 	var (
 		srcDir = ""
 	)
-	// todo : clean code
-	ctx.From = "dir:///../source"
 	if srcDir, ctx.Err = toDir(ctx.From); ctx.Err != nil {
 		return
 	}

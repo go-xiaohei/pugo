@@ -1,49 +1,21 @@
 package command
 
-import (
-	"github.com/codegangsta/cli"
-	"gopkg.in/inconshreveable/log15.v2"
-	"gopkg.in/inconshreveable/log15.v2/ext"
-)
+import "github.com/codegangsta/cli"
 
 var (
-	debugFlag = cli.BoolFlag{
-		Name:  "debug",
-		Usage: "print debug logs",
+	buildToFlag = cli.StringFlag{
+		Name:  "to",
+		Value: "dir:///public",
+		Usage: "write files to destination or remote path",
+	}
+	buildFromFlag = cli.StringFlag{
+		Name:  "from",
+		Value: "dir:///source",
+		Usage: "read files from source directory or remote path",
 	}
 	themeFlag = cli.StringFlag{
 		Name:  "theme",
-		Value: "default",
-		Usage: "set theme to render",
-	}
-	destFlag = cli.StringFlag{
-		Name:  "dest",
-		Value: "dest",
-		Usage: "set compiling to directory",
-	}
-	srcFlag = cli.StringFlag{
-		Name:  "src",
-		Value: "",
-		Usage: "migrate from source",
-	}
-	addrFlag = cli.StringFlag{
-		Name:  "addr",
-		Value: "0.0.0.0:9899",
-		Usage: "set http server address",
-	}
-	watchFlag = cli.BoolFlag{
-		Name:  "watch",
-		Usage: "watch changes and auto-rebuild",
-	}
-	toFlag = cli.StringFlag{
-		Name:  "to",
-		Usage: "output to directory",
+		Value: "theme/default",
+		Usage: "theme to use (located in flag directory)",
 	}
 )
-
-func setDebugMode(ctx *cli.Context) error {
-	if ctx.Bool("debug") {
-		log15.Root().SetHandler(log15.LvlFilterHandler(log15.LvlDebug, ext.FatalHandler(log15.StderrHandler)))
-	}
-	return nil
-}

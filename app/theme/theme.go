@@ -203,9 +203,14 @@ func (th *Theme) Execute(w io.Writer, name string, data interface{}) error {
 	return tpl.ExecuteTemplate(w, name, data)
 }
 
-// Static gets static dir in the theme
+// StaticDir gets static dir in the theme
+func (th *Theme) StaticDir() string {
+	return path.Join(th.dir, th.Static())
+}
+
+// Static gets static dirname in the theme
 func (th *Theme) Static() string {
-	return path.Join(th.dir, "static")
+	return "static"
 }
 
 // Template gets template by name

@@ -3,7 +3,7 @@ package model
 import (
 	"errors"
 
-	"github.com/go-xiaohei/pugo/app2/helper"
+	"github.com/go-xiaohei/pugo/app/helper"
 )
 
 type (

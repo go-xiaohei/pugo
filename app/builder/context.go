@@ -1,91 +1,38 @@
 package builder
 
-import (
-	"time"
+import "github.com/go-xiaohei/pugo/app/theme"
 
-	"github.com/go-xiaohei/pugo/app/helper"
-	"github.com/go-xiaohei/pugo/app/model"
-	"github.com/go-xiaohei/pugo/app/render"
+type (
+	// Context obtain context in once building process
+	Context struct {
+		// From is source origin
+		From string
+		// To is destination
+		To string
+		// Theme is theme origin
+		ThemeName string
+		// Err is error when context using
+		Err error
+		// Source is sources data
+		Source *Source
+		// Theme is theme object, use to render templates
+		Theme *theme.Theme
+	}
 )
 
-// Context maintains parse data, posts, pages or others
-type Context struct {
-	Theme     *render.Theme
-	DstDir    string // read output destination
-	Version   string
-	BeginTime time.Time
-	Diff      *Diff
-	Error     error
-
-	Posts         []*model.Post
-	PostPageCount int
-	Pages         []*model.Page
-	Node          model.NodeGroup
-	indexPosts    []*model.Post // temp posts for index page
-	indexPager    *helper.Pager
-	Data          map[string]*model.Data // custom data from other ini file
-
-	Tags     map[string]*model.Tag
-	tagPosts map[string][]*model.Post
-
-	// site meta
-	Navs model.Navs
-	Meta *model.Meta
-
-	// i18n
-	I18n      *helper.I18n
-	I18nGroup model.I18nGroup
-
-	// Author
-	Owner   *model.Author
-	Authors model.AuthorMap
-
-	// Comment
-	Comment *model.Comment
-
-	// Build Configuration
-	Conf *model.Conf
-
-	// Analytics
-	Analytics *model.Analytics
-
-	staticPath string
-	mediaPath  string
-}
-
-// NewContext creates new build context with destination directory and version string
-func NewContext(dest, ver string) *Context {
-	ctx := &Context{
-		DstDir:    dest,
-		Version:   ver,
-		BeginTime: time.Now(),
-		Diff:      newDiff(),
+// NewContext create new Context with from,to and theme args
+func NewContext(from, to, theme string) *Context {
+	return &Context{
+		From:      from,
+		To:        to,
+		ThemeName: theme,
 	}
-	return ctx
 }
 
-// ViewData returns global view data for template compilation
-func (ctx *Context) ViewData() map[string]interface{} {
-	m := map[string]interface{}{
-		"Version":   ctx.Version,
-		"Nav":       ctx.Navs,
-		"Meta":      ctx.Meta,
-		"Title":     ctx.Meta.Title + " - " + ctx.Meta.Subtitle,
-		"Desc":      ctx.Meta.Desc,
-		"Comment":   ctx.Comment,
-		"Root":      ctx.Meta.Base,
-		"Owner":     ctx.Owner,
-		"I18n":      ctx.I18n,
-		"I18ns":     ctx.I18nGroup,
-		"Analytics": ctx.Analytics,
-		"Node":      model.NodeGroupPub(ctx.Node),
-		"Lang":      ctx.Meta.Lang,
+// IsValid check context requirement, there must have values in some fields
+func (ctx *Context) IsValid() bool {
+	if ctx.From == "" || ctx.To == "" || ctx.ThemeName == "" {
+		return false
 	}
-	ctx.Navs.I18n(ctx.I18n)
-	return m
-}
-
-// Duration returns duration of build process
-func (ctx *Context) Duration() time.Duration {
-	return time.Since(ctx.BeginTime)
+	return true
 }
