@@ -40,6 +40,7 @@ type Post struct {
 	briefBytes   []byte
 	permaURL     string
 	postURL      string
+	treeURL      string
 }
 
 // FixURL fix path when assemble posts
@@ -75,6 +76,7 @@ func (p *Post) normalize() error {
 	p.briefBytes = helper.Markdown(bytes.Split(p.Bytes, postBriefSeparator)[0])
 	p.permaURL = fmt.Sprintf("/%d/%d/%d/%s", p.dateTime.Year(), p.dateTime.Month(), p.dateTime.Day(), p.Slug)
 	p.postURL = p.permaURL + ".html"
+	p.treeURL = p.permaURL
 	return nil
 }
 

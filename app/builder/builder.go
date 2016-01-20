@@ -49,8 +49,11 @@ func Build(ctx *Context) {
 	for _, h := range b.handlers {
 		if h(ctx); ctx.Err != nil {
 			log15.Crit("Build|Fail|%s", ctx.Err.Error())
+			break
 		}
 	}
-	log15.Info("Build|Done")
+	if ctx.Err == nil {
+		log15.Info("Build|Done")
+	}
 	b.IsBuilding = false
 }

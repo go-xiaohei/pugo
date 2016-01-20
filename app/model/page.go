@@ -30,6 +30,7 @@ type Page struct {
 
 	permaURL     string
 	pageURL      string
+	treeURL      string
 	contentBytes []byte
 	dateTime     time.Time
 	updateTime   time.Time
@@ -73,6 +74,7 @@ func (p *Page) normalize() error {
 		p.permaURL = fmt.Sprintf("/%s/%s", p.Lang, p.Slug)
 		p.pageURL = p.permaURL + ".html"
 	}
+	p.treeURL = p.Slug
 	return nil
 }
 
