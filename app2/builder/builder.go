@@ -23,7 +23,9 @@ func new() *Builder {
 		IsBuilding: false,
 		IsWatching: false,
 		handlers: []Handler{
-			readSource,
+			ReadSource,
+			ReadTheme,
+			AssembleSource,
 		},
 	}
 }
@@ -41,6 +43,7 @@ func After(fn Handler) {
 // Build do a process with Context.
 // the context should be prepared before building.
 func Build(ctx *Context) {
+	b.IsBuilding = true
 	log15.Info("Build|Start")
 	for _, h := range b.handlers {
 		if h(ctx); ctx.Err != nil {
@@ -48,4 +51,5 @@ func Build(ctx *Context) {
 		}
 	}
 	log15.Info("Build|Done")
+	b.IsBuilding = false
 }

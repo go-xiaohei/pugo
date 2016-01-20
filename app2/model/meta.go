@@ -14,6 +14,36 @@ type (
 	}
 	// MetaAll is all datat structs in meta.toml
 	MetaAll struct {
-		Meta *Meta `toml:"meta"`
+		Meta        *Meta       `toml:"meta"`
+		NavGroup    NavGroup    `toml:"nav"`
+		AuthorGroup AuthorGroup `toml:"author"`
+		Comment     *Comment    `toml:"comment"`
+		Analytics   *Analytics  `toml:"analytics"`
 	}
 )
+
+func (m *Meta) normalize() {
+	if m.Root == "" && m.Domain != "" {
+		m.Root = "http://" + m.Domain + "/"
+	}
+	if m.Desc == "" {
+		m.Desc = m.Title
+	}
+	if m.Keyword == "" {
+		m.Keyword = m.Title
+	}
+}
+
+// Normalize make meta all data correct,
+// it fills blank fields to correct values
+func (ma *MetaAll) Normalize() error {
+	var err error
+	ma.Meta.normalize()
+	if err = ma.NavGroup.normalize(); err != nil {
+		return err
+	}
+	if err = ma.AuthorGroup.normalize(); err != nil {
+		return err
+	}
+	return nil
+}
