@@ -8,9 +8,10 @@ import (
 	"strings"
 	"time"
 
+	"html/template"
+
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/naoina/toml"
-	"html/template"
 )
 
 var (
@@ -30,7 +31,8 @@ type Post struct {
 	Update     string   `toml:"update_date"`
 	AuthorName string   `toml:"author"`
 	Thumb      string   `toml:"thumb"`
-	Tags       []string `toml:"tags"`
+	TagString  []string `toml:"tags"`
+	Tags       []*Tag   `toml:"-"`
 	Author     *Author  `toml:"-"`
 
 	dateTime   time.Time
@@ -57,32 +59,49 @@ func (p *Post) FixPlaceholder(r, hr *strings.Replacer) {
 	p.briefBytes = []byte(hr.Replace(string(p.briefBytes)))
 }
 
+// TreeURL get tree path of the post, use to create *Tree
 func (p *Post) TreeURL() string {
 	return p.treeURL
 }
 
+// URL get url of the post
 func (p *Post) URL() string {
-	return p.URL()
+	return p.postURL
 }
 
+// Permalink get permalink of the post
 func (p *Post) Permalink() string {
 	return p.permaURL
 }
 
+// ContentHTML get html content
 func (p *Post) ContentHTML() template.HTML {
 	return template.HTML(p.contentBytes)
 }
 
+// Content get html content bytes
 func (p *Post) Content() []byte {
 	return p.contentBytes
 }
 
+// BriefHTML get brief html content
 func (p *Post) BriefHTML() template.HTML {
 	return template.HTML(p.briefBytes)
 }
 
+// Brief get brief content bytes
 func (p *Post) Brief() []byte {
 	return p.briefBytes
+}
+
+// Created get create time
+func (p *Post) Created() time.Time {
+	return p.dateTime
+}
+
+// Updated get update time
+func (p *Post) Updated() time.Time {
+	return p.updateTime
 }
 
 func (p *Post) normalize() error {
@@ -106,6 +125,9 @@ func (p *Post) normalize() error {
 	p.permaURL = fmt.Sprintf("/%d/%d/%d/%s", p.dateTime.Year(), p.dateTime.Month(), p.dateTime.Day(), p.Slug)
 	p.postURL = p.permaURL + ".html"
 	p.treeURL = p.permaURL
+	for _, t := range p.TagString {
+		p.Tags = append(p.Tags, NewTag(t))
+	}
 	return nil
 }
 

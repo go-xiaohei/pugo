@@ -4,6 +4,8 @@ import (
 	"errors"
 	"net/url"
 	"path"
+
+	"github.com/go-xiaohei/pugo/app/helper"
 )
 
 type (
@@ -13,14 +15,19 @@ type (
 		Title       string `toml:"title"`
 		OriginTitle string `toml:"-"`
 		IsBlank     bool   `toml:"blank"`
-		IconClass   string `toml:"icon"`
-		HoverClass  string `toml:"hover"`
+		Icon        string `toml:"icon"`
+		Hover       string `toml:"hover"`
 		I18n        string `toml:"i18n"`
 		IsRemote    bool   `toml:"-"`
 	}
 	// NavGroup is group if items of navigation
 	NavGroup []*Nav
 )
+
+// Tr print nav title with i18n helper
+func (n *Nav) Tr(i18n *helper.I18n) string {
+	return i18n.Tr("nav." + n.I18n)
+}
 
 // FixURL fix url path of all navigation items
 func (ng NavGroup) FixURL(prefix string) {

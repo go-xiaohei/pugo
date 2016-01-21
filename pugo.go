@@ -5,22 +5,14 @@ import (
 
 	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo/app/command"
-)
-
-const (
-	// Name is app name
-	Name = "PuGo"
-	// Desc is app usage
-	Desc = "A Fast Static Site Generator"
-	// Version is app version number
-	Version = "0.10.0 (beta)"
+	"github.com/go-xiaohei/pugo/app/vars"
 )
 
 func main() {
 	app := cli.NewApp()
-	app.Name = Name
-	app.Usage = Desc
-	app.Version = Version
+	app.Name = vars.Name
+	app.Usage = vars.Desc
+	app.Version = vars.Version
 	app.Compiled = time.Now()
 	app.Before = command.Before
 	app.Commands = []cli.Command{

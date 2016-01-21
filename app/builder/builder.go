@@ -53,7 +53,7 @@ func Build(ctx *Context) {
 		}
 	}
 	if ctx.Err == nil {
-		log15.Info("Build|Done")
+		log15.Info("Build|Done|%.1fms", ctx.Duration()*1e3)
 	}
 	b.IsBuilding = false
 }
