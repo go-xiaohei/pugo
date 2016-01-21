@@ -9,7 +9,10 @@ import (
 	"path/filepath"
 	"strings"
 
+	"sort"
+
 	"github.com/Unknwon/com"
+	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/go-xiaohei/pugo/app/model"
 	"github.com/naoina/toml"
 	"gopkg.in/inconshreveable/log15.v2"
@@ -26,6 +29,8 @@ type (
 		Analytics *model.Analytics
 		Posts     []*model.Post
 		Pages     []*model.Page
+		I18n      map[string]*helper.I18n
+        Tree *model.Tree
 	}
 )
 
@@ -72,6 +77,9 @@ func ReadSource(ctx *Context) {
 	}
 	ctx.Source = NewSource(metaAll)
 
+	if ctx.Source.I18n, ctx.Err = ReadLang(srcDir); ctx.Err != nil {
+		return
+	}
 	if ctx.Source.Posts, ctx.Err = ReadPosts(srcDir); ctx.Err != nil {
 		return
 	}
@@ -101,6 +109,37 @@ func ReadMeta(srcDir string) (*model.MetaAll, error) {
 	return meta, nil
 }
 
+func ReadLang(srcDir string) (map[string]*helper.I18n, error) {
+	srcDir = filepath.Join(srcDir, "lang")
+	if !com.IsDir(srcDir) {
+		return nil, nil
+	}
+	langs := make(map[string]*helper.I18n)
+	err := filepath.Walk(srcDir, func(p string, fi os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if fi.IsDir() {
+			return nil
+		}
+		if filepath.Ext(p) == ".toml" {
+			log15.Debug("Build|Load|%s", p)
+			b, err := ioutil.ReadFile(p)
+			if err != nil {
+				return err
+			}
+			lang := strings.TrimSuffix(filepath.Base(p), filepath.Ext(p))
+			i18n, err := helper.NewI18n(lang, b)
+			if err != nil {
+				return err
+			}
+			langs[lang] = i18n
+		}
+		return nil
+	})
+	return langs, err
+}
+
 // ReadPosts read posts files in srcDir/post
 func ReadPosts(srcDir string) ([]*model.Post, error) {
 	srcDir = filepath.Join(srcDir, "post")
@@ -126,6 +165,7 @@ func ReadPosts(srcDir string) ([]*model.Post, error) {
 		}
 		return nil
 	})
+	sort.Sort(model.Posts(posts))
 	return posts, err
 }
 

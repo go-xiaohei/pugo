@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/naoina/toml"
+	"html/template"
 )
 
 var (
@@ -49,11 +50,39 @@ func (p *Post) FixURL(prefix string) {
 	p.postURL = path.Join(prefix, p.postURL)
 }
 
-// FixPlaceholer fix @placeholder in post values
-func (p *Post) FixPlaceholer(r, hr *strings.Replacer) {
+// FixPlaceholder fix @placeholder in post values
+func (p *Post) FixPlaceholder(r, hr *strings.Replacer) {
 	p.Thumb = r.Replace(p.Thumb)
 	p.contentBytes = []byte(hr.Replace(string(p.contentBytes)))
 	p.briefBytes = []byte(hr.Replace(string(p.briefBytes)))
+}
+
+func (p *Post) TreeURL() string {
+	return p.treeURL
+}
+
+func (p *Post) URL() string {
+	return p.URL()
+}
+
+func (p *Post) Permalink() string {
+	return p.permaURL
+}
+
+func (p *Post) ContentHTML() template.HTML {
+	return template.HTML(p.contentBytes)
+}
+
+func (p *Post) Content() []byte {
+	return p.contentBytes
+}
+
+func (p *Post) BriefHTML() template.HTML {
+	return template.HTML(p.briefBytes)
+}
+
+func (p *Post) Brief() []byte {
+	return p.briefBytes
 }
 
 func (p *Post) normalize() error {
@@ -100,3 +129,11 @@ func NewPostOfMarkdown(file string) (*Post, error) {
 	post.Bytes = bytes.Trim(dataSlice[2], "\n")
 	return post, post.normalize()
 }
+
+// Posts are posts list
+type Posts []*Post
+
+// implement sort.Sort interface
+func (p Posts) Len() int           { return len(p) }
+func (p Posts) Less(i, j int) bool { return p[i].dateTime.Unix() > p[j].dateTime.Unix() }
+func (p Posts) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }

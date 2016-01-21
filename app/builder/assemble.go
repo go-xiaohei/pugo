@@ -2,6 +2,7 @@ package builder
 
 import (
 	"fmt"
+	"github.com/go-xiaohei/pugo/app/model"
 	"path"
 	"strings"
 )
@@ -16,18 +17,21 @@ func AssembleSource(ctx *Context) {
 	}
 
 	ctx.Source.Nav.FixURL(ctx.Source.Meta.Path)
+	ctx.Source.Tree = model.NewTree()
 
 	r, hr := newReplacer("/"+ctx.Theme.Static()), newReplacerInHTML("/"+ctx.Theme.Static())
 	if ctx.Source.Meta.Path != "" && ctx.Source.Meta.Path != "/" {
 		for _, p := range ctx.Source.Posts {
 			p.FixURL(ctx.Source.Meta.Path)
-			p.FixPlaceholer(r, hr)
+			p.FixPlaceholder(r, hr)
 			p.Author = ctx.Source.Authors[p.AuthorName]
+			ctx.Source.Tree.Add(p.TreeURL(), model.TreePost, 0)
 		}
 		for _, p := range ctx.Source.Pages {
 			p.FixURL(ctx.Source.Meta.Path)
-			p.FixPlaceholer(hr)
+			p.FixPlaceholder(hr)
 			p.Author = ctx.Source.Authors[p.AuthorName]
+			ctx.Source.Tree.Add(p.TreeURL(), model.TreePage, p.Sort)
 		}
 	}
 	if ctx.Err = ctx.Theme.Load(); ctx.Err != nil {
