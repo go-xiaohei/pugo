@@ -10,6 +10,8 @@ _test
 dest
 upload
 doc/dest
+public
+doc/public
 
 # Architecture specific extensions/prefixes
 *.[568vq]

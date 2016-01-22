@@ -27,10 +27,15 @@ type (
 		Authors   map[string]*model.Author
 		Comment   *model.Comment
 		Analytics *model.Analytics
-		Posts     []*model.Post
-		Pages     []*model.Page
 		I18n      map[string]*helper.I18n
-        Tree *model.Tree
+
+		Posts    []*model.Post
+		PostPage int
+		Archive  []*model.Archive
+		Pages    []*model.Page
+		Tree     *model.Tree
+		Tags     map[string]*model.Tag
+		tagPosts map[string][]*model.Post
 	}
 )
 

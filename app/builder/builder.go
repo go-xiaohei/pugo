@@ -27,6 +27,7 @@ func new() *Builder {
 			ReadTheme,
 			AssembleSource,
 			Compile,
+			Copy,
 		},
 	}
 }
@@ -52,6 +53,7 @@ func Build(ctx *Context) {
 			break
 		}
 	}
+	log15.Info("Build|%d Pages", ctx.counter)
 	if ctx.Err == nil {
 		log15.Info("Build|Done|%.1fms", ctx.Duration()*1e3)
 	}

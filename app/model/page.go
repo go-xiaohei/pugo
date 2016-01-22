@@ -42,7 +42,7 @@ func (p *Page) TreeURL() string {
 }
 
 func (p *Page) URL() string {
-    return p.URL()
+    return p.pageURL
 }
 
 func (p *Page) Permalink() string {
@@ -67,6 +67,17 @@ func (p *Page) FixURL(prefix string) {
 func (p *Page) FixPlaceholder(hr *strings.Replacer) {
 	p.contentBytes = []byte(hr.Replace(string(p.contentBytes)))
 }
+
+// Created get create time
+func (p *Page) Created() time.Time {
+    return p.dateTime
+}
+
+// Updated get update time
+func (p *Page) Updated() time.Time {
+    return p.updateTime
+}
+
 
 func (p *Page) normalize() error {
 	if p.Slug == "" {

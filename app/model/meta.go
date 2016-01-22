@@ -3,6 +3,8 @@ package model
 import (
 	"fmt"
 	"net/url"
+	"path"
+	"strings"
 )
 
 type (
@@ -18,7 +20,7 @@ type (
 		Language string `toml:"lang"`
 		Path     string `toml:"-"`
 	}
-	// MetaAll is all datat structs in meta.toml
+	// MetaAll is all data struct in meta.toml
 	MetaAll struct {
 		Meta        *Meta       `toml:"meta"`
 		NavGroup    NavGroup    `toml:"nav"`
@@ -27,6 +29,12 @@ type (
 		Analytics   *Analytics  `toml:"analytics"`
 	}
 )
+
+func (m *Meta) DomainURL(link string) string {
+	link = strings.TrimPrefix(link, m.Path)
+	link = strings.Trim(link, "/")
+	return fmt.Sprintf("http://%s/%s", m.Domain, path.Join(strings.Trim(m.Path, "/"), link))
+}
 
 func (m *Meta) normalize() error {
 	if m.Root == "" || m.Domain == "" || m.Title == "" {

@@ -25,6 +25,7 @@ type (
 		Theme *theme.Theme
 
 		time time.Time
+        counter int64
 	}
 )
 

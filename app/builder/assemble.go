@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/go-xiaohei/pugo/app/model"
 	"path"
+	"sort"
 	"strings"
 )
 
@@ -18,6 +19,8 @@ func AssembleSource(ctx *Context) {
 
 	ctx.Source.Nav.FixURL(ctx.Source.Meta.Path)
 	ctx.Source.Tree = model.NewTree()
+	ctx.Source.Tags = make(map[string]*model.Tag)
+	ctx.Source.tagPosts = make(map[string][]*model.Post)
 
 	r, hr := newReplacer("/"+ctx.Theme.Static()), newReplacerInHTML("/"+ctx.Theme.Static())
 	if ctx.Source.Meta.Path != "" && ctx.Source.Meta.Path != "/" {
@@ -25,15 +28,24 @@ func AssembleSource(ctx *Context) {
 			p.FixURL(ctx.Source.Meta.Path)
 			p.FixPlaceholder(r, hr)
 			p.Author = ctx.Source.Authors[p.AuthorName]
-			ctx.Source.Tree.Add(p.TreeURL(), model.TreePost, 0)
+			for _, t := range p.Tags {
+				ctx.Source.Tags[t.Name] = t
+				ctx.Source.tagPosts[t.Name] = append(ctx.Source.tagPosts[t.Name], p)
+			}
 		}
 		for _, p := range ctx.Source.Pages {
 			p.FixURL(ctx.Source.Meta.Path)
 			p.FixPlaceholder(hr)
 			p.Author = ctx.Source.Authors[p.AuthorName]
-			ctx.Source.Tree.Add(p.TreeURL(), model.TreePage, p.Sort)
+			// ctx.Source.Tree.Add(p.TreeURL(), model.TreePage, p.Sort)
 		}
 	}
+	for _, posts := range ctx.Source.tagPosts {
+		sort.Sort(model.Posts(posts))
+	}
+
+	ctx.Source.Archive = model.NewArchive(ctx.Source.Posts)
+
 	if ctx.Err = ctx.Theme.Load(); ctx.Err != nil {
 		return
 	}

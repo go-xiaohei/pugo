@@ -32,6 +32,9 @@ func (n *Nav) Tr(i18n *helper.I18n) string {
 // FixURL fix url path of all navigation items
 func (ng NavGroup) FixURL(prefix string) {
 	for _, n := range ng {
+		if n.IsRemote {
+			continue
+		}
 		n.Link = path.Join(prefix, n.Link)
 	}
 }
