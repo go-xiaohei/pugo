@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/naoina/toml"
-    "html/template"
+	"html/template"
 )
 
 // Page contain all fields of a page content
@@ -38,23 +38,23 @@ type Page struct {
 }
 
 func (p *Page) TreeURL() string {
-    return p.treeURL
+	return p.treeURL
 }
 
 func (p *Page) URL() string {
-    return p.pageURL
+	return p.pageURL
 }
 
 func (p *Page) Permalink() string {
-    return p.permaURL
+	return p.permaURL
 }
 
 func (p *Page) ContentHTML() template.HTML {
-    return template.HTML(p.contentBytes)
+	return template.HTML(p.contentBytes)
 }
 
 func (p *Page) Content() []byte {
-    return p.contentBytes
+	return p.contentBytes
 }
 
 // FixURL fix path when assemble posts
@@ -70,14 +70,13 @@ func (p *Page) FixPlaceholder(hr *strings.Replacer) {
 
 // Created get create time
 func (p *Page) Created() time.Time {
-    return p.dateTime
+	return p.dateTime
 }
 
 // Updated get update time
 func (p *Page) Updated() time.Time {
-    return p.updateTime
+	return p.updateTime
 }
-
 
 func (p *Page) normalize() error {
 	if p.Slug == "" {
