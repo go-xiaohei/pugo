@@ -2,10 +2,11 @@ package builder
 
 import (
 	"fmt"
-	"github.com/go-xiaohei/pugo/app/model"
 	"path"
 	"sort"
 	"strings"
+
+	"github.com/go-xiaohei/pugo/app/model"
 )
 
 // AssembleSource assemble some extra data in Source,
@@ -18,9 +19,9 @@ func AssembleSource(ctx *Context) {
 	}
 
 	ctx.Source.Nav.FixURL(ctx.Source.Meta.Path)
-	ctx.Source.Tree = model.NewTree()
 	ctx.Source.Tags = make(map[string]*model.Tag)
 	ctx.Source.tagPosts = make(map[string][]*model.Post)
+	ctx.Tree = model.NewTree()
 
 	r, hr := newReplacer("/"+ctx.Theme.Static()), newReplacerInHTML("/"+ctx.Theme.Static())
 	if ctx.Source.Meta.Path != "" && ctx.Source.Meta.Path != "/" {

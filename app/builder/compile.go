@@ -25,6 +25,7 @@ func Compile(ctx *Context) {
 	if destDir, ctx.Err = toDir(ctx.To); ctx.Err != nil {
 		return
 	}
+	ctx.dstDir = destDir
 	if ctx.Err = compilePosts(ctx, destDir); ctx.Err != nil {
 		return
 	}
@@ -34,7 +35,6 @@ func Compile(ctx *Context) {
 	if ctx.Err = compileXML(ctx, destDir); ctx.Err != nil {
 		return
 	}
-	ctx.Source.Tree.Print("")
 }
 
 func compilePosts(ctx *Context, toDir string) error {
@@ -62,7 +62,7 @@ func compilePosts(ctx *Context, toDir string) error {
 			return err
 		}
 
-		ctx.Source.Tree.Add(p.TreeURL(), model.TreePost, 0)
+		ctx.Tree.Add(p.TreeURL(), model.TreePost, 0)
 	}
 
 	// build posts
@@ -98,7 +98,7 @@ func compilePosts(ctx *Context, toDir string) error {
 			return err
 		}
 
-		ctx.Source.Tree.Add(fmt.Sprintf(layout, pager.Current), model.TreePostList, 0)
+		ctx.Tree.Add(fmt.Sprintf(layout, pager.Current), model.TreePostList, 0)
 
 		if page == 1 {
 
@@ -119,7 +119,7 @@ func compilePosts(ctx *Context, toDir string) error {
 				return err
 			}
 
-			ctx.Source.Tree.Add("index.html", model.TreeIndex, 0)
+			ctx.Tree.Add("index.html", model.TreeIndex, 0)
 		}
 		page++
 	}
@@ -135,7 +135,7 @@ func compilePosts(ctx *Context, toDir string) error {
 	if err = compile(ctx, "archive.html", viewData, dstFile); err != nil {
 		return err
 	}
-	ctx.Source.Tree.Add("archive.html", model.TreeArchive, 0)
+	ctx.Tree.Add("archive.html", model.TreeArchive, 0)
 
 	// build tag posts
 	for t, posts := range ctx.Source.tagPosts {
@@ -150,7 +150,7 @@ func compilePosts(ctx *Context, toDir string) error {
 		if err = compile(ctx, "posts.html", viewData, dstFile); err != nil {
 			return err
 		}
-		ctx.Source.Tree.Add(path.Join(ctx.Source.Meta.Path, ctx.Source.Tags[t].URL), model.TreePostTag, 0)
+		ctx.Tree.Add(path.Join(ctx.Source.Meta.Path, ctx.Source.Tags[t].URL), model.TreePostTag, 0)
 	}
 	return nil
 }
@@ -180,7 +180,7 @@ func compilePages(ctx *Context, toDir string) error {
 			return err
 		}
 
-		ctx.Source.Tree.Add(p.TreeURL(), model.TreePage, p.Sort)
+		ctx.Tree.Add(p.TreeURL(), model.TreePage, p.Sort)
 	}
 	return nil
 }
@@ -195,6 +195,7 @@ func compile(ctx *Context, file string, viewData map[string]interface{}, destFil
 	if err := ctx.Theme.Execute(f, file, viewData); err != nil {
 		return err
 	}
+	ctx.Files.Add(destFile, 0, ctx.time, model.FileCompiled)
 	log15.Debug("Build|To|%s", destFile)
 	atomic.AddInt64(&ctx.counter, 1)
 	return nil
@@ -241,6 +242,7 @@ func compileXML(ctx *Context, toDir string) error {
 	if err = feed.WriteRss(f); err != nil {
 		return err
 	}
+	ctx.Files.Add(dstFile, 0, ctx.time, model.FileCompiled)
 	log15.Debug("Build|To|%s", dstFile)
 	atomic.AddInt64(&ctx.counter, 1)
 
@@ -302,6 +304,7 @@ func compileXML(ctx *Context, toDir string) error {
 	if err = ioutil.WriteFile(dstFile, buf.Bytes(), os.ModePerm); err != nil {
 		return err
 	}
+	ctx.Files.Add(dstFile, 0, ctx.time, model.FileCompiled)
 	log15.Debug("Build|To|%s", dstFile)
 	atomic.AddInt64(&ctx.counter, 1)
 	return nil

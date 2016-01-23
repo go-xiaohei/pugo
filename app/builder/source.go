@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -33,7 +32,6 @@ type (
 		PostPage int
 		Archive  []*model.Archive
 		Pages    []*model.Page
-		Tree     *model.Tree
 		Tags     map[string]*model.Tag
 		tagPosts map[string][]*model.Post
 	}
@@ -70,6 +68,7 @@ func ReadSource(ctx *Context) {
 		ctx.Err = fmt.Errorf("Directory '%s' is missing", srcDir)
 		return
 	}
+	ctx.srcDir = srcDir
 	log15.Debug("Build|Source|%s", srcDir)
 
 	// read meta
@@ -114,6 +113,7 @@ func ReadMeta(srcDir string) (*model.MetaAll, error) {
 	return meta, nil
 }
 
+// ReadLang read languages in srcDir
 func ReadLang(srcDir string) (map[string]*helper.I18n, error) {
 	srcDir = filepath.Join(srcDir, "lang")
 	if !com.IsDir(srcDir) {
@@ -203,12 +203,8 @@ func ReadPages(srcDir string) ([]*model.Page, error) {
 }
 
 func toDir(urlString string) (string, error) {
-	u, err := url.Parse(urlString)
-	if err != nil {
-		return "", err
+	if strings.HasPrefix(urlString, "dir://") {
+		return strings.TrimPrefix(urlString, "dir://"), nil
 	}
-	if u.Scheme == "dir" || u.Scheme == "file" {
-		return strings.Trim(u.Path, "/"), nil
-	}
-	return "", errors.New("Directory need schema dir:// or file ://")
+	return "", errors.New("Directory need schema dir://")
 }

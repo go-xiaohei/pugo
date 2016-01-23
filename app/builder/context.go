@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/go-xiaohei/pugo/app/helper"
+	"github.com/go-xiaohei/pugo/app/model"
 	"github.com/go-xiaohei/pugo/app/theme"
 	"github.com/go-xiaohei/pugo/app/vars"
 )
@@ -23,9 +24,14 @@ type (
 		Source *Source
 		// Theme is theme object, use to render templates
 		Theme *theme.Theme
+		// Files is generated files in by this context
+		Files *model.Files
+		// Tree is url tree nodes by this context
+		Tree *model.Tree
 
-		time time.Time
-        counter int64
+		time           time.Time
+		counter        int64
+		srcDir, dstDir string
 	}
 )
 
@@ -36,6 +42,7 @@ func NewContext(from, to, theme string) *Context {
 		To:        to,
 		ThemeName: theme,
 		time:      time.Now(),
+		Files:     model.NewFiles(),
 	}
 }
 
@@ -50,7 +57,7 @@ func (ctx *Context) View() map[string]interface{} {
 		"Comment":   ctx.Source.Comment,
 		"Owner":     ctx.Source.Owner,
 		"Analytics": ctx.Source.Analytics,
-		"Tree":      ctx.Source.Tree,
+		"Tree":      ctx.Tree,
 		"Lang":      ctx.Source.Meta.Language,
 		"Hover":     "",
 		"Path":      ctx.Source.Meta.Path,
