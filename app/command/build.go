@@ -17,7 +17,9 @@ var (
 			buildFromFlag,
 			buildToFlag,
 			themeFlag,
+			debugFlag,
 		},
+		Before: Before,
 		Action: build,
 	}
 )

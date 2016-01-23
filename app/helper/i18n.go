@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/naoina/toml"
+	"github.com/BurntSushi/toml"
 )
 
 // I18n object
@@ -15,7 +15,7 @@ type I18n struct {
 
 // Tr converts string
 func (i *I18n) Tr(str string) string {
-	strSlice := strings.Split(str, ",")
+	strSlice := strings.Split(str, ".")
 	if len(strSlice) != 2 {
 		return str
 	}

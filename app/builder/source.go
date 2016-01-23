@@ -10,10 +10,10 @@ import (
 
 	"sort"
 
+	"github.com/BurntSushi/toml"
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/go-xiaohei/pugo/app/model"
-	"github.com/naoina/toml"
 	"gopkg.in/inconshreveable/log15.v2"
 )
 
@@ -69,7 +69,7 @@ func ReadSource(ctx *Context) {
 		return
 	}
 	ctx.srcDir = srcDir
-	log15.Debug("Build|Source|%s", srcDir)
+	log15.Info("Build|Source|%s", srcDir)
 
 	// read meta
 	// then read posts,
@@ -203,6 +203,9 @@ func ReadPages(srcDir string) ([]*model.Page, error) {
 }
 
 func toDir(urlString string) (string, error) {
+	if !strings.Contains(urlString, "://") {
+		return urlString, nil
+	}
 	if strings.HasPrefix(urlString, "dir://") {
 		return strings.TrimPrefix(urlString, "dir://"), nil
 	}

@@ -23,7 +23,7 @@ func AssembleSource(ctx *Context) {
 	ctx.Source.tagPosts = make(map[string][]*model.Post)
 	ctx.Tree = model.NewTree()
 
-	r, hr := newReplacer("/"+ctx.Theme.Static()), newReplacerInHTML("/"+ctx.Theme.Static())
+	r, hr := newReplacer(ctx.Source.Meta.Path), newReplacerInHTML(ctx.Source.Meta.Path)
 	if ctx.Source.Meta.Path != "" && ctx.Source.Meta.Path != "/" {
 		for _, p := range ctx.Source.Posts {
 			p.FixURL(ctx.Source.Meta.Path)
@@ -38,7 +38,6 @@ func AssembleSource(ctx *Context) {
 			p.FixURL(ctx.Source.Meta.Path)
 			p.FixPlaceholder(hr)
 			p.Author = ctx.Source.Authors[p.AuthorName]
-			// ctx.Source.Tree.Add(p.TreeURL(), model.TreePage, p.Sort)
 		}
 	}
 	for _, posts := range ctx.Source.tagPosts {
@@ -54,7 +53,6 @@ func AssembleSource(ctx *Context) {
 
 func newReplacer(static string) *strings.Replacer {
 	return strings.NewReplacer(
-		"@static", static,
 		"@media", path.Join(static, "media"),
 	)
 }
@@ -62,8 +60,6 @@ func newReplacer(static string) *strings.Replacer {
 func newReplacerInHTML(static string) *strings.Replacer {
 	media := path.Join(static, "media")
 	return strings.NewReplacer(
-		`src="@static`, fmt.Sprintf(`src="%s`, static),
-		`href="@static`, fmt.Sprintf(`href="%s`, static),
 		`src="@media`, fmt.Sprintf(`src="%s`, media),
 		`href="@media`, fmt.Sprintf(`src="%s`, media),
 	)

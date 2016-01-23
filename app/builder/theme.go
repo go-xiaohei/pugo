@@ -14,10 +14,11 @@ func ReadTheme(ctx *Context) {
 		ctx.Err = fmt.Errorf("theme depends on loaded source data")
 		return
 	}
-	if !com.IsDir(ctx.ThemeName) {
-		ctx.Err = fmt.Errorf("theme directory '%s' is missing", ctx.ThemeName)
+	dir, _ := toDir(ctx.ThemeName)
+	if !com.IsDir(dir) {
+		ctx.Err = fmt.Errorf("theme directory '%s' is missing", dir)
 		return
 	}
-	log15.Debug("Build|Theme|%s", ctx.ThemeName)
-	ctx.Theme = theme.New(ctx.ThemeName)
+	log15.Info("Build|Theme|%s", dir)
+	ctx.Theme = theme.New(dir)
 }

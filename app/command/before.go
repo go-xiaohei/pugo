@@ -10,6 +10,10 @@ import (
 
 // Before set before handler when start run cli.App
 func Before(ctx *cli.Context) error {
-	log15.Root().SetHandler(log15.StreamHandler(os.Stderr, helper.LogfmtFormat()))
+	lv := log15.LvlInfo
+	if ctx.Bool("debug") {
+		lv = log15.LvlDebug
+	}
+	log15.Root().SetHandler(log15.LvlFilterHandler(lv, log15.StreamHandler(os.Stderr, helper.LogfmtFormat())))
 	return nil
 }

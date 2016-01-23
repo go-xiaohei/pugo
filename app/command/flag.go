@@ -15,7 +15,11 @@ var (
 	}
 	themeFlag = cli.StringFlag{
 		Name:  "theme",
-		Value: "theme/default",
+		Value: "dir://theme/default",
 		Usage: "theme to use (located in flag directory)",
+	}
+	debugFlag = cli.BoolFlag{
+		Name:  "debug",
+		Usage: "print more logs in debug mode",
 	}
 )

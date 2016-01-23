@@ -14,7 +14,6 @@ func main() {
 	app.Usage = vars.Desc
 	app.Version = vars.Version
 	app.Compiled = time.Now()
-	app.Before = command.Before
 	app.Commands = []cli.Command{
 		command.Build,
 	}

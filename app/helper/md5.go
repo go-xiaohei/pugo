@@ -23,7 +23,12 @@ func Md5File(file string) (string, error) {
 	}
 	defer f.Close()
 	h := md5.New()
-	buff := bufio.NewReader(f)
+	var buff *bufio.Reader
+	if fi, _ := f.Stat(); fi != nil && fi.Size() > 1024*100 {
+		buff = bufio.NewReaderSize(f, 102400)
+	} else {
+		buff = bufio.NewReader(f)
+	}
 	for {
 		line, err := buff.ReadString('\n')
 		if err != nil || io.EOF == err {
