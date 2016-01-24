@@ -60,8 +60,6 @@ author = pugo-robot
 tags = pugo,welcome
 ```
 
-<iframe width="640" height="360" src="https://www.youtube.com/embed/NhoAxLElb-0?rel=0" frameborder="0" allowfullscreen></iframe>
-
 #### blog content
 
 Content are from the second section as `markdown` format:

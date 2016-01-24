@@ -26,4 +26,9 @@ var (
 		Name:  "watch",
 		Usage: "watch changes and rebuild files",
 	}
+	addrFlag = cli.StringFlag{
+		Name:  "addr",
+		Value: "0.0.0.0:9899",
+		Usage: "http server address",
+	}
 )

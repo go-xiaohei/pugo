@@ -170,11 +170,11 @@ func compilePages(ctx *Context, toDir string) error {
 		viewData = ctx.View()
 		viewData["Title"] = p.Title + " - " + ctx.Source.Meta.Title
 		viewData["Desc"] = p.Desc
-		viewData["Post"] = p
+		viewData["Page"] = p
 		viewData["Permalink"] = p.Permalink()
 		viewData["PermaKey"] = p.Slug
 		viewData["PostType"] = model.TreePage
-		viewData["Hover"] = model.TreePage
+		viewData["Hover"] = p.NavHover
 
 		if err = compile(ctx, "page.html", viewData, dstFile); err != nil {
 			return err

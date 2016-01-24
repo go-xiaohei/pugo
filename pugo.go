@@ -16,6 +16,7 @@ func main() {
 	app.Compiled = time.Now()
 	app.Commands = []cli.Command{
 		command.Build,
+		command.Server,
 	}
 	app.RunAndExitOnError()
 }

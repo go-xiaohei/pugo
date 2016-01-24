@@ -1,6 +1,7 @@
 package builder
 
 import (
+	"strings"
 	"sync/atomic"
 	"time"
 
@@ -61,7 +62,8 @@ func (ctx *Context) View() map[string]interface{} {
 		"Tree":      ctx.Tree,
 		"Lang":      ctx.Source.Meta.Language,
 		"Hover":     "",
-		"Path":      ctx.Source.Meta.Path,
+		"Base":      strings.TrimRight(ctx.Source.Meta.Path, "/"),
+		"Root":      strings.TrimRight(ctx.Source.Meta.Root, "/"),
 	}
 	if ctx.Source.Meta.Language == "" {
 		m["I18n"] = helper.NewI18nEmpty()
@@ -92,4 +94,14 @@ func (ctx *Context) Duration() float64 {
 func (ctx *Context) Again() {
 	ctx.time = time.Now()
 	atomic.StoreInt64(&ctx.counter, 0)
+}
+
+// SrcDir get src dir after build once
+func (ctx *Context) SrcDir() string {
+	return ctx.srcDir
+}
+
+// DstDir get destination directory after build once
+func (ctx *Context) DstDir() string {
+	return ctx.dstDir
 }

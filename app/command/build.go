@@ -23,11 +23,13 @@ var (
 			debugFlag,
 		},
 		Before: Before,
-		Action: build,
+		Action: func(ctx *cli.Context) {
+			build(ctx, false)
+		},
 	}
 )
 
-func build(c *cli.Context) {
+func build(c *cli.Context, mustWatch bool) {
 	// ctrl+C capture
 	signalChan := make(chan os.Signal)
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
@@ -42,7 +44,7 @@ func build(c *cli.Context) {
 	}
 	builder.Build(ctx)
 
-	if c.Bool("watch") {
+	if c.Bool("watch") || mustWatch {
 		builder.Watch(ctx)
 		<-signalChan
 		log15.Info("Watch|Close")

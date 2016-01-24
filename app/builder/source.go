@@ -6,9 +6,8 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strings"
-
 	"sort"
+	"strings"
 
 	"github.com/BurntSushi/toml"
 	"github.com/Unknwon/com"

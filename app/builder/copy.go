@@ -3,6 +3,7 @@ package builder
 import (
 	"fmt"
 	"os"
+	"path"
 	"path/filepath"
 
 	"github.com/Unknwon/com"
@@ -67,7 +68,7 @@ func CopyStatic(ctx *Context) error {
 	if ctx.Theme == nil {
 		return fmt.Errorf("CopyStatic need theme in Context")
 	}
-	return copyDirectory(ctx, ctx.Theme.StaticDir(), ctx.dstDir)
+	return copyDirectory(ctx, ctx.Theme.StaticDir(), path.Join(ctx.dstDir, ctx.Source.Meta.Path))
 }
 
 // CopyMedia copy media files in source
@@ -76,5 +77,5 @@ func CopyMedia(ctx *Context) error {
 	if !com.IsDir(mediaDir) {
 		return nil
 	}
-	return copyDirectory(ctx, mediaDir, filepath.Join(ctx.dstDir, "media"))
+	return copyDirectory(ctx, mediaDir, filepath.Join(ctx.dstDir, ctx.Source.Meta.Path, "media"))
 }

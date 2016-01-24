@@ -15,14 +15,14 @@ desc = "PuGo is a Simple Static Site Generator"
 domain = "localhost"
 
 # root path for site# if empty, build as http://{domain}/
-root = "http://localhost/"
+root = "http://localhost/blog/"
 
 # cover page for homepage
 cover = "@media/cover.jpg"
 
 # global language,
 # its used in global posts and themes, unless pages set lang
-lang = "en-US"
+lang = "en"
 
 
 [[nav]]
@@ -30,7 +30,7 @@ link = "/"
 title = "Home"
 i18n = "home"
 # set nav to active status
-hover = "home"
+hover = "index"
 blank = false
 
 [[nav]]
