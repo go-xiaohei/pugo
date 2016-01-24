@@ -208,6 +208,11 @@ func (th *Theme) StaticDir() string {
 	return path.Join(th.dir, th.Static())
 }
 
+// Dir get theme directory
+func (th *Theme) Dir() string {
+	return th.dir
+}
+
 // Static gets static dirname in the theme
 func (th *Theme) Static() string {
 	return "static"

@@ -22,4 +22,8 @@ var (
 		Name:  "debug",
 		Usage: "print more logs in debug mode",
 	}
+	watchFlag = cli.BoolFlag{
+		Name:  "watch",
+		Usage: "watch changes and rebuild files",
+	}
 )

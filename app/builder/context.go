@@ -1,6 +1,7 @@
 package builder
 
 import (
+	"sync/atomic"
 	"time"
 
 	"github.com/go-xiaohei/pugo/app/helper"
@@ -85,4 +86,10 @@ func (ctx *Context) IsValid() bool {
 // Duration return seconds after *Context created
 func (ctx *Context) Duration() float64 {
 	return time.Since(ctx.time).Seconds()
+}
+
+// Again reset some fields in context to rebuild
+func (ctx *Context) Again() {
+	ctx.time = time.Now()
+	atomic.StoreInt64(&ctx.counter, 0)
 }

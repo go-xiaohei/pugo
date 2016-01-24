@@ -1,7 +1,9 @@
 package command
 
 import (
-	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo/app/builder"
@@ -17,6 +19,7 @@ var (
 			buildFromFlag,
 			buildToFlag,
 			themeFlag,
+			watchFlag,
 			debugFlag,
 		},
 		Before: Before,
@@ -25,14 +28,23 @@ var (
 )
 
 func build(c *cli.Context) {
+	// ctrl+C capture
+	signalChan := make(chan os.Signal)
+	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
+
 	ctx := builder.NewContext(
 		c.String("from"),
 		c.String("to"),
 		c.String("theme"),
 	)
 	if !ctx.IsValid() {
-		log15.Crit("Build|must have values in 'from', 'to' & 'theme'")
+		log15.Crit("Build|Must have values in 'from', 'to' & 'theme'")
 	}
-	fmt.Println(ctx)
 	builder.Build(ctx)
+
+	if c.Bool("watch") {
+		builder.Watch(ctx)
+		<-signalChan
+		log15.Info("Watch|Close")
+	}
 }
