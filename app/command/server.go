@@ -29,7 +29,6 @@ func serv(c *cli.Context) {
 	builder.After(func(ctx *builder.Context) {
 		if s == nil {
 			s = server.New(ctx.DstDir())
-			println(ctx.DstDir())
 			go s.Run(c.String("addr"))
 		}
 		if ctx.Source != nil && ctx.Source.Meta != nil {

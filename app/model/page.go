@@ -8,9 +8,10 @@ import (
 	"strings"
 	"time"
 
+	"html/template"
+
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/naoina/toml"
-	"html/template"
 )
 
 // Page contain all fields of a page content
@@ -37,22 +38,27 @@ type Page struct {
 	updateTime   time.Time
 }
 
+// TreeURL is tree url of node
 func (p *Page) TreeURL() string {
 	return p.treeURL
 }
 
+// URL is page's url
 func (p *Page) URL() string {
 	return p.pageURL
 }
 
+// Permalink is page's permalink
 func (p *Page) Permalink() string {
 	return p.permaURL
 }
 
+// ContentHTML is page's content html
 func (p *Page) ContentHTML() template.HTML {
 	return template.HTML(p.contentBytes)
 }
 
+// Content is page's content bytes
 func (p *Page) Content() []byte {
 	return p.contentBytes
 }

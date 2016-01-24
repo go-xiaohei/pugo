@@ -13,9 +13,9 @@
                 <ul>
                     <li>
                         <h4>
-                            <span class="date">{{.Created.Year}}.{{.Created.Month}}.{{.Created.Day}}</span>
+                            <span class="date">{{.Created.Year}}.{{printf "%d" .Created.Month}}.{{.Created.Day}}</span>
                             »
-                            <a href="{{url .URL}}">{{.Title}}</a>
+                            <a href="{{.URL}}">{{.Title}}</a>
                         </h4>
                     </li>
                 </ul>

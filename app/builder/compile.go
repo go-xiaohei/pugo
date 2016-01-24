@@ -115,7 +115,7 @@ func compilePosts(ctx *Context, toDir string) error {
 
 			dstFile = path.Join(toDir, ctx.Source.Meta.Path, "index.html")
 
-			if err = compile(ctx, "posts.html", viewData, dstFile); err != nil {
+			if err = compile(ctx, template, viewData, dstFile); err != nil {
 				return err
 			}
 

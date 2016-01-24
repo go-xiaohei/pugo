@@ -15,7 +15,7 @@ desc = "PuGo is a Simple Static Site Generator"
 domain = "localhost"
 
 # root path for site# if empty, build as http://{domain}/
-root = "http://localhost/blog/"
+root = "http://localhost/"
 
 # cover page for homepage
 cover = "@media/cover.jpg"

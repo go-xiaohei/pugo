@@ -24,22 +24,30 @@ func AssembleSource(ctx *Context) {
 	ctx.Tree = model.NewTree()
 
 	r, hr := newReplacer(ctx.Source.Meta.Path), newReplacerInHTML(ctx.Source.Meta.Path)
-	if ctx.Source.Meta.Path != "" && ctx.Source.Meta.Path != "/" {
-		for _, p := range ctx.Source.Posts {
+	ctx.Source.Meta.Cover = r.Replace(ctx.Source.Meta.Cover)
+	for _, a := range ctx.Source.Authors {
+		a.Avatar = r.Replace(a.Avatar)
+	}
+
+	for _, p := range ctx.Source.Posts {
+		if ctx.Source.Meta.Path != "" && ctx.Source.Meta.Path != "/" {
 			p.FixURL(ctx.Source.Meta.Path)
-			p.FixPlaceholder(r, hr)
-			p.Author = ctx.Source.Authors[p.AuthorName]
-			for _, t := range p.Tags {
-				ctx.Source.Tags[t.Name] = t
-				ctx.Source.tagPosts[t.Name] = append(ctx.Source.tagPosts[t.Name], p)
-			}
 		}
-		for _, p := range ctx.Source.Pages {
-			p.FixURL(ctx.Source.Meta.Path)
-			p.FixPlaceholder(hr)
-			p.Author = ctx.Source.Authors[p.AuthorName]
+		p.FixPlaceholder(r, hr)
+		p.Author = ctx.Source.Authors[p.AuthorName]
+		for _, t := range p.Tags {
+			ctx.Source.Tags[t.Name] = t
+			ctx.Source.tagPosts[t.Name] = append(ctx.Source.tagPosts[t.Name], p)
 		}
 	}
+	for _, p := range ctx.Source.Pages {
+		if ctx.Source.Meta.Path != "" && ctx.Source.Meta.Path != "/" {
+			p.FixURL(ctx.Source.Meta.Path)
+		}
+		p.FixPlaceholder(hr)
+		p.Author = ctx.Source.Authors[p.AuthorName]
+	}
+
 	for _, posts := range ctx.Source.tagPosts {
 		sort.Sort(model.Posts(posts))
 	}
