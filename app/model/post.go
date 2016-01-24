@@ -38,7 +38,7 @@ type Post struct {
 	dateTime   time.Time
 	updateTime time.Time
 
-	Bytes        []byte
+	Bytes        []byte `toml:"-"`
 	contentBytes []byte
 	briefBytes   []byte
 	permaURL     string

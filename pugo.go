@@ -17,6 +17,7 @@ func main() {
 	app.Commands = []cli.Command{
 		command.Build,
 		command.Server,
+		command.New,
 	}
 	app.RunAndExitOnError()
 }

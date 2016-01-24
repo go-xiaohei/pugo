@@ -31,4 +31,9 @@ var (
 		Value: "0.0.0.0:9899",
 		Usage: "http server address",
 	}
+	newToFlag = cli.StringFlag{
+		Name:  "to",
+		Value: "dir://source",
+		Usage: "create new content to this directory",
+	}
 )
