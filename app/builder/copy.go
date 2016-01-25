@@ -10,7 +10,26 @@ import (
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/go-xiaohei/pugo/app/model"
 	"gopkg.in/inconshreveable/log15.v2"
+	"strings"
 )
+
+type (
+	CopiedOpt struct {
+		IgnoreDir       []string
+		IgnoreFile      []string
+		CleanIgnoreDir  []string
+		CleanIgnoreFile []string
+	}
+)
+
+func defaultCopiedOpt() *CopiedOpt {
+	return &CopiedOpt{
+		IgnoreDir:       []string{".git"},
+		IgnoreFile:      []string{"CNAME"},
+		CleanIgnoreDir:  []string{".git"},
+		CleanIgnoreFile: []string{"CNAME"},
+	}
+}
 
 // Copy copy assets to destination directory
 func Copy(ctx *Context) {
@@ -18,6 +37,9 @@ func Copy(ctx *Context) {
 		return
 	}
 	if ctx.Err = CopyMedia(ctx); ctx.Err != nil {
+		return
+	}
+	if ctx.Err = CleanCopied(ctx); ctx.Err != nil {
 		return
 	}
 }
@@ -38,6 +60,20 @@ func copyDirectory(ctx *Context, srcDir, dstDir string) error {
 		}
 		relPath, _ = filepath.Rel(srcDir, p)
 		toFile = filepath.Join(dstDir, relPath)
+
+		// ignore cases
+		for _, ignoreDir := range ctx.Copied.IgnoreDir {
+			if strings.HasPrefix(relPath, ignoreDir) {
+				log15.Debug("Build|Ignore|%s", p)
+				return nil
+			}
+		}
+		for _, ignoreFile := range ctx.Copied.IgnoreFile {
+			if relPath == ignoreFile {
+				log15.Debug("Build|Ignore|%s", p)
+				return nil
+			}
+		}
 
 		if com.IsFile(toFile) {
 			hash1, _ = helper.Md5File(p)
@@ -78,4 +114,45 @@ func CopyMedia(ctx *Context) error {
 		return nil
 	}
 	return copyDirectory(ctx, mediaDir, filepath.Join(ctx.dstDir, ctx.Source.Meta.Path, "media"))
+}
+
+func CleanCopied(ctx *Context) error {
+	var (
+		dstDir  = ctx.DstDir()
+		relPath string
+	)
+
+	return filepath.Walk(dstDir, func(p string, fi os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if fi.IsDir() {
+			return nil
+		}
+		relPath, _ = filepath.Rel(dstDir, p)
+		if strings.HasPrefix(relPath, "media") {
+			log15.Debug("Build|Ignore|%s", p)
+			return nil
+		}
+
+		for _, ignoreDir := range ctx.Copied.CleanIgnoreDir {
+			if strings.HasPrefix(relPath, ignoreDir) {
+				log15.Debug("Build|Ignore|%s", p)
+				return nil
+			}
+		}
+		for _, ignoreFile := range ctx.Copied.CleanIgnoreFile {
+			if relPath == ignoreFile {
+				log15.Debug("Build|Ignore|%s", p)
+				return nil
+			}
+		}
+
+		if !ctx.Files.Exist(p) {
+			os.RemoveAll(p)
+			log15.Debug("Build|Remove|%s", p)
+		}
+
+		return nil
+	})
 }

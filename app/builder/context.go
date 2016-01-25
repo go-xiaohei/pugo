@@ -29,7 +29,8 @@ type (
 		// Files is generated files in by this context
 		Files *model.Files
 		// Tree is url tree nodes by this context
-		Tree *model.Tree
+		Tree   *model.Tree
+		Copied *CopiedOpt
 
 		time           time.Time
 		counter        int64
@@ -45,6 +46,8 @@ func NewContext(from, to, theme string) *Context {
 		ThemeName: theme,
 		time:      time.Now(),
 		Files:     model.NewFiles(),
+		Copied:    defaultCopiedOpt(),
+		Tree:      model.NewTree(),
 	}
 }
 

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-xiaohei/pugo/app/helper"
+	"path/filepath"
 )
 
 const (
@@ -49,6 +50,15 @@ func (fs *Files) Add(url string, size int64, modTime time.Time, t string) {
 	hash, _ := helper.Md5File(url)
 	f.Hash = hash
 	fs.files[url] = f
+}
+
+func (fs *Files) Exist(file string) bool {
+	for _, f := range fs.files {
+		if filepath.ToSlash(f.URL) == filepath.ToSlash(file) {
+			return true
+		}
+	}
+	return false
 }
 
 // Print print files
