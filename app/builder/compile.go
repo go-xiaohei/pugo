@@ -157,9 +157,9 @@ func compilePosts(ctx *Context, toDir string) error {
 
 func compilePages(ctx *Context, toDir string) error {
 	var (
-		viewData map[string]interface{}
-		dstFile  string
-		err      error
+		viewData     map[string]interface{}
+		dstFile, tpl string
+		err          error
 	)
 	for _, p := range ctx.Source.Pages {
 		dstFile = path.Join(toDir, p.URL())
@@ -176,7 +176,11 @@ func compilePages(ctx *Context, toDir string) error {
 		viewData["PostType"] = model.TreePage
 		viewData["Hover"] = p.NavHover
 
-		if err = compile(ctx, "page.html", viewData, dstFile); err != nil {
+		tpl = "page.html"
+		if p.Template != "" {
+			tpl = p.Template
+		}
+		if err = compile(ctx, tpl, viewData, dstFile); err != nil {
 			return err
 		}
 

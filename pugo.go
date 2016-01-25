@@ -8,6 +8,8 @@ import (
 	"github.com/go-xiaohei/pugo/app/vars"
 )
 
+//go:generate go-bindata -o=app/asset/asset.go -pkg=asset source/... theme/... doc/source/... doc/theme/...
+
 func main() {
 	app := cli.NewApp()
 	app.Name = vars.Name

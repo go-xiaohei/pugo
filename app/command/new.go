@@ -13,6 +13,7 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/Unknwon/com"
 	"github.com/codegangsta/cli"
+	"github.com/go-xiaohei/pugo/app/asset"
 	"github.com/go-xiaohei/pugo/app/model"
 	"gopkg.in/inconshreveable/log15.v2"
 )
@@ -40,8 +41,12 @@ func newContent(ctx *cli.Context) {
 	}
 	var err error
 	switch ctx.Args()[0] {
+	case "site":
+		err = newSite()
 	case "post":
 		err = newPost(ctx.Args()[1:], ctx.String("to"))
+	case "page":
+		err = newPage(ctx.Args()[1:], ctx.String("to"))
 	default:
 		log15.Error("unknown params\nusage:\n pugo new [post|page|site]")
 		return
@@ -77,6 +82,9 @@ func newPost(args []string, dstDir string) error {
 		Update:    time.Now().Format("2006-01-02 15:04:05"),
 		TagString: []string{"tag"},
 	}
+	if post.Title == "" {
+		post.Title = fileKey
+	}
 
 	var buf bytes.Buffer
 	encoder := toml.NewEncoder(&buf)
@@ -92,6 +100,78 @@ func newPost(args []string, dstDir string) error {
 	os.MkdirAll(filepath.Dir(toFile), os.ModePerm)
 	log15.Info("New|Post|Write|%s", toFile)
 	return ioutil.WriteFile(toFile, buf2.Bytes(), os.ModePerm)
+}
+
+func newPage(args []string, dstDir string) error {
+	dstDir, err := toDir(dstDir)
+	if err != nil {
+		return err
+	}
+	fileKey := time.Now().Format("01-02-15-04-05")
+	if len(args) > 0 {
+		fileKey = strings.Join(args, "-")
+		fileKey = titleReplacer.Replace(fileKey)
+	}
+	fileName := fileKey + ".md"
+	toFile := filepath.Join(dstDir, fmt.Sprintf("page/%d", time.Now().Year()), fileName)
+	log15.Debug("New|Page|To|%s", toFile)
+
+	if com.IsFile(toFile) {
+		return errors.New("File Exist")
+	}
+
+	page := &model.Page{
+		Title:    strings.Join(args, " "),
+		Slug:     fileKey,
+		Desc:     strings.Join(args, " "),
+		Date:     time.Now().Format("2006-01-02 15:04:05"),
+		Update:   time.Now().Format("2006-01-02 15:04:05"),
+		NavHover: fileKey,
+		Template: "page.html",
+		Lang:     "",
+		Sort:     0,
+		Meta: map[string]interface{}{
+			"file": fileName,
+		},
+	}
+	if page.Title == "" {
+		page.Title = fileKey
+	}
+
+	var buf bytes.Buffer
+	encoder := toml.NewEncoder(&buf)
+	if err = encoder.Encode(page); err != nil {
+		return err
+	}
+
+	buf2 := bytes.NewBufferString("```toml\n")
+	buf2.Write(buf.Bytes())
+	buf2.WriteString("```\n\n")
+	buf2.WriteString("write you page content in " + fileName)
+
+	os.MkdirAll(filepath.Dir(toFile), os.ModePerm)
+	log15.Info("New|Page|Write|%s", toFile)
+	return ioutil.WriteFile(toFile, buf2.Bytes(), os.ModePerm)
+}
+
+func newSite() error {
+	log15.Info("New|Extract|Assets")
+	dirs := []string{"source", "theme", "doc"}
+	isSuccess := true
+
+	var err error
+	for _, dir := range dirs {
+		if err = asset.RestoreAssets("./", dir); err != nil {
+			isSuccess = false
+			return err
+		}
+	}
+	if !isSuccess {
+		for _, dir := range dirs {
+			os.RemoveAll(filepath.Join("./", dir))
+		}
+	}
+	return err
 }
 
 func toDir(urlString string) (string, error) {
