@@ -58,7 +58,8 @@ func NewSource(all *model.MetaAll) *Source {
 // parse *Context.From and read data to *Context.Source
 func ReadSource(ctx *Context) {
 	var (
-		srcDir = ""
+		srcDir  = ""
+		destDir = ""
 	)
 	if srcDir, ctx.Err = toDir(ctx.From); ctx.Err != nil {
 		return
@@ -69,6 +70,11 @@ func ReadSource(ctx *Context) {
 	}
 	ctx.srcDir = srcDir
 	log15.Info("Build|Source|%s", srcDir)
+
+	if destDir, ctx.Err = toDir(ctx.To); ctx.Err != nil {
+		return
+	}
+	ctx.dstDir = destDir
 
 	// read meta
 	// then read posts,

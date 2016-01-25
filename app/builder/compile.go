@@ -21,18 +21,13 @@ func Compile(ctx *Context) {
 		ctx.Err = fmt.Errorf("need sources data and theme to compile")
 		return
 	}
-	var destDir = ""
-	if destDir, ctx.Err = toDir(ctx.To); ctx.Err != nil {
+	if ctx.Err = compilePosts(ctx, ctx.dstDir); ctx.Err != nil {
 		return
 	}
-	ctx.dstDir = destDir
-	if ctx.Err = compilePosts(ctx, destDir); ctx.Err != nil {
+	if ctx.Err = compilePages(ctx, ctx.dstDir); ctx.Err != nil {
 		return
 	}
-	if ctx.Err = compilePages(ctx, destDir); ctx.Err != nil {
-		return
-	}
-	if ctx.Err = compileXML(ctx, destDir); ctx.Err != nil {
+	if ctx.Err = compileXML(ctx, ctx.dstDir); ctx.Err != nil {
 		return
 	}
 }
