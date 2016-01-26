@@ -7,11 +7,15 @@
 .vscode
 _obj
 _test
+
+# output directory
 dest
-upload
 doc/dest
 public
 doc/public
+
+# git deploy test
+git-test
 
 # Architecture specific extensions/prefixes
 *.[568vq]
