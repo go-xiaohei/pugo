@@ -2,14 +2,14 @@ package deploy
 
 import (
 	"fmt"
+	"net/url"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo/app/builder"
 	"gopkg.in/inconshreveable/log15.v2"
-	"net/url"
-	"time"
 )
 
 var (
@@ -39,7 +39,7 @@ func (g *Git) Detect(ctx *builder.Context) (Task, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(u.Query())
+
 	commitMessage := gitCommitLayout
 	if m, ok := u.Query()["commit"]; ok && len(m) > 0 {
 		commitMessage = m[0]

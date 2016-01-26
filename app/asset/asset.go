@@ -2538,191 +2538,191 @@ type bintree struct {
 }
 
 var _bintree = &bintree{nil, map[string]*bintree{
-	"doc": &bintree{nil, map[string]*bintree{
-		"source": &bintree{nil, map[string]*bintree{
-			"lang": &bintree{nil, map[string]*bintree{
-				"en.ini": &bintree{docSourceLangEnIni, map[string]*bintree{}},
-				"zh.ini": &bintree{docSourceLangZhIni, map[string]*bintree{}},
+	"doc": {nil, map[string]*bintree{
+		"source": {nil, map[string]*bintree{
+			"lang": {nil, map[string]*bintree{
+				"en.ini": {docSourceLangEnIni, map[string]*bintree{}},
+				"zh.ini": {docSourceLangZhIni, map[string]*bintree{}},
 			}},
-			"media": &bintree{nil, map[string]*bintree{
-				"s-2-install-1.png": &bintree{docSourceMediaS2Install1Png, map[string]*bintree{}},
-				"s-2-install-2.png": &bintree{docSourceMediaS2Install2Png, map[string]*bintree{}},
-				"s-2-install-3.png": &bintree{docSourceMediaS2Install3Png, map[string]*bintree{}},
-				"s-2-install-4.png": &bintree{docSourceMediaS2Install4Png, map[string]*bintree{}},
+			"media": {nil, map[string]*bintree{
+				"s-2-install-1.png": {docSourceMediaS2Install1Png, map[string]*bintree{}},
+				"s-2-install-2.png": {docSourceMediaS2Install2Png, map[string]*bintree{}},
+				"s-2-install-3.png": {docSourceMediaS2Install3Png, map[string]*bintree{}},
+				"s-2-install-4.png": {docSourceMediaS2Install4Png, map[string]*bintree{}},
 			}},
-			"meta.ini": &bintree{docSourceMetaIni, map[string]*bintree{}},
-			"page": &bintree{nil, map[string]*bintree{
-				"en": &bintree{nil, map[string]*bintree{
-					"docs": &bintree{nil, map[string]*bintree{
-						"customize": &bintree{nil, map[string]*bintree{
-							"debug.md":         &bintree{docSourcePageEnDocsCustomizeDebugMd, map[string]*bintree{}},
-							"template.md":      &bintree{docSourcePageEnDocsCustomizeTemplateMd, map[string]*bintree{}},
-							"template_func.md": &bintree{docSourcePageEnDocsCustomizeTemplate_funcMd, map[string]*bintree{}},
-							"template_var.md":  &bintree{docSourcePageEnDocsCustomizeTemplate_varMd, map[string]*bintree{}},
+			"meta.ini": {docSourceMetaIni, map[string]*bintree{}},
+			"page": {nil, map[string]*bintree{
+				"en": {nil, map[string]*bintree{
+					"docs": {nil, map[string]*bintree{
+						"customize": {nil, map[string]*bintree{
+							"debug.md":         {docSourcePageEnDocsCustomizeDebugMd, map[string]*bintree{}},
+							"template.md":      {docSourcePageEnDocsCustomizeTemplateMd, map[string]*bintree{}},
+							"template_func.md": {docSourcePageEnDocsCustomizeTemplate_funcMd, map[string]*bintree{}},
+							"template_var.md":  {docSourcePageEnDocsCustomizeTemplate_varMd, map[string]*bintree{}},
 						}},
-						"deploy": &bintree{nil, map[string]*bintree{
-							"platform.md": &bintree{docSourcePageEnDocsDeployPlatformMd, map[string]*bintree{}},
-							"static.md":   &bintree{docSourcePageEnDocsDeployStaticMd, map[string]*bintree{}},
+						"deploy": {nil, map[string]*bintree{
+							"platform.md": {docSourcePageEnDocsDeployPlatformMd, map[string]*bintree{}},
+							"static.md":   {docSourcePageEnDocsDeployStaticMd, map[string]*bintree{}},
 						}},
-						"docs.md": &bintree{docSourcePageEnDocsDocsMd, map[string]*bintree{}},
-						"overview": &bintree{nil, map[string]*bintree{
-							"command.md": &bintree{docSourcePageEnDocsOverviewCommandMd, map[string]*bintree{}},
-							"setup.md":   &bintree{docSourcePageEnDocsOverviewSetupMd, map[string]*bintree{}},
+						"docs.md": {docSourcePageEnDocsDocsMd, map[string]*bintree{}},
+						"overview": {nil, map[string]*bintree{
+							"command.md": {docSourcePageEnDocsOverviewCommandMd, map[string]*bintree{}},
+							"setup.md":   {docSourcePageEnDocsOverviewSetupMd, map[string]*bintree{}},
 						}},
-						"writing": &bintree{nil, map[string]*bintree{
-							"media.md":   &bintree{docSourcePageEnDocsWritingMediaMd, map[string]*bintree{}},
-							"meta.md":    &bintree{docSourcePageEnDocsWritingMetaMd, map[string]*bintree{}},
-							"writing.md": &bintree{docSourcePageEnDocsWritingWritingMd, map[string]*bintree{}},
+						"writing": {nil, map[string]*bintree{
+							"media.md":   {docSourcePageEnDocsWritingMediaMd, map[string]*bintree{}},
+							"meta.md":    {docSourcePageEnDocsWritingMetaMd, map[string]*bintree{}},
+							"writing.md": {docSourcePageEnDocsWritingWritingMd, map[string]*bintree{}},
 						}},
 					}},
-					"getting-started": &bintree{nil, map[string]*bintree{
-						"1-intro.md":   &bintree{docSourcePageEnGettingStarted1IntroMd, map[string]*bintree{}},
-						"2-install.md": &bintree{docSourcePageEnGettingStarted2InstallMd, map[string]*bintree{}},
+					"getting-started": {nil, map[string]*bintree{
+						"1-intro.md":   {docSourcePageEnGettingStarted1IntroMd, map[string]*bintree{}},
+						"2-install.md": {docSourcePageEnGettingStarted2InstallMd, map[string]*bintree{}},
 					}},
 				}},
-				"showcases.md": &bintree{docSourcePageShowcasesMd, map[string]*bintree{}},
-				"zh": &bintree{nil, map[string]*bintree{
-					"docs.md": &bintree{docSourcePageZhDocsMd, map[string]*bintree{}},
+				"showcases.md": {docSourcePageShowcasesMd, map[string]*bintree{}},
+				"zh": {nil, map[string]*bintree{
+					"docs.md": {docSourcePageZhDocsMd, map[string]*bintree{}},
 				}},
 			}},
-			"post": &bintree{nil, map[string]*bintree{
-				"0.7-2015-11-14.md": &bintree{docSourcePost0720151114Md, map[string]*bintree{}},
-				"0.8-2015-11-20.md": &bintree{docSourcePost0820151120Md, map[string]*bintree{}},
-				"0.9-2015-12-31.md": &bintree{docSourcePost0920151231Md, map[string]*bintree{}},
+			"post": {nil, map[string]*bintree{
+				"0.7-2015-11-14.md": {docSourcePost0720151114Md, map[string]*bintree{}},
+				"0.8-2015-11-20.md": {docSourcePost0820151120Md, map[string]*bintree{}},
+				"0.9-2015-12-31.md": {docSourcePost0920151231Md, map[string]*bintree{}},
 			}},
 		}},
-		"theme": &bintree{nil, map[string]*bintree{
-			"default": &bintree{nil, map[string]*bintree{
-				"archive.html":   &bintree{docThemeDefaultArchiveHtml, map[string]*bintree{}},
-				"comment.html":   &bintree{docThemeDefaultCommentHtml, map[string]*bintree{}},
-				"footer.html":    &bintree{docThemeDefaultFooterHtml, map[string]*bintree{}},
-				"header.html":    &bintree{docThemeDefaultHeaderHtml, map[string]*bintree{}},
-				"index.html":     &bintree{docThemeDefaultIndexHtml, map[string]*bintree{}},
-				"meta.html":      &bintree{docThemeDefaultMetaHtml, map[string]*bintree{}},
-				"page.html":      &bintree{docThemeDefaultPageHtml, map[string]*bintree{}},
-				"page_nav.html":  &bintree{docThemeDefaultPage_navHtml, map[string]*bintree{}},
-				"post.html":      &bintree{docThemeDefaultPostHtml, map[string]*bintree{}},
-				"posts.html":     &bintree{docThemeDefaultPostsHtml, map[string]*bintree{}},
-				"showcase.html":  &bintree{docThemeDefaultShowcaseHtml, map[string]*bintree{}},
-				"start.html":     &bintree{docThemeDefaultStartHtml, map[string]*bintree{}},
-				"start_nav.html": &bintree{docThemeDefaultStart_navHtml, map[string]*bintree{}},
-				"static": &bintree{nil, map[string]*bintree{
-					"css": &bintree{nil, map[string]*bintree{
-						"bootstrap.min.css": &bintree{docThemeDefaultStaticCssBootstrapMinCss, map[string]*bintree{}},
-						"prism.css":         &bintree{docThemeDefaultStaticCssPrismCss, map[string]*bintree{}},
-						"style.css":         &bintree{docThemeDefaultStaticCssStyleCss, map[string]*bintree{}},
+		"theme": {nil, map[string]*bintree{
+			"default": {nil, map[string]*bintree{
+				"archive.html":   {docThemeDefaultArchiveHtml, map[string]*bintree{}},
+				"comment.html":   {docThemeDefaultCommentHtml, map[string]*bintree{}},
+				"footer.html":    {docThemeDefaultFooterHtml, map[string]*bintree{}},
+				"header.html":    {docThemeDefaultHeaderHtml, map[string]*bintree{}},
+				"index.html":     {docThemeDefaultIndexHtml, map[string]*bintree{}},
+				"meta.html":      {docThemeDefaultMetaHtml, map[string]*bintree{}},
+				"page.html":      {docThemeDefaultPageHtml, map[string]*bintree{}},
+				"page_nav.html":  {docThemeDefaultPage_navHtml, map[string]*bintree{}},
+				"post.html":      {docThemeDefaultPostHtml, map[string]*bintree{}},
+				"posts.html":     {docThemeDefaultPostsHtml, map[string]*bintree{}},
+				"showcase.html":  {docThemeDefaultShowcaseHtml, map[string]*bintree{}},
+				"start.html":     {docThemeDefaultStartHtml, map[string]*bintree{}},
+				"start_nav.html": {docThemeDefaultStart_navHtml, map[string]*bintree{}},
+				"static": {nil, map[string]*bintree{
+					"css": {nil, map[string]*bintree{
+						"bootstrap.min.css": {docThemeDefaultStaticCssBootstrapMinCss, map[string]*bintree{}},
+						"prism.css":         {docThemeDefaultStaticCssPrismCss, map[string]*bintree{}},
+						"style.css":         {docThemeDefaultStaticCssStyleCss, map[string]*bintree{}},
 					}},
-					"favicon.ico": &bintree{docThemeDefaultStaticFaviconIco, map[string]*bintree{}},
-					"js": &bintree{nil, map[string]*bintree{
-						"bootstrap.min.js":    &bintree{docThemeDefaultStaticJsBootstrapMinJs, map[string]*bintree{}},
-						"jquery-2.1.4.min.js": &bintree{docThemeDefaultStaticJsJquery214MinJs, map[string]*bintree{}},
-						"prism.min.js":        &bintree{docThemeDefaultStaticJsPrismMinJs, map[string]*bintree{}},
+					"favicon.ico": {docThemeDefaultStaticFaviconIco, map[string]*bintree{}},
+					"js": {nil, map[string]*bintree{
+						"bootstrap.min.js":    {docThemeDefaultStaticJsBootstrapMinJs, map[string]*bintree{}},
+						"jquery-2.1.4.min.js": {docThemeDefaultStaticJsJquery214MinJs, map[string]*bintree{}},
+						"prism.min.js":        {docThemeDefaultStaticJsPrismMinJs, map[string]*bintree{}},
 					}},
-					"robots.txt":  &bintree{docThemeDefaultStaticRobotsTxt, map[string]*bintree{}},
-					"sitemap.xsl": &bintree{docThemeDefaultStaticSitemapXsl, map[string]*bintree{}},
+					"robots.txt":  {docThemeDefaultStaticRobotsTxt, map[string]*bintree{}},
+					"sitemap.xsl": {docThemeDefaultStaticSitemapXsl, map[string]*bintree{}},
 				}},
 			}},
 		}},
 	}},
-	"source": &bintree{nil, map[string]*bintree{
-		"lang": &bintree{nil, map[string]*bintree{
-			"en.toml": &bintree{sourceLangEnToml, map[string]*bintree{}},
-			"zh.toml": &bintree{sourceLangZhToml, map[string]*bintree{}},
+	"source": {nil, map[string]*bintree{
+		"lang": {nil, map[string]*bintree{
+			"en.toml": {sourceLangEnToml, map[string]*bintree{}},
+			"zh.toml": {sourceLangZhToml, map[string]*bintree{}},
 		}},
-		"media": &bintree{nil, map[string]*bintree{
-			"author.png": &bintree{sourceMediaAuthorPng, map[string]*bintree{}},
-			"cover.jpg":  &bintree{sourceMediaCoverJpg, map[string]*bintree{}},
-			"golang.png": &bintree{sourceMediaGolangPng, map[string]*bintree{}},
+		"media": {nil, map[string]*bintree{
+			"author.png": {sourceMediaAuthorPng, map[string]*bintree{}},
+			"cover.jpg":  {sourceMediaCoverJpg, map[string]*bintree{}},
+			"golang.png": {sourceMediaGolangPng, map[string]*bintree{}},
 		}},
-		"meta.toml": &bintree{sourceMetaToml, map[string]*bintree{}},
-		"page": &bintree{nil, map[string]*bintree{
-			"about.md": &bintree{sourcePageAboutMd, map[string]*bintree{}},
+		"meta.toml": {sourceMetaToml, map[string]*bintree{}},
+		"page": {nil, map[string]*bintree{
+			"about.md": {sourcePageAboutMd, map[string]*bintree{}},
 		}},
-		"post": &bintree{nil, map[string]*bintree{
-			"welcome.md": &bintree{sourcePostWelcomeMd, map[string]*bintree{}},
+		"post": {nil, map[string]*bintree{
+			"welcome.md": {sourcePostWelcomeMd, map[string]*bintree{}},
 		}},
 	}},
-	"theme": &bintree{nil, map[string]*bintree{
-		"default": &bintree{nil, map[string]*bintree{
-			"archive.html": &bintree{themeDefaultArchiveHtml, map[string]*bintree{}},
-			"embed": &bintree{nil, map[string]*bintree{
-				"analytics.html": &bintree{themeDefaultEmbedAnalyticsHtml, map[string]*bintree{}},
-				"comment.html":   &bintree{themeDefaultEmbedCommentHtml, map[string]*bintree{}},
+	"theme": {nil, map[string]*bintree{
+		"default": {nil, map[string]*bintree{
+			"archive.html": {themeDefaultArchiveHtml, map[string]*bintree{}},
+			"embed": {nil, map[string]*bintree{
+				"analytics.html": {themeDefaultEmbedAnalyticsHtml, map[string]*bintree{}},
+				"comment.html":   {themeDefaultEmbedCommentHtml, map[string]*bintree{}},
 			}},
-			"footer.html": &bintree{themeDefaultFooterHtml, map[string]*bintree{}},
-			"header.html": &bintree{themeDefaultHeaderHtml, map[string]*bintree{}},
-			"meta.html":   &bintree{themeDefaultMetaHtml, map[string]*bintree{}},
-			"page.html":   &bintree{themeDefaultPageHtml, map[string]*bintree{}},
-			"post.html":   &bintree{themeDefaultPostHtml, map[string]*bintree{}},
-			"posts.html":  &bintree{themeDefaultPostsHtml, map[string]*bintree{}},
-			"static": &bintree{nil, map[string]*bintree{
-				"css": &bintree{nil, map[string]*bintree{
-					"bootstrap.min.css": &bintree{themeDefaultStaticCssBootstrapMinCss, map[string]*bintree{}},
-					"prism.css":         &bintree{themeDefaultStaticCssPrismCss, map[string]*bintree{}},
-					"style.css":         &bintree{themeDefaultStaticCssStyleCss, map[string]*bintree{}},
+			"footer.html": {themeDefaultFooterHtml, map[string]*bintree{}},
+			"header.html": {themeDefaultHeaderHtml, map[string]*bintree{}},
+			"meta.html":   {themeDefaultMetaHtml, map[string]*bintree{}},
+			"page.html":   {themeDefaultPageHtml, map[string]*bintree{}},
+			"post.html":   {themeDefaultPostHtml, map[string]*bintree{}},
+			"posts.html":  {themeDefaultPostsHtml, map[string]*bintree{}},
+			"static": {nil, map[string]*bintree{
+				"css": {nil, map[string]*bintree{
+					"bootstrap.min.css": {themeDefaultStaticCssBootstrapMinCss, map[string]*bintree{}},
+					"prism.css":         {themeDefaultStaticCssPrismCss, map[string]*bintree{}},
+					"style.css":         {themeDefaultStaticCssStyleCss, map[string]*bintree{}},
 				}},
-				"favicon.ico": &bintree{themeDefaultStaticFaviconIco, map[string]*bintree{}},
-				"js": &bintree{nil, map[string]*bintree{
-					"bootstrap.min.js":    &bintree{themeDefaultStaticJsBootstrapMinJs, map[string]*bintree{}},
-					"jquery-2.1.4.min.js": &bintree{themeDefaultStaticJsJquery214MinJs, map[string]*bintree{}},
-					"prism.min.js":        &bintree{themeDefaultStaticJsPrismMinJs, map[string]*bintree{}},
+				"favicon.ico": {themeDefaultStaticFaviconIco, map[string]*bintree{}},
+				"js": {nil, map[string]*bintree{
+					"bootstrap.min.js":    {themeDefaultStaticJsBootstrapMinJs, map[string]*bintree{}},
+					"jquery-2.1.4.min.js": {themeDefaultStaticJsJquery214MinJs, map[string]*bintree{}},
+					"prism.min.js":        {themeDefaultStaticJsPrismMinJs, map[string]*bintree{}},
 				}},
-				"robots.txt": &bintree{themeDefaultStaticRobotsTxt, map[string]*bintree{}},
-			}},
-		}},
-		"pure": &bintree{nil, map[string]*bintree{
-			"archive.html": &bintree{themePureArchiveHtml, map[string]*bintree{}},
-			"embed": &bintree{nil, map[string]*bintree{
-				"analytics.html": &bintree{themePureEmbedAnalyticsHtml, map[string]*bintree{}},
-				"comment.html":   &bintree{themePureEmbedCommentHtml, map[string]*bintree{}},
-			}},
-			"footer.html":    &bintree{themePureFooterHtml, map[string]*bintree{}},
-			"footer_js.html": &bintree{themePureFooter_jsHtml, map[string]*bintree{}},
-			"meta.html":      &bintree{themePureMetaHtml, map[string]*bintree{}},
-			"page.html":      &bintree{themePurePageHtml, map[string]*bintree{}},
-			"post.html":      &bintree{themePurePostHtml, map[string]*bintree{}},
-			"posts.html":     &bintree{themePurePostsHtml, map[string]*bintree{}},
-			"sidebar.html":   &bintree{themePureSidebarHtml, map[string]*bintree{}},
-			"static": &bintree{nil, map[string]*bintree{
-				"css": &bintree{nil, map[string]*bintree{
-					"blog.css":       &bintree{themePureStaticCssBlogCss, map[string]*bintree{}},
-					"pure-min.css":   &bintree{themePureStaticCssPureMinCss, map[string]*bintree{}},
-					"railscasts.css": &bintree{themePureStaticCssRailscastsCss, map[string]*bintree{}},
-				}},
-				"favicon.ico": &bintree{themePureStaticFaviconIco, map[string]*bintree{}},
-				"js": &bintree{nil, map[string]*bintree{
-					"highlight.pack.js":   &bintree{themePureStaticJsHighlightPackJs, map[string]*bintree{}},
-					"jquery-2.1.4.min.js": &bintree{themePureStaticJsJquery214MinJs, map[string]*bintree{}},
-				}},
-				"robots.txt": &bintree{themePureStaticRobotsTxt, map[string]*bintree{}},
+				"robots.txt": {themeDefaultStaticRobotsTxt, map[string]*bintree{}},
 			}},
 		}},
-		"tpl.md": &bintree{themeTplMd, map[string]*bintree{}},
-		"uno": &bintree{nil, map[string]*bintree{
-			"archive.html": &bintree{themeUnoArchiveHtml, map[string]*bintree{}},
-			"cover.html":   &bintree{themeUnoCoverHtml, map[string]*bintree{}},
-			"embed": &bintree{nil, map[string]*bintree{
-				"analytics.html": &bintree{themeUnoEmbedAnalyticsHtml, map[string]*bintree{}},
-				"comment.html":   &bintree{themeUnoEmbedCommentHtml, map[string]*bintree{}},
+		"pure": {nil, map[string]*bintree{
+			"archive.html": {themePureArchiveHtml, map[string]*bintree{}},
+			"embed": {nil, map[string]*bintree{
+				"analytics.html": {themePureEmbedAnalyticsHtml, map[string]*bintree{}},
+				"comment.html":   {themePureEmbedCommentHtml, map[string]*bintree{}},
 			}},
-			"footer.html":    &bintree{themeUnoFooterHtml, map[string]*bintree{}},
-			"footer_js.html": &bintree{themeUnoFooter_jsHtml, map[string]*bintree{}},
-			"index.html":     &bintree{themeUnoIndexHtml, map[string]*bintree{}},
-			"meta.html":      &bintree{themeUnoMetaHtml, map[string]*bintree{}},
-			"page.html":      &bintree{themeUnoPageHtml, map[string]*bintree{}},
-			"post.html":      &bintree{themeUnoPostHtml, map[string]*bintree{}},
-			"posts.html":     &bintree{themeUnoPostsHtml, map[string]*bintree{}},
-			"static": &bintree{nil, map[string]*bintree{
-				"css": &bintree{nil, map[string]*bintree{
-					"prism.css": &bintree{themeUnoStaticCssPrismCss, map[string]*bintree{}},
-					"style.css": &bintree{themeUnoStaticCssStyleCss, map[string]*bintree{}},
+			"footer.html":    {themePureFooterHtml, map[string]*bintree{}},
+			"footer_js.html": {themePureFooter_jsHtml, map[string]*bintree{}},
+			"meta.html":      {themePureMetaHtml, map[string]*bintree{}},
+			"page.html":      {themePurePageHtml, map[string]*bintree{}},
+			"post.html":      {themePurePostHtml, map[string]*bintree{}},
+			"posts.html":     {themePurePostsHtml, map[string]*bintree{}},
+			"sidebar.html":   {themePureSidebarHtml, map[string]*bintree{}},
+			"static": {nil, map[string]*bintree{
+				"css": {nil, map[string]*bintree{
+					"blog.css":       {themePureStaticCssBlogCss, map[string]*bintree{}},
+					"pure-min.css":   {themePureStaticCssPureMinCss, map[string]*bintree{}},
+					"railscasts.css": {themePureStaticCssRailscastsCss, map[string]*bintree{}},
 				}},
-				"favicon.ico": &bintree{themeUnoStaticFaviconIco, map[string]*bintree{}},
-				"js": &bintree{nil, map[string]*bintree{
-					"jquery-2.1.4.min.js": &bintree{themeUnoStaticJsJquery214MinJs, map[string]*bintree{}},
-					"prism.min.js":        &bintree{themeUnoStaticJsPrismMinJs, map[string]*bintree{}},
+				"favicon.ico": {themePureStaticFaviconIco, map[string]*bintree{}},
+				"js": {nil, map[string]*bintree{
+					"highlight.pack.js":   {themePureStaticJsHighlightPackJs, map[string]*bintree{}},
+					"jquery-2.1.4.min.js": {themePureStaticJsJquery214MinJs, map[string]*bintree{}},
 				}},
-				"robots.txt": &bintree{themeUnoStaticRobotsTxt, map[string]*bintree{}},
+				"robots.txt": {themePureStaticRobotsTxt, map[string]*bintree{}},
+			}},
+		}},
+		"tpl.md": {themeTplMd, map[string]*bintree{}},
+		"uno": {nil, map[string]*bintree{
+			"archive.html": {themeUnoArchiveHtml, map[string]*bintree{}},
+			"cover.html":   {themeUnoCoverHtml, map[string]*bintree{}},
+			"embed": {nil, map[string]*bintree{
+				"analytics.html": {themeUnoEmbedAnalyticsHtml, map[string]*bintree{}},
+				"comment.html":   {themeUnoEmbedCommentHtml, map[string]*bintree{}},
+			}},
+			"footer.html":    {themeUnoFooterHtml, map[string]*bintree{}},
+			"footer_js.html": {themeUnoFooter_jsHtml, map[string]*bintree{}},
+			"index.html":     {themeUnoIndexHtml, map[string]*bintree{}},
+			"meta.html":      {themeUnoMetaHtml, map[string]*bintree{}},
+			"page.html":      {themeUnoPageHtml, map[string]*bintree{}},
+			"post.html":      {themeUnoPostHtml, map[string]*bintree{}},
+			"posts.html":     {themeUnoPostsHtml, map[string]*bintree{}},
+			"static": {nil, map[string]*bintree{
+				"css": {nil, map[string]*bintree{
+					"prism.css": {themeUnoStaticCssPrismCss, map[string]*bintree{}},
+					"style.css": {themeUnoStaticCssStyleCss, map[string]*bintree{}},
+				}},
+				"favicon.ico": {themeUnoStaticFaviconIco, map[string]*bintree{}},
+				"js": {nil, map[string]*bintree{
+					"jquery-2.1.4.min.js": {themeUnoStaticJsJquery214MinJs, map[string]*bintree{}},
+					"prism.min.js":        {themeUnoStaticJsPrismMinJs, map[string]*bintree{}},
+				}},
+				"robots.txt": {themeUnoStaticRobotsTxt, map[string]*bintree{}},
 			}},
 		}},
 	}},

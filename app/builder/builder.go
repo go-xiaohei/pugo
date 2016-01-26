@@ -7,6 +7,7 @@ type (
 	Builder struct {
 		IsBuilding bool
 		IsWatching bool
+		Counter    int
 
 		handlers []Handler
 	}
@@ -58,4 +59,10 @@ func Build(ctx *Context) {
 		log15.Info("Build|Done|%.1fms", ctx.Duration()*1e3)
 	}
 	b.IsBuilding = false
+	b.Counter++
+}
+
+// Counter return the times of building process ran
+func Counter() int {
+	return b.Counter
 }

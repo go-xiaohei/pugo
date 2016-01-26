@@ -2,10 +2,10 @@ package model
 
 import (
 	"fmt"
+	"path/filepath"
 	"time"
 
 	"github.com/go-xiaohei/pugo/app/helper"
-	"path/filepath"
 )
 
 const (
@@ -15,16 +15,26 @@ const (
 	FileStatic = "static"
 	// FileMedia means it's copied from media directory
 	FileMedia = "media"
+
+	// OpCompiled means this file is after compiled
+	OpCompiled = "compiled"
+	// OpCopy mean the file is from copying operation
+	OpCopy = "copy"
+	// OpKeep means the file is keep, no operation
+	OpKeep = "Keep"
+	// OpRemove means the files is removed in this process
+	OpRemove = "remove"
 )
 
 type (
-	// File describe a generated or compiled file
+	// File describe a generated or compiled or operated file
 	File struct {
 		URL     string
 		ModTime time.Time
 		Size    int64
 		Type    string
 		Hash    string
+		Op      string
 	}
 	// Files record all relative files
 	Files struct {
@@ -40,20 +50,27 @@ func NewFiles() *Files {
 }
 
 // Add add file
-func (fs *Files) Add(url string, size int64, modTime time.Time, t string) {
+func (fs *Files) Add(url string, size int64, modTime time.Time, t string, op string) {
 	f := &File{
 		URL:     url,
 		Size:    size,
 		ModTime: modTime,
 		Type:    t,
+		Op:      op,
 	}
-	hash, _ := helper.Md5File(url)
-	f.Hash = hash
+	if op != OpRemove {
+		hash, _ := helper.Md5File(url)
+		f.Hash = hash
+	}
 	fs.files[url] = f
 }
 
+// Exist check file existing in operated files
 func (fs *Files) Exist(file string) bool {
 	for _, f := range fs.files {
+		if f.Op == OpRemove {
+			return false
+		}
 		if filepath.ToSlash(f.URL) == filepath.ToSlash(file) {
 			return true
 		}

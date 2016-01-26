@@ -6,11 +6,12 @@ import (
 	"path"
 	"path/filepath"
 
+	"strings"
+
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/go-xiaohei/pugo/app/model"
 	"gopkg.in/inconshreveable/log15.v2"
-	"strings"
 )
 
 type (
@@ -79,7 +80,7 @@ func copyDirectory(ctx *Context, srcDir, dstDir string) error {
 			hash1, _ = helper.Md5File(p)
 			hash2, _ = helper.Md5File(toFile)
 			if hash1 == hash2 {
-				ctx.Files.Add(toFile, fi.Size(), fi.ModTime(), model.FileStatic)
+				ctx.Files.Add(toFile, fi.Size(), fi.ModTime(), model.FileStatic, model.OpKeep)
 				log15.Debug("Build|Keep|%s", toFile)
 			}
 			return nil
@@ -91,7 +92,7 @@ func copyDirectory(ctx *Context, srcDir, dstDir string) error {
 			return err
 		}
 
-		ctx.Files.Add(toFile, fi.Size(), ctx.time, model.FileStatic)
+		ctx.Files.Add(toFile, fi.Size(), ctx.time, model.FileStatic, model.OpCopy)
 		log15.Debug("Build|Copy|%s", toFile)
 
 		return nil
@@ -116,6 +117,7 @@ func CopyMedia(ctx *Context) error {
 	return copyDirectory(ctx, mediaDir, filepath.Join(ctx.dstDir, ctx.Source.Meta.Path, "media"))
 }
 
+// CleanCopied clean old copied files
 func CleanCopied(ctx *Context) error {
 	var (
 		dstDir  = ctx.DstDir()
@@ -150,6 +152,7 @@ func CleanCopied(ctx *Context) error {
 
 		if !ctx.Files.Exist(p) {
 			os.RemoveAll(p)
+			ctx.Files.Add(p, fi.Size(), ctx.time, model.FileStatic, model.OpRemove)
 			log15.Debug("Build|Remove|%s", p)
 		}
 
