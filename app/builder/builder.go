@@ -55,11 +55,11 @@ func Build(ctx *Context) {
 		}
 	}
 	log15.Info("Build|%d Pages", ctx.counter)
-	if ctx.Err == nil {
-		log15.Info("Build|Done|%.1fms", ctx.Duration()*1e3)
-	}
 	b.IsBuilding = false
 	b.Counter++
+	if ctx.Err == nil {
+		log15.Info("Build|Done|%d|%.1fms", Counter(), ctx.Duration()*1e3)
+	}
 }
 
 // Counter return the times of building process ran

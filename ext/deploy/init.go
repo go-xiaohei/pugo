@@ -25,12 +25,12 @@ func Detect(ctx *builder.Context) {
 			log15.Crit("Deploy|Fail|%s", err.Error())
 			return
 		}
-		if isDeployTo(ctx.To) && task == nil {
-			log15.Warn("Deploy|Unknown|%s", ctx.To)
-		}
 		if task != nil {
 			log15.Info("Deploy|Detect|%s", task.Name())
 			manager.Set(task)
+		}
+		if isDeployTo(ctx.To) && task == nil {
+			log15.Warn("Deploy|Unknown|%s", ctx.To)
 		}
 	}
 }

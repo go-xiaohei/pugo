@@ -51,6 +51,7 @@ func NewFiles() *Files {
 
 // Add add file
 func (fs *Files) Add(url string, size int64, modTime time.Time, t string, op string) {
+	url = filepath.ToSlash(url)
 	f := &File{
 		URL:     url,
 		Size:    size,
@@ -76,6 +77,11 @@ func (fs *Files) Exist(file string) bool {
 		}
 	}
 	return false
+}
+
+// All return all files in Files
+func (fs *Files) All() map[string]*File {
+	return fs.files
 }
 
 // Print print files
