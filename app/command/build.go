@@ -8,6 +8,7 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo/app/builder"
 	"github.com/go-xiaohei/pugo/ext/deploy"
+	"github.com/go-xiaohei/pugo/ext/migrate"
 	"gopkg.in/inconshreveable/log15.v2"
 )
 
@@ -26,6 +27,7 @@ var (
 		Before: Before,
 		Action: func(ctx *cli.Context) {
 			deploy.Init()
+			migrate.Init()
 			build(ctx, false)
 		},
 	}
