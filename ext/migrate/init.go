@@ -1,9 +1,10 @@
 package migrate
 
 import (
+	"strings"
+
 	"github.com/go-xiaohei/pugo/app/builder"
 	"gopkg.in/inconshreveable/log15.v2"
-	"strings"
 )
 
 // Init init migration handler to builder
@@ -25,11 +26,14 @@ func Handle(ctx *builder.Context) {
 		}
 		if task != nil {
 			log15.Info("Migrate|Detect|%s", task.Name())
-			return task.Action(ctx)
+			if err := task.Action(ctx); err != nil {
+				log15.Error("Migrate|%s|%s", task.Name(), err.Error)
+			}
+			return
 		}
-		if isMigrateTo(ctx.From) && task == nil {
-			log15.Warn("Migrate|Unknown|%s", ctx.From)
-		}
+	}
+	if isMigrateTo(ctx.From) {
+		log15.Crit("Migrate|Unknown|%s", ctx.From)
 	}
 }
 

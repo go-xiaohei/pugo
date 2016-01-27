@@ -26,8 +26,8 @@ var (
 		},
 		Before: Before,
 		Action: func(ctx *cli.Context) {
-			deploy.Init()
 			migrate.Init()
+			deploy.Init()
 			build(ctx, false)
 		},
 	}

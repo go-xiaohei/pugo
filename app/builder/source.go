@@ -1,7 +1,6 @@
 package builder
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -57,42 +56,28 @@ func NewSource(all *model.MetaAll) *Source {
 // ReadSource read source with *Context.
 // parse *Context.From and read data to *Context.Source
 func ReadSource(ctx *Context) {
-	var (
-		srcDir  = ""
-		destDir = ""
-	)
-	if srcDir, ctx.Err = toDir(ctx.From); ctx.Err != nil {
+	ctx.parseDir()
+	if ctx.Err != nil {
 		return
 	}
-	if !com.IsDir(srcDir) {
-		ctx.Err = fmt.Errorf("Directory '%s' is missing", srcDir)
-		return
-	}
-	ctx.srcDir = srcDir
-	log15.Info("Build|Source|%s", srcDir)
-
-	if destDir, ctx.Err = toDir(ctx.To); ctx.Err != nil {
-		return
-	}
-	ctx.dstDir = destDir
 
 	// read meta
 	// then read posts,
 	// then read pages
-	metaAll, err := ReadMeta(srcDir)
+	metaAll, err := ReadMeta(ctx.srcDir)
 	if err != nil {
 		ctx.Err = err
 		return
 	}
 	ctx.Source = NewSource(metaAll)
 
-	if ctx.Source.I18n, ctx.Err = ReadLang(srcDir); ctx.Err != nil {
+	if ctx.Source.I18n, ctx.Err = ReadLang(ctx.srcDir); ctx.Err != nil {
 		return
 	}
-	if ctx.Source.Posts, ctx.Err = ReadPosts(srcDir); ctx.Err != nil {
+	if ctx.Source.Posts, ctx.Err = ReadPosts(ctx.srcDir); ctx.Err != nil {
 		return
 	}
-	if ctx.Source.Pages, ctx.Err = ReadPages(srcDir); ctx.Err != nil {
+	if ctx.Source.Pages, ctx.Err = ReadPages(ctx.srcDir); ctx.Err != nil {
 		return
 	}
 }
@@ -205,14 +190,4 @@ func ReadPages(srcDir string) ([]*model.Page, error) {
 		return nil
 	})
 	return pages, err
-}
-
-func toDir(urlString string) (string, error) {
-	if !strings.Contains(urlString, "://") {
-		return urlString, nil
-	}
-	if strings.HasPrefix(urlString, "dir://") {
-		return strings.TrimPrefix(urlString, "dir://"), nil
-	}
-	return "", errors.New("Directory need schema dir://")
 }

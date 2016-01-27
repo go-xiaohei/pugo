@@ -1,10 +1,15 @@
 package builder
 
 import (
+	"errors"
+	"fmt"
 	"strings"
 	"sync/atomic"
 	"time"
 
+	"gopkg.in/inconshreveable/log15.v2"
+
+	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/go-xiaohei/pugo/app/model"
 	"github.com/go-xiaohei/pugo/app/theme"
@@ -101,10 +106,46 @@ func (ctx *Context) Again() {
 
 // SrcDir get src dir after build once
 func (ctx *Context) SrcDir() string {
+	ctx.parseDir()
 	return ctx.srcDir
 }
 
 // DstDir get destination directory after build once
 func (ctx *Context) DstDir() string {
+	ctx.parseDir()
 	return ctx.dstDir
+}
+
+func (ctx *Context) parseDir() {
+	if ctx.srcDir != "" && ctx.dstDir != "" {
+		return
+	}
+	var (
+		srcDir  = ""
+		destDir = ""
+	)
+	if srcDir, ctx.Err = toDir(ctx.From); ctx.Err != nil {
+		return
+	}
+	if !com.IsDir(srcDir) {
+		ctx.Err = fmt.Errorf("Directory '%s' is missing", srcDir)
+		return
+	}
+	ctx.srcDir = srcDir
+	log15.Info("Build|Source|%s", srcDir)
+
+	if destDir, ctx.Err = toDir(ctx.To); ctx.Err != nil {
+		return
+	}
+	ctx.dstDir = destDir
+}
+
+func toDir(urlString string) (string, error) {
+	if !strings.Contains(urlString, "://") {
+		return urlString, nil
+	}
+	if strings.HasPrefix(urlString, "dir://") {
+		return strings.TrimPrefix(urlString, "dir://"), nil
+	}
+	return "", errors.New("Directory need schema dir://")
 }

@@ -28,10 +28,11 @@ func Detect(ctx *builder.Context) {
 		if task != nil {
 			log15.Info("Deploy|Detect|%s", task.Name())
 			manager.Set(task)
+			return
 		}
-		if isDeployTo(ctx.To) && task == nil {
-			log15.Warn("Deploy|Unknown|%s", ctx.To)
-		}
+	}
+	if isDeployTo(ctx.To) {
+		log15.Crit("Deploy|Unknown|%s", ctx.To)
 	}
 }
 

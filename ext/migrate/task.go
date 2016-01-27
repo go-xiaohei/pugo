@@ -7,10 +7,11 @@ var (
 )
 
 func init() {
-	manager = NewManager()
+	manager = NewManager(new(RSS))
 }
 
 type (
+	// Task define migration methods
 	Task interface {
 		Name() string
 		Detect(*builder.Context) (Task, error)
