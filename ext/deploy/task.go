@@ -7,7 +7,11 @@ var (
 )
 
 func init() {
-	manager = NewManager(new(Git), new(Ftp))
+	manager = NewManager(
+		new(Git),
+		new(Ftp),
+		new(Sftp),
+	)
 }
 
 type (
