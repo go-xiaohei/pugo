@@ -2,11 +2,13 @@ package migrate
 
 import (
 	"bytes"
+	"errors"
+	"io"
+	"net/http"
 	"strings"
 
-	"gopkg.in/inconshreveable/log15.v2"
-
 	"github.com/go-xiaohei/pugo/app/builder"
+	"gopkg.in/inconshreveable/log15.v2"
 )
 
 var (
@@ -48,6 +50,24 @@ func (r *RSS) Detect(ctx *builder.Context) (Task, error) {
 	return nil, nil
 }
 
+// Action do rss migration to source
 func (r *RSS) Action(ctx *builder.Context) error {
+	// read rss data
+	resp, err := http.Get(r.Source)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode >= 400 {
+		log15.Error("Migrate|RSS|Fail|%s", http.StatusText(resp.StatusCode))
+		return errors.New(http.StatusText(resp.StatusCode))
+	}
+
+	var buf bytes.Buffer
+	io.Copy(&buf, resp.Body)
+	return r.parseRSSData(buf.Bytes())
+}
+
+func (r *RSS) parseRSSData(data []byte) error {
 	return nil
 }
