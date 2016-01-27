@@ -1,7 +1,6 @@
 language: go
 
 go:
-  - 1.3.3
   - 1.4.3
   - 1.5.3
   - tip
@@ -10,6 +9,7 @@ sudo: false
 
 script:
   - go get github.com/smartystreets/goconvey
+  - go get golang.org/x/tools/cmd/cover
   - go test -cover ./...
   - go build -o pugo.exe pugo.go 
   - ./pugo.exe build --theme="theme/default" --to="dir://default-dest" --debug
