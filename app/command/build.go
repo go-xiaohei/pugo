@@ -40,6 +40,7 @@ func build(c *cli.Context, mustWatch bool) {
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
 
 	ctx := builder.NewContext(
+		c,
 		c.String("from"),
 		c.String("to"),
 		c.String("theme"),

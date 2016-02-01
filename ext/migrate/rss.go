@@ -3,11 +3,14 @@ package migrate
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
+	"net/url"
+	"path"
 	"strings"
+	"time"
 
-	"fmt"
 	"github.com/go-xiaohei/pugo/app/builder"
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/go-xiaohei/pugo/app/model"
@@ -15,9 +18,6 @@ import (
 	"github.com/naoina/toml"
 	"golang.org/x/net/html"
 	"gopkg.in/inconshreveable/log15.v2"
-	"net/url"
-	"path"
-	"time"
 )
 
 var (
@@ -48,7 +48,10 @@ func (r *RSS) Detect(ctx *builder.Context) (Task, error) {
 		if strings.HasPrefix(ctx.From, prefix) {
 			source := strings.TrimPrefix(ctx.From, "rss+")
 			log15.Debug("Migrate|RSS|%s", source)
-			ctx.From = "dir://source"
+			ctx.From = ctx.Cli().String("migrateTo")
+			if ctx.From == "" {
+				ctx.From = "dir://source"
+			}
 			log15.Debug("Migrate|RSS|To|%s", ctx.From)
 			return &RSS{
 				Directory: ctx.SrcDir(),

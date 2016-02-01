@@ -7,18 +7,19 @@ import (
 	"sync/atomic"
 	"time"
 
-	"gopkg.in/inconshreveable/log15.v2"
-
 	"github.com/Unknwon/com"
+	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/go-xiaohei/pugo/app/model"
 	"github.com/go-xiaohei/pugo/app/theme"
 	"github.com/go-xiaohei/pugo/app/vars"
+	"gopkg.in/inconshreveable/log15.v2"
 )
 
 type (
 	// Context obtain context in once building process
 	Context struct {
+		cli *cli.Context
 		// From is source origin
 		From string
 		// To is destination
@@ -44,8 +45,9 @@ type (
 )
 
 // NewContext create new Context with from,to and theme args
-func NewContext(from, to, theme string) *Context {
+func NewContext(cli *cli.Context, from, to, theme string) *Context {
 	return &Context{
+		cli:       cli,
 		From:      from,
 		To:        to,
 		ThemeName: theme,
@@ -114,6 +116,11 @@ func (ctx *Context) SrcDir() string {
 func (ctx *Context) DstDir() string {
 	ctx.parseDir()
 	return ctx.dstDir
+}
+
+// Cli get command line context in this building context
+func (ctx *Context) Cli() *cli.Context {
+	return ctx.cli
 }
 
 func (ctx *Context) parseDir() {
