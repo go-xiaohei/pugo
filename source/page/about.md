@@ -1,6 +1,6 @@
 ```toml
 title = "About PuGo"
-slug = "about"
+# slug = "about"
 desc = "some words about pugo"
 date = "2015-12-24 12:24:00"
 author = "pugo"

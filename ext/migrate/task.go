@@ -1,6 +1,9 @@
 package migrate
 
-import "github.com/go-xiaohei/pugo/app/builder"
+import (
+	"bytes"
+	"github.com/go-xiaohei/pugo/app/builder"
+)
 
 var (
 	manager *Manager
@@ -15,7 +18,7 @@ type (
 	Task interface {
 		Name() string
 		Detect(*builder.Context) (Task, error)
-		Action(*builder.Context) error
+		Action(*builder.Context) (map[string]*bytes.Buffer, error)
 	}
 	// Manager manage tasks in global
 	Manager struct {

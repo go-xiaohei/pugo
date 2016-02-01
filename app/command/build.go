@@ -20,6 +20,7 @@ var (
 		Flags: []cli.Flag{
 			buildFromFlag,
 			buildToFlag,
+			migrateToFlag,
 			themeFlag,
 			watchFlag,
 			debugFlag,

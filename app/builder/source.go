@@ -86,7 +86,7 @@ func ReadSource(ctx *Context) {
 func ReadMeta(srcDir string) (*model.MetaAll, error) {
 	metaFile := filepath.Join(srcDir, "meta.toml")
 	if !com.IsFile(metaFile) {
-		return nil, fmt.Errorf("Meta.toml is missing")
+		return nil, fmt.Errorf("meta.toml is missing")
 	}
 	bytes, err := ioutil.ReadFile(metaFile)
 	if err != nil {
@@ -181,7 +181,9 @@ func ReadPages(srcDir string) ([]*model.Page, error) {
 		}
 		if filepath.Ext(p) == ".md" {
 			log15.Debug("Build|Load|%s", p)
-			page, err := model.NewPageOfMarkdown(p)
+			rel, _ := filepath.Rel(srcDir, p)
+			rel = strings.TrimSuffix(rel, filepath.Ext(rel))
+			page, err := model.NewPageOfMarkdown(p, rel)
 			if err != nil {
 				return err
 			}

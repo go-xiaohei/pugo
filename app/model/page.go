@@ -104,19 +104,14 @@ func (p *Page) normalize() error {
 		}
 	}
 	p.contentBytes = helper.Markdown(p.Bytes)
-	if p.Lang == "" {
-		p.permaURL = fmt.Sprintf("/%s", p.Slug)
-		p.pageURL = p.permaURL + ".html"
-	} else {
-		p.permaURL = fmt.Sprintf("/%s/%s", p.Lang, p.Slug)
-		p.pageURL = p.permaURL + ".html"
-	}
+	p.permaURL = fmt.Sprintf("/%s", p.Slug)
+	p.pageURL = p.permaURL + ".html"
 	p.treeURL = p.Slug
 	return nil
 }
 
 // NewPageOfMarkdown create new page from markdown file
-func NewPageOfMarkdown(file string) (*Page, error) {
+func NewPageOfMarkdown(file, slug string) (*Page, error) {
 	fileBytes, err := ioutil.ReadFile(file)
 	if err != nil {
 		return nil, err
@@ -131,6 +126,9 @@ func NewPageOfMarkdown(file string) (*Page, error) {
 	page := new(Page)
 	if err = toml.Unmarshal(dataSlice[1][4:], page); err != nil {
 		return nil, err
+	}
+	if page.Slug == "" {
+		page.Slug = slug
 	}
 	page.Bytes = bytes.Trim(dataSlice[2], "\n")
 	return page, page.normalize()

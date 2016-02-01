@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"strings"
 
+	"github.com/go-xiaohei/htmldown"
 	"github.com/russross/blackfriday"
 )
 
@@ -48,4 +49,10 @@ func Markdown(raw []byte) []byte {
 		blackfriday.EXTENSION_HEADER_IDS
 
 	return blackfriday.Markdown(raw, renderer, extensions)
+}
+
+func MarkdownBack(data []byte) ([]byte, error) {
+	doc := htmldown.NewDocument(bytes.NewReader(data))
+	str, err := doc.Markdown()
+	return []byte(str), err
 }

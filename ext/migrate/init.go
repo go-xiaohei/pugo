@@ -5,6 +5,9 @@ import (
 
 	"github.com/go-xiaohei/pugo/app/builder"
 	"gopkg.in/inconshreveable/log15.v2"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 )
 
 // Init init migration handler to builder
@@ -26,10 +29,24 @@ func Handle(ctx *builder.Context) {
 		}
 		if task != nil {
 			log15.Info("Migrate|Detect|%s", task.Name())
-			if err := task.Action(ctx); err != nil {
-				log15.Error("Migrate|%s|%s", task.Name(), err.Error)
+			files, err := task.Action(ctx)
+			if err != nil {
+				log15.Error("Migrate|%s|%s", task.Name(), err.Error())
+				return
 			}
-			return
+			for file, b := range files {
+				file = filepath.Join(ctx.SrcDir(), file)
+				log15.Debug("Migrate|Write|%s", file)
+				if b == nil {
+					os.MkdirAll(file, os.ModePerm)
+					continue
+				}
+				os.MkdirAll(filepath.Dir(file), os.ModePerm)
+				if err = ioutil.WriteFile(file, b.Bytes(), os.ModePerm); err != nil {
+					log15.Error("Migrate|%s|%s", task.Name(), err.Error())
+					return
+				}
+			}
 		}
 	}
 	if isMigrateTo(ctx.From) {
