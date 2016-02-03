@@ -1,0 +1,74 @@
+html, body, .box {
+    font-family: "Titillium Web", "PingHei", "Lucida Grande", "Lucida Sans Unicode", Helvetica, Tahoma, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "Microsoft YaHei", STXihei, STHeiti, Heiti, SimSun, sans-serif;
+}
+
+pre code {
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', "Microsoft Yahei", Helvetica, Arial, sans-serif;
+}
+
+body {
+    padding: 24px 0;
+    background-color: #FAFAFA;
+    color: #444;
+}
+
+.wrapper {
+    max-width: 1170px;
+    margin: 0 auto;
+}
+
+/*---nav---*/
+
+#nav-list {
+    float: right;
+}
+
+#cover,
+#footer .bottom{
+    text-align: center;
+}
+
+#cover .wrapper,
+#footer .wrapper {
+    padding-bottom: 40px;
+    margin-bottom: 40px;
+    border-bottom: 1px solid #DDD;
+}
+
+#title {
+    font-size: 90px;
+    font-weight: normal;
+    letter-spacing: 6px;
+    margin: 0.3em 0;
+}
+
+#cover .slagon {
+    font-size: 24px;
+    color: #888;
+}
+
+#dl-button {
+    margin: 1em 0 2em 0;
+    font-size: 120%;
+}
+
+#gopher-img {
+    width: 400px;
+}
+
+#footer .box h4 {
+    padding-top: 0;
+    margin-top: 0;
+    padding-bottom: .5em;
+    margin-bottom: .5em;
+}
+
+#footer .github-box,
+#footer .cp-box{
+    padding: 0 1em;
+}
+
+#footer .cp-box{
+    color: #BBB;
+    padding-top: 1em;
+}

@@ -82,8 +82,8 @@ func copyDirectory(ctx *Context, srcDir, dstDir string) error {
 			if hash1 == hash2 {
 				ctx.Files.Add(toFile, fi.Size(), fi.ModTime(), model.FileStatic, model.OpKeep)
 				log15.Debug("Build|Keep|%s", toFile)
+				return nil
 			}
-			return nil
 		}
 
 		// copy file

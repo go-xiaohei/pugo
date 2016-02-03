@@ -1,0 +1,37 @@
+{{template "meta.html" .}}
+<body>
+{{template "header.html" .}}
+<section id="main">
+    <div class="container">
+        <div id="article-list">{{if .Tag}}
+            <h2 class="tag text-center">{{.Tag.Name}}</h2>{{end}}{{range .Posts}}
+            <article class="article">
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1 panel panel-default">
+                        <header class="header">
+                            <div class="meta">
+                        <span class="date">
+                            <span class="month">{{printf "%d" .Created.Month}}</span>
+                            <span class="day">{{.Created.Day}}</span>
+                        </span>
+                            </div>
+                            <h3 class="title">
+                                <a href="{{.URL}}">{{.Title}}</a>
+                            </h3>
+                        </header>
+                        <section class="brief">{{.BriefHTML}}</section>
+                        <aside class="aside clearfix">
+                            <a class="btn btn-primary btn-lg pull-right" href="{{.URL}}">{{$.I18n.Tr "post.readmore"}}</a>
+                        </aside>
+                    </div>
+                </div>
+            </article>
+            {{end}}
+            <div class="article-pager text-center">
+                {{if .Pager.Prev}}<a class="btn btn-lg btn-info" href="{{.Pager.PrevURL}}">{{.I18n.Tr "pager.prev"}}</a>{{end}}
+                {{if .Pager.Next}}<a class="btn btn-lg btn-info" href="{{.Pager.NextURL}}">{{.I18n.Tr "pager.next"}}</a>{{end}}
+            </div>
+        </div>
+    </div>
+</section>
+{{template "footer.html" .}}

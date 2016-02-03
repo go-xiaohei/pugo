@@ -1,0 +1,32 @@
+{{template "meta.html" .}}
+<body>
+{{template "header.html" .}}
+<section id="main">
+    <div class="container">
+        <div id="article-single">
+            <article class="article">
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1 panel panel-default">
+                        <header class="header">
+                            <div class="meta">
+                        <span class="date">
+                            <span class="month">{{printf "%d" .Page.Created.Month}}</span>
+                            <span class="day">{{.Page.Created.Day}}</span>
+                        </span>
+                            </div>
+                            <h3 class="title">
+                                <a href="{{.Page.URL}}">{{.Page.Title}}</a>
+                            </h3>
+                        </header>
+                        {{if .Page.Author}}<aside class="aside clearfix">
+                            <a class="stat label label-default pull-right"{{if .Page.Author.URL}} href="{{.Page.Author.URL}}" target="_blank"{{end}}>{{.Page.Author.Name}}</a>
+                        </aside>{{end}}
+                        <section class="brief">{{.Page.ContentHTML}}</section>
+                    </div>
+                </div>
+            </article>
+        </div>
+        {{template "embed/comment.html" .}}
+    </div>
+</section>
+{{template "footer.html" .}}
