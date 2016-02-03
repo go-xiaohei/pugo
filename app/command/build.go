@@ -29,28 +29,32 @@ var (
 		Action: func(ctx *cli.Context) {
 			migrate.Init()
 			deploy.Init()
-			build(ctx, false)
+			build(newContext(ctx, true), false)
 		},
 	}
 )
 
-func build(c *cli.Context, mustWatch bool) {
-	// ctrl+C capture
-	signalChan := make(chan os.Signal)
-	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
-
+func newContext(c *cli.Context, validate bool) *builder.Context {
 	ctx := builder.NewContext(
 		c,
 		c.String("from"),
 		c.String("to"),
 		c.String("theme"),
 	)
-	if !ctx.IsValid() {
+	if validate && !ctx.IsValid() {
 		log15.Crit("Build|Must have values in 'from', 'to' & 'theme'")
 	}
+	return ctx
+}
+
+func build(ctx *builder.Context, mustWatch bool) {
+	// ctrl+C capture
+	signalChan := make(chan os.Signal)
+	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
+
 	builder.Build(ctx)
 
-	if c.Bool("watch") || mustWatch {
+	if ctx.Cli().Bool("watch") || mustWatch {
 		builder.Watch(ctx)
 		<-signalChan
 		log15.Info("Watch|Close")

@@ -20,6 +20,7 @@ func main() {
 		command.Build,
 		command.Server,
 		command.New,
+		command.Doc,
 	}
 	app.RunAndExitOnError()
 }

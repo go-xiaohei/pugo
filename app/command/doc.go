@@ -7,25 +7,20 @@ import (
 )
 
 var (
-	// Server is command of 'server'
-	Server = cli.Command{
-		Name:  "server",
-		Usage: "server static files",
+	// Doc is command of 'doc'
+	Doc = cli.Command{
+		Name:  "doc",
+		Usage: "run documentation server",
 		Flags: []cli.Flag{
-			buildFromFlag,
-			buildToFlag,
-			themeFlag,
 			addrFlag,
 			debugFlag,
 		},
 		Before: Before,
-		Action: serv,
+		Action: docServ,
 	}
-
-	s *server.Server
 )
 
-func serv(c *cli.Context) {
+func docServ(c *cli.Context) {
 	builder.After(func(ctx *builder.Context) {
 		if s == nil {
 			s = server.New(ctx.DstDir())
@@ -35,5 +30,9 @@ func serv(c *cli.Context) {
 			s.SetPrefix(ctx.Source.Meta.Path)
 		}
 	})
-	build(newContext(c, true), true)
+	buildContext := newContext(c, false)
+	buildContext.From = "doc/source"
+	buildContext.To = "doc/public"
+	buildContext.ThemeName = "doc/theme"
+	build(buildContext, true)
 }
