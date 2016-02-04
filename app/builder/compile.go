@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
 	"sync/atomic"
 	"time"
 
@@ -157,7 +158,7 @@ func compilePages(ctx *Context, toDir string) error {
 		err          error
 	)
 	for _, p := range ctx.Source.Pages {
-		dstFile = path.Join(toDir, p.URL())
+		dstFile = filepath.Join(toDir, p.URL())
 		if path.Ext(dstFile) == "" {
 			dstFile += ".html"
 		}
@@ -185,7 +186,7 @@ func compilePages(ctx *Context, toDir string) error {
 }
 
 func compile(ctx *Context, file string, viewData map[string]interface{}, destFile string) error {
-	os.MkdirAll(path.Dir(destFile), os.ModePerm)
+	os.MkdirAll(filepath.Dir(destFile), os.ModePerm)
 	f, err := os.OpenFile(destFile, os.O_CREATE|os.O_TRUNC|os.O_RDWR, os.ModePerm)
 	if err != nil {
 		return err

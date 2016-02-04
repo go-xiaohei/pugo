@@ -1,4 +1,6 @@
-html, body, .box {
+html, body,
+.box,
+.pure-g [class *="pure-u"] {
     font-family: "Titillium Web", "PingHei", "Lucida Grande", "Lucida Sans Unicode", Helvetica, Tahoma, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "Microsoft YaHei", STXihei, STHeiti, Heiti, SimSun, sans-serif;
 }
 
@@ -9,7 +11,15 @@ pre code {
 body {
     padding: 24px 0;
     background-color: #FAFAFA;
-    color: #444;
+    color: #333;
+}
+
+.pure-menu-heading{
+    color: #333;
+}
+
+.pure-menu-link{
+    color: #555;
 }
 
 .wrapper {
@@ -29,7 +39,8 @@ body {
 }
 
 #cover .wrapper,
-#footer .wrapper {
+#footer .wrapper,
+#main .wrapper{
     padding-bottom: 40px;
     margin-bottom: 40px;
     border-bottom: 1px solid #DDD;
@@ -71,4 +82,18 @@ body {
 #footer .cp-box{
     color: #BBB;
     padding-top: 1em;
+}
+
+/*---main---*/
+
+#main .wrapper{
+    padding-top: 1.5em;
+}
+
+#main .pure-u-1-4{
+    font-size: 90%;
+}
+
+#main .pure-u-1-4 .pure-menu-heading{
+    font-weight: bold;
 }

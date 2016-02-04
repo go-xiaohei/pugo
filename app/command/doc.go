@@ -33,6 +33,6 @@ func docServ(c *cli.Context) {
 	buildContext := newContext(c, false)
 	buildContext.From = "doc/source"
 	buildContext.To = "doc/public"
-	buildContext.ThemeName = "doc/theme"
+	buildContext.ThemeName = "doc/hanami"
 	build(buildContext, true)
 }
