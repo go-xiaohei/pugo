@@ -46,6 +46,15 @@
         </div>
     </div>
 </footer>
+<script src="{{.Base}}/js/jquery-2.1.4.min.js"></script>
+<script src="{{.Base}}/js/highlight.pack.js"></script>
+<script>
+    $(document).ready(function() {
+        $('pre code').each(function(i, block) {
+            hljs.highlightBlock(block);
+        });
+    });
+</script>
 <script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
 </body>
 </html>

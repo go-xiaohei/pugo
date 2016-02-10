@@ -4,8 +4,21 @@ html, body,
     font-family: "Titillium Web", "PingHei", "Lucida Grande", "Lucida Sans Unicode", Helvetica, Tahoma, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "Microsoft YaHei", STXihei, STHeiti, Heiti, SimSun, sans-serif;
 }
 
-pre code {
+pre code,p > code,li>code,a >code {
     font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', "Microsoft Yahei", Helvetica, Arial, sans-serif;
+    color:#800;
+}
+
+p > code,li>code,a >code {
+    font-size: 85%;
+    padding: 0.2em 0.4em;
+    white-space: nowrap;
+    background-color: #F2F2F2;
+}
+
+pre{
+    font-size: 75%;
+    line-height: 1.8em;
 }
 
 body {
@@ -91,9 +104,26 @@ body {
 }
 
 #main .pure-u-1-4{
-    font-size: 90%;
+    font-size: 95%;
 }
 
 #main .pure-u-1-4 .pure-menu-heading{
     font-weight: bold;
+}
+
+.guide-nav{
+    margin-top: 8px;
+}
+
+.guide-page .title{
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: .5em;
+    margin-bottom: .5em;
+    border-bottom: 1px solid #DDD;
+}
+
+.guide-page .content{
+    line-height: 2em;
+    font-size: 18px;
 }

@@ -3,12 +3,11 @@ package model
 import (
 	"bytes"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"path"
 	"strings"
 	"time"
-
-	"html/template"
 
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/naoina/toml"
@@ -136,6 +135,9 @@ func NewPostOfMarkdown(file string) (*Post, error) {
 	fileBytes, err := ioutil.ReadFile(file)
 	if err != nil {
 		return nil, err
+	}
+	if len(fileBytes) < 3 {
+		return nil, fmt.Errorf("post content is too less")
 	}
 	dataSlice := bytes.SplitN(fileBytes, postBlockSeparator, 3)
 	if len(dataSlice) != 3 {

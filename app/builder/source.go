@@ -156,7 +156,9 @@ func ReadPosts(srcDir string) ([]*model.Post, error) {
 			if err != nil {
 				return err
 			}
-			posts = append(posts, post)
+			if post != nil {
+				posts = append(posts, post)
+			}
 		}
 		return nil
 	})
@@ -187,7 +189,9 @@ func ReadPages(srcDir string) ([]*model.Page, error) {
 			if err != nil {
 				return err
 			}
-			pages = append(pages, page)
+			if page != nil {
+				pages = append(pages, page)
+			}
 		}
 		return nil
 	})

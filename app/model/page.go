@@ -3,12 +3,11 @@ package model
 import (
 	"bytes"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"path"
 	"strings"
 	"time"
-
-	"html/template"
 
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/naoina/toml"
@@ -116,12 +115,15 @@ func NewPageOfMarkdown(file, slug string) (*Page, error) {
 	if err != nil {
 		return nil, err
 	}
+	if len(fileBytes) < 3 {
+		return nil, fmt.Errorf("page content is too less")
+	}
 	dataSlice := bytes.SplitN(fileBytes, postBlockSeparator, 3)
 	if len(dataSlice) != 3 {
-		return nil, fmt.Errorf("post need toml block and markdown block")
+		return nil, fmt.Errorf("page need toml block and markdown block")
 	}
 	if !bytes.HasPrefix(dataSlice[1], tomlPrefix) {
-		return nil, fmt.Errorf("post need toml block at first")
+		return nil, fmt.Errorf("page need toml block at first")
 	}
 	page := new(Page)
 	if err = toml.Unmarshal(dataSlice[1][4:], page); err != nil {
