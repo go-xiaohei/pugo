@@ -15,6 +15,7 @@ pugo new site
 
 Then `PuGo` extracts static files in current directory. Default site directories struct is:
 
+    - meta.toml // save meta info for site
     - source // save all contents
     --|-- post // save all posts
     --|-- page // save all pages

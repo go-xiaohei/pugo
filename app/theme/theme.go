@@ -54,9 +54,23 @@ func New(dir string) *Theme {
 		}
 		return template.HTML(fmt.Sprintf("%v", v))
 	}
-	theme.funcMap["Include"] = func(tpl string, data interface{}) template.HTML {
+	theme.funcMap["Include"] = func(values ...interface{}) template.HTML {
 		var buf bytes.Buffer
-		if err := theme.Execute(&buf, tpl, data); err != nil {
+		if len(values) < 2 {
+			return template.HTML("<!-- include template without path or data -->")
+		}
+		var pathData []string
+		for i, v := range values {
+			if i < len(values)-1 {
+				str, ok := v.(string)
+				if !ok {
+					return template.HTML("<!-- include template with non-string path -->")
+				}
+				pathData = append(pathData, str)
+			}
+		}
+		tpl := path.Join(pathData...)
+		if err := theme.Execute(&buf, tpl, values[len(values)-1]); err != nil {
 			return template.HTML("<!-- template " + tpl + " error:" + err.Error() + "-->")
 		}
 		return template.HTML(string(buf.Bytes()))

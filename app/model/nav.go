@@ -29,6 +29,14 @@ func (n *Nav) Tr(i18n *helper.I18n) string {
 	return i18n.Tr("nav." + n.I18n)
 }
 
+// TrLink print nav link with i18n prefix
+func (n *Nav) TrLink(i18n *helper.I18n) string {
+	if n.IsRemote {
+		return n.Link
+	}
+	return "/" + path.Join(i18n.Lang, n.Link)
+}
+
 // FixURL fix url path of all navigation items
 func (ng NavGroup) FixURL(prefix string) {
 	for _, n := range ng {

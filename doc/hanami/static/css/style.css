@@ -4,6 +4,10 @@ html, body,
     font-family: "Titillium Web", "PingHei", "Lucida Grande", "Lucida Sans Unicode", Helvetica, Tahoma, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "Microsoft YaHei", STXihei, STHeiti, Heiti, SimSun, sans-serif;
 }
 
+a{
+    color: #00c;
+}
+
 pre code,p > code,li>code,a >code {
     font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', "Microsoft Yahei", Helvetica, Arial, sans-serif;
     color:#800;

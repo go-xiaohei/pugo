@@ -171,6 +171,12 @@ func compilePages(ctx *Context, toDir string) error {
 		viewData["PermaKey"] = p.Slug
 		viewData["PostType"] = model.TreePage
 		viewData["Hover"] = p.NavHover
+		if p.Lang != "" {
+			viewData["Lang"] = p.Lang
+			if i18n, ok := ctx.Source.I18n[p.Lang]; ok {
+				viewData["I18n"] = i18n
+			}
+		}
 
 		tpl = "page.html"
 		if p.Template != "" {

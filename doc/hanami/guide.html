@@ -5,19 +5,7 @@
     <div class="wrapper">
        <div class="pure-g">
            <div class="pure-u-1-4">
-               <div class="pure-menu">
-                   <ul class="pure-menu-list guide-nav">
-                       <li class="pure-menu-heading">Getting Started</li>
-                       <li class="pure-menu-item"><a href="/en/guide/install" class="pure-menu-link">Install PuGo</a></li>
-                       <li class="pure-menu-item"><a href="/en/guide/create-new-site" class="pure-menu-link">Create New Site</a></li>
-                       <li class="pure-menu-item"><a href="/en/guide/write-new-post" class="pure-menu-link">Write New Post</a></li>
-                       <li class="pure-menu-item"><a href="/en/guide/write-new-page" class="pure-menu-link">Write New Page</a></li>
-                       <li class="pure-menu-item"><a href="/en/guide/add-comment-system" class="pure-menu-link">Add Comment System</a></li>
-                       <li class="pure-menu-item"><a href="#" class="pure-menu-link">Build Files</a></li>
-                       <li class="pure-menu-item"><a href="#" class="pure-menu-link">Standalone Server</a></li>
-                       <li class="pure-menu-item"><a href="#" class="pure-menu-link">Deploy to Nginx</a></li>
-                   </ul>
-               </div>
+               {{Include "embed" .I18n.Lang "guide_sidebar.html" .}}         
            </div>
            <div class="pure-u-3-4 guide-page">
                {{with .Page}}
