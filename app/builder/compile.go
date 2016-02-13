@@ -53,6 +53,7 @@ func compilePosts(ctx *Context, toDir string) error {
 		viewData["PermaKey"] = p.Slug
 		viewData["PostType"] = model.TreePost
 		viewData["Hover"] = model.TreePost
+		viewData["URL"] = p.URL()
 
 		if err = compile(ctx, "post.html", viewData, dstFile); err != nil {
 			return err
@@ -68,6 +69,7 @@ func compilePosts(ctx *Context, toDir string) error {
 		page         = 1
 		layout       = "posts/%d"
 		pageKey      = ""
+		pageURL      = ""
 	)
 	for {
 		pager := cursor.Page(page)
@@ -79,7 +81,8 @@ func compilePosts(ctx *Context, toDir string) error {
 		currentPosts = ctx.Source.Posts[pager.Begin:pager.End]
 		pager.SetLayout(path.Join(ctx.Source.Meta.Path, "/"+layout+".html"))
 
-		dstFile = path.Join(toDir, ctx.Source.Meta.Path, fmt.Sprintf(layout+".html", pager.Current))
+		pageURL = path.Join(ctx.Source.Meta.Path, fmt.Sprintf(layout+".html", pager.Current))
+		dstFile = path.Join(toDir, pageURL)
 
 		pageKey = fmt.Sprintf("post-page-%d", pager.Current)
 		viewData = ctx.View()
@@ -89,6 +92,7 @@ func compilePosts(ctx *Context, toDir string) error {
 		viewData["PostType"] = model.TreePostList
 		viewData["PermaKey"] = pageKey
 		viewData["Hover"] = model.TreePostList
+		viewData["URL"] = pageURL
 
 		if err = compile(ctx, "posts.html", viewData, dstFile); err != nil {
 			return err
@@ -108,6 +112,7 @@ func compilePosts(ctx *Context, toDir string) error {
 			viewData["PostType"] = model.TreeIndex
 			viewData["PermaKey"] = model.TreeIndex
 			viewData["Hover"] = model.TreeIndex
+			viewData["URL"] = path.Join(ctx.Source.Meta.Path, "index.html")
 
 			dstFile = path.Join(toDir, ctx.Source.Meta.Path, "index.html")
 
@@ -128,6 +133,7 @@ func compilePosts(ctx *Context, toDir string) error {
 	viewData["PostType"] = model.TreeArchive
 	viewData["PermaKey"] = model.TreeArchive
 	viewData["Hover"] = model.TreeArchive
+	viewData["URL"] = path.Join(ctx.Source.Meta.Path, "archive")
 	if err = compile(ctx, "archive.html", viewData, dstFile); err != nil {
 		return err
 	}
@@ -135,7 +141,8 @@ func compilePosts(ctx *Context, toDir string) error {
 
 	// build tag posts
 	for t, posts := range ctx.Source.tagPosts {
-		dstFile = path.Join(toDir, ctx.Source.Meta.Path, ctx.Source.Tags[t].URL)
+		pageURL = path.Join(ctx.Source.Meta.Path, ctx.Source.Tags[t].URL)
+		dstFile = path.Join(toDir, pageURL)
 		viewData = ctx.View()
 		viewData["Title"] = fmt.Sprintf("%s - %s", t, ctx.Source.Meta.Title)
 		viewData["Posts"] = posts
@@ -143,6 +150,7 @@ func compilePosts(ctx *Context, toDir string) error {
 		viewData["PostType"] = model.TreePostTag
 		viewData["PermaKey"] = pageKey
 		viewData["Hover"] = model.TreePostTag
+		viewData["URL"] = pageURL
 		if err = compile(ctx, "posts.html", viewData, dstFile); err != nil {
 			return err
 		}
@@ -171,6 +179,7 @@ func compilePages(ctx *Context, toDir string) error {
 		viewData["PermaKey"] = p.Slug
 		viewData["PostType"] = model.TreePage
 		viewData["Hover"] = p.NavHover
+		viewData["URL"] = p.URL()
 		if p.Lang != "" {
 			viewData["Lang"] = p.Lang
 			if i18n, ok := ctx.Source.I18n[p.Lang]; ok {

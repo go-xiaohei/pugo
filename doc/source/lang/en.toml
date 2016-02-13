@@ -5,3 +5,9 @@
 "docs" = "Docs"
 "showcases" = "Showcases"
 "github" = "Github"
+
+#footer
+[footer]
+"language" = "Language"
+"release-notes" = "Release Notes"
+"nav" = "Everything in PuGo"

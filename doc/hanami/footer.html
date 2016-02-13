@@ -4,7 +4,7 @@
             <div class="pure-u-1-3">
                 <div class="box">
                     <div class="pure-menu custom-restricted-width">
-                        <h4 class="pure-menu-heading">Release Notes</h4>
+                        <h4 class="pure-menu-heading">{{.I18n.Tr "footer.release-notes"}}</h4>
                         <ul class="pure-menu-list">
                             <li class="pure-menu-item"><a href="#" class="pure-menu-link">0.10.0 (Beta) - Use Toml but
                                 Ini</a></li>
@@ -17,7 +17,7 @@
             <div class="pure-u-1-3">
                 <div class="box">
                     <div class="pure-menu custom-restricted-width">
-                        <h4 class="pure-menu-heading">Everything in PuGo</h4>
+                        <h4 class="pure-menu-heading">{{.I18n.Tr "footer.nav"}}</h4>
                         <ul class="pure-menu-list">
                             <li class="pure-menu-item"><a href="#" class="pure-menu-link">Documentation</a></li>
                             <li class="pure-menu-item"><a href="#" class="pure-menu-link">Quick Start</a></li>
@@ -30,8 +30,14 @@
             <div class="pure-u-1-3">
                 <div class="box">
                     <div class="pure-menu custom-restricted-width">
+                        <div id="language-box">
+                            {{.I18n.Tr "footer.language"}} <select id="lang-select" data-url="{{.I18n.Trim .URL}}">
+                                <option value="en"{{if eq .I18n.Lang "en"}} selected{{end}}>English</option>                           
+                                <option value="zh"{{if eq .I18n.Lang "zh"}} selected{{end}}>简体中文</option>     
+                            </select>
+                        </div>
                         <h4 class="pure-menu-heading">GitHub</h4>
-                        <div class="github-box">
+                        <div id="github-box">
                             <a class="github-button" href="https://github.com/go-xiaohei/pugo" data-style="mega"
                                data-count-href="/go-xiaohei/pugo/stargazers"
                                data-count-api="/repos/go-xiaohei/pugo#stargazers_count"
@@ -53,6 +59,10 @@
         $('pre code').each(function(i, block) {
             hljs.highlightBlock(block);
         });
+        $('#lang-select').on("change",function(e){
+            var $e = $(e.target);
+            window.location.href = "/"+ $e.val()+"/"+ $e.data("url");
+        })
     });
 </script>
 <script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>

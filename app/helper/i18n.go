@@ -32,6 +32,14 @@ func (i *I18n) Trf(str string, values ...interface{}) string {
 	return fmt.Sprintf(i.Tr(str), values...)
 }
 
+// Trim trims string with lang prefix
+func (i *I18n) Trim(str string) string {
+	if strings.HasPrefix(str, "/"+i.Lang) {
+		return strings.TrimLeft(str, "/"+i.Lang)
+	}
+	return str
+}
+
 // NewI18n reads toml bytes
 func NewI18n(lang string, data []byte) (*I18n, error) {
 	maps := make(map[string]map[string]string)

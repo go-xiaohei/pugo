@@ -91,9 +91,15 @@ body {
     margin-bottom: .5em;
 }
 
-#footer .github-box,
+#github-box,
+#language-box,
 #footer .cp-box{
     padding: 0 1em;
+}
+
+#language-box{
+    padding-bottom: 1em;
+    position: relative;
 }
 
 #footer .cp-box{
