@@ -62,6 +62,7 @@ func NewContext(cli *cli.Context, from, to, theme string) *Context {
 func (ctx *Context) View() map[string]interface{} {
 	m := map[string]interface{}{
 		"Version":   vars.Version,
+		"Source":    ctx.Source,
 		"Nav":       ctx.Source.Nav,
 		"Meta":      ctx.Source.Meta,
 		"Title":     ctx.Source.Meta.Title + " - " + ctx.Source.Meta.Subtitle,

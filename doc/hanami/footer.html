@@ -5,11 +5,8 @@
                 <div class="box">
                     <div class="pure-menu custom-restricted-width">
                         <h4 class="pure-menu-heading">{{.I18n.Tr "footer.release-notes"}}</h4>
-                        <ul class="pure-menu-list">
-                            <li class="pure-menu-item"><a href="#" class="pure-menu-link">0.10.0 (Beta) - Use Toml but
-                                Ini</a></li>
-                            <li class="pure-menu-item"><a href="#" class="pure-menu-link">0.9.0 (Beta) - Migrate
-                                support</a></li>
+                        <ul class="pure-menu-list">{{range .Source.Posts}}
+                            <li class="pure-menu-item"><a href="{{.URL}}" class="pure-menu-link">{{.Title}}</a></li>{{end}}
                         </ul>
                     </div>
                 </div>
