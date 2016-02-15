@@ -28,7 +28,9 @@ pugo new site
     ------|-- static // 主题需要的静态文件，如样式表，脚本，图片
     
 
-@image2
+For example:
+
+![guide-2-new-site.jpeg](@media/guide-2-new-site.jpeg)
 
 ## meta.toml
 

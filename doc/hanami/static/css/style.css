@@ -102,6 +102,10 @@ body {
     position: relative;
 }
 
+#lang-select{
+    margin-left: 1em;
+}
+
 #footer .cp-box{
     color: #BBB;
     padding-top: 1em;
@@ -136,4 +140,9 @@ body {
 .guide-page .content{
     line-height: 2em;
     font-size: 18px;
+}
+
+.guide-page .content img{
+    max-width: 95%;
+    border:1px solid #CCC;
 }

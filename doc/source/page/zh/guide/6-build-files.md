@@ -13,7 +13,9 @@ template = "guide.html"
 pugo build 
 ```
 
-@image
+For example:
+
+![guide-3-build.jpeg](@media/guide-3-build.jpeg)
 
 ### 监听变化
 

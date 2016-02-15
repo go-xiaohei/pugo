@@ -13,7 +13,9 @@ Use `build` command to build files:
 pugo build 
 ```
 
-@image
+For example:
+
+![guide-3-build.jpeg](@media/guide-3-build.jpeg)
 
 ### Watch
 

@@ -28,7 +28,9 @@ Then `PuGo` extracts static files in current directory. Default site directories
     ------|-- static // save static assets such as scripts, styles and images
     
 
-@image2
+For example:
+
+![guide-2-new-site.jpeg](@media/guide-2-new-site.jpeg)
 
 ## meta.toml
 
