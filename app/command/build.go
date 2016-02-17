@@ -4,91 +4,59 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
-	"github.com/Unknwon/com"
 	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo/app/builder"
-	"github.com/go-xiaohei/pugo/app/deploy"
+	"github.com/go-xiaohei/pugo/ext/deploy"
+	"github.com/go-xiaohei/pugo/ext/migrate"
 	"gopkg.in/inconshreveable/log15.v2"
 )
 
-// Build returns build Command, need builder.Option
-func Build(opt *builder.Option) cli.Command {
-	return cli.Command{
-		Name:     "build",
-		Usage:    "build static files and watch updating",
-		HideHelp: true,
+var (
+	// Build is command of 'build'
+	Build = cli.Command{
+		Name:  "build",
+		Usage: "build static files",
 		Flags: []cli.Flag{
-			destFlag,
+			buildFromFlag,
+			buildToFlag,
+			migrateToFlag,
 			themeFlag,
 			watchFlag,
 			debugFlag,
 		},
-		Action: buildSite(opt, false),
-		Before: setDebugMode,
+		Before: Before,
+		Action: func(ctx *cli.Context) {
+			migrate.Init()
+			deploy.Init()
+			build(newContext(ctx, true), false)
+		},
 	}
+)
+
+func newContext(c *cli.Context, validate bool) *builder.Context {
+	ctx := builder.NewContext(
+		c,
+		c.String("from"),
+		c.String("to"),
+		c.String("theme"),
+	)
+	if validate && !ctx.IsValid() {
+		log15.Crit("Build|Must have values in 'from', 'to' & 'theme'")
+	}
+	return ctx
 }
 
-// build site function
-func buildSite(opt *builder.Option, mustWatch bool) func(ctx *cli.Context) {
-	return func(ctx *cli.Context) {
-		// ctrl+C capture
-		signalChan := make(chan os.Signal)
-		signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
+func build(ctx *builder.Context, mustWatch bool) {
+	// ctrl+C capture
+	signalChan := make(chan os.Signal)
+	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
 
-		if theme := ctx.String("theme"); theme != "" {
-			opt.Theme = theme
-		}
-		if opt.TargetDir == "" {
-			// set target dir
-			if targetDir := ctx.String("dest"); targetDir != "" {
-				opt.TargetDir = targetDir
-			}
-			if opt.TargetDir == "template" || opt.TargetDir == "source" {
-				log15.Crit("Builder.Fail", "error", "destination directory should not be 'template' or 'source'")
-			}
-		}
+	builder.Build(ctx)
 
-		b := builder.New(opt)
-		if b.Error != nil {
-			log15.Crit("Builder.Fail", "error", b.Error.Error())
-		}
-
-		// detect deploy callback
-		way, err := deploy.Detect(ctx)
-		if err != nil {
-			log15.Crit("Deploy.Fail", "error", err.Error())
-		}
-		if way != nil {
-			opt.TargetDir = way.Dir()
-			opt.After(func(b *builder.Builder, ctx *builder.Context) error {
-				t := time.Now()
-				if err := way.Do(b, ctx); err != nil {
-					return err
-				}
-				log15.Info("Deploy.Finish", "duration", time.Since(t))
-				return nil
-			})
-		}
-
-		// make directory
-		log15.Info("Dest." + opt.TargetDir)
-		if com.IsDir(opt.TargetDir) {
-			log15.Warn("Dest." + opt.TargetDir + ".Existed")
-		}
-
-		// auto watching
-		b.Build(opt.TargetDir)
-		if err := b.Context().Error; err != nil {
-			log15.Crit("Build.Fail", "error", err.Error())
-		}
-
-		if ctx.Bool("watch") || mustWatch {
-			b.Watch(opt.TargetDir)
-			<-signalChan
-		}
-
-		log15.Info("Build.Close")
+	if ctx.Cli().Bool("watch") || mustWatch {
+		builder.Watch(ctx)
+		<-signalChan
+		log15.Info("Watch|Close")
 	}
 }

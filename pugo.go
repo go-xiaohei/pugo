@@ -1,58 +1,26 @@
 package main
 
 import (
-	_ "net/http/pprof"
-	"path"
+	"time"
 
 	"github.com/codegangsta/cli"
-	"github.com/go-xiaohei/pugo/app/builder"
 	"github.com/go-xiaohei/pugo/app/command"
-	"gopkg.in/inconshreveable/log15.v2"
-	"gopkg.in/inconshreveable/log15.v2/ext"
+	"github.com/go-xiaohei/pugo/app/vars"
 )
 
 //go:generate go-bindata -o=app/asset/asset.go -pkg=asset source/... theme/... doc/source/... doc/theme/...
 
-const (
-	// Version number
-	Version = "0.9.1.0113"
-
-	// SrcDir contains contents
-	SrcDir = "source"
-	// ThemeDir contains themes
-	ThemeDir = "theme"
-	// MediaDir saves upload media dir
-	MediaDir = "media"
-)
-
-var (
-	app = cli.NewApp()
-	opt = new(builder.Option)
-)
-
-func init() {
-	app.Name = "PuGo"
-	app.Usage = "a static website generator & deployer in Go"
-	app.Author = "fuxiaohei"
-	app.Email = "fuxiaohei@vip.qq.com"
-	app.Version = Version
-
-	opt.SrcDir = SrcDir
-	opt.TplDir = ThemeDir
-	opt.MediaDir = path.Join(SrcDir, MediaDir)
-	opt.Version = Version
-
-	log15.Root().SetHandler(log15.LvlFilterHandler(log15.LvlInfo, ext.FatalHandler(log15.StderrHandler)))
-}
-
 func main() {
-	// app.Action = action
+	app := cli.NewApp()
+	app.Name = vars.Name
+	app.Usage = vars.Desc
+	app.Version = vars.Version
+	app.Compiled = time.Now()
 	app.Commands = []cli.Command{
-		command.New(SrcDir, ThemeDir),
-		command.Build(opt),
-		command.Server(opt),
-		command.Migrate(SrcDir),
-		command.Doc(opt),
+		command.Build,
+		command.Server,
+		command.New,
+		command.Doc,
 	}
 	app.RunAndExitOnError()
 }

@@ -2,61 +2,50 @@ package helper
 
 import (
 	"fmt"
-	"html/template"
-	"path/filepath"
 	"strings"
 
-	"gopkg.in/ini.v1"
+	"github.com/BurntSushi/toml"
 )
 
 // I18n object
 type I18n struct {
 	Lang   string // language string
-	values map[string]string
+	values map[string]map[string]string
 }
 
 // Tr converts string
 func (i *I18n) Tr(str string) string {
-	if v := i.values[str]; v != "" {
-		return v
+	strSlice := strings.Split(str, ".")
+	if len(strSlice) != 2 {
+		return str
+	}
+	if m, ok := i.values[strSlice[0]]; ok {
+		if v := m[strSlice[1]]; v != "" {
+			return v
+		}
 	}
 	return str
-}
-
-// TrHTML converts string to html
-func (i *I18n) TrHTML(str string) template.HTML {
-	return template.HTML(i.Tr(str))
 }
 
 // Trf converts string with arguments
 func (i *I18n) Trf(str string, values ...interface{}) string {
-	if v, ok := i.values[str]; ok {
-		return fmt.Sprintf(v, values...)
+	return fmt.Sprintf(i.Tr(str), values...)
+}
+
+// Trim trims string with lang prefix
+func (i *I18n) Trim(str string) string {
+	if strings.HasPrefix(str, "/"+i.Lang) {
+		return strings.TrimLeft(str, "/"+i.Lang)
 	}
 	return str
 }
 
-// TrfHTML converts html string with arguments
-func (i *I18n) TrfHTML(str string, values ...interface{}) template.HTML {
-	return template.HTML(i.Trf(str, values...))
-}
-
-// NewI18n reads ini file with special key section
-func NewI18n(file, key string) (*I18n, error) {
-	f, err := ini.Load(file)
-	if err != nil {
+// NewI18n reads toml bytes
+func NewI18n(lang string, data []byte) (*I18n, error) {
+	maps := make(map[string]map[string]string)
+	if err := toml.Unmarshal(data, &maps); err != nil {
 		return nil, err
 	}
-	if key == "" {
-		key = "DEFAULT"
-	}
-	data := f.Section(key)
-	maps := data.KeysHash()
-	if len(maps) == 0 {
-		return nil, nil
-	}
-	lang := filepath.Base(file)
-	lang = strings.TrimSuffix(lang, filepath.Ext(lang))
 	return &I18n{
 		Lang:   lang,
 		values: maps,
@@ -68,13 +57,13 @@ func NewI18n(file, key string) (*I18n, error) {
 func NewI18nEmpty() *I18n {
 	return &I18n{
 		Lang:   "nil",
-		values: make(map[string]string),
+		values: make(map[string]map[string]string),
 	}
 }
 
-// NewI18nLanguageCode returns correct language code possibly
+// LangCode returns correct language code possibly
 // en-US -> [en-US,en-us,en]
-func NewI18nLanguageCode(lang string) []string {
+func LangCode(lang string) []string {
 	languages := []string{lang} // [en-US]
 	lower := strings.ToLower(lang)
 	if lower != lang {

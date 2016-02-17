@@ -1,19 +1,22 @@
 package server
 
 import (
-	"github.com/Unknwon/com"
-	"gopkg.in/inconshreveable/log15.v2"
 	"net/http"
 	"path"
 	"strings"
 	"time"
+
+	"github.com/Unknwon/com"
+	"gopkg.in/inconshreveable/log15.v2"
 )
 
+// Server is built-in http server address
 type Server struct {
 	dstDir string
 	prefix string
 }
 
+// New create new server on dstDir
 func New(dstDir string) *Server {
 	s := &Server{
 		dstDir: dstDir,
@@ -22,7 +25,7 @@ func New(dstDir string) *Server {
 	return s
 }
 
-// SetPrefix sets prefix to trim url
+// SetPrefix set prefix to trim url
 func (s *Server) SetPrefix(prefix string) {
 	if prefix == "" {
 		prefix = "/"
@@ -30,13 +33,14 @@ func (s *Server) SetPrefix(prefix string) {
 	s.prefix = prefix
 }
 
+// GetPrefix get prefix
 func (s *Server) GetPrefix() string {
 	return s.prefix
 }
 
 func (s *Server) serveFile(w http.ResponseWriter, r *http.Request, file string) bool {
 	if com.IsFile(file) {
-		log15.Debug("Dest.File.[" + file + "]")
+		log15.Debug("Server|Dest|%s", file)
 		http.ServeFile(w, r, file)
 		return true
 	}
@@ -47,20 +51,21 @@ func (s *Server) serveFiles(w http.ResponseWriter, r *http.Request, param string
 	ext := path.Ext(param)
 	if ext == "" || ext == "." {
 		if !strings.HasSuffix(param, "/") {
-			if s.serveFile(w, r, path.Join(s.dstDir, param+".html")) {
+			if s.serveFile(w, r, path.Join(s.dstDir, s.prefix, param+".html")) {
 				return true
 			}
 		}
-		if s.serveFile(w, r, path.Join(s.dstDir, param, "index.html")) {
+		if s.serveFile(w, r, path.Join(s.dstDir, s.prefix, param, "index.html")) {
 			return true
 		}
 	}
-	if s.serveFile(w, r, path.Join(s.dstDir, param)) {
+	if s.serveFile(w, r, path.Join(s.dstDir, s.prefix, param)) {
 		return true
 	}
 	return false
 }
 
+// ServeHTTP implement http.Handler
 func (s *Server) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	w := &responseWriter{
 		ResponseWriter: rw,
@@ -92,8 +97,9 @@ func (s *Server) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	s.serveFiles(w, r, param)
 }
 
+// Run run http server on addr
 func (s *Server) Run(addr string) {
-	log15.Info("Server.Start." + addr)
+	log15.Info("Server|Start|%s", addr)
 	http.ListenAndServe(addr, s)
 }
 

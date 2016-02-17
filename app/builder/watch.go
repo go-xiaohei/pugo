@@ -3,7 +3,6 @@ package builder
 import (
 	"io/ioutil"
 	"path"
-	"path/filepath"
 	"time"
 
 	"gopkg.in/fsnotify.v1"
@@ -12,20 +11,23 @@ import (
 
 var (
 	// watchingExt sets the suffix that watching to
-	watchingExt = []string{".md", ".ini", ".html", ".css", ".js"}
+	watchingExt = []string{".md", ".toml", ".html", ".css", ".js", ".jpg", ".png", ".gif"}
 	// watchScheduleTime sets watching timer duration
 	watchScheduleTime int64
 )
 
-// Watch begins to watch source dir changes and build to destination directory if updated
-func (b *Builder) Watch(dstDir string) {
+// Watch watch changes
+func Watch(ctx *Context) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		log15.Crit("Watch.Fail", "error", err.Error())
+		log15.Crit("Watch|Fail|%s", err.Error())
 		return
 	}
-	log15.Info("Watch.Start")
-	b.isWatching = true
+	log15.Info("Watch|Start")
+
+	if ctx.srcDir == "" || ctx.dstDir == "" || ctx.Theme == nil {
+		log15.Crit("Watch|Need build once then watch changes")
+	}
 
 	// use a ticker to trigger build
 	go func() {
@@ -33,7 +35,8 @@ func (b *Builder) Watch(dstDir string) {
 		for {
 			t := <-c
 			if watchScheduleTime > 0 && t.UnixNano() > watchScheduleTime {
-				b.Build(dstDir)
+				ctx.Again()
+				Build(ctx)
 				watchScheduleTime = 0
 			}
 		}
@@ -47,21 +50,22 @@ func (b *Builder) Watch(dstDir string) {
 				ext := path.Ext(event.Name)
 				for _, e := range watchingExt {
 					if e == ext {
-						if event.Op != fsnotify.Chmod && !b.IsBuilding() {
-							log15.Info("Watch.Rebuild", "change", filepath.ToSlash(event.String()))
+						if event.Op != fsnotify.Chmod {
+							log15.Info("Watch|Rebuild|%s", event.String())
 							watchScheduleTime = time.Now().Add(time.Second).UnixNano()
 						}
 						break
 					}
 				}
 			case err := <-watcher.Errors:
-				log15.Error("Watch.Errors", "error", err.Error())
+				log15.Warn("Watch|Error|%s", err.Error())
 			}
 		}
 	}()
 
-	watchDir(watcher, b.opt.SrcDir)
-	watchDir(watcher, b.opt.TplDir)
+	watchDir(watcher, ctx.srcDir)
+	watchDir(watcher, ctx.Theme.Dir())
+
 }
 
 // watch sub directory

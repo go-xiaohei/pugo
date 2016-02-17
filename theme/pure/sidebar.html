@@ -2,14 +2,14 @@
     <header class="header">
         <hgroup>
             <h1 class="brand-title">
-                <a href="{{.Root}}/" class="brand-title">{{.Meta.Title}}</a>
+                <a href="{{.Base}}/" class="brand-title">{{.Meta.Title}}</a>
             </h1>
             <h2 class="brand-tagline">{{.Meta.Subtitle}}</h2>
         </hgroup>
         <nav class="nav">
             <ul class="nav-list">{{range .Nav}}
-                <li class="{{if .IsHover}}active{{end}}">{{if .IconClass}}<i class="{{.IconClass}}"></i>{{end}}
-                    <a href="{{url .Link}}"{{if .IsBlank}} target="_blank" {{end}}>{{.Title}}</a>
+                <li class="{{if eq .Hover $.Hover}}active{{end}}">{{if .Icon}}<i class="{{.Icon}}"></i>{{end}}
+                    <a href="{{.Link}}"{{if .IsBlank}} target="_blank" {{end}}>{{.Title}}</a>
                 </li>{{end}}
             </ul>
         </nav>

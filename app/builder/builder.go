@@ -1,197 +1,68 @@
 package builder
 
-import (
-	"errors"
-	"sync/atomic"
+import "gopkg.in/inconshreveable/log15.v2"
 
-	"github.com/Unknwon/com"
-	"github.com/go-xiaohei/pugo/app/parser"
-	"github.com/go-xiaohei/pugo/app/render"
-	"gopkg.in/inconshreveable/log15.v2"
+type (
+	// Builder is object of Builder handlers
+	Builder struct {
+		IsBuilding bool
+		IsWatching bool
+		Counter    int
+
+		handlers []Handler
+	}
+	// Handler define a step in building process
+	Handler func(ctx *Context)
 )
 
 var (
-	//ErrSrcDirMissing means SrcDir is missing
-	ErrSrcDirMissing = errors.New("builder-src-dir-missing")
-	//ErrTplDirMissing means ThemeDir is missing
-	ErrTplDirMissing = errors.New("builder-tpl-dir-missing")
+	b = new()
 )
 
-type (
-	// Builder is builder object, provides api to build and watch sources and templates
-	Builder struct {
-		isBuilding bool
-		isWatching bool
-		opt        *Option
-
-		render  *render.Render
-		context *Context
-		parsers []parser.Parser
-		tasks   []*Task
-
-		Error   error
-		Version string
-		Count   uint32 // build count
-	}
-	// Task means steps when run in build process
-	Task struct {
-		Name  string
-		Fn    func(*Context)
-		Print func(*Context) string
-	}
-	// Option is build option to builder
-	Option struct {
-		SrcDir    string
-		TplDir    string
-		MediaDir  string
-		Theme     string
-		TargetDir string
-
-		Version string
-		VerDate string
-
-		beforeHook []BuildHook
-		afterHook  []BuildHook
-	}
-	// BuildHook is hook func to build process
-	BuildHook func(b *Builder, ctx *Context) error
-)
-
-// Before set hook before builder run
-func (opt *Option) Before(fn BuildHook) {
-	opt.beforeHook = append(opt.beforeHook, fn)
-}
-
-// After set hook after builder run
-func (opt *Option) After(fn BuildHook) {
-	opt.afterHook = append(opt.afterHook, fn)
-}
-
-// New builder with option
-func New(opt *Option) *Builder {
-	if !com.IsDir(opt.SrcDir) {
-		return &Builder{Error: ErrSrcDirMissing}
-	}
-	if !com.IsDir(opt.TplDir) {
-		return &Builder{Error: ErrTplDirMissing}
-	}
-	builder := &Builder{
-		parsers: []parser.Parser{
-			parser.NewMdParser(),
+func new() *Builder {
+	return &Builder{
+		IsBuilding: false,
+		IsWatching: false,
+		handlers: []Handler{
+			ReadSource,
+			ReadTheme,
+			AssembleSource,
+			Compile,
+			Copy,
 		},
-		Version: opt.Version,
-		opt:     opt,
 	}
-	builder.render = render.New(builder.opt.TplDir)
-	builder.tasks = []*Task{
-		{"Data", builder.ReadData, nil},
-		{"Compile", builder.Compile, nil},
-		{"Feed", builder.WriteFeed, nil},
-		{"Copy", builder.CopyAssets, nil},
-	}
-	log15.Debug("Build.Source." + opt.SrcDir)
-	log15.Debug("Build.Template." + opt.TplDir)
-	log15.Debug("Build.Theme." + opt.Theme)
-	return builder
 }
 
-// Render returns render in builder
-func (b *Builder) Render() *render.Render {
-	return b.render
+// Before add handler before building
+func Before(fn Handler) {
+	b.handlers = append([]Handler{fn}, b.handlers...)
 }
 
-// Build builds to dest directory
-func (b *Builder) Build(dest string) {
-	// if on build, do not again
-	if b.isBuilding {
-		return
-	}
+// After add handler after building
+func After(fn Handler) {
+	b.handlers = append(b.handlers, fn)
+}
 
-	log15.Debug("Build.Start")
-	b.isBuilding = true
-
-	ctx := NewContext(dest, b.Version)
-	// before hook
-	if len(b.opt.beforeHook) > 0 {
-		for _, fn := range b.opt.beforeHook {
-			if err := fn(b, ctx); err != nil {
-				log15.Error("Build.Before", "error", err.Error())
-				ctx.Error = err
-				b.isBuilding = false
-				b.context = ctx
-				return
-			}
+// Build do a process with Context.
+// the context should be prepared before building.
+func Build(ctx *Context) {
+	b.IsBuilding = true
+	log15.Info("Build|Start")
+	for _, h := range b.handlers {
+		if h(ctx); ctx.Err != nil {
+			log15.Crit("Build|Fail|%s", ctx.Err.Error())
+			break
 		}
 	}
-
-	// run tasks
-	for _, task := range b.tasks {
-		task.Fn(ctx)
-		if ctx.Error != nil {
-			log15.Error("Build."+task.Name, "error", ctx.Error.Error())
-
-			b.isBuilding = false
-			b.context = ctx
-			return
-		}
-		if task.Print != nil {
-			log15.Debug("Build."+task.Name+"."+task.Print(ctx), "duration", ctx.Duration())
-		} else {
-			log15.Debug("Build."+task.Name, "duration", ctx.Duration())
-		}
-		b.context = ctx
-	}
-
-	b.isBuilding = false
-	atomic.AddUint32(&b.Count, 1)
-	log15.Info("Build.Finish", "duration", ctx.Duration(), "count", b.Count)
-
-	// after hook
-	if len(b.opt.afterHook) > 0 {
-		for _, fn := range b.opt.afterHook {
-			if err := fn(b, ctx); err != nil {
-				log15.Error("Build.After", "error", err.Error())
-				if ctx.Error == nil {
-					ctx.Error = err
-				}
-				b.context = ctx
-				return
-			}
-		}
+	log15.Info("Build|%d Pages", ctx.counter)
+	b.IsBuilding = false
+	b.Counter++
+	if ctx.Err == nil {
+		log15.Info("Build|Done|%d|%.1fms", Counter(), ctx.Duration()*1e3)
 	}
 }
 
-// get parser with mark bytes
-func (b *Builder) getParser(data []byte) parser.Parser {
-	for _, p := range b.parsers {
-		if p.Is(data) {
-			return p
-		}
-	}
-	return nil
-}
-
-// IsBuilding shows builder run building
-func (b *Builder) IsBuilding() bool {
-	return b.isBuilding
-}
-
-// IsWatching shows is builder watching changes
-func (b *Builder) IsWatching() bool {
-	return b.isWatching
-}
-
-// Context returns last context in builder
-func (b *Builder) Context() *Context {
-	return b.context
-}
-
-// Option gets option
-// if nil, or set option with non-nil opt.
-func (b *Builder) Option(opt *Option) *Option {
-	if opt == nil {
-		return b.opt
-	}
-	b.opt = opt
-	return nil
+// Counter return the times of building process ran
+func Counter() int {
+	return b.Counter
 }

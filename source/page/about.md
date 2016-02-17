@@ -1,16 +1,16 @@
-```ini
-title = About PuGo
-slug = about
-desc = some words about pugo
-date = 2015-12-24
-author = pugo
-; set nav to active status when this page
-hover = about
-; set template file to render this page
-template =
+```toml
+title = "About PuGo"
+# slug = "about"
+desc = "some words about pugo"
+date = "2015-12-24 12:24:00"
+author = "pugo"
+# set nav to active status when this page
+hover = "about"
+# set template file to render this page
+template = ""
 
 [meta]
-metadata = this is meta data
+metadata = "this is meta data"
 ```
 
 ### Introduction

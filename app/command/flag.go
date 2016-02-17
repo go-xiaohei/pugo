@@ -1,49 +1,44 @@
 package command
 
-import (
-	"github.com/codegangsta/cli"
-	"gopkg.in/inconshreveable/log15.v2"
-	"gopkg.in/inconshreveable/log15.v2/ext"
-)
+import "github.com/codegangsta/cli"
 
 var (
-	debugFlag = cli.BoolFlag{
-		Name:  "debug",
-		Usage: "print debug logs",
+	buildToFlag = cli.StringFlag{
+		Name:  "to",
+		Value: "dir://public",
+		Usage: "write files to destination or remote path",
+	}
+	buildFromFlag = cli.StringFlag{
+		Name:  "from",
+		Value: "dir://source",
+		Usage: "read files from source directory or remote path",
 	}
 	themeFlag = cli.StringFlag{
 		Name:  "theme",
-		Value: "default",
-		Usage: "set theme to render",
+		Value: "dir://theme/default",
+		Usage: "theme to use (located in flag directory)",
 	}
-	destFlag = cli.StringFlag{
-		Name:  "dest",
-		Value: "dest",
-		Usage: "set compiling to directory",
+	debugFlag = cli.BoolFlag{
+		Name:  "debug",
+		Usage: "print more logs in debug mode",
 	}
-	srcFlag = cli.StringFlag{
-		Name:  "src",
-		Value: "",
-		Usage: "migrate from source",
+	watchFlag = cli.BoolFlag{
+		Name:  "watch",
+		Usage: "watch changes and rebuild files",
 	}
 	addrFlag = cli.StringFlag{
 		Name:  "addr",
 		Value: "0.0.0.0:9899",
-		Usage: "set http server address",
+		Usage: "http server address",
 	}
-	watchFlag = cli.BoolFlag{
-		Name:  "watch",
-		Usage: "watch changes and auto-rebuild",
-	}
-	toFlag = cli.StringFlag{
+	newToFlag = cli.StringFlag{
 		Name:  "to",
-		Usage: "output to directory",
+		Value: "dir://source",
+		Usage: "create new content to this directory",
+	}
+	migrateToFlag = cli.StringFlag{
+		Name:  "migrateTo",
+		Value: "dir://source",
+		Usage: "migrate contents to this directory",
 	}
 )
-
-func setDebugMode(ctx *cli.Context) error {
-	if ctx.Bool("debug") {
-		log15.Root().SetHandler(log15.LvlFilterHandler(log15.LvlDebug, ext.FatalHandler(log15.StderrHandler)))
-	}
-	return nil
-}

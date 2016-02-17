@@ -1,185 +1,137 @@
 package model
 
 import (
+	"bytes"
 	"fmt"
 	"html/template"
-	"os"
+	"io/ioutil"
 	"path"
 	"strings"
 	"time"
 
 	"github.com/go-xiaohei/pugo/app/helper"
-	"github.com/go-xiaohei/pugo/app/parser"
+	"github.com/naoina/toml"
 )
 
-const (
-	// NodePage is type of page node
-	NodePage = "page"
-	// NodePost is type of post node
-	NodePost = "post"
-	// NodeArchive is type of archive node of posts
-	NodeArchive = "post-archive"
-	// NodePostTag is type of tag node of tagged posts
-	NodePostTag = "post-tag"
-	// NodePostList is type of listed posts node
-	NodePostList = "post-list"
-	// NodeIndex is type of index node
-	NodeIndex = "index"
-)
-
-// Page contains fields for a page
+// Page contain all fields of a page content
 type Page struct {
-	Title     string `ini:"title"`
-	Slug      string `ini:"slug"`
-	URL       string `ini:"-"`
-	Permalink string `ini:"-"`
+	Title      string                 `toml:"title"`
+	Slug       string                 `toml:"slug"`
+	Desc       string                 `toml:"desc"`
+	Date       string                 `toml:"date"`
+	Update     string                 `toml:"update_date"`
+	AuthorName string                 `toml:"author"`
+	NavHover   string                 `toml:"hover"`
+	Template   string                 `toml:"template"`
+	Lang       string                 `toml:"lang"`
+	Bytes      []byte                 `toml:"-"`
+	Meta       map[string]interface{} `toml:"meta"`
+	Sort       int                    `toml:"sort"`
+	Author     *Author                `toml:"-"`
 
-	HoverClass string `ini:"hover"`
-	Template   string `ini:"template"` // page's template for render
-	Desc       string `ini:"desc"`
-	Thumb      string `ini:"thumb"`
-	Lang       string `ini:"lang"` // language
-
-	Created Time    `ini:"-"`
-	Updated Time    `ini:"-"`
-	Author  *Author `ini:"-"`
-
-	Raw         []byte
-	RawType     string
-	Meta        map[string]string // page's extra meta data
-	ContentHTML template.HTML
-
-	fileName string
-	fileTime time.Time
+	permaURL     string
+	pageURL      string
+	treeURL      string
+	contentBytes []byte
+	dateTime     time.Time
+	updateTime   time.Time
 }
 
-// page's html content
-func (p *Page) contentHTML() template.HTML {
-	if p.RawType == "markdown" {
-		return helper.Bytes2MarkdownHTML(p.Raw)
-	}
-	return template.HTML(p.Raw)
+// TreeURL is tree url of node
+func (p *Page) TreeURL() string {
+	return p.treeURL
 }
 
-// NewPage parses blocks to Page
-func NewPage(blocks []parser.Block, fi os.FileInfo) (*Page, error) {
-	if len(blocks) < 2 {
-		return nil, ErrPostBlockError
-	}
-	p := &Page{
-		fileName: fi.Name(),
-		fileTime: fi.ModTime(),
-		Meta:     make(map[string]string),
-	}
+// URL is page's url
+func (p *Page) URL() string {
+	return p.pageURL
+}
 
-	block, ok := blocks[0].(parser.MetaBlock)
-	if !ok {
-		return nil, ErrMetaBlockWrong
-	}
-	if err := block.MapTo("", p); err != nil {
-		return nil, err
-	}
+// Permalink is page's permalink
+func (p *Page) Permalink() string {
+	return p.permaURL
+}
+
+// ContentHTML is page's content html
+func (p *Page) ContentHTML() template.HTML {
+	return template.HTML(p.contentBytes)
+}
+
+// Content is page's content bytes
+func (p *Page) Content() []byte {
+	return p.contentBytes
+}
+
+// FixURL fix path when assemble posts
+func (p *Page) FixURL(prefix string) {
+	p.permaURL = path.Join(prefix, p.permaURL)
+	p.pageURL = path.Join(prefix, p.pageURL)
+}
+
+// FixPlaceholder fix @placeholder in post values
+func (p *Page) FixPlaceholder(hr *strings.Replacer) {
+	p.contentBytes = []byte(hr.Replace(string(p.contentBytes)))
+}
+
+// Created get create time
+func (p *Page) Created() time.Time {
+	return p.dateTime
+}
+
+// Updated get update time
+func (p *Page) Updated() time.Time {
+	return p.updateTime
+}
+
+func (p *Page) normalize() error {
 	if p.Slug == "" {
-		ext := path.Ext(fi.Name())
-		p.Slug = strings.TrimSuffix(fi.Name(), ext)
+		p.Slug = titleReplacer.Replace(p.Title)
 	}
 	if p.Template == "" {
-		// default page template is page.html
 		p.Template = "page.html"
 	}
-
-	p.Created = NewTime(block.Item("date"), p.fileTime)
-	p.Updated = p.Created
-	if upStr := block.Item("update_date"); upStr != "" {
-		p.Updated = NewTime(upStr, p.fileTime)
+	var err error
+	if p.dateTime, err = time.Parse(postTimeLayout, p.Date); err != nil {
+		return err
 	}
-	p.Author = &Author{
-		Name:  block.Item("author"),
-		Email: block.Item("author_email"),
-		URL:   block.Item("author_url"),
-	}
-	if p.Author.Name == "" {
-		p.Author = nil
-	}
-	p.Meta = block.MapHash("meta")
-
-	// parse markdown block
-	p.RawType = blocks[1].Type()
-	p.Raw = blocks[1].Bytes()
-
-	// build url
-	p.Permalink = fmt.Sprintf("/%s", p.Slug)
-	p.URL = p.Permalink + ".html"
-	if p.Lang != "" {
-		// use language url
-		p.Permalink = fmt.Sprintf("/%s%s", strings.ToLower(p.Lang), p.Permalink)
-		p.URL = fmt.Sprintf("/%s%s", strings.ToLower(p.Lang), p.URL)
+	if p.Update == "" {
+		p.Update = p.Date
+		p.updateTime = p.dateTime
 	} else {
-		p.Lang = "-"
-	}
-
-	p.ContentHTML = p.contentHTML()
-	return p, nil
-}
-
-type (
-	// NodeGroup save nodes of all pages
-	NodeGroup map[string]map[string]*Node
-	// NodeGroupPub use to template for exported just URL and Permalink methods
-	NodeGroupPub NodeGroup
-	// Node define a node of page
-	Node struct {
-		URL       string
-		Permalink string
-		Type      string
-	}
-)
-
-// NewNodeGroup generates empty nodes
-func NewNodeGroup() NodeGroup {
-	m := make(map[string]map[string]*Node)
-	return NodeGroup(m)
-}
-
-// Add adds new node
-func (ng NodeGroup) Add(slug, url, permalink, nodeType, lang string) {
-	if len(ng[slug]) == 0 {
-		ng[slug] = make(map[string]*Node)
-	}
-	if lang == "" {
-		lang = "-"
-	}
-	ng[slug][lang] = &Node{
-		URL:       url,
-		Permalink: permalink,
-		Type:      nodeType,
-	}
-}
-
-// URL returns node url by slug and language
-func (ng NodeGroupPub) URL(slug string, lang string) string {
-	languages := helper.NewI18nLanguageCode(lang)
-	for _, l := range languages {
-		if url, ok := ng[slug][l]; ok {
-			return url.URL
+		if p.updateTime, err = time.Parse(postTimeLayout, p.Update); err != nil {
+			return err
 		}
 	}
-	if url := ng[slug]["-"]; url != nil {
-		return url.URL
-	}
-	return ""
+	p.contentBytes = helper.Markdown(p.Bytes)
+	p.permaURL = fmt.Sprintf("/%s", p.Slug)
+	p.pageURL = p.permaURL + ".html"
+	p.treeURL = p.Slug
+	return nil
 }
 
-// Permalink returns node permalink by slug and language
-func (ng NodeGroupPub) Permalink(slug string, lang string) string {
-	languages := helper.NewI18nLanguageCode(lang)
-	for _, l := range languages {
-		if url, ok := ng[slug][l]; ok {
-			return url.Permalink
-		}
+// NewPageOfMarkdown create new page from markdown file
+func NewPageOfMarkdown(file, slug string) (*Page, error) {
+	fileBytes, err := ioutil.ReadFile(file)
+	if err != nil {
+		return nil, err
 	}
-	if url := ng[slug]["-"]; url != nil {
-		return url.Permalink
+	if len(fileBytes) < 3 {
+		return nil, fmt.Errorf("page content is too less")
 	}
-	return ""
+	dataSlice := bytes.SplitN(fileBytes, postBlockSeparator, 3)
+	if len(dataSlice) != 3 {
+		return nil, fmt.Errorf("page need toml block and markdown block")
+	}
+	if !bytes.HasPrefix(dataSlice[1], tomlPrefix) {
+		return nil, fmt.Errorf("page need toml block at first")
+	}
+	page := new(Page)
+	if err = toml.Unmarshal(dataSlice[1][4:], page); err != nil {
+		return nil, err
+	}
+	if page.Slug == "" {
+		page.Slug = slug
+	}
+	page.Bytes = bytes.Trim(dataSlice[2], "\n")
+	return page, page.normalize()
 }
