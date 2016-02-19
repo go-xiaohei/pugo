@@ -15,7 +15,9 @@ import (
 )
 
 type (
+	// CopiedOpt set option when copying files to destination
 	CopiedOpt struct {
+		MustFiles       []string
 		IgnoreDir       []string
 		IgnoreFile      []string
 		CleanIgnoreDir  []string
@@ -25,6 +27,7 @@ type (
 
 func defaultCopiedOpt() *CopiedOpt {
 	return &CopiedOpt{
+		MustFiles:       []string{"favicon.ico", "robots.txt"},
 		IgnoreDir:       []string{".git"},
 		IgnoreFile:      []string{"CNAME"},
 		CleanIgnoreDir:  []string{".git"},
@@ -38,6 +41,9 @@ func Copy(ctx *Context) {
 		return
 	}
 	if ctx.Err = CopyMedia(ctx); ctx.Err != nil {
+		return
+	}
+	if ctx.Err = CopyMust(ctx); ctx.Err != nil {
 		return
 	}
 	if ctx.Err = CleanCopied(ctx); ctx.Err != nil {
@@ -98,6 +104,23 @@ func copyDirectory(ctx *Context, srcDir, dstDir string) error {
 		return nil
 	})
 	return err
+}
+
+// CopyMust copy files in source to destination
+func CopyMust(ctx *Context) error {
+	var err error
+	for _, f := range ctx.Copied.MustFiles {
+		file := filepath.Join(ctx.SrcDir(), f)
+		if com.IsFile(file) {
+			toFile := filepath.Join(ctx.DstDir(), f)
+			if err = com.Copy(file, toFile); err != nil {
+				return err
+			}
+			ctx.Files.Add(toFile, 0, ctx.time, model.FileStatic, model.OpCopy)
+			log15.Debug("Build|Copy|%s", toFile)
+		}
+	}
+	return nil
 }
 
 // CopyStatic copy static assets from theme to destination directory

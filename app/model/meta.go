@@ -30,6 +30,7 @@ type (
 	}
 )
 
+// DomainURL return link with domain prefix
 func (m *Meta) DomainURL(link string) string {
 	link = strings.TrimPrefix(link, m.Path)
 	link = strings.Trim(link, "/")
@@ -37,7 +38,7 @@ func (m *Meta) DomainURL(link string) string {
 }
 
 func (m *Meta) normalize() error {
-	if m.Root == "" || m.Domain == "" || m.Title == "" {
+	if (m.Root == "" && m.Domain == "") || m.Title == "" {
 		return fmt.Errorf("meta title and (root or domain) cant be blank")
 	}
 	if m.Root == "" && m.Domain != "" {

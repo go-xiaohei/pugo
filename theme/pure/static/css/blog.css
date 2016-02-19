@@ -243,6 +243,10 @@ h3.post-header{
     text-align: left;
 }
 
+.post-description p img{
+    width: 95%;
+}
+
 .pagination {
     width: 100%;
 }
