@@ -4,7 +4,7 @@
 
 **Stable  - 0.9.0.0101**
 
-**Develop - 0.9.1.0113**
+**Develop - 0.9.9.0219**
 
 [![Build Status](https://travis-ci.org/go-xiaohei/pugo.svg?branch=master)](https://travis-ci.org/go-xiaohei/pugo)
 
