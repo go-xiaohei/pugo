@@ -49,6 +49,11 @@ func NewFiles() *Files {
 	}
 }
 
+func (fs *Files) Get(url string) *File {
+	url = filepath.ToSlash(url)
+	return fs.files[url]
+}
+
 // Add add file
 func (fs *Files) Add(url string, size int64, modTime time.Time, t string, op string) {
 	url = filepath.ToSlash(url)
@@ -69,11 +74,8 @@ func (fs *Files) Add(url string, size int64, modTime time.Time, t string, op str
 // Exist check file existing in operated files
 func (fs *Files) Exist(file string) bool {
 	for _, f := range fs.files {
-		if f.Op == OpRemove {
-			return false
-		}
 		if filepath.ToSlash(f.URL) == filepath.ToSlash(file) {
-			return true
+			return f.Op != OpRemove
 		}
 	}
 	return false

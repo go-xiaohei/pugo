@@ -132,10 +132,6 @@ func CleanCopied(ctx *Context) error {
 			return nil
 		}
 		relPath, _ = filepath.Rel(dstDir, p)
-		if strings.HasPrefix(relPath, "media") {
-			log15.Debug("Build|Ignore|%s", p)
-			return nil
-		}
 
 		for _, ignoreDir := range ctx.Copied.CleanIgnoreDir {
 			if strings.HasPrefix(relPath, ignoreDir) {
@@ -149,7 +145,6 @@ func CleanCopied(ctx *Context) error {
 				return nil
 			}
 		}
-
 		if !ctx.Files.Exist(p) {
 			os.RemoveAll(p)
 			ctx.Files.Add(p, fi.Size(), ctx.time, model.FileStatic, model.OpRemove)
