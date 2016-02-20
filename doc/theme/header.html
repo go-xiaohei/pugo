@@ -3,7 +3,7 @@
         <div class="pure-menu pure-menu-horizontal" id="nav">
             <a href="/" class="pure-menu-heading pure-menu-link">PUGO</a>
             <ul class="pure-menu-list" id="nav-list">{{range .Nav}}
-                <li class="pure-menu-item"><a href="{{.TrLink $.I18n}}" class="pure-menu-link">{{.Tr $.I18n}}</a></li>{{end}}
+                <li class="pure-menu-item{{if eq .Hover $.Hover}} pure-menu-selected{{end}}"><a href="{{.TrLink $.I18n}}" class="pure-menu-link">{{.Tr $.I18n}}</a></li>{{end}}
             </ul>
         </div>
     </div>

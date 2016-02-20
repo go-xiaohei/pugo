@@ -1,0 +1,21 @@
+{{template "meta.html" .}}
+<body>
+{{template "header.html" .}}
+<div id="main">
+    <div class="wrapper">
+       <div class="pure-g">
+           <div class="pure-u-1-4">
+               {{Include "embed" .I18n.Lang "docs_sidebar.html" .}}         
+           </div>
+           <div class="pure-u-3-4 guide-page">
+               {{with .Page}}
+               <h1 class="title">{{.Title}}</h1>
+               <div class="content">
+                   {{.ContentHTML}}
+               </div>
+               {{end}}
+           </div>
+       </div>
+    </div>
+</div>
+{{template "footer.html" .}}
