@@ -59,15 +59,22 @@ func AssembleSource(ctx *Context) {
 }
 
 func newReplacer(static string) *strings.Replacer {
+	p := path.Join(static, "media")
+	if !strings.HasPrefix(p, "/") {
+		p = "/" + p
+	}
 	return strings.NewReplacer(
-		"@media", path.Join(static, "media"),
+		"@media", p,
 	)
 }
 
 func newReplacerInHTML(static string) *strings.Replacer {
-	media := path.Join(static, "media")
+	p := path.Join(static, "media")
+	if !strings.HasPrefix(p, "/") {
+		p = "/" + p
+	}
 	return strings.NewReplacer(
-		`src="@media`, fmt.Sprintf(`src="%s`, media),
-		`href="@media`, fmt.Sprintf(`src="%s`, media),
+		`src="@media`, fmt.Sprintf(`src="%s`, p),
+		`href="@media`, fmt.Sprintf(`src="%s`, p),
 	)
 }

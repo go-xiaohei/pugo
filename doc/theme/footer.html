@@ -59,7 +59,18 @@
         $('#lang-select').on("change",function(e){
             var $e = $(e.target);
             window.location.href = "/"+ $e.val()+"/"+ $e.data("url");
-        })
+        });
+        $('.pure-menu-heading').on("click",function(){
+            var c = $(this).data("li");
+            $("."+c).toggle();
+        }).each(function(i,item){
+            var prefix = $(item).data("prefix");
+            if(prefix && window.location.pathname.indexOf(prefix)>0){
+                var c = $(item).data("li");
+                $("."+c).show();
+                $(item).addClass("menu-hover");
+            }
+        });
     });
 </script>
 <script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>

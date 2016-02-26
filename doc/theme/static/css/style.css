@@ -5,7 +5,12 @@ html, body,
 }
 
 a{
-    color: #00c;
+    color: #1F98C7;
+    text-decoration: none;
+}
+
+a:hover{
+    color:#0084B4
 }
 
 pre code,p > code,li>code,a >code {
@@ -125,8 +130,10 @@ body {
     font-weight: bold;
 }
 
-.guide-nav{
+.guide-nav,
+.doc-nav{
     margin-top: 8px;
+    margin-right: 2em;
 }
 
 .guide-page .title{
@@ -145,4 +152,29 @@ body {
 .guide-page .content img{
     max-width: 95%;
     border:1px solid #CCC;
+}
+
+.guide-page p a{
+    font-size: 90%;
+    padding: 0.2em 0.4em;
+    white-space: nowrap;
+    background-color: #F0F8F8;
+}
+
+.doc-nav .pure-menu-heading{
+    cursor: pointer;
+    padding:.25em 1em;
+    margin: .25em 0;
+}
+
+.doc-nav .li-1,
+.doc-nav .li-2,
+.doc-nav .li-3{
+    display: none;
+    padding-left: 1.1em;
+}
+
+.doc-nav .pure-menu-heading.menu-hover{
+    border-left: #1F98C7 0.3em inset;
+    padding-left: 0.7em
 }
