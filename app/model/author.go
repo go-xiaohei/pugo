@@ -7,14 +7,14 @@ import (
 )
 
 type (
-	// Author is author item in meta.toml
+	// Author is author item in meta file
 	Author struct {
-		Name    string `toml:"name"`
-		Nick    string `toml:"nick"`
-		Email   string `toml:"email"`
-		URL     string `toml:"url"`
-		Avatar  string `toml:"avatar"`
-		Bio     string `toml:"bio"`
+		Name    string `toml:"name" ini:"name"`
+		Nick    string `toml:"nick" ini:"nick"`
+		Email   string `toml:"email" ini:"email"`
+		URL     string `toml:"url" ini:"url"`
+		Avatar  string `toml:"avatar" ini:"avatar"`
+		Bio     string `toml:"bio" ini:"bio"`
 		IsOwner bool   // must be the first author
 	}
 	// AuthorGroup is collection of Authors

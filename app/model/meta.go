@@ -2,6 +2,8 @@ package model
 
 import (
 	"fmt"
+	"github.com/BurntSushi/toml"
+	"gopkg.in/ini.v1"
 	"net/url"
 	"path"
 	"strings"
@@ -10,17 +12,17 @@ import (
 type (
 	// Meta is meta info of website
 	Meta struct {
-		Title    string `toml:"title"`
-		Subtitle string `toml:"subtitle"`
-		Keyword  string `toml:"keyword"`
-		Desc     string `toml:"desc"`
-		Domain   string `toml:"domain"`
-		Root     string `toml:"root"`
-		Cover    string `toml:"cover"`
-		Language string `toml:"lang"`
-		Path     string `toml:"-"`
+		Title    string `toml:"title" ini:"title"`
+		Subtitle string `toml:"subtitle" ini:"subtitle"`
+		Keyword  string `toml:"keyword" ini:"keyword"`
+		Desc     string `toml:"desc" ini:"desc"`
+		Domain   string `toml:"domain" ini:"domain"`
+		Root     string `toml:"root" ini:"root"`
+		Cover    string `toml:"cover" ini:"cover"`
+		Language string `toml:"lang" ini:"lang"`
+		Path     string `toml:"-" ini:"-"`
 	}
-	// MetaAll is all data struct in meta.toml
+	// MetaAll is all data struct in meta file
 	MetaAll struct {
 		Meta        *Meta       `toml:"meta"`
 		NavGroup    NavGroup    `toml:"nav"`
@@ -29,6 +31,89 @@ type (
 		Analytics   *Analytics  `toml:"analytics"`
 	}
 )
+
+func NewMetaAll(data []byte, format FormatType) (*MetaAll, error) {
+	var err error
+	switch format {
+	case FormatTOML:
+		meta := &MetaAll{}
+		if err = toml.Unmarshal(data, meta); err != nil {
+			return nil, err
+		}
+		if err = meta.Normalize(); err != nil {
+			return nil, err
+		}
+		return meta, nil
+	case FormatINI:
+		return newMetaAllFromINI(data)
+	}
+	return nil, fmt.Errorf("unsupported meta file format")
+}
+
+func newMetaAllFromINI(data []byte) (*MetaAll, error) {
+	iniObj, err := ini.Load(data)
+	if err != nil {
+		return nil, err
+	}
+	section := iniObj.Section("meta")
+	metaAll := new(MetaAll)
+
+	// parse meta block
+	meta := new(Meta)
+	if err = section.MapTo(meta); err != nil {
+		return nil, err
+	}
+	metaAll.Meta = meta
+
+	// read navigation
+	var (
+		navGroup    []*Nav
+		sectionName string
+	)
+	navKeys := iniObj.Section("nav").Keys()
+	for _, k := range navKeys {
+		sectionName = "nav." + k.Value()
+		nav := new(Nav)
+		if err = iniObj.Section(sectionName).MapTo(nav); err != nil {
+			return nil, err
+		}
+		if nav.Title == "" && nav.Link == "" {
+			continue
+		}
+		navGroup = append(navGroup, nav)
+	}
+	metaAll.NavGroup = navGroup
+
+	// read author
+	var authorGroup []*Author
+	authorKeys := iniObj.Section("author").Keys()
+	for _, k := range authorKeys {
+		sectionName = "author." + k.Value()
+		author := new(Author)
+		if err = iniObj.Section(sectionName).MapTo(author); err != nil {
+			return nil, err
+		}
+		authorGroup = append(authorGroup, author)
+	}
+	metaAll.AuthorGroup = authorGroup
+
+	// read comment and analytics
+	cmt := new(Comment)
+	if err := iniObj.Section("comment").MapTo(cmt); err != nil {
+		return nil, err
+	}
+	any := new(Analytics)
+	if err := iniObj.Section("analytics").MapTo(cmt); err != nil {
+		return nil, err
+	}
+	metaAll.Comment = cmt
+	metaAll.Analytics = any
+
+	if err = metaAll.Normalize(); err != nil {
+		return nil, err
+	}
+	return metaAll, nil
+}
 
 // DomainURL return link with domain prefix
 func (m *Meta) DomainURL(link string) string {

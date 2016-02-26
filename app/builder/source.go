@@ -8,7 +8,6 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/BurntSushi/toml"
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/go-xiaohei/pugo/app/model"
@@ -84,23 +83,26 @@ func ReadSource(ctx *Context) {
 
 // ReadMeta read meta.toml in srcDir
 func ReadMeta(srcDir string) (*model.MetaAll, error) {
-	metaFile := filepath.Join(srcDir, "meta.toml")
-	if !com.IsFile(metaFile) {
-		return nil, fmt.Errorf("meta.toml is missing")
+	var metaFile string
+	for t, f := range model.ShouldMetaFiles() {
+		metaFile = filepath.Join(srcDir, f)
+		if !com.IsFile(metaFile) {
+			continue
+		}
+		log15.Debug("Build|Load|%s", metaFile)
+		bytes, err := ioutil.ReadFile(metaFile)
+		if err != nil {
+			return nil, err
+		}
+		meta, err := model.NewMetaAll(bytes, t)
+		if err != nil {
+			return nil, err
+		}
+		if meta != nil {
+			return meta, nil
+		}
 	}
-	bytes, err := ioutil.ReadFile(metaFile)
-	if err != nil {
-		return nil, err
-	}
-	meta := &model.MetaAll{}
-	if err = toml.Unmarshal(bytes, meta); err != nil {
-		return nil, err
-	}
-	if err = meta.Normalize(); err != nil {
-		return nil, err
-	}
-	log15.Debug("Build|Load|%s", metaFile)
-	return meta, nil
+	return nil, fmt.Errorf("meta file is missing")
 }
 
 // ReadLang read languages in srcDir
