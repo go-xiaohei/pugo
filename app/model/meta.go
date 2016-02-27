@@ -2,11 +2,12 @@ package model
 
 import (
 	"fmt"
-	"github.com/BurntSushi/toml"
-	"gopkg.in/ini.v1"
 	"net/url"
 	"path"
 	"strings"
+
+	"github.com/BurntSushi/toml"
+	"gopkg.in/ini.v1"
 )
 
 type (
@@ -32,6 +33,7 @@ type (
 	}
 )
 
+// NewMetaAll parse bytes with correct FormatType
 func NewMetaAll(data []byte, format FormatType) (*MetaAll, error) {
 	var err error
 	switch format {
@@ -92,6 +94,9 @@ func newMetaAllFromINI(data []byte) (*MetaAll, error) {
 		author := new(Author)
 		if err = iniObj.Section(sectionName).MapTo(author); err != nil {
 			return nil, err
+		}
+		if author.Name == "" {
+			continue
 		}
 		authorGroup = append(authorGroup, author)
 	}

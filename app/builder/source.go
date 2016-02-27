@@ -119,14 +119,15 @@ func ReadLang(srcDir string) (map[string]*helper.I18n, error) {
 		if fi.IsDir() {
 			return nil
 		}
-		if filepath.Ext(p) == ".toml" {
+		ext := filepath.Ext(p)
+		if ext == ".toml" || ext == ".ini" {
 			log15.Debug("Build|Load|%s", p)
 			b, err := ioutil.ReadFile(p)
 			if err != nil {
 				return err
 			}
-			lang := strings.TrimSuffix(filepath.Base(p), filepath.Ext(p))
-			i18n, err := helper.NewI18n(lang, b)
+			lang := strings.TrimSuffix(filepath.Base(p), ext)
+			i18n, err := helper.NewI18n(lang, b, ext)
 			if err != nil {
 				return err
 			}
