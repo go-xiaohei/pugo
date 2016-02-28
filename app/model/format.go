@@ -26,3 +26,13 @@ func ShouldFormatExtension() map[FormatType]string {
 		FormatINI:  ".ini",
 	}
 }
+
+func detectFormat(str string) FormatType {
+	if str == "toml" || str == ".toml" {
+		return FormatTOML
+	}
+	if str == "ini" || str == ".ini" {
+		return FormatINI
+	}
+	return 0
+}

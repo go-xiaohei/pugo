@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/BurntSushi/toml"
 	"github.com/go-xiaohei/pugo/app/helper"
-	"github.com/naoina/toml"
 )
 
 // Page contain all fields of a page content
@@ -91,14 +91,14 @@ func (p *Page) normalize() error {
 		p.Template = "page.html"
 	}
 	var err error
-	if p.dateTime, err = time.Parse(postTimeLayout, p.Date); err != nil {
+	if p.dateTime, err = parseTimeString(p.Date); err != nil {
 		return err
 	}
 	if p.Update == "" {
 		p.Update = p.Date
 		p.updateTime = p.dateTime
 	} else {
-		if p.updateTime, err = time.Parse(postTimeLayout, p.Update); err != nil {
+		if p.updateTime, err = parseTimeString(p.Update); err != nil {
 			return err
 		}
 	}
@@ -120,14 +120,24 @@ func NewPageOfMarkdown(file, slug string) (*Page, error) {
 	}
 	dataSlice := bytes.SplitN(fileBytes, postBlockSeparator, 3)
 	if len(dataSlice) != 3 {
-		return nil, fmt.Errorf("page need toml block and markdown block")
+		return nil, fmt.Errorf("page need front-matter block and markdown block")
 	}
-	if !bytes.HasPrefix(dataSlice[1], tomlPrefix) {
-		return nil, fmt.Errorf("page need toml block at first")
+
+	idx := getFirstBreakByte(dataSlice[1])
+	if idx == 0 {
+		return nil, fmt.Errorf("page need front-matter block and markdown block")
 	}
+
+	formatType := detectFormat(string(dataSlice[1][:idx]))
+	if formatType == 0 {
+		return nil, fmt.Errorf("page front-matter block is unrecognized")
+	}
+
 	page := new(Page)
-	if err = toml.Unmarshal(dataSlice[1][4:], page); err != nil {
-		return nil, err
+	if formatType == FormatTOML {
+		if err = toml.Unmarshal(dataSlice[1][idx:], page); err != nil {
+			return nil, err
+		}
 	}
 	if page.Slug == "" {
 		page.Slug = slug

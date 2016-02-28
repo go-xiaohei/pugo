@@ -35,7 +35,7 @@ source = "Source"`)
 
 func TestI18n(t *testing.T) {
 	Convey("I18n", t, func() {
-		i18n, err := NewI18n("en", i18nBytes)
+		i18n, err := NewI18n("en", i18nBytes, ".toml")
 		So(err, ShouldBeNil)
 
 		Convey("Tr", func() {
@@ -56,7 +56,7 @@ func TestI18n(t *testing.T) {
 
 		Convey("UnmashalFail", func() {
 			b := []byte(`abc="abc"`)
-			_, err := NewI18n("en", b)
+			_, err := NewI18n("en", b, ".toml")
 			So(err, ShouldNotBeNil)
 		})
 
