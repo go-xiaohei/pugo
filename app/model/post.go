@@ -12,6 +12,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/go-xiaohei/pugo/app/helper"
+	"gopkg.in/ini.v1"
 )
 
 var (
@@ -23,16 +24,16 @@ var (
 
 // Post contain all fields of a post content
 type Post struct {
-	Title      string   `toml:"title"`
-	Slug       string   `toml:"slug"`
-	Desc       string   `toml:"desc"`
-	Date       string   `toml:"date"`
-	Update     string   `toml:"update_date"`
-	AuthorName string   `toml:"author"`
-	Thumb      string   `toml:"thumb"`
-	TagString  []string `toml:"tags"`
-	Tags       []*Tag   `toml:"-"`
-	Author     *Author  `toml:"-"`
+	Title      string   `toml:"title" ini:"title"`
+	Slug       string   `toml:"slug" ini:"slug"`
+	Desc       string   `toml:"desc" ini:"desc"`
+	Date       string   `toml:"date" ini:"date"`
+	Update     string   `toml:"update_date" ini:"update_date"`
+	AuthorName string   `toml:"author" ini:"author"`
+	Thumb      string   `toml:"thumb" ini:"thumb"`
+	TagString  []string `toml:"tags" ini:"-"`
+	Tags       []*Tag   `toml:"-" ini:"-"`
+	Author     *Author  `toml:"-" ini:"-"`
 
 	dateTime   time.Time
 	updateTime time.Time
@@ -160,6 +161,27 @@ func NewPostOfMarkdown(file string) (*Post, error) {
 			return nil, err
 		}
 	}
+	if formatType == FormatINI {
+		iniObj, err := ini.Load(dataSlice[1][idx:])
+		if err != nil {
+			return nil, err
+		}
+		section := iniObj.Section("DEFAULT")
+		if err = section.MapTo(post); err != nil {
+			return nil, err
+		}
+		tagStr := section.Key("tags").Value()
+		if tagStr != "" {
+			post.TagString = strings.Split(tagStr, ",")
+		}
+		authorEmail := section.Key("author_email").Value()
+		if authorEmail != "" {
+			post.Author, err = newAuthorFromIniSection(section)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
 	post.Bytes = bytes.Trim(dataSlice[2], "\n")
 	return post, post.normalize()
 }
@@ -174,6 +196,9 @@ func (p Posts) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 
 func parseTimeString(timeStr string) (time.Time, error) {
 	timeStr = strings.TrimSpace(timeStr)
+	if len(timeStr) == 0 {
+		return time.Time{}, errors.New("empty time string")
+	}
 	if len(timeStr) == len("2006-01-02") {
 		return time.Parse("2006-01-02", timeStr)
 	}

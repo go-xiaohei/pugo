@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/go-xiaohei/pugo/app/helper"
+	"gopkg.in/ini.v1"
 )
 
 type (
@@ -21,18 +22,39 @@ type (
 	AuthorGroup []*Author
 )
 
+func (a *Author) normalize() error {
+	if a.Name == "" {
+		return errors.New("author must have name")
+	}
+	if a.Nick == "" {
+		a.Nick = a.Name
+	}
+	if a.Avatar == "" && a.Email != "" {
+		a.Avatar = helper.Gravatar(a.Email, 0)
+	}
+	return nil
+}
+
 func (ag AuthorGroup) normalize() error {
 	if len(ag) == 0 {
 		return errors.New("Must add an author")
 	}
 	ag[0].IsOwner = true
 	for _, a := range ag {
-		if a.Name == "" {
-			return errors.New("author must have name")
-		}
-		if a.Avatar == "" && a.Email != "" {
-			a.Avatar = helper.Gravatar(a.Email, 0)
+		if err := a.normalize(); err != nil {
+			return err
 		}
 	}
 	return nil
+}
+
+func newAuthorFromIniSection(section *ini.Section) (*Author, error) {
+	a := &Author{
+		Name:   section.Key("author").Value(),
+		Email:  section.Key("author_email").Value(),
+		URL:    section.Key("author_url").Value(),
+		Avatar: section.Key("author_avatar").Value(),
+		Bio:    section.Key("author_bio").Value(),
+	}
+	return a, a.normalize()
 }

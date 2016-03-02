@@ -11,23 +11,24 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/go-xiaohei/pugo/app/helper"
+	"gopkg.in/ini.v1"
 )
 
 // Page contain all fields of a page content
 type Page struct {
-	Title      string                 `toml:"title"`
-	Slug       string                 `toml:"slug"`
-	Desc       string                 `toml:"desc"`
-	Date       string                 `toml:"date"`
-	Update     string                 `toml:"update_date"`
-	AuthorName string                 `toml:"author"`
-	NavHover   string                 `toml:"hover"`
-	Template   string                 `toml:"template"`
-	Lang       string                 `toml:"lang"`
+	Title      string                 `toml:"title" ini:"title"`
+	Slug       string                 `toml:"slug" ini:"slug"`
+	Desc       string                 `toml:"desc" ini:"desc"`
+	Date       string                 `toml:"date" ini:"date"`
+	Update     string                 `toml:"update_date" ini:"update_date"`
+	AuthorName string                 `toml:"author" ini:"author"`
+	NavHover   string                 `toml:"hover" ini:"hover"`
+	Template   string                 `toml:"template" ini:"template"`
+	Lang       string                 `toml:"lang" ini:"lang"`
 	Bytes      []byte                 `toml:"-"`
-	Meta       map[string]interface{} `toml:"meta"`
-	Sort       int                    `toml:"sort"`
-	Author     *Author                `toml:"-"`
+	Meta       map[string]interface{} `toml:"meta" ini:"-"`
+	Sort       int                    `toml:"sort" ini:"sort"`
+	Author     *Author                `toml:"-" ini:"-"`
 
 	permaURL     string
 	pageURL      string
@@ -137,6 +138,30 @@ func NewPageOfMarkdown(file, slug string) (*Page, error) {
 	if formatType == FormatTOML {
 		if err = toml.Unmarshal(dataSlice[1][idx:], page); err != nil {
 			return nil, err
+		}
+	}
+	if formatType == FormatINI {
+		iniObj, err := ini.Load(dataSlice[1][idx:])
+		if err != nil {
+			return nil, err
+		}
+		section := iniObj.Section("DEFAULT")
+		if err = section.MapTo(page); err != nil {
+			return nil, err
+		}
+		authorEmail := section.Key("author_email").Value()
+		if authorEmail != "" {
+			page.Author, err = newAuthorFromIniSection(section)
+			if err != nil {
+				return nil, err
+			}
+		}
+		metaData := iniObj.Section("meta").KeysHash()
+		if len(metaData) > 0 {
+			page.Meta = make(map[string]interface{})
+			for k, v := range metaData {
+				page.Meta[k] = v
+			}
 		}
 	}
 	if page.Slug == "" {

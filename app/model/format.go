@@ -1,5 +1,7 @@
 package model
 
+import "strings"
+
 const (
 	// FormatTOML mean toml format
 	FormatTOML FormatType = 1
@@ -28,6 +30,7 @@ func ShouldFormatExtension() map[FormatType]string {
 }
 
 func detectFormat(str string) FormatType {
+	str = strings.TrimSpace(str)
 	if str == "toml" || str == ".toml" {
 		return FormatTOML
 	}
