@@ -9,25 +9,26 @@ import (
 	"strings"
 	"time"
 
+	"github.com/BurntSushi/toml"
 	"github.com/go-xiaohei/pugo/app/helper"
-	"github.com/naoina/toml"
+	"gopkg.in/ini.v1"
 )
 
 // Page contain all fields of a page content
 type Page struct {
-	Title      string                 `toml:"title"`
-	Slug       string                 `toml:"slug"`
-	Desc       string                 `toml:"desc"`
-	Date       string                 `toml:"date"`
-	Update     string                 `toml:"update_date"`
-	AuthorName string                 `toml:"author"`
-	NavHover   string                 `toml:"hover"`
-	Template   string                 `toml:"template"`
-	Lang       string                 `toml:"lang"`
+	Title      string                 `toml:"title" ini:"title"`
+	Slug       string                 `toml:"slug" ini:"slug"`
+	Desc       string                 `toml:"desc" ini:"desc"`
+	Date       string                 `toml:"date" ini:"date"`
+	Update     string                 `toml:"update_date" ini:"update_date"`
+	AuthorName string                 `toml:"author" ini:"author"`
+	NavHover   string                 `toml:"hover" ini:"hover"`
+	Template   string                 `toml:"template" ini:"template"`
+	Lang       string                 `toml:"lang" ini:"lang"`
 	Bytes      []byte                 `toml:"-"`
-	Meta       map[string]interface{} `toml:"meta"`
-	Sort       int                    `toml:"sort"`
-	Author     *Author                `toml:"-"`
+	Meta       map[string]interface{} `toml:"meta" ini:"-"`
+	Sort       int                    `toml:"sort" ini:"sort"`
+	Author     *Author                `toml:"-" ini:"-"`
 
 	permaURL     string
 	pageURL      string
@@ -91,14 +92,14 @@ func (p *Page) normalize() error {
 		p.Template = "page.html"
 	}
 	var err error
-	if p.dateTime, err = time.Parse(postTimeLayout, p.Date); err != nil {
+	if p.dateTime, err = parseTimeString(p.Date); err != nil {
 		return err
 	}
 	if p.Update == "" {
 		p.Update = p.Date
 		p.updateTime = p.dateTime
 	} else {
-		if p.updateTime, err = time.Parse(postTimeLayout, p.Update); err != nil {
+		if p.updateTime, err = parseTimeString(p.Update); err != nil {
 			return err
 		}
 	}
@@ -120,14 +121,48 @@ func NewPageOfMarkdown(file, slug string) (*Page, error) {
 	}
 	dataSlice := bytes.SplitN(fileBytes, postBlockSeparator, 3)
 	if len(dataSlice) != 3 {
-		return nil, fmt.Errorf("page need toml block and markdown block")
+		return nil, fmt.Errorf("page need front-matter block and markdown block")
 	}
-	if !bytes.HasPrefix(dataSlice[1], tomlPrefix) {
-		return nil, fmt.Errorf("page need toml block at first")
+
+	idx := getFirstBreakByte(dataSlice[1])
+	if idx == 0 {
+		return nil, fmt.Errorf("page need front-matter block and markdown block")
 	}
+
+	formatType := detectFormat(string(dataSlice[1][:idx]))
+	if formatType == 0 {
+		return nil, fmt.Errorf("page front-matter block is unrecognized")
+	}
+
 	page := new(Page)
-	if err = toml.Unmarshal(dataSlice[1][4:], page); err != nil {
-		return nil, err
+	if formatType == FormatTOML {
+		if err = toml.Unmarshal(dataSlice[1][idx:], page); err != nil {
+			return nil, err
+		}
+	}
+	if formatType == FormatINI {
+		iniObj, err := ini.Load(dataSlice[1][idx:])
+		if err != nil {
+			return nil, err
+		}
+		section := iniObj.Section("DEFAULT")
+		if err = section.MapTo(page); err != nil {
+			return nil, err
+		}
+		authorEmail := section.Key("author_email").Value()
+		if authorEmail != "" {
+			page.Author, err = newAuthorFromIniSection(section)
+			if err != nil {
+				return nil, err
+			}
+		}
+		metaData := iniObj.Section("meta").KeysHash()
+		if len(metaData) > 0 {
+			page.Meta = make(map[string]interface{})
+			for k, v := range metaData {
+				page.Meta[k] = v
+			}
+		}
 	}
 	if page.Slug == "" {
 		page.Slug = slug

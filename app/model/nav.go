@@ -11,14 +11,14 @@ import (
 type (
 	// Nav is item of navigation
 	Nav struct {
-		Link        string `toml:"link"`
-		Title       string `toml:"title"`
-		OriginTitle string `toml:"-"`
-		IsBlank     bool   `toml:"blank"`
-		Icon        string `toml:"icon"`
-		Hover       string `toml:"hover"`
-		I18n        string `toml:"i18n"`
-		IsRemote    bool   `toml:"-"`
+		Link        string `toml:"link" ini:"link"`
+		Title       string `toml:"title" ini:"title"`
+		OriginTitle string `toml:"-" ini:"-"`
+		IsBlank     bool   `toml:"blank" ini:"blank"`
+		Icon        string `toml:"icon" ini:"icon"`
+		Hover       string `toml:"hover" ini:"hover"`
+		I18n        string `toml:"i18n" ini:"i18n"`
+		IsRemote    bool   `toml:"-" ini:"-"`
 	}
 	// NavGroup is group if items of navigation
 	NavGroup []*Nav
