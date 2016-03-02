@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/BurntSushi/toml"
+	"gopkg.in/ini.v1"
 )
 
 // I18n object
@@ -41,15 +42,22 @@ func (i *I18n) Trim(str string) string {
 }
 
 // NewI18n reads toml bytes
-func NewI18n(lang string, data []byte) (*I18n, error) {
-	maps := make(map[string]map[string]string)
-	if err := toml.Unmarshal(data, &maps); err != nil {
-		return nil, err
+func NewI18n(lang string, data []byte, ext string) (*I18n, error) {
+	if ext == ".toml" {
+		maps, err := I18nDataFromTOML(data)
+		if err != nil {
+			return nil, err
+		}
+		return &I18n{Lang: lang, values: maps}, nil
 	}
-	return &I18n{
-		Lang:   lang,
-		values: maps,
-	}, nil
+	if ext == ".ini" {
+		maps, err := I18nDataFromINI(data)
+		if err != nil {
+			return nil, err
+		}
+		return &I18n{Lang: lang, values: maps}, nil
+	}
+	return nil, nil
 }
 
 // NewI18nEmpty creates new empty i18n object,
@@ -73,4 +81,34 @@ func LangCode(lang string) []string {
 		languages = append(languages, strings.Split(lang, "-")[0]) // use first word if en-US, [en]
 	}
 	return languages
+}
+
+// I18nDataFromTOML parse toml data to map
+func I18nDataFromTOML(data []byte) (map[string]map[string]string, error) {
+	maps := make(map[string]map[string]string)
+	if err := toml.Unmarshal(data, &maps); err != nil {
+		return nil, err
+	}
+	return maps, nil
+}
+
+// I18nDataFromINI parse ini data to map
+func I18nDataFromINI(data []byte) (map[string]map[string]string, error) {
+	maps := make(map[string]map[string]string)
+	iniObj, err := ini.Load(data)
+	if err != nil {
+		return nil, err
+	}
+	iniData := iniObj.Section("DEFAULT").KeysHash()
+	for k, v := range iniData {
+		k2 := strings.Split(k, ".")
+		if len(k2) != 2 {
+			continue
+		}
+		if _, ok := maps[k2[0]]; !ok {
+			maps[k2[0]] = make(map[string]string)
+		}
+		maps[k2[0]][k2[1]] = v
+	}
+	return maps, nil
 }

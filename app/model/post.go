@@ -2,6 +2,7 @@ package model
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -9,8 +10,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/BurntSushi/toml"
 	"github.com/go-xiaohei/pugo/app/helper"
-	"github.com/naoina/toml"
+	"gopkg.in/ini.v1"
 )
 
 var (
@@ -18,21 +20,20 @@ var (
 	titleReplacer      = strings.NewReplacer(" ", "-")
 	postBlockSeparator = []byte("```")
 	postBriefSeparator = []byte("<!--more-->")
-	postTimeLayout     = "2006-01-02 15:04:05"
 )
 
 // Post contain all fields of a post content
 type Post struct {
-	Title      string   `toml:"title"`
-	Slug       string   `toml:"slug"`
-	Desc       string   `toml:"desc"`
-	Date       string   `toml:"date"`
-	Update     string   `toml:"update_date"`
-	AuthorName string   `toml:"author"`
-	Thumb      string   `toml:"thumb"`
-	TagString  []string `toml:"tags"`
-	Tags       []*Tag   `toml:"-"`
-	Author     *Author  `toml:"-"`
+	Title      string   `toml:"title" ini:"title"`
+	Slug       string   `toml:"slug" ini:"slug"`
+	Desc       string   `toml:"desc" ini:"desc"`
+	Date       string   `toml:"date" ini:"date"`
+	Update     string   `toml:"update_date" ini:"update_date"`
+	AuthorName string   `toml:"author" ini:"author"`
+	Thumb      string   `toml:"thumb" ini:"thumb"`
+	TagString  []string `toml:"tags" ini:"-"`
+	Tags       []*Tag   `toml:"-" ini:"-"`
+	Author     *Author  `toml:"-" ini:"-"`
 
 	dateTime   time.Time
 	updateTime time.Time
@@ -108,14 +109,14 @@ func (p *Post) normalize() error {
 		p.Slug = titleReplacer.Replace(p.Title)
 	}
 	var err error
-	if p.dateTime, err = time.Parse(postTimeLayout, p.Date); err != nil {
+	if p.dateTime, err = parseTimeString(p.Date); err != nil {
 		return err
 	}
 	if p.Update == "" {
 		p.Update = p.Date
 		p.updateTime = p.dateTime
 	} else {
-		if p.updateTime, err = time.Parse(postTimeLayout, p.Update); err != nil {
+		if p.updateTime, err = parseTimeString(p.Update); err != nil {
 			return err
 		}
 	}
@@ -141,14 +142,45 @@ func NewPostOfMarkdown(file string) (*Post, error) {
 	}
 	dataSlice := bytes.SplitN(fileBytes, postBlockSeparator, 3)
 	if len(dataSlice) != 3 {
-		return nil, fmt.Errorf("post need toml block and markdown block")
+		return nil, fmt.Errorf("post need front-matter block and markdown block")
 	}
-	if !bytes.HasPrefix(dataSlice[1], tomlPrefix) {
-		return nil, fmt.Errorf("post need toml block at first")
+
+	idx := getFirstBreakByte(dataSlice[1])
+	if idx == 0 {
+		return nil, fmt.Errorf("post need front-matter block and markdown block")
 	}
+
+	formatType := detectFormat(string(dataSlice[1][:idx]))
+	if formatType == 0 {
+		return nil, fmt.Errorf("post front-matter block is unrecognized")
+	}
+
 	post := new(Post)
-	if err = toml.Unmarshal(dataSlice[1][4:], post); err != nil {
-		return nil, err
+	if formatType == FormatTOML {
+		if err = toml.Unmarshal(dataSlice[1][idx:], post); err != nil {
+			return nil, err
+		}
+	}
+	if formatType == FormatINI {
+		iniObj, err := ini.Load(dataSlice[1][idx:])
+		if err != nil {
+			return nil, err
+		}
+		section := iniObj.Section("DEFAULT")
+		if err = section.MapTo(post); err != nil {
+			return nil, err
+		}
+		tagStr := section.Key("tags").Value()
+		if tagStr != "" {
+			post.TagString = strings.Split(tagStr, ",")
+		}
+		authorEmail := section.Key("author_email").Value()
+		if authorEmail != "" {
+			post.Author, err = newAuthorFromIniSection(section)
+			if err != nil {
+				return nil, err
+			}
+		}
 	}
 	post.Bytes = bytes.Trim(dataSlice[2], "\n")
 	return post, post.normalize()
@@ -161,3 +193,29 @@ type Posts []*Post
 func (p Posts) Len() int           { return len(p) }
 func (p Posts) Less(i, j int) bool { return p[i].dateTime.Unix() > p[j].dateTime.Unix() }
 func (p Posts) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+
+func parseTimeString(timeStr string) (time.Time, error) {
+	timeStr = strings.TrimSpace(timeStr)
+	if len(timeStr) == 0 {
+		return time.Time{}, errors.New("empty time string")
+	}
+	if len(timeStr) == len("2006-01-02") {
+		return time.Parse("2006-01-02", timeStr)
+	}
+	if len(timeStr) == len("2006-01-02 15:04") {
+		return time.Parse("2006-01-02 15:04", timeStr)
+	}
+	if len(timeStr) == len("2006-01-02 15:04:05") {
+		return time.Parse("2006-01-02 15:04:05", timeStr)
+	}
+	return time.Time{}, errors.New("unknown time string")
+}
+
+func getFirstBreakByte(data []byte) int {
+	for i, v := range data {
+		if v == 10 {
+			return i
+		}
+	}
+	return 0
+}
