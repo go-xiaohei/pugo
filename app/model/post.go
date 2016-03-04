@@ -94,6 +94,18 @@ func (p *Post) Brief() []byte {
 	return p.briefBytes
 }
 
+// PreviewHTML get brief html content
+// deprecated
+func (p *Post) PreviewHTML() template.HTML {
+	return p.BriefHTML()
+}
+
+// Preview get brief html content
+// deprecated
+func (p *Post) Preview() []byte {
+	return p.Brief()
+}
+
 // Created get create time
 func (p *Post) Created() time.Time {
 	return p.dateTime

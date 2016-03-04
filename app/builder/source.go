@@ -81,7 +81,7 @@ func ReadSource(ctx *Context) {
 	}
 }
 
-// ReadMeta read meta.toml in srcDir
+// ReadMeta read meta file in srcDir
 func ReadMeta(srcDir string) (*model.MetaAll, error) {
 	var metaFile string
 	for t, f := range model.ShouldMetaFiles() {
