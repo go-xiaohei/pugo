@@ -21,6 +21,7 @@ func main() {
 		command.Server,
 		command.New,
 		command.Doc,
+		command.Deploy,
 	}
 	app.RunAndExitOnError()
 }

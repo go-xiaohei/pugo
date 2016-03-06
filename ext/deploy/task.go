@@ -6,14 +6,6 @@ var (
 	manager *Manager
 )
 
-func init() {
-	manager = NewManager(
-		new(Git),
-		new(Ftp),
-		new(Sftp),
-	)
-}
-
 type (
 	// Task define deploy task interface
 	Task interface {

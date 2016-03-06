@@ -16,11 +16,7 @@ type (
 )
 
 var (
-	b = new()
-)
-
-func new() *Builder {
-	return &Builder{
+	b = &Builder{
 		IsBuilding: false,
 		IsWatching: false,
 		handlers: []Handler{
@@ -31,7 +27,7 @@ func new() *Builder {
 			Copy,
 		},
 	}
-}
+)
 
 // Before add handler before building
 func Before(fn Handler) {
