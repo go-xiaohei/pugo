@@ -1,78 +1,95 @@
 package deploy
 
 import (
+	"fmt"
 	"io"
-	"net/url"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
 
-	"github.com/go-xiaohei/pugo/app/builder"
-	"github.com/go-xiaohei/pugo/app/model"
+	"github.com/Unknwon/com"
+	"github.com/codegangsta/cli"
 	"github.com/pkg/sftp"
 	"golang.org/x/crypto/ssh"
 	"gopkg.in/inconshreveable/log15.v2"
 )
 
-var (
-	sftpScheme = "sftp://"
-)
-
 type Sftp struct {
-	Address   string
+	Host      string
 	User      string
 	Password  string
 	Directory string
+	Local     string
 
 	sshClient  *ssh.Client
 	sftpClient *sftp.Client
 }
 
-func (s *Sftp) Name() string {
+// Command return sftp deploy command
+func (s *Sftp) Command() cli.Command {
+	return cli.Command{
+		Name:  "sftp",
+		Usage: "deploy via SSH account with SFTP",
+		Flags: []cli.Flag{
+			cli.StringFlag{Name: "local", Value: "public", Usage: "local website directory"},
+			cli.StringFlag{Name: "user", Usage: "ssh account name"},
+			cli.StringFlag{Name: "password", Usage: "ssh account password"},
+			cli.StringFlag{Name: "host", Usage: "ssh server address"},
+			cli.StringFlag{Name: "directory", Usage: "sftp directory"},
+		},
+		Action: func(ctx *cli.Context) {
+			s2, err := s.Create(ctx)
+			if err != nil {
+				log15.Error("Deploy|SFTP|Fail|%s", err.Error())
+				return
+			}
+			if err = s2.Do(); err != nil {
+				log15.Error("Deploy|SFTP|Fail|%s", err.Error())
+				return
+			}
+			log15.Info("Deploy|SFTP|Finish")
+		},
+	}
+}
+
+func (s *Sftp) String() string {
 	return "SFTP"
 }
 
-func (s *Sftp) Detect(ctx *builder.Context) (Task, error) {
-	if !strings.HasPrefix(ctx.To, sftpScheme) {
-		return nil, nil
-	}
-	u, err := url.Parse(ctx.To)
-	if err != nil {
-		return nil, err
-	}
+func (s *Sftp) Create(ctx *cli.Context) (Method, error) {
 	s2 := &Sftp{
-		Address: u.Host,
+		Host:      ctx.String("host"),
+		User:      ctx.String("user"),
+		Password:  ctx.String("password"),
+		Directory: ctx.String("directory"),
+		Local:     ctx.String("local"),
 	}
-	if u.User != nil {
-		s2.User = u.User.Username()
-		s2.Password, _ = u.User.Password()
+	if !com.IsDir(s2.Local) {
+		return nil, fmt.Errorf("directory '%s' is empty", s2.Local)
 	}
-	s2.Directory = u.Path
+	if s2.Host == "" {
+		return nil, fmt.Errorf("host is empty")
+	}
+	if s2.User == "" || s2.Password == "" {
+		log15.Warn("Deploy|SFTP|No user or password")
+	}
 	if strings.HasPrefix(s2.Directory, "/~") {
 		s2.Directory = strings.TrimPrefix(s2.Directory, "/~/")
 	}
-	ctx.To = "dir://public"
 	return s2, nil
 }
 
-func (s *Sftp) Action(ctx *builder.Context) error {
+func (s *Sftp) Do() error {
 	if err := s.connect(); err != nil {
 		return err
 	}
 	defer s.sftpClient.Close()
 	defer s.sshClient.Close()
-	log15.Debug("Deploy|SFTP|%s|Connect", s.Address)
-
+	log15.Debug("Deploy|SFTP|%s|Connect", s.Host)
 	makeSftpDir(s.sftpClient, getRecursiveDirs(s.Directory))
-
-	if builder.Counter() < 3 {
-		log15.Debug("Deploy|SFTP|UploadAll")
-		return s.UploadAll(ctx)
-	}
-
-	log15.Debug("Deploy|SFTP|UploadDiff")
-	return s.UploadDiff(ctx)
+	log15.Debug("Deploy|SFTP|UploadAll")
+	return s.UploadAll(s.Local)
 }
 
 func (s *Sftp) connect() error {
@@ -82,7 +99,7 @@ func (s *Sftp) connect() error {
 			ssh.Password(s.Password),
 		},
 	}
-	client, err := ssh.Dial("tcp", s.Address, conf)
+	client, err := ssh.Dial("tcp", s.Host, conf)
 	if err != nil {
 		return err
 	}
@@ -92,21 +109,15 @@ func (s *Sftp) connect() error {
 }
 
 // upload files without checking diff status
-func (s *Sftp) UploadAll(ctx *builder.Context) error {
-	for _, file := range ctx.Files.All() {
-		rel, _ := filepath.Rel(ctx.DstDir(), file.URL)
+func (s *Sftp) UploadAll(local string) error {
+	return filepath.Walk(local, func(p string, info os.FileInfo, err error) error {
+		rel, _ := filepath.Rel(local, p)
 		rel = filepath.ToSlash(rel)
-
-		if file.Op == model.OpRemove {
-			s.sftpClient.Remove(path.Join(s.Directory, rel))
-			log15.Debug("Deploy|FTP|Remove|%s", file.URL)
-			continue
-		}
 
 		makeSftpDir(s.sftpClient, getRecursiveDirs(filepath.Dir(rel)))
 
 		// upload file
-		f, err := os.Open(file.URL)
+		f, err := os.Open(p)
 		if err != nil {
 			return err
 		}
@@ -119,46 +130,9 @@ func (s *Sftp) UploadAll(ctx *builder.Context) error {
 		if _, err = io.Copy(f2, f); err != nil {
 			return err
 		}
-		log15.Debug("Deploy|SFTO|Stor|%s", file.URL)
-	}
-	return nil
-}
-
-// upload files with checking diff status
-func (s *Sftp) UploadDiff(ctx *builder.Context) error {
-	for _, file := range ctx.Files.All() {
-		rel, _ := filepath.Rel(ctx.DstDir(), file.URL)
-		rel = filepath.ToSlash(rel)
-
-		if file.Op == model.OpKeep {
-			log15.Debug("Deploy|SFTP|Skip|%s", file.URL)
-			continue
-		}
-		if file.Op == model.OpRemove {
-			s.sftpClient.Remove(path.Join(s.Directory, rel))
-			log15.Debug("Deploy|FTP|Remove|%s", file.URL)
-			continue
-		}
-
-		makeSftpDir(s.sftpClient, getRecursiveDirs(filepath.Dir(rel)))
-
-		// upload file
-		f, err := os.Open(file.URL)
-		if err != nil {
-			return err
-		}
-		defer f.Close()
-		f2, err := s.sftpClient.Create(path.Join(s.Directory, rel))
-		if err != nil {
-			return err
-		}
-		defer f2.Close()
-		if _, err = io.Copy(f2, f); err != nil {
-			return err
-		}
-		log15.Debug("Deploy|SFTO|Stor|%s", file.URL)
-	}
-	return nil
+		log15.Debug("Deploy|SFTO|Stor|%s", p)
+		return nil
+	})
 }
 
 // make sftp directories

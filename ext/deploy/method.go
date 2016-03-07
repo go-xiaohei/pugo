@@ -8,6 +8,7 @@ var (
 
 func init() {
 	Register(new(Ftp))
+	Register(new(Sftp))
 }
 
 // Method define deploy method behavior
@@ -29,6 +30,7 @@ func Commands() []cli.Command {
 	i := 0
 	for _, m := range methods {
 		commands[i] = m.Command()
+		i++
 	}
 	return commands
 }

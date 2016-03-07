@@ -11,10 +11,7 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/goftp/ftp"
 	"gopkg.in/inconshreveable/log15.v2"
-)
-
-var (
-	ftpScheme = "ftp://"
+	"strings"
 )
 
 // Ftp is ftp deployment
@@ -30,7 +27,7 @@ type Ftp struct {
 func (f *Ftp) Command() cli.Command {
 	return cli.Command{
 		Name:  "ftp",
-		Usage: "deploy via ftp account",
+		Usage: "deploy via FTP account",
 		Flags: []cli.Flag{
 			cli.StringFlag{Name: "local", Value: "public", Usage: "local website directory"},
 			cli.StringFlag{Name: "user", Usage: "ftp account name"},
@@ -46,7 +43,9 @@ func (f *Ftp) Command() cli.Command {
 			}
 			if err = newFtp.Do(); err != nil {
 				log15.Error("Deploy|Ftp|Fail|%s", err.Error())
+				return
 			}
+			log15.Info("Deploy|Ftp|Finish")
 		},
 	}
 }
@@ -84,7 +83,7 @@ func (f *Ftp) Do() error {
 	if err != nil {
 		return err
 	}
-	log15.Debug("Deploy|FTP|%s|Connect", f.Host)
+	log15.Info("Deploy|FTP|%s|Connect", f.Host)
 	defer client.Quit()
 	if f.User != "" {
 		if err = client.Login(f.User, f.Password); err != nil {
@@ -95,7 +94,9 @@ func (f *Ftp) Do() error {
 	// change to UTF-8 mode
 	log15.Debug("Deploy|FTP|%s|UTF-8", f.Host)
 	if _, _, err = client.Exec(ftp.StatusCommandOK, "OPTS UTF8 ON"); err != nil {
-		return fmt.Errorf("OPTS UTF8 ON:%s", err.Error())
+		if !strings.Contains(err.Error(), "No need to") { // sometimes show 202, no need to set UTF8 mode because always on
+			return fmt.Errorf("OPTS UTF8 ON:%s", err.Error())
+		}
 	}
 	if _, ok := client.Features()["UTF8"]; !ok {
 		return fmt.Errorf("FTP server need utf-8 support")
