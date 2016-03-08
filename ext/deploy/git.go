@@ -23,8 +23,8 @@ type Git struct {
 	gitMessage string
 }
 
-// Name return git deployment typename
-func (g *Git) Name() string {
+// String return git deployment typename
+func (g *Git) String() string {
 	return "Git"
 }
 

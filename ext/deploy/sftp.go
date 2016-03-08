@@ -130,7 +130,7 @@ func (s *Sftp) UploadAll(local string) error {
 		if _, err = io.Copy(f2, f); err != nil {
 			return err
 		}
-		log15.Debug("Deploy|SFTO|Stor|%s", p)
+		log15.Debug("Deploy|SFTP|Stor|%s", p)
 		return nil
 	})
 }
