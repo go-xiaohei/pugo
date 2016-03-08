@@ -9,6 +9,7 @@ var (
 func init() {
 	Register(new(Ftp))
 	Register(new(Sftp))
+	Register(new(Git))
 }
 
 // Method define deploy method behavior
