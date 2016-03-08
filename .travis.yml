@@ -21,3 +21,6 @@ script:
   - ./pugo.exe build --from="rss+http://fuxiaohei.me/feed.xml" --to="migrate-rss" --debug
   - rm -rf default-dest pure-dest uno-dest migrate-rss
   - ./pugo.exe build --debug
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
