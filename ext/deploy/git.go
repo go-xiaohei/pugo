@@ -2,9 +2,11 @@ package deploy
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/Unknwon/com"
 	"github.com/codegangsta/cli"
@@ -72,6 +74,7 @@ func (g *Git) Create(ctx *cli.Context) (Method, error) {
 
 // Do do git deploy action with built Context
 func (g *Git) Do() error {
+	log15.Debug("Deploy|Git|Overwrite")
 	err := filepath.Walk(g.Local, func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() {
 			return nil
@@ -79,11 +82,36 @@ func (g *Git) Do() error {
 		rel, _ := filepath.Rel(g.Local, path)
 		rel = filepath.ToSlash(rel)
 
-		log15.Debug(rel)
+		toFile := filepath.Join(g.Repo, rel)
 
+		// overwrite file in repo
+		os.MkdirAll(filepath.Dir(toFile), os.ModePerm)
+		fileBytes, err := ioutil.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		if err = ioutil.WriteFile(toFile, fileBytes, os.ModePerm); err != nil {
+			return err
+		}
 		return nil
 	})
-	return err
+	if err != nil {
+		return err
+	}
+	log15.Debug("Deploy|Git|git add -A")
+	if err = runGitExec(g.Repo, []string{"add", "-A"}); err != nil {
+		return err
+	}
+	log15.Debug("Deploy|Git|git commit -m")
+	message := strings.Replace(g.Message, "{t}", time.Now().Format(time.RFC1123), 1)
+	if err = runGitExec(g.Repo, []string{"commit", "-m", message}); err != nil {
+		return err
+	}
+	log15.Debug("Deploy|Git|git push -f")
+	if err = runGitExec(g.Repo, []string{"push", "-f"}); err != nil {
+		return err
+	}
+	return nil
 	/*
 		// git add -A
 		log15.Debug("Deploy|Git|git add -A")
@@ -108,6 +136,11 @@ func (g *Git) Do() error {
 		}
 		return nil
 	*/
+}
+
+func runGitExec(dir string, commands []string) error {
+	_, errOut, err := com.ExecCmdDir(dir, "git", commands...)
+	return returnGetError(errOut, err)
 }
 
 func returnGetError(errOut string, err error) error {
