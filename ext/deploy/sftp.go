@@ -41,14 +41,14 @@ func (s *Sftp) Command() cli.Command {
 		Action: func(ctx *cli.Context) {
 			s2, err := s.Create(ctx)
 			if err != nil {
-				log15.Error("Deploy|SFTP|Fail|%s", err.Error())
+				log15.Error("SFTP|Fail|%s", err.Error())
 				return
 			}
 			if err = s2.Do(); err != nil {
-				log15.Error("Deploy|SFTP|Fail|%s", err.Error())
+				log15.Error("SFTP|Fail|%s", err.Error())
 				return
 			}
-			log15.Info("Deploy|SFTP|Finish")
+			log15.Info("SFTP|Finish")
 		},
 	}
 }
@@ -72,7 +72,7 @@ func (s *Sftp) Create(ctx *cli.Context) (Method, error) {
 		return nil, fmt.Errorf("host is empty")
 	}
 	if s2.User == "" || s2.Password == "" {
-		log15.Warn("Deploy|SFTP|No user or password")
+		log15.Warn("SFTP|No user or password")
 	}
 	if strings.HasPrefix(s2.Directory, "/~") {
 		s2.Directory = strings.TrimPrefix(s2.Directory, "/~/")
@@ -86,9 +86,9 @@ func (s *Sftp) Do() error {
 	}
 	defer s.sftpClient.Close()
 	defer s.sshClient.Close()
-	log15.Debug("Deploy|SFTP|%s|Connect", s.Host)
+	log15.Debug("SFTP|%s|Connect", s.Host)
 	makeSftpDir(s.sftpClient, getRecursiveDirs(s.Directory))
-	log15.Debug("Deploy|SFTP|UploadAll")
+	log15.Debug("SFTP|UploadAll")
 	return s.UploadAll(s.Local)
 }
 
@@ -130,7 +130,7 @@ func (s *Sftp) UploadAll(local string) error {
 		if _, err = io.Copy(f2, f); err != nil {
 			return err
 		}
-		log15.Debug("Deploy|SFTP|Stor|%s", p)
+		log15.Debug("SFTP|Stor|%s", p)
 		return nil
 	})
 }

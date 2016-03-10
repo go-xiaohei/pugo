@@ -38,14 +38,14 @@ func (f *Ftp) Command() cli.Command {
 		Action: func(ctx *cli.Context) {
 			newFtp, err := f.Create(ctx)
 			if err != nil {
-				log15.Error("Deploy|Ftp|Fail|%s", err.Error())
+				log15.Error("Ftp|Fail|%s", err.Error())
 				return
 			}
 			if err = newFtp.Do(); err != nil {
-				log15.Error("Deploy|Ftp|Fail|%s", err.Error())
+				log15.Error("Ftp|Fail|%s", err.Error())
 				return
 			}
-			log15.Info("Deploy|Ftp|Finish")
+			log15.Info("Ftp|Finish")
 		},
 	}
 }
@@ -71,7 +71,7 @@ func (f *Ftp) Create(ctx *cli.Context) (Method, error) {
 		return nil, fmt.Errorf("host is empty")
 	}
 	if ftpMethod.User == "" || ftpMethod.Password == "" {
-		log15.Warn("Deploy|Ftp|No user or password")
+		log15.Warn("Ftp|No user or password")
 	}
 	return ftpMethod, nil
 }
@@ -83,7 +83,7 @@ func (f *Ftp) Do() error {
 	if err != nil {
 		return err
 	}
-	log15.Info("Deploy|FTP|%s|Connect", f.Host)
+	log15.Info("FTP|%s|Connect", f.Host)
 	defer client.Quit()
 	if f.User != "" {
 		if err = client.Login(f.User, f.Password); err != nil {
@@ -92,7 +92,7 @@ func (f *Ftp) Do() error {
 	}
 
 	// change to UTF-8 mode
-	log15.Debug("Deploy|FTP|%s|UTF-8", f.Host)
+	log15.Debug("FTP|%s|UTF-8", f.Host)
 	if _, _, err = client.Exec(ftp.StatusCommandOK, "OPTS UTF8 ON"); err != nil {
 		if !strings.Contains(err.Error(), "No need to") { // sometimes show 202, no need to set UTF8 mode because always on
 			return fmt.Errorf("OPTS UTF8 ON:%s", err.Error())
@@ -110,7 +110,7 @@ func (f *Ftp) Do() error {
 		return err
 	}
 
-	log15.Debug("Deploy|FTP|UploadAll")
+	log15.Debug("FTP|UploadAll")
 	return ftpUploadAll(client, f.Local)
 }
 
@@ -135,7 +135,7 @@ func ftpUploadAll(client *ftp.ServerConn, local string) error {
 		if err = client.Stor(rel, f); err != nil {
 			return err
 		}
-		log15.Debug("Deploy|FTP|Stor|%s", path)
+		log15.Debug("FTP|Stor|%s", path)
 		return nil
 	})
 }

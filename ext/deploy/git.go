@@ -35,14 +35,14 @@ func (g *Git) Command() cli.Command {
 		Action: func(ctx *cli.Context) {
 			g2, err := g.Create(ctx)
 			if err != nil {
-				log15.Error("Deploy|Git|Fail|%s", err.Error())
+				log15.Error("Git|Fail|%s", err.Error())
 				return
 			}
 			if err = g2.Do(); err != nil {
-				log15.Error("Deploy|Git|Fail|%s", err.Error())
+				log15.Error("Git|Fail|%s", err.Error())
 				return
 			}
-			log15.Info("Deploy|Git|Finish")
+			log15.Info("Git|Finish")
 		},
 	}
 }
@@ -74,7 +74,7 @@ func (g *Git) Create(ctx *cli.Context) (Method, error) {
 
 // Do do git deploy action with built Context
 func (g *Git) Do() error {
-	log15.Debug("Deploy|Git|Overwrite")
+	log15.Debug("Git|Overwrite")
 	err := filepath.Walk(g.Local, func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() {
 			return nil
@@ -98,30 +98,30 @@ func (g *Git) Do() error {
 	if err != nil {
 		return err
 	}
-	log15.Debug("Deploy|Git|git add -A")
+	log15.Debug("Git|git add -A")
 	if err = runGitExec(g.Repo, []string{"add", "-A"}); err != nil {
 		return err
 	}
-	log15.Debug("Deploy|Git|git commit -m")
+	log15.Debug("Git|git commit -m")
 	message := strings.Replace(g.Message, "{t}", time.Now().Format(time.RFC1123), 1)
 	if err = runGitExec(g.Repo, []string{"commit", "-m", message}); err != nil {
 		return err
 	}
-	log15.Debug("Deploy|Git|git push -f")
+	log15.Debug("Git|git push -f")
 	if err = runGitExec(g.Repo, []string{"push", "-f"}); err != nil {
 		return err
 	}
 	return nil
 	/*
 		// git add -A
-		log15.Debug("Deploy|Git|git add -A")
+		log15.Debug("Git|git add -A")
 		_, errOut, err := com.ExecCmdDir(g.gitRepo, "git", "add", "-A")
 		if err = returnGetError(errOut, err); err != nil {
 			return err
 		}
 
 		// git commit -m "message"
-		log15.Debug("Deploy|Git|git commit -m")
+		log15.Debug("Git|git commit -m")
 		message := strings.Replace(g.gitMessage, "{t}", time.Now().Format(time.RFC1123), 1)
 		_, errOut, err = com.ExecCmdDir(g.gitRepo, "git", "commit", "-m", message)
 		if err = returnGetError(errOut, err); err != nil {
@@ -129,7 +129,7 @@ func (g *Git) Do() error {
 		}
 
 		// git push
-		log15.Debug("Deploy|Git|git push -f")
+		log15.Debug("Git|git push -f")
 		_, errOut, err = com.ExecCmdDir(g.gitRepo, "git", "push", "-f")
 		if err = returnGetError(errOut, err); err != nil {
 			return err

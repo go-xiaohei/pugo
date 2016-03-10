@@ -7,9 +7,8 @@ var (
 )
 
 func init() {
-	Register(new(Ftp))
-	Register(new(Sftp))
-	Register(new(Git))
+	Register(new(Ftp), new(Sftp), new(Git))
+	Register(new(Qiniu))
 }
 
 // Method define deploy method behavior
@@ -21,8 +20,10 @@ type Method interface {
 }
 
 // Register register new deploy method
-func Register(m Method) {
-	methods[m.String()] = m
+func Register(ms ...Method) {
+	for _, m := range ms {
+		methods[m.String()] = m
+	}
 }
 
 // Commands get commands of all deploy methods
