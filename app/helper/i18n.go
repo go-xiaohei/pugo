@@ -89,6 +89,11 @@ func I18nDataFromTOML(data []byte) (map[string]map[string]string, error) {
 	if err := toml.Unmarshal(data, &maps); err != nil {
 		return nil, err
 	}
+	for k, v := range maps {
+		if len(v) == 0 {
+			return nil, fmt.Errorf("i18n section '%s' is empty", k)
+		}
+	}
 	return maps, nil
 }
 
