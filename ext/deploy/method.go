@@ -8,7 +8,7 @@ var (
 
 func init() {
 	Register(new(Ftp), new(Sftp), new(Git))
-	Register(new(Qiniu))
+	Register(new(Qiniu), new(AwsS3))
 }
 
 // Method define deploy method behavior
