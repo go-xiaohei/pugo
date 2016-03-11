@@ -63,6 +63,7 @@ func (a *AwsS3) Create(ctx *cli.Context) (Method, error) {
 		AccessKey: ctx.String("ak"),
 		SecretKey: ctx.String("sk"),
 		Bucket:    ctx.String("bucket"),
+		Region:    ctx.String("region"),
 	}
 	if !com.IsDir(a2.Local) {
 		return nil, fmt.Errorf("directory '%s' is not existed", a2.Local)
