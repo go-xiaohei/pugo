@@ -4,7 +4,7 @@
 
 **Stable  - 0.9.0.0101**
 
-**Develop - 0.9.10.0303**
+**Develop - 0.9.15.0312**
 
 [![Build Status](https://travis-ci.org/go-xiaohei/pugo.svg?branch=master)](https://travis-ci.org/go-xiaohei/pugo)
 [![codecov.io](https://codecov.io/github/go-xiaohei/pugo/coverage.svg?branch=master)](https://codecov.io/github/go-xiaohei/pugo?branch=master)

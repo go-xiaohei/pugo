@@ -6,5 +6,5 @@ const (
 	// Desc is app usage
 	Desc = "A Fast Static Site Generator"
 	// Version is app version number
-	Version = "0.9.9 (beta)"
+	Version = "0.9.15 (beta)"
 )
