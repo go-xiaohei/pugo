@@ -11,11 +11,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/BurntSushi/toml"
 	"github.com/go-xiaohei/pugo/app/builder"
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/go-xiaohei/pugo/app/model"
 	rss "github.com/jteeuwen/go-pkg-rss"
-	"github.com/naoina/toml"
 	"golang.org/x/net/html"
 	"gopkg.in/inconshreveable/log15.v2"
 )
@@ -127,13 +127,14 @@ func (r *RSS) RssChannelHandler(feed *rss.Feed, newChannel []*rss.Channel) {
 		}
 		p.TagString = tags
 
-		b2, err := toml.Marshal(*p)
-		if err != nil {
+		var b2 bytes.Buffer
+		encoder := toml.NewEncoder(&b2)
+		if err := encoder.Encode(p); err != nil {
 			r.err = err
 			return
 		}
 		b.WriteString("```toml\n\n")
-		b.Write(b2)
+		b.Write(b2.Bytes())
 		b.WriteString("\n```\n\n")
 
 		var (

@@ -1,66 +1,89 @@
 package deploy
 
 import (
-	"net/url"
-	"path"
-	"strings"
-
 	"fmt"
-	"github.com/go-xiaohei/pugo/app/builder"
-	"github.com/go-xiaohei/pugo/app/model"
-	"github.com/goftp/ftp"
-	"gopkg.in/inconshreveable/log15.v2"
 	"os"
+	"path"
 	"path/filepath"
 	"time"
-)
 
-var (
-	ftpScheme = "ftp://"
+	"github.com/Unknwon/com"
+	"github.com/codegangsta/cli"
+	"github.com/goftp/ftp"
+	"gopkg.in/inconshreveable/log15.v2"
+	"strings"
 )
 
 // Ftp is ftp deployment
 type Ftp struct {
-	Address   string
+	Local     string
+	Host      string
 	User      string
 	Password  string
 	Directory string
 }
 
-// Name is ftp deploy's name
-func (f *Ftp) Name() string {
+// Command return ftp deploy command
+func (f *Ftp) Command() cli.Command {
+	return cli.Command{
+		Name:  "ftp",
+		Usage: "deploy via FTP account",
+		Flags: []cli.Flag{
+			cli.StringFlag{Name: "local", Value: "public", Usage: "local website directory"},
+			cli.StringFlag{Name: "user", Usage: "ftp account name"},
+			cli.StringFlag{Name: "password", Usage: "ftp account password"},
+			cli.StringFlag{Name: "host", Usage: "ftp host address"},
+			cli.StringFlag{Name: "directory", Usage: "ftp directory"},
+		},
+		Action: func(ctx *cli.Context) {
+			newFtp, err := f.Create(ctx)
+			if err != nil {
+				log15.Error("Ftp|Fail|%s", err.Error())
+				return
+			}
+			if err = newFtp.Do(); err != nil {
+				log15.Error("Ftp|Fail|%s", err.Error())
+				return
+			}
+			log15.Info("Ftp|Finish")
+		},
+	}
+}
+
+// String is ftp deploy's name
+func (f *Ftp) String() string {
 	return "FTP"
 }
 
-// Detect ftp deployment from Context
-func (f *Ftp) Detect(ctx *builder.Context) (Task, error) {
-	if !strings.HasPrefix(ctx.To, ftpScheme) {
-		return nil, nil
+// Create create ftp method from cli args
+func (f *Ftp) Create(ctx *cli.Context) (Method, error) {
+	ftpMethod := &Ftp{
+		Local:     ctx.String("local"),
+		Host:      ctx.String("host"),
+		User:      ctx.String("user"),
+		Password:  ctx.String("password"),
+		Directory: ctx.String("directory"),
 	}
-	u, err := url.Parse(ctx.To)
-	if err != nil {
-		return nil, err
+	if !com.IsDir(ftpMethod.Local) {
+		return nil, fmt.Errorf("%s is not directory", ftpMethod.Local)
 	}
-
-	f2 := &Ftp{
-		Address: u.Host,
-		User:    u.User.Username(),
+	if ftpMethod.Host == "" {
+		return nil, fmt.Errorf("host is empty")
 	}
-	f2.Password, _ = u.User.Password()
-	f2.Directory = strings.Trim(u.Path, "/")
-	log15.Debug("Deploy|FTP|To|%s", f2.Address)
-	ctx.To = "dir://public" // reset
-	return f2, nil
+	if ftpMethod.User == "" || ftpMethod.Password == "" {
+		log15.Warn("Ftp|No user or password")
+	}
+	return ftpMethod, nil
 }
 
-// Action do ftp deploy process
-func (f *Ftp) Action(ctx *builder.Context) error {
+// Do do ftp deploy process
+func (f *Ftp) Do() error {
 	// connect to ftp
-	client, err := ftp.DialTimeout(f.Address, time.Second*10)
+	client, err := ftp.DialTimeout(f.Host, time.Second*10)
 	if err != nil {
 		return err
 	}
-	log15.Debug("Deploy|FTP|%s|Connect", f.Address)
+	log15.Info("FTP|%s|Connect", f.Host)
 	defer client.Quit()
 	if f.User != "" {
 		if err = client.Login(f.User, f.Password); err != nil {
@@ -69,9 +92,11 @@ func (f *Ftp) Action(ctx *builder.Context) error {
 	}
 
 	// change to UTF-8 mode
-	log15.Debug("Deploy|FTP|%s|UTF-8", f.Address)
+	log15.Debug("FTP|%s|UTF-8", f.Host)
 	if _, _, err = client.Exec(ftp.StatusCommandOK, "OPTS UTF8 ON"); err != nil {
-		return fmt.Errorf("OPTS UTF8 ON:%s", err.Error())
+		if !strings.Contains(err.Error(), "No need to") { // sometimes show 202, no need to set UTF8 mode because always on
+			return fmt.Errorf("OPTS UTF8 ON:%s", err.Error())
+		}
 	}
 	if _, ok := client.Features()["UTF8"]; !ok {
 		return fmt.Errorf("FTP server need utf-8 support")
@@ -85,31 +110,24 @@ func (f *Ftp) Action(ctx *builder.Context) error {
 		return err
 	}
 
-	if builder.Counter() < 3 {
-		log15.Debug("Deploy|FTP|UploadAll")
-		return ftpUploadAll(client, ctx)
-	}
-
-	log15.Debug("Deploy|FTP|UploadDiff")
-	return ftpUploadDiff(client, ctx)
+	log15.Debug("FTP|UploadAll")
+	return ftpUploadAll(client, f.Local)
 }
 
 // upload files without checking diff status
-func ftpUploadAll(client *ftp.ServerConn, ctx *builder.Context) error {
-	for _, file := range ctx.Files.All() {
-		rel, _ := filepath.Rel(ctx.DstDir(), file.URL)
-		rel = filepath.ToSlash(rel)
-
-		if file.Op == model.OpRemove {
-			client.Delete(rel)
-			log15.Debug("Deploy|FTP|Remove|%s", file.URL)
-			continue
+func ftpUploadAll(client *ftp.ServerConn, local string) error {
+	return filepath.Walk(local, func(path string, info os.FileInfo, err error) error {
+		if info.IsDir() {
+			return nil
 		}
+
+		rel, _ := filepath.Rel(local, path)
+		rel = filepath.ToSlash(rel)
 
 		makeFtpDir(client, getRecursiveDirs(filepath.Dir(rel)))
 
 		// upload file
-		f, err := os.Open(file.URL)
+		f, err := os.Open(path)
 		if err != nil {
 			return err
 		}
@@ -117,41 +135,9 @@ func ftpUploadAll(client *ftp.ServerConn, ctx *builder.Context) error {
 		if err = client.Stor(rel, f); err != nil {
 			return err
 		}
-		log15.Debug("Deploy|FTP|Stor|%s", file.URL)
-	}
-	return nil
-}
-
-// upload files with checking diff status
-func ftpUploadDiff(client *ftp.ServerConn, ctx *builder.Context) error {
-	for _, file := range ctx.Files.All() {
-		rel, _ := filepath.Rel(ctx.DstDir(), file.URL)
-		rel = filepath.ToSlash(rel)
-
-		if file.Op == model.OpKeep {
-			log15.Debug("Deploy|FTP|Skip|%s", file.URL)
-			continue
-		}
-		if file.Op == model.OpRemove {
-			client.Delete(rel)
-			log15.Debug("Deploy|FTP|Remove|%s", file.URL)
-			continue
-		}
-
-		makeFtpDir(client, getRecursiveDirs(filepath.Dir(rel)))
-
-		// upload file
-		f, err := os.Open(file.URL)
-		if err != nil {
-			return err
-		}
-		defer f.Close()
-		if err = client.Stor(rel, f); err != nil {
-			return err
-		}
-		log15.Debug("Deploy|FTP|Stor|%s", file.URL)
-	}
-	return nil
+		log15.Debug("FTP|Stor|%s", path)
+		return nil
+	})
 }
 
 // get dirs and subdirs
