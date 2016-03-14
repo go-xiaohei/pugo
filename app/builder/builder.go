@@ -27,6 +27,13 @@ var (
 			Copy,
 		},
 	}
+	b2 = &Builder{
+		IsBuilding: false,
+		IsWatching: false,
+		handlers: []Handler{
+			ReadSource,
+		},
+	}
 )
 
 // Before add handler before building
@@ -61,4 +68,15 @@ func Build(ctx *Context) {
 // Counter return the times of building process ran
 func Counter() int {
 	return b.Counter
+}
+
+// Read do a process to read Source with Context.
+// It does not build any thing, just read source data.
+func Read(ctx *Context) {
+	for _, h := range b2.handlers {
+		if h(ctx); ctx.Err != nil {
+			log15.Crit("Read|Fail|%s", ctx.Err.Error())
+			break
+		}
+	}
 }

@@ -38,7 +38,7 @@ func newContext(c *cli.Context, validate bool) *builder.Context {
 		c.String("theme"),
 	)
 	if validate && !ctx.IsValid() {
-		log15.Crit("Build|Must have values in 'from', 'to' & 'theme'")
+		log15.Crit("Build|Must have values in 'source', 'dest' & 'theme'")
 	}
 	return ctx
 }

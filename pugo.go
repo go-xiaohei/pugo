@@ -22,6 +22,8 @@ func main() {
 		command.New,
 		command.Doc,
 		command.Deploy,
+		command.Version,
 	}
+	app.HideVersion = true
 	app.RunAndExitOnError()
 }

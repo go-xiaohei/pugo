@@ -31,6 +31,10 @@ var (
 		Value: "0.0.0.0:9899",
 		Usage: "http server address",
 	}
+	serveStaticFlag = cli.BoolFlag{
+		Name:  "static",
+		Usage: "just serve static file, no build",
+	}
 	newToFlag = cli.StringFlag{
 		Name:  "to",
 		Value: "dir://source",

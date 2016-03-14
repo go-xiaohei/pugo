@@ -13,13 +13,12 @@ script:
   - go get golang.org/x/tools/cmd/cover
   - go test -cover ./...
   - go build -o pugo.exe pugo.go 
-  - ./pugo.exe build --theme="theme/default" --to="dir://default-dest" --debug
-  - ./pugo.exe build --theme="theme/pure" --to="pure-dest"
-  - ./pugo.exe build --theme="theme/uno" --to="uno-test"
+  - ./pugo.exe build --theme="theme/default" --dest="default-dest" --debug
+  - ./pugo.exe build --theme="theme/pure" --dest="pure-dest"
+  - ./pugo.exe build --theme="theme/uno" --dest="uno-test"
   - ./pugo.exe new post "this is new post"
   - ./pugo.exe new page "this is new page"
-  - ./pugo.exe build --from="rss+http://fuxiaohei.me/feed.xml" --to="migrate-rss" --debug
-  - rm -rf default-dest pure-dest uno-dest migrate-rss
+  - rm -rf default-dest pure-dest uno-dest
   - ./pugo.exe build --debug
 
 after_success:
