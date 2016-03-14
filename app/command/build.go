@@ -7,7 +7,6 @@ import (
 
 	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo/app/builder"
-	"github.com/go-xiaohei/pugo/ext/migrate"
 	"gopkg.in/inconshreveable/log15.v2"
 )
 
@@ -17,16 +16,15 @@ var (
 		Name:  "build",
 		Usage: "build static files",
 		Flags: []cli.Flag{
-			buildFromFlag,
-			buildToFlag,
-			migrateToFlag,
-			themeFlag,
-			watchFlag,
+			buildSourceFlag,
+			buildDestFlag,
+			buildThemeFlag,
+			buildWatchFlag,
 			debugFlag,
 		},
 		Before: Before,
 		Action: func(ctx *cli.Context) {
-			migrate.Init()
+			// migrate.Init()
 			build(newContext(ctx, true), false)
 		},
 	}
@@ -35,8 +33,8 @@ var (
 func newContext(c *cli.Context, validate bool) *builder.Context {
 	ctx := builder.NewContext(
 		c,
-		c.String("from"),
-		c.String("to"),
+		c.String("source"),
+		c.String("dest"),
 		c.String("theme"),
 	)
 	if validate && !ctx.IsValid() {

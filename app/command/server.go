@@ -12,9 +12,9 @@ var (
 		Name:  "server",
 		Usage: "server static files",
 		Flags: []cli.Flag{
-			buildFromFlag,
-			buildToFlag,
-			themeFlag,
+			buildSourceFlag,
+			buildDestFlag,
+			buildThemeFlag,
 			addrFlag,
 			debugFlag,
 		},
