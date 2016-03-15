@@ -29,7 +29,6 @@ var (
 )
 
 func serv(c *cli.Context) {
-	println(c.Bool("static"))
 	if c.Bool("static") {
 		ctx := newContext(c, false)
 		builder.Read(ctx)
