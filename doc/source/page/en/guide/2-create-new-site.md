@@ -7,7 +7,7 @@ lang = "en"
 template = "guide.html"
 ```
 
-`PuGo` packs all static assets into go source code, so the `binary` file can create a new site without any downloadings. Run command:
+`PuGo` packs all static assets into go source code. It can create a new site without any downloads. Run command:
 
 ```bash
 pugo new site
@@ -26,15 +26,17 @@ Then `PuGo` extracts static files in current directory. Default site directories
     ------|-- *.html // main template files
     ------|-- embed // save embedded html template, as component parts
     ------|-- static // save static assets such as scripts, styles and images
+    - lang // language files
+    - media //  media files
     
 
 For example:
 
 ![guide-2-new-site.jpeg](@media/guide-2-new-site.jpeg)
 
-## meta.toml
+## Meta Data
 
-The basic site data are saved in `meta.toml`. It contains several parts to describe things to all site. Write correct data to describe your site at first.
+The basic site data are saved in `meta.toml` by default. It contains several parts to describe things to all site. Write correct data to describe your site at first.
 
 ### Meta
 
@@ -106,3 +108,7 @@ bio = "the robot of pugo, who generates all default contents."
 ```
 
 The first author set as the **Owner** of the site.
+
+### Other format
+
+`PuGo` support `toml`, `ini` files for `Meta Data`. Read [Format](/en/doc/cnt/format.html) documentation to get more help.

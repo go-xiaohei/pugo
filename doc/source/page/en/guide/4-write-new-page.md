@@ -65,6 +65,8 @@ data1 = "data1"
 data2 = "data2" 
 ```
 
+**Front-Matter** support `ini` format.
+
 ### Content
 
 The post's content is `markdown` format. So just write it after `toml` block.

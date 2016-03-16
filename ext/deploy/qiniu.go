@@ -25,7 +25,7 @@ func (q *Qiniu) Command() cli.Command {
 		Name:  "qiniu",
 		Usage: "deploy via qiniu-sdk to qiniu cloud storage",
 		Flags: []cli.Flag{
-			cli.StringFlag{Name: "local", Value: "public", Usage: "local website directory"},
+			cli.StringFlag{Name: "local", Value: "dest", Usage: "local website directory"},
 			cli.StringFlag{Name: "ak", Usage: "accesss key"},
 			cli.StringFlag{Name: "sk", Usage: "secret key"},
 			cli.StringFlag{Name: "bucket", Usage: "storage bucket name"},

@@ -10,19 +10,21 @@ template = "docs.html"
 `server` starts a HTTP server to display website.
 
 ```go
-pugo server [--addr="0.0.0.0:9899" --from="source" --to="public" --theme="theme/default"]
+pugo server [--addr="0.0.0.0:9899" --source="source" --dest="dest" --theme="theme/default"] [--static] [--debug]
 ```
 
 `--addr` set the address and port that http server listen on, default is `0.0.0.0:9899`
 
-`--from` and `--to` set source and destination directory, same to `build` command. **But these flags are not supported to migrate and deploy operations**.
+`--source`, `--dest` and `--theme` set source, destination and theme directory, same to `build` command.
 
-`--theme` set the theme to build
+`--static` serve dest static files, but need correct `source` to load
+
+`--debug` print more logs when running command.
 
 ### Notice
 
 When `server` runs, `PuGo` builds contents immediately, then start http server. At the same time, `PuGo` watches file changes to rebuild soon.
 
-So `server` command is better when developing or writing new contents. You can preview the new post or page. **But I don't recommend to use for public**.
+So `server` command is better when developing or writing new contents. You can preview the new post or page. **But I recommend to use for public with --static flag**.
 
-Please use web server to serve static files after building website.
+It's better to use web server to serve static files after building website.

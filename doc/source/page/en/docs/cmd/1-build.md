@@ -14,24 +14,16 @@ template = "docs.html"
 `build` command basic usage:
 
 ```go
-pugo build [--from="source"] [--to="public"] [--theme="theme/default"] [--watch]
+pugo build [--source="source"] [--dest="dest"] [--theme="theme/default"] [--watch] [--debug]
 ```
 
-`--from` set the source directory, default is `source`.
+`--source` set the source directory, default is `source`.
 
-`--to` set the directory that PuGo builds contents to, default is `public`.
+`--dest` set the directory that PuGo builds contents to, default is `dest`.
 
 `--theme` set the directory of theme, default is `theme/default` ( PuGo provides 3 themes in `theme` ).
 
 `--watch` set flag to watching changes and rebuild site.
 
-### From & To
+`--debug` print more logs when running command.
 
-`--from` & `--to` provides rich supports to enable `migrate` and `deploy`, such as
-
-```go
-pugo build --from="rss+http://fuxiaohei.me/feed.xml"
-pugo build --to="ftp://user:password@127.0.0.0.1:2121/pugo-data"
-```
-
-Those all meet **URL** scheme. More usages can be found in `Migrate` and `Deploy` documents.

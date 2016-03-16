@@ -54,6 +54,8 @@ tags = ["tag1","tag2"]
 thumb = "@media/post-1.png"
 ```
 
+**Front-Matter** support `ini` format.
+
 ### Content
 
 The post's content is `markdown` format. So just write it after `toml` block.

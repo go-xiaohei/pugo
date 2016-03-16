@@ -31,7 +31,7 @@ func (a *AwsS3) Command() cli.Command {
 		Name:  "aws-s3",
 		Usage: "deploy via aws-sdk to Amazon Storage Service",
 		Flags: []cli.Flag{
-			cli.StringFlag{Name: "local", Value: "public", Usage: "local website directory"},
+			cli.StringFlag{Name: "local", Value: "dest", Usage: "local website directory"},
 			cli.StringFlag{Name: "ak", Usage: "accesss key"},
 			cli.StringFlag{Name: "sk", Usage: "secret key"},
 			cli.StringFlag{Name: "bucket", Usage: "storage bucket name"},

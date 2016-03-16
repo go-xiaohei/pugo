@@ -27,7 +27,7 @@ func (g *Git) Command() cli.Command {
 		Name:  "git",
 		Usage: "deploy via git push",
 		Flags: []cli.Flag{
-			cli.StringFlag{Name: "local", Value: "public", Usage: "local website directory"},
+			cli.StringFlag{Name: "local", Value: "dest", Usage: "local website directory"},
 			cli.StringFlag{Name: "repo", Usage: "local repository directory"},
 			cli.StringFlag{Name: "message", Usage: "pushing commit message"},
 			cli.StringFlag{Name: "branch", Value: "master", Usage: "the remote branch that git push to"},

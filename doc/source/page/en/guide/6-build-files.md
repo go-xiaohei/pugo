@@ -25,27 +25,26 @@ For example:
 pugo build --watch
 ```
 
-### Custom Source and Destination
+### Custom Source
 
 Build files from custom source:
 
 ```bash
-pugo build --from="your-source"
+pugo build --source="your-source"
 ```
+
+### Custom Destination
 
 Build files to custom destination:
 
 ```bash
-pugo build --to="your-directory"
+pugo build --dest="your-directory"
 ```
 
-### Migrate and Deploy
+### Custom Theme
 
-`build` command do `migrate` and `deploy` together.
+Build files with specific theme:
 
 ```bash
-pugo build --from="rss+http://source-of-rss.xml"
-pugo build --to="git://local-git-repository-directory"
+pugo build --theme="your-theme-directory"
 ```
-
-Read more details in [Migrate](#) & [Deploy](#) documentations.

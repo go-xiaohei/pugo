@@ -29,7 +29,7 @@ func (f *Ftp) Command() cli.Command {
 		Name:  "ftp",
 		Usage: "deploy via FTP account",
 		Flags: []cli.Flag{
-			cli.StringFlag{Name: "local", Value: "public", Usage: "local website directory"},
+			cli.StringFlag{Name: "local", Value: "dest", Usage: "local website directory"},
 			cli.StringFlag{Name: "user", Usage: "ftp account name"},
 			cli.StringFlag{Name: "password", Usage: "ftp account password"},
 			cli.StringFlag{Name: "host", Usage: "ftp host address"},

@@ -55,6 +55,12 @@ body {
     float: right;
 }
 
+#nav-list .pure-menu-selected > a,
+.guide-nav .pure-menu-selected > a,
+.doc-nav .pure-menu-selected > a{
+    font-weight: bold;
+}
+
 #cover,
 #footer .bottom{
     text-align: center;

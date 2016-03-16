@@ -7,7 +7,7 @@ lang = "en"
 template = "guide.html"
 ```
 
-`PuGo` has released `executable file` in `Github Releases`[link](#). It's better to download with your system requirement.
+`PuGo` has released in [`Github Release Page`](#). It's better to download with your system requirement.
 
 ![guide-1-install.jpeg](@media/guide-1-install.jpeg)
 

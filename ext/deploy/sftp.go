@@ -32,7 +32,7 @@ func (s *Sftp) Command() cli.Command {
 		Name:  "sftp",
 		Usage: "deploy via SSH account with SFTP",
 		Flags: []cli.Flag{
-			cli.StringFlag{Name: "local", Value: "public", Usage: "local website directory"},
+			cli.StringFlag{Name: "local", Value: "dest", Usage: "local website directory"},
 			cli.StringFlag{Name: "user", Usage: "ssh account name"},
 			cli.StringFlag{Name: "password", Usage: "ssh account password"},
 			cli.StringFlag{Name: "host", Usage: "ssh server address"},

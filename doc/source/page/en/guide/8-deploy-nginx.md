@@ -35,6 +35,8 @@ server {
 
 Set `[your-pugo-build-directory]` correct. Use absolute path better. Be careful of the permission.
 
+**In this case, please write navigation link with correct file path, such as `/page.html` not `/page`.**
+
 ### Proxy
 
 Use server command, `PuGo` run http server by self, such as on `http://127.0.0.1:9899`. `Nginx` can run proxy to the site to make the site public.
