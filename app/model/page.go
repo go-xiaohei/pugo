@@ -85,9 +85,6 @@ func (p *Page) Updated() time.Time {
 }
 
 func (p *Page) normalize() error {
-	if p.Slug == "" {
-		p.Slug = titleReplacer.Replace(p.Title)
-	}
 	if p.Template == "" {
 		p.Template = "page.html"
 	}
