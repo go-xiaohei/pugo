@@ -49,6 +49,11 @@ body {
     margin: 0 auto;
 }
 
+pre > code{
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
 /*---nav---*/
 
 #nav-list {
@@ -175,7 +180,8 @@ body {
 
 .doc-nav .li-1,
 .doc-nav .li-2,
-.doc-nav .li-3{
+.doc-nav .li-3,
+.doc-nav .li-4{
     display: none;
     padding-left: 1.1em;
 }
