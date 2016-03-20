@@ -11,7 +11,7 @@ template = "docs.html"
 
 ```go
 pugo new site
-pugo doc [--addr="0.0.0.0:9899"]
+pugo doc --addr="0.0.0.0:9899"
 ```
 
 After `new site`, it extracts `doc` data together. So you can run `doc` to compile them as documentation website.

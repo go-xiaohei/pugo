@@ -7,7 +7,7 @@ lang = "zh"
 template = "docs.html"
 ```
 
-`PuGo` 使用 `Go` 的模板语法。 你可以阅读 [text/template](#) 和 [html/template](#) 学习 Go 的模板语法。这里写一些需使用注意：
+`PuGo` 使用 `Go` 的模板语法。 你可以阅读 [text/template](https://golang.org/pkg/text/template/) 和 [html/template](https://golang.org/pkg/html/template/) 学习 Go 的模板语法。这里写一些需使用注意：
 
 **作用域**
 

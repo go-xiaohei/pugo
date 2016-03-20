@@ -7,7 +7,7 @@ lang = "en"
 template = "docs.html"
 ```
 
-`PuGo` support `toml` and `ini` as meta and front-matter in post or page. In [Guide](#), it use `toml` as default. You can read them to write correct fields. This page explains differences in other formats.
+`PuGo` support `toml` and `ini` as meta and front-matter in post or page. In [Guide](/en/guide.html), it use `toml` as default. You can read them to write correct fields. This page explains differences in other formats.
 
 ### INI
 

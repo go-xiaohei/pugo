@@ -10,7 +10,7 @@ template = "docs.html"
 `server` starts a HTTP server to display website.
 
 ```go
-pugo server [--addr="0.0.0.0:9899" --source="source" --dest="dest" --theme="theme/default"] [--static] [--debug]
+pugo server --addr="0.0.0.0:9899" --source="source" --dest="dest" --theme="theme/default" --static --debug
 ```
 
 `--addr` set the address and port that http server listen on, default is `0.0.0.0:9899`

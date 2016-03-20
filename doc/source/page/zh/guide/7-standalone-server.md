@@ -10,7 +10,7 @@ template = "guide.html"
 `server` 命令可以启动内置的 HTTP 服务：
 
 ```bash
-pugo server [--addr=0.0.0.0:9899]
+pugo server --addr=0.0.0.0:9899
 ```
 
 默认监听在 `http://0.0.0.0:9899`. `--addr` 可以自定义监听的 IP 和端口。

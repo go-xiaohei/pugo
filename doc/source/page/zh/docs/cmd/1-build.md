@@ -14,7 +14,7 @@ template = "docs.html"
 `build` 用法：
 
 ```go
-pugo build [--source="source"] [--dest="dest"] [--theme="theme/default"] [--watch] [--debug]
+pugo build --source="source" --dest="dest" --theme="theme/default" --watch --debug
 ```
 
 `--source` 设置内容目录，默认是 `source`。

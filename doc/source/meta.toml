@@ -8,19 +8,19 @@ root = "http://pugo.io/"
 lang = "en"
 
 [[nav]]
-link = "/guide"
+link = "/guide.html"
 title = "Guide"
 i18n = "guide"
 hover = "guide"
 
 [[nav]]
-link = "/docs"
+link = "/docs.html"
 title = "Docs"
 i18n = "docs"
 hover = "docs"
 
 [[nav]]
-link = "/showcases"
+link = "/showcases.html"
 title = "Showcases"
 i18n = "showcases"
 hover = "showcases"

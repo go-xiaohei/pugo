@@ -7,7 +7,7 @@ lang = "en"
 template = "docs.html"
 ```
 
-`PuGo` template use `Go` template syntax. Read [text/template](#) and [html/template](#) to learn basic syntax. There are some tips to help:
+`PuGo` template use `Go` template syntax. Read [text/template](https://golang.org/pkg/text/template/) and [html/template](https://golang.org/pkg/html/template/) to learn basic syntax. There are some tips to help:
 
 **Global Scope**
 

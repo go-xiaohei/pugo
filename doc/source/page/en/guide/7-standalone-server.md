@@ -10,7 +10,7 @@ template = "guide.html"
 Use `server` command to run built-in server in `PuGo`:
 
 ```bash
-pugo server [--addr=0.0.0.0:9899]
+pugo server --addr=0.0.0.0:9899
 ```
 
 It listens `http://0.0.0.0:9899`. `--addr` can change the address and port that listens on.
