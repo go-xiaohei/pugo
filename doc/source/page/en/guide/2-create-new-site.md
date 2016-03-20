@@ -30,10 +30,6 @@ Then `PuGo` extracts static files in current directory. Default site directories
     - media //  media files
     
 
-For example:
-
-![guide-2-new-site.jpeg](@media/guide-2-new-site.jpeg)
-
 ## Meta Data
 
 The basic site data are saved in `meta.toml` by default. It contains several parts to describe things to all site. Write correct data to describe your site at first.

@@ -13,10 +13,6 @@ template = "guide.html"
 pugo build 
 ```
 
-For example:
-
-![guide-3-build.jpeg](@media/guide-3-build.jpeg)
-
 ### 监听变化
 
 `PuGo` 可以监听内容和模板的变化，并立即重新编译最新内容。这将会覆盖所有生成的 HTML，并根据 md5 值判断是否需要更新静态文件。
@@ -25,27 +21,26 @@ For example:
 pugo build --watch
 ```
 
-### 自定义内容和编译文件夹
+### 自定义内容
 
 从自定义目录读取内容编译：
 
 ```bash
-pugo build --from="your-source"
+pugo build --source="your-source"
 ```
+
+### 自定义编译目录
 
 编译到自定义的目录去：
 
 ```bash
-pugo build --to="your-directory"
+pugo build --dest="your-directory"
 ```
 
-### 迁移和部署
+### 自定义主题目录
 
-`build` 命令支持直接进行 `迁移` 和 `部署`。
+使用特定的主题编译内容：
 
 ```bash
-pugo build --from="rss+http://source-of-rss.xml"
-pugo build --to="git://local-git-repository-directory"
+pugo build --theme="your-theme"
 ```
-
-更多的内容请阅读 [迁移](#) & [部署](#) 的文档.

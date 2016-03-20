@@ -13,10 +13,6 @@ Use `build` command to build files:
 pugo build 
 ```
 
-For example:
-
-![guide-3-build.jpeg](@media/guide-3-build.jpeg)
-
 ### Watch
 
 `PuGo` can watch changes and re-build files immediately. It overwrites any html files and checks md5sum to replace static files that needed.

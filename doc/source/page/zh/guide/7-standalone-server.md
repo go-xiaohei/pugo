@@ -17,8 +17,18 @@ pugo server [--addr=0.0.0.0:9899]
 
 开启 HTTP 服务时会立刻编译最新的内容，并在生成的目录上启动静态 HTTP 服务。
 
-你可以使用 `--from` 和 `--to` 修改编译的设置，但是不支持迁移和部署.
+你可以使用 `--source`、`--dest` 和 `--theme` 修改编译的设置。
 
 ```bash
-pugo server --from="your-source" --to="your-destination"
+pugo server --source="your-source" --dest="your-destination"
 ```
+
+### 静态服务
+
+如果只是启动静态文件服务，使用`--flag`：
+
+```bash
+pugo server --source="source" --static
+```
+
+你需要设置正确的`--source`目录，以便静态服务可以得到正确的 URL 地址。

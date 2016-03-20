@@ -7,7 +7,7 @@ lang = "en"
 template = "docs.html"
 ```
 
-`build` command can not only build all contents to website html files, but also migrate other data to source and deploy built data to third party system.
+`build` command can build all contents to website html files。
 
 ### Just Build
 

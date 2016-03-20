@@ -28,10 +28,6 @@ pugo new site
     ------|-- static // 主题需要的静态文件，如样式表，脚本，图片
     
 
-For example:
-
-![guide-2-new-site.jpeg](@media/guide-2-new-site.jpeg)
-
 ## meta.toml
 
 站点的基本信息都保存在 `meta.toml`. 它定义有站点相关的各种信息，你需要先填写完整。

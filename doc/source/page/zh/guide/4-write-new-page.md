@@ -65,6 +65,8 @@ data1 = "data1"
 data2 = "data2" 
 ```
 
+`Front-Matter` 也支持`ini`格式的内容。
+
 ### 页面内容
 
 页面内容采用 `markdown` 格式，直接写在 `toml` 代码块之后：
