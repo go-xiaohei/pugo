@@ -2,25 +2,27 @@
 <body>
 {{template "header.html" .}}
 <section id="main">
-    <div class="container">
+    <div class="wrapper">
         <div id="article-single">
             <article class="article">
-                <div class="row">
-                    <div class="col-md-10 col-md-offset-1 panel panel-default">
+                <div class="pure-g">
+                    <div class="pure-u">
                         <header class="header">
                             <div class="meta">
-                        <span class="date">
-                            <span class="month">{{printf "%d" .Post.Created.Month}}</span>
-                            <span class="day">{{.Post.Created.Day}}</span>
-                        </span>
+                                <span class="date">
+                                    <span class="month">{{printf "%d" .Post.Created.Month}}</span>.
+                                    <span class="day">{{.Post.Created.Day}}</span>
+                                </span>
                             </div>
-                            <h3 class="title">
+                            <h2 class="title">
                                 <a href="{{.Post.URL}}">{{.Post.Title}}</a>
-                            </h3>
+                            </h2>
                         </header>
-                        <aside class="aside clearfix">{{range .Post.Tags}}
-                            <a class="tag label label-info" href="{{.URL}}">{{.Name}}</a>{{end}}{{if .Post.Author}}
-                            <a class="stat label label-default pull-right"{{if .Post.Author.URL}} href="{{.Post.Author.URL}}" target="_blank"{{end}}>{{.Post.Author.Name}}</a>{{end}}
+                        <aside class="aside">{{range .Post.Tags}}
+                            <a class="tag pure-button button-small" href="{{.URL}}">{{.Name}}</a>{{end}}
+                            {{if .Post.Author}}
+                            <a class="author pure-button button-small button-success"{{if .Post.Author.URL}} href="{{.Post.Author.URL}}" target="_blank"{{end}}>{{.Post.Author.Name}}</a>
+                            {{end}}
                         </aside>
                         <section class="brief">{{.Post.ContentHTML}}</section>
                     </div>

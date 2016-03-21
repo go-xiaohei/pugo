@@ -16,4 +16,4 @@ pugo deploy [method] [--options]
 
 `PuGo` can deploy via `FTP`, `SFTP`, `Git` and `AWS S3`, `Qiniu Storage` methods.
 
-Read [Deploy](#) doc to get more details for each method.
+Read [Deploy](/en/docs/deploy/standalone.html) doc to get more details for each method.

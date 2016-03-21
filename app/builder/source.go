@@ -188,7 +188,7 @@ func ReadPages(srcDir string) ([]*model.Page, error) {
 			log15.Debug("Build|Load|%s", p)
 			rel, _ := filepath.Rel(srcDir, p)
 			rel = strings.TrimSuffix(rel, filepath.Ext(rel))
-			page, err := model.NewPageOfMarkdown(p, rel)
+			page, err := model.NewPageOfMarkdown(p, filepath.ToSlash(rel))
 			if err != nil {
 				return err
 			}

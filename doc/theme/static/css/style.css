@@ -54,6 +54,14 @@ pre > code{
     word-break: break-all;
 }
 
+.pure-button{
+    padding: .2em .6em;
+}
+
+.button-success {
+    background: rgb(28, 184, 65); /* this is a green */
+}
+
 /*---nav---*/
 
 #nav-list {
@@ -189,4 +197,38 @@ pre > code{
 .doc-nav .pure-menu-heading.menu-hover{
     border-left: #1F98C7 0.3em inset;
     padding-left: 0.7em
+}
+.article,
+.article .pure-u{
+    width: 100%;
+}
+
+.article pre{
+    font-size: 90%;
+}
+
+.article .date{
+    font-size: 18px;
+}
+
+.article .meta,
+.article .author{
+    float: right;
+}
+
+.article .aside .button-success{
+    color: #FFF;
+}
+
+.article .brief{
+    margin-top: 2em;
+    padding-top: 1.2em;
+    border-top: 1px dashed #DDD;
+    margin-bottom: 2em;
+    padding-bottom: 1.2em;
+    border-bottom: 1px dashed #DDD;
+}
+
+#article-list h2.tag{
+    text-align: center;
 }
