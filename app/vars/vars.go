@@ -1,5 +1,10 @@
 package vars
 
+import (
+	"io/ioutil"
+	"strings"
+)
+
 const (
 	// Name is app name
 	Name = "PuGo"
@@ -8,3 +13,15 @@ const (
 	// Version is app version number
 	Version = "0.9.15 (beta)"
 )
+
+var (
+	// Commit is the building hash of commit
+	Commit = ""
+)
+
+func init() {
+	commitByte, _ := ioutil.ReadFile("commit")
+	if len(commitByte) > 0 {
+		Commit = strings.TrimSpace(string(commitByte))
+	}
+}

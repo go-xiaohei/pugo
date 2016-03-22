@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/codegangsta/cli"
+	"github.com/go-xiaohei/pugo/app/vars"
 )
 
 var (
@@ -12,7 +13,11 @@ var (
 		Name:  "version",
 		Usage: "print PuGo Version",
 		Action: func(ctx *cli.Context) {
-			fmt.Printf("%v version %v ~ %s\n", ctx.App.Name, ctx.App.Version, ctx.App.Compiled.Format("2006/01/02 15:04"))
+			if vars.Commit == "" {
+				fmt.Printf("%v version %v ~ %s\n", ctx.App.Name, ctx.App.Version, ctx.App.Compiled.Format("2006/01/02 15:04"))
+				return
+			}
+			fmt.Printf("%v version %v ~ %s\n", ctx.App.Name, ctx.App.Version, vars.Commit)
 		},
 	}
 )

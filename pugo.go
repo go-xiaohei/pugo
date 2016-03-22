@@ -10,6 +10,7 @@ import (
 
 //go:generate go-bindata -o=app/asset/asset.go -pkg=asset source/... theme/... doc/source/... doc/theme/...
 //go:generate gofmt -w -s .
+//go:generate git log --format=%h -n 1
 
 func main() {
 	app := cli.NewApp()
