@@ -15,7 +15,7 @@ var (
 
 func init() {
 	commands := deploy.Commands()
-	for k, _ := range commands {
+	for k := range commands {
 		commands[k].Flags = append(commands[k].Flags, debugFlag)
 		commands[k].Before = Before
 	}

@@ -9,6 +9,7 @@ import (
 )
 
 //go:generate go-bindata -o=app/asset/asset.go -pkg=asset source/... theme/... doc/source/... doc/theme/...
+//go:generate gofmt -w -s .
 
 func main() {
 	app := cli.NewApp()

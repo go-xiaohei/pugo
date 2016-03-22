@@ -6,4 +6,12 @@ lang = "en"
 template = "docs.html"
 ```
 
-this is guide page
+Welcome to PuGo Documentation. If you get any question or problem, please raise a new issue in [Github](http://github.com/go-xiaohei/pugo).
+
+In Documentation, It describes details to
+
+- [Compile](/en/docs/dl-compile)，
+- Use Command，
+- Write Template，
+- Deploy to public
+
