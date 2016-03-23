@@ -167,3 +167,14 @@ func NewPageOfMarkdown(file, slug string) (*Page, error) {
 	page.Bytes = bytes.Trim(dataSlice[2], "\n")
 	return page, page.normalize()
 }
+
+type Pages []*Page
+
+func (p Pages) BySlug(slug string) *Page {
+	for _, page := range p {
+		if page.Slug == slug {
+			return page
+		}
+	}
+	return nil
+}

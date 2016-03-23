@@ -202,9 +202,27 @@ func NewPostOfMarkdown(file string) (*Post, error) {
 type Posts []*Post
 
 // implement sort.Sort interface
-func (p Posts) Len() int           { return len(p) }
-func (p Posts) Less(i, j int) bool { return p[i].dateTime.Unix() > p[j].dateTime.Unix() }
-func (p Posts) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+func (p Posts) Len() int {
+	return len(p)
+}
+
+func (p Posts) Less(i, j int) bool {
+	return p[i].dateTime.Unix() > p[j].dateTime.Unix()
+}
+func (p Posts) Swap(i, j int) {
+	p[i], p[j] = p[j], p[i]
+}
+
+func (p Posts) TopN(i int) []*Post {
+	return p[:i]
+}
+
+func (p Posts) Range(i, j int) []*Post {
+	if i > len(p)-1 {
+		return nil
+	}
+	return p[i:j]
+}
 
 func parseTimeString(timeStr string) (time.Time, error) {
 	timeStr = strings.TrimSpace(timeStr)

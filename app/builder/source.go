@@ -25,10 +25,10 @@ type (
 		Analytics *model.Analytics
 		I18n      map[string]*helper.I18n
 
-		Posts    []*model.Post
+		Posts    model.Posts
 		PostPage int
 		Archive  []*model.Archive
-		Pages    []*model.Page
+		Pages    model.Pages
 		Tags     map[string]*model.Tag
 		tagPosts map[string][]*model.Post
 	}

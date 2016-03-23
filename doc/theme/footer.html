@@ -5,7 +5,7 @@
                 <div class="box">
                     <div class="pure-menu custom-restricted-width">
                         <h4 class="pure-menu-heading">{{.I18n.Tr "footer.release-notes"}}</h4>
-                        <ul class="pure-menu-list">{{range .Source.Posts}}
+                        <ul class="pure-menu-list">{{range .Source.Posts.TopN 3}}
                             <li class="pure-menu-item"><a href="{{.URL}}" class="pure-menu-link">{{.Title}}</a></li>{{end}}
                         </ul>
                     </div>
