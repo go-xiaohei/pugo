@@ -30,7 +30,7 @@ type (
 		Archive  []*model.Archive
 		Pages    model.Pages
 		Tags     map[string]*model.Tag
-		tagPosts map[string][]*model.Post
+		tagPosts map[string]model.Posts
 	}
 )
 

@@ -20,7 +20,7 @@ func AssembleSource(ctx *Context) {
 
 	ctx.Source.Nav.FixURL(ctx.Source.Meta.Path)
 	ctx.Source.Tags = make(map[string]*model.Tag)
-	ctx.Source.tagPosts = make(map[string][]*model.Post)
+	ctx.Source.tagPosts = make(map[string]model.Posts)
 
 	r, hr := newReplacer(ctx.Source.Meta.Path), newReplacerInHTML(ctx.Source.Meta.Path)
 	ctx.Source.Meta.Cover = r.Replace(ctx.Source.Meta.Cover)

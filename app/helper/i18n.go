@@ -38,7 +38,7 @@ func (i *I18n) Trim(str string) string {
 	if strings.HasPrefix(str, "/"+i.Lang) {
 		return strings.TrimLeft(str, "/"+i.Lang)
 	}
-	return str
+	return strings.TrimLeft(str, "/")
 }
 
 // NewI18n reads toml bytes

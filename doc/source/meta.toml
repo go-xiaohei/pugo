@@ -31,6 +31,7 @@ title = "Github"
 i18n = "github"
 icon = "fa fa-github"
 blank = true
+hover = "source"
 
 [[author]]
 name = "pugo"
