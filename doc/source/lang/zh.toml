@@ -11,3 +11,7 @@
 "language" = "语言"
 "release-notes" = "发布日志"
 "nav" = "PuGo 相关"
+
+#index
+[index]
+slogan = "简单写作，快速编译，智能发布"

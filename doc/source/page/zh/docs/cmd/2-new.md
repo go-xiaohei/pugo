@@ -17,7 +17,13 @@ template = "docs.html"
 pugo new site
 ```
 
-新站点内有默认的配置，`source` 文件夹有起始文章和页面，`theme` 文件夹有三个主题。而且，`doc` 目录带有所有的文档资源。你可以使用 [Doc](/zh/docs/cmd/doc) 命令浏览文档内容。
+释放好的新站点内有默认的配置，`source` 文件夹有起始文章和页面，`theme` 文件夹有三个主题。
+
+```go
+pugo new site --doc
+```
+
+当设置 `--doc`，将只释放 `doc` 目录带有所有的文档资源。你可以使用 [Doc](/zh/docs/cmd/doc) 命令浏览文档内容。
 
 
 ### 文章

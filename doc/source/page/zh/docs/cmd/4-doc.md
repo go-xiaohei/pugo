@@ -10,7 +10,7 @@ template = "docs.html"
 `doc` 命令会在本地启动文档 HTTP 服务：
 
 ```go
-pugo new site
+pugo new site --doc
 pugo doc --addr="0.0.0.0:9899"
 ```
 

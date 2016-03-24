@@ -104,6 +104,10 @@ pre > code{
     font-size: 120%;
 }
 
+#dl-button:hover{
+    color: #FFF;
+}
+
 #gopher-img {
     width: 400px;
 }

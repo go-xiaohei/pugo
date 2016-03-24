@@ -11,3 +11,7 @@
 "language" = "Language"
 "release-notes" = "Release Notes"
 "nav" = "Everything in PuGo"
+
+#index
+[index]
+slogan = "easy Write, fast Build, smart Deploy"

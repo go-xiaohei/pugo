@@ -26,6 +26,7 @@ var (
 		Flags: []cli.Flag{
 			newToFlag,
 			debugFlag,
+			newOnlyDocFlag,
 		},
 		Before: Before,
 		Action: newContent,
@@ -42,7 +43,7 @@ func newContent(ctx *cli.Context) {
 	var err error
 	switch ctx.Args()[0] {
 	case "site":
-		err = newSite()
+		err = newSite(ctx.Bool("doc"))
 	case "post":
 		err = newPost(ctx.Args()[1:], ctx.String("to"))
 	case "page":
@@ -154,16 +155,27 @@ func newPage(args []string, dstDir string) error {
 	return ioutil.WriteFile(toFile, buf2.Bytes(), os.ModePerm)
 }
 
-func newSite() error {
+func newSite(onlyDoc bool) error {
 	log15.Info("New|Extract|Assets")
 	dirs := []string{"source", "theme", "doc"}
 	isSuccess := true
 
-	var err error
+	var (
+		err       error
+		isExtract = true
+	)
 	for _, dir := range dirs {
+		isExtract = (dir != "doc")
+		if onlyDoc {
+			isExtract = (dir == "doc")
+		}
+		if !isExtract {
+			continue
+		}
+		log15.Info("New|Extract|Directory|%s", dir)
 		if err = asset.RestoreAssets("./", dir); err != nil {
 			isSuccess = false
-			return err
+			break
 		}
 	}
 	if !isSuccess {

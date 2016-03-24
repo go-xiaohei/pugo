@@ -10,7 +10,7 @@ template = "docs.html"
 `doc` command run documentation site on local:
 
 ```go
-pugo new site
+pugo new site --doc
 pugo doc --addr="0.0.0.0:9899"
 ```
 

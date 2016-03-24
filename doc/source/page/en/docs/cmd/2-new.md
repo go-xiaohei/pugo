@@ -17,7 +17,13 @@ Assets are bundled in `PuGo`. Just it can create new site without any downloads:
 pugo new site
 ```
 
-It extracts common defaults, starting posts and pages in `source` and three themes in `theme` directory in current directory. Meanwhile, it extracts `doc` directory that contains all documentation data. The data is ready to compile to document website. Read [Doc](/en/docs/cmd/doc) command to get more help.
+It extracts common defaults, starting posts and pages in `source` and three themes in `theme` directory in current directory. 
+
+```go
+pugo new site --doc
+```
+
+When set `--doc` flag, it extracts `doc` directory that contains all documentation data. The data is ready to compile to document website. Read [Doc](/en/docs/cmd/doc) command to get more help.
 
 ### Post
 
