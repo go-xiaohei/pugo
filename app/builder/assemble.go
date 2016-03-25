@@ -33,7 +33,9 @@ func AssembleSource(ctx *Context) {
 			p.FixURL(ctx.Source.Meta.Path)
 		}
 		p.FixPlaceholder(r, hr)
-		p.Author = ctx.Source.Authors[p.AuthorName]
+		if p.Author == nil {
+			p.Author = ctx.Source.Authors[p.AuthorName]
+		}
 		for _, t := range p.Tags {
 			ctx.Source.Tags[t.Name] = t
 			ctx.Source.tagPosts[t.Name] = append(ctx.Source.tagPosts[t.Name], p)
@@ -44,7 +46,9 @@ func AssembleSource(ctx *Context) {
 			p.FixURL(ctx.Source.Meta.Path)
 		}
 		p.FixPlaceholder(hr)
-		p.Author = ctx.Source.Authors[p.AuthorName]
+		if p.Author == nil {
+			p.Author = ctx.Source.Authors[p.AuthorName]
+		}
 	}
 
 	for _, posts := range ctx.Source.tagPosts {

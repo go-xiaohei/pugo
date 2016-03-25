@@ -77,7 +77,10 @@ func (ctx *Context) View() map[string]interface{} {
 		"Root":      strings.TrimRight(ctx.Source.Meta.Root, "/"),
 	}
 	if ctx.Source.Meta.Language == "" {
-		m["I18n"] = helper.NewI18nEmpty()
+		m["I18n"] = ctx.Source.I18n["en"]
+		if m["I18n"] == nil {
+			m["I18n"] = helper.NewI18nEmpty()
+		}
 	} else {
 		if i18n, ok := ctx.Source.I18n[ctx.Source.Meta.Language]; ok {
 			m["I18n"] = i18n

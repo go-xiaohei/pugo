@@ -6,7 +6,7 @@
         var disqus_developer = 1;
         var disqus_shortname = "{{.Comment.Disqus}}";
         var disqus_config = function () {
-            this.page.url = "{{.Root}}{{.Permalink}}"; // Replace PAGE_URL with your page's canonical URL variable
+            this.page.url = "{{.Root}}{{.URL}}"; // Replace PAGE_URL with your page's canonical URL variable
         };
         (function () {
             var dsq = document.createElement('script');
@@ -21,7 +21,7 @@
     <a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
     {{end}}
     {{if .Comment.Duoshuo}}<div class="row">
-        <div class="ds-thread" data-thread-key="{{.PermaKey}}" data-title="{{.Title}}" data-url="{{.Root}}{{.Permalink}}"></div>
+        <div class="ds-thread" data-thread-key="{{.PermaKey}}" data-title="{{.Title}}" data-url="{{.Root}}{{.URL}}"></div>
         <script type="text/javascript">
             var duoshuoQuery = {short_name:"{{.Comment.Duoshuo}}"};
             (function() {
