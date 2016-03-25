@@ -1,7 +1,7 @@
 {{template "meta.html" .}}
 <body>
 {{template "header.html" .}}
-<div id="main">
+<div id="main" class="{{.PostType}} pugo-{{.PermaKey}}">
     <div class="wrapper">
        <div class="pure-g">
            <div class="pure-u-1-4">
@@ -14,6 +14,7 @@
                    {{.ContentHTML}}
                </div>
                {{end}}
+               {{template "embed/comment.html" .}}
            </div>
        </div>
     </div>

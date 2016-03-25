@@ -49,7 +49,6 @@ func compilePosts(ctx *Context, toDir string) error {
 		viewData["Title"] = p.Title + " - " + ctx.Source.Meta.Title
 		viewData["Desc"] = p.Desc
 		viewData["Post"] = p
-		viewData["Permalink"] = p.Permalink()
 		viewData["PermaKey"] = p.Slug
 		viewData["PostType"] = model.TreePost
 		viewData["Hover"] = model.TreePost
@@ -131,8 +130,8 @@ func compilePosts(ctx *Context, toDir string) error {
 	viewData["Title"] = fmt.Sprintf("Archive - %s", ctx.Source.Meta.Title)
 	viewData["Archives"] = ctx.Source.Archive
 	viewData["PostType"] = model.TreeArchive
-	viewData["PermaKey"] = model.TreeArchive
-	viewData["Hover"] = model.TreeArchive
+	viewData["PermaKey"] = "archive"
+	viewData["Hover"] = "archive"
 	viewData["URL"] = path.Join(ctx.Source.Meta.Path, "archive")
 	if err = compile(ctx, "archive.html", viewData, dstFile); err != nil {
 		return err
@@ -143,6 +142,7 @@ func compilePosts(ctx *Context, toDir string) error {
 	for t, posts := range ctx.Source.tagPosts {
 		pageURL = path.Join(ctx.Source.Meta.Path, ctx.Source.Tags[t].URL)
 		dstFile = path.Join(toDir, pageURL)
+		pageKey = fmt.Sprintf("post-tag-%s", t)
 		viewData = ctx.View()
 		viewData["Title"] = fmt.Sprintf("%s - %s", t, ctx.Source.Meta.Title)
 		viewData["Posts"] = posts
@@ -175,7 +175,6 @@ func compilePages(ctx *Context, toDir string) error {
 		viewData["Title"] = p.Title + " - " + ctx.Source.Meta.Title
 		viewData["Desc"] = p.Desc
 		viewData["Page"] = p
-		viewData["Permalink"] = p.Permalink()
 		viewData["PermaKey"] = p.Slug
 		viewData["PostType"] = model.TreePage
 		viewData["Hover"] = p.NavHover

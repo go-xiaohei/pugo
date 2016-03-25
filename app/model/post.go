@@ -41,14 +41,12 @@ type Post struct {
 	Bytes        []byte `toml:"-"`
 	contentBytes []byte
 	briefBytes   []byte
-	permaURL     string
 	postURL      string
 	treeURL      string
 }
 
 // FixURL fix path when assemble posts
 func (p *Post) FixURL(prefix string) {
-	p.permaURL = path.Join(prefix, p.permaURL)
 	p.postURL = path.Join(prefix, p.postURL)
 }
 
@@ -67,11 +65,6 @@ func (p *Post) TreeURL() string {
 // URL get url of the post
 func (p *Post) URL() string {
 	return p.postURL
-}
-
-// Permalink get permalink of the post
-func (p *Post) Permalink() string {
-	return p.permaURL
 }
 
 // ContentHTML get html content
@@ -134,9 +127,9 @@ func (p *Post) normalize() error {
 	}
 	p.contentBytes = helper.Markdown(p.Bytes)
 	p.briefBytes = helper.Markdown(bytes.Split(p.Bytes, postBriefSeparator)[0])
-	p.permaURL = fmt.Sprintf("/%d/%d/%d/%s", p.dateTime.Year(), p.dateTime.Month(), p.dateTime.Day(), p.Slug)
-	p.postURL = p.permaURL + ".html"
-	p.treeURL = p.permaURL
+	permaURL := fmt.Sprintf("/%d/%d/%d/%s", p.dateTime.Year(), p.dateTime.Month(), p.dateTime.Day(), p.Slug)
+	p.postURL = permaURL + ".html"
+	p.treeURL = permaURL
 	for _, t := range p.TagString {
 		p.Tags = append(p.Tags, NewTag(t))
 	}
@@ -213,10 +206,12 @@ func (p Posts) Swap(i, j int) {
 	p[i], p[j] = p[j], p[i]
 }
 
+// TopN get top N posts from list
 func (p Posts) TopN(i int) []*Post {
 	return p[:i]
 }
 
+// Range get ranged[i:j] posts from list
 func (p Posts) Range(i, j int) []*Post {
 	if i > len(p)-1 {
 		return nil

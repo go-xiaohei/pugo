@@ -170,6 +170,9 @@ pre > code{
 .guide-page .content{
     line-height: 2em;
     font-size: 18px;
+    padding-bottom: .5em;
+    margin-bottom: .5em;
+    border-bottom: 1px solid #DDD;
 }
 
 .guide-page .content img{

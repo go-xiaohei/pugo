@@ -1,7 +1,7 @@
 {{template "meta.html" .}}
 <body>
 {{template "header.html" .}}
-<section id="main">
+<section id="main" class="{{.PostType}} pugo-{{.PermaKey}}">
     <div class="wrapper">
         {{if .Tag}}
         <h2 class="tag pure-u">{{.Tag.Name}}</h2>

@@ -1,7 +1,7 @@
 {{template "meta.html" .}}
 <body>
 {{template "header.html" .}}
-<div id="cover">
+<div id="cover" class="{{.PostType}} pugo-{{.PermaKey}}">
     <div class="wrapper">
         <h1 id="title">PuGo</h1>
         <p class="slagon">{{.I18n.Tr "index.slogan"}}</p>

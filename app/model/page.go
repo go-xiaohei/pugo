@@ -30,7 +30,6 @@ type Page struct {
 	Sort       int                    `toml:"sort" ini:"sort"`
 	Author     *Author                `toml:"-" ini:"-"`
 
-	permaURL     string
 	pageURL      string
 	treeURL      string
 	contentBytes []byte
@@ -48,11 +47,6 @@ func (p *Page) URL() string {
 	return p.pageURL
 }
 
-// Permalink is page's permalink
-func (p *Page) Permalink() string {
-	return p.permaURL
-}
-
 // ContentHTML is page's content html
 func (p *Page) ContentHTML() template.HTML {
 	return template.HTML(p.contentBytes)
@@ -65,7 +59,6 @@ func (p *Page) Content() []byte {
 
 // FixURL fix path when assemble posts
 func (p *Page) FixURL(prefix string) {
-	p.permaURL = path.Join(prefix, p.permaURL)
 	p.pageURL = path.Join(prefix, p.pageURL)
 }
 
@@ -101,8 +94,7 @@ func (p *Page) normalize() error {
 		}
 	}
 	p.contentBytes = helper.Markdown(p.Bytes)
-	p.permaURL = fmt.Sprintf("/%s", p.Slug)
-	p.pageURL = p.permaURL + ".html"
+	p.pageURL = fmt.Sprintf("/%s", p.Slug) + ".html"
 	p.treeURL = p.Slug
 	return nil
 }
@@ -168,8 +160,10 @@ func NewPageOfMarkdown(file, slug string) (*Page, error) {
 	return page, page.normalize()
 }
 
+// Pages means pages list
 type Pages []*Page
 
+// BySlug return a page by slug string
 func (p Pages) BySlug(slug string) *Page {
 	for _, page := range p {
 		if page.Slug == slug {

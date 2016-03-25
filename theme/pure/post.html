@@ -6,7 +6,7 @@
             <div class="post">
                 <h1 class="post-header">{{.Post.Title}}</h1>
                 <div class="post-meta">
-                    <small>{{.Post.Created.Year}}-{{printf "%d" .Post.Created.Month}}-{{.Post.Created.Day}}</small>
+                    <small>{{.Post.Created.Year}}-{{printf "%0d" .Post.Created.Month}}-{{.Post.Created.Day}}</small>
                 </div>
                 <div class="post-description">{{.Post.ContentHTML}}</div>
             </div>

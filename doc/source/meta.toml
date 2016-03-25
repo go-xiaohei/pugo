@@ -40,7 +40,7 @@ url = "http://pugo.io"
 bio = "the robot of pugo, who generates all default contents."
 
 [comment]
-disqus = "fuxiaohei"
+disqus = "pugoio"
 duoshuo = ""
 
 [analytics]

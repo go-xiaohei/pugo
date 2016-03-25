@@ -1,5 +1,5 @@
 {{template "meta.html" .}}
-<body>
+<body class="{{.PostType}}" data-perma="{{.PermaKey}}">
 {{template "header.html" .}}
 <section id="main">
     <div class="container">
@@ -10,7 +10,7 @@
                         <header class="header">
                             <div class="meta">
                         <span class="date">
-                            <span class="month">{{printf "%d" .Post.Created.Month}}</span>
+                            <span class="month">{{printf "%0d" .Post.Created.Month}}</span>
                             <span class="day">{{.Post.Created.Day}}</span>
                         </span>
                             </div>
@@ -22,7 +22,6 @@
                             {{range .Post.Tags}}
                             <a class="tag label label-info" href="{{.URL}}">{{.Name}}</a>
                             {{end}}
-                            {{.Post.Author}}
                             {{if .Post.Author}}
                             <a class="stat label label-default pull-right"{{if .Post.Author.URL}} href="{{.Post.Author.URL}}" target="_blank"{{end}}>{{.Post.Author.Name}}</a>{{end}}
                         </aside>

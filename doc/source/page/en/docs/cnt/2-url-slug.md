@@ -19,11 +19,6 @@ title = "URL and Slug"
 # /2016/3/15/URL-and-Slug.html
 ```
 
-The `Permalink` of a post is from its URL without suffix string:
-
-    URL         : /2016/3/15/URL-and-Slug.html
-    Permalink   : /2016/3/15/URL-and-Slug
-
 ### Page
 
 Page's URL is created by relative path or slug. When slug is empty, use relative path.
@@ -34,8 +29,3 @@ title = "URL and Slug"
 # The URL is:
 # /about/me.html
 ```
-
-The `Permalink` of a page is from its URL without suffix string:
-
-    URL         : /about/me.html
-    Permalink   : /about/me

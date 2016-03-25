@@ -1,10 +1,10 @@
 ### template documentation
 
-all themes are in this directory.
+PuGo provides three themes in this directory.
 
 use specific theme:
 
-  $ ./pugo --theme=default
+  $ ./pugo build --theme="theme/default"
 
 ##### theme structure
 

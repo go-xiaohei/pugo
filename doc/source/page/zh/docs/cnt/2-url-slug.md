@@ -19,11 +19,6 @@ title = "URL and Slug"
 # /2016/3/15/URL-and-Slug.html
 ```
 
-文章的 `Permalink`（永久链接） 就是去掉 URL 的后缀。
-
-    URL         : /2016/3/15/URL-and-Slug.html
-    Permalink   : /2016/3/15/URL-and-Slug
-
 ### 页面
 
 页面的 URL 按照 slug 或文件的相对位置（没有设置slug时）生成。
@@ -34,8 +29,3 @@ title = "URL and Slug"
 # The URL is:
 # /about/me.html
 ```
-
-页面的 `Permalink`（永久链接） 就是去掉 URL 的后缀。
-
-    URL         : /about/me.html
-    Permalink   : /about/me

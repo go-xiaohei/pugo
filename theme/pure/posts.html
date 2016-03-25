@@ -10,7 +10,7 @@
             <div class="post">
                 <h3 class="post-header"><a href="{{.URL}}">{{.Title}}</a></h3>
                 <div class="post-meta">
-                    <small>{{.Created.Year}}-{{printf "%d" .Created.Month}}-{{.Created.Day}}</small>
+                    <small>{{.Created.Year}}-{{printf "%0d" .Created.Month}}-{{.Created.Day}}</small>
                 </div>
                 <div class="post-description">{{.BriefHTML}}</div>
                 <div class="more">
