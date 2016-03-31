@@ -13,7 +13,7 @@
             <ul class="nav">{{range .Nav}}
                 <li role="presentation" class="{{if eq .Hover $.Hover}}active{{end}}">
                     <a href="{{.Link}}"{{if .IsBlank}} target="_blank" {{end}}>{{if .Icon}}
-                        <i class="{{.Icon}}"></i>{{end}}{{.Title}}
+                        <i class="{{.Icon}}"></i>{{end}}{{.Tr $.I18n}}
                     </a>
                 </li>{{end}}
             </ul>

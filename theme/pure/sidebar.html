@@ -9,7 +9,7 @@
         <nav class="nav">
             <ul class="nav-list">{{range .Nav}}
                 <li class="{{if eq .Hover $.Hover}}active{{end}}">{{if .Icon}}<i class="{{.Icon}}"></i>{{end}}
-                    <a href="{{.Link}}"{{if .IsBlank}} target="_blank" {{end}}>{{.Title}}</a>
+                    <a href="{{.Link}}"{{if .IsBlank}} target="_blank" {{end}}>{{.Tr $.I18n}}</a>
                 </li>{{end}}
             </ul>
         </nav>
