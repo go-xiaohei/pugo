@@ -235,6 +235,8 @@ pre > code{
     margin-bottom: 2em;
     padding-bottom: 1.2em;
     border-bottom: 1px dashed #DDD;
+    font-size: 16px;
+    line-height: 30px
 }
 
 #article-list h2.tag{
