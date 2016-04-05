@@ -3,7 +3,7 @@
 title = "PuGo"
 
 # subtitle, words after title, in description
-subtitle = "Static Site Generator"
+subtitle = "Just For Writing"
 
 # print in html <meta>
 keyword = "pugo,golang,static,site,generator"
