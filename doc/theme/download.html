@@ -1,0 +1,27 @@
+{{template "meta.html" .}}
+<body>
+{{template "header.html" .}}
+<div id="main" class="{{.PostType}} pugo-{{.PermaKey}}">
+    <div class="wrapper">
+        <div class="wrapper">
+            <div id="article-single">
+                <div class="article">
+                    <div class="header">
+                        <h2 class="title">下载</h2>
+                    </div>
+                    <section class="brief">
+                        <h3>0.10.0 (2016.04.07)</h3>
+                        <a class="dl" href="http://7xrpj0.com1.z0.glb.clouddn.com/download/0.10.0/windows_amd64.zip">windows_amd64.zip</a>
+                        <a class="dl" href="http://7xrpj0.com1.z0.glb.clouddn.com/download/0.10.0/windows_386.zip">windows_386.zip</a>
+                        <a class="dl" href="http://7xrpj0.com1.z0.glb.clouddn.com/download/0.10.0/linux_amd64.zip">linux_amd64.zip</a>
+                        <a class="dl" href="http://7xrpj0.com1.z0.glb.clouddn.com/download/0.10.0/linux_386.zip">linux_386.zip</a>
+                        <a class="dl" href="http://7xrpj0.com1.z0.glb.clouddn.com/download/0.10.0/linux_arm.zip">linux_arm.zip</a>
+                        <a class="dl" href="http://7xrpj0.com1.z0.glb.clouddn.com/download/0.10.0/darwin_amd64.zip">darwin_amd64.zip</a>
+                    </section>
+                </div>
+            </div>
+            {{template "embed/comment.html" .}}
+        </div>
+    </div>
+</div>
+{{template "footer.html" .}}

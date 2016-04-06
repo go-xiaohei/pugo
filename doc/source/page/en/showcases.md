@@ -1,7 +1,7 @@
 ```toml
 title = "Showcases"
 date = "2016-02-04 15:00:00"
-hover = "docs"
+hover = "showcases"
 lang = "en"
 template = "page.html"
 ```

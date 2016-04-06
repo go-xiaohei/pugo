@@ -64,10 +64,6 @@ pre > code{
 
 /*---nav---*/
 
-#nav-list {
-    float: right;
-}
-
 #nav-list .pure-menu-selected > a,
 .guide-nav .pure-menu-selected > a,
 .doc-nav .pure-menu-selected > a{
@@ -126,13 +122,20 @@ pre > code{
     padding: 0 1em;
 }
 
+#nav-lang{
+    float: right;
+}
+
 #language-box{
     padding-bottom: 1em;
     position: relative;
+    line-height: 50px;
 }
 
 #lang-select{
-    margin-left: 1em;
+    opacity: 0;
+    width: 60px;
+    margin-left: -4.5em;
 }
 
 #footer .cp-box{
@@ -241,4 +244,9 @@ pre > code{
 
 #article-list h2.tag{
     text-align: center;
+}
+
+#article-single a.dl{
+    border-left: 1px dashed #BBB;
+    padding: 0 1em;
 }

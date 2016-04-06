@@ -1,11 +1,22 @@
 <header id="header">
     <div class="wrapper">
         <div class="pure-menu pure-menu-horizontal" id="nav">
-            <a href="/" class="pure-menu-heading pure-menu-link">PUGO</a>
+            <a href="/{{.I18n.Lang}}/index.html" class="pure-menu-heading pure-menu-link">PUGO</a>
             <ul class="pure-menu-list" id="nav-list">{{range .Nav}}
                 <li class="pure-menu-item{{if eq .Hover $.Hover}} pure-menu-selected{{end}}">
                     <a href="{{.TrLink $.I18n}}" class="pure-menu-link"{{if .IsBlank}} target="_blank"{{end}}>{{.Tr $.I18n}}</a>
                 </li>{{end}}
+            </ul>
+            <ul class="pure-menu-list" id="nav-lang">
+                <li class="pure-menu-list">
+                    <div id="language-box">
+                        <span id="lang-current"></span>
+                        <select id="lang-select" data-url="{{.I18n.Trim .URL}}">
+                            <option value="en"{{if eq .I18n.Lang "en"}} selected{{end}}>English</option>
+                            <option value="zh"{{if eq .I18n.Lang "zh"}} selected{{end}}>简体中文</option>
+                        </select>
+                    </div>
+                </li>
             </ul>
         </div>
     </div>

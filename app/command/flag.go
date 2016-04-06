@@ -40,11 +40,6 @@ var (
 		Value: "dir://source",
 		Usage: "create new content to this directory",
 	}
-	migrateToFlag = cli.StringFlag{
-		Name:  "migrateTo",
-		Value: "dir://source",
-		Usage: "migrate contents to this directory",
-	}
 	newOnlyDocFlag = cli.BoolFlag{
 		Name:  "doc",
 		Usage: "extract documentation data",

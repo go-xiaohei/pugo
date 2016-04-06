@@ -1,9 +1,9 @@
 ```toml
-title = "案例"
+title = "下载"
 date = "2016-02-04 15:00:00"
-hover = "showcases"
+hover = ""
 lang = "zh"
-template = "page.html"
+template = "download.html"
 ```
 
 - [fuxiaohei.me](http://fuxiaohei.me), 我 , PuGo的作者
