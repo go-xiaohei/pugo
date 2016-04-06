@@ -37,5 +37,5 @@ go generate -x
 
 ### 注意
 
-- `PuGo` 依赖 `fsnotify` 监听文件修改，当它并没有在 **arm** 平台充分测试.
+- `PuGo` 依赖 `fsnotify` 监听文件修改，但它并没有在 **arm** 平台充分测试.
 - `PuGo` 使用 `log15.v2` 打印日志，但是该库无法在 **openbsd** 和 **netbsd** 平台编译。

@@ -49,3 +49,6 @@ pugo deploy git --local="dest" --repo="repo" --message="commit {time}" --branch=
     pugo deploy --local="dest" --repo="your-repo" --branch="gh-pages"
 ```
     
+#### Warning
+
+The strategy of `PuGo` git deployment is copying compiled files to your repository directory. It will overwrite all same-named files, and will not affect other files if not same. So sometimes you need check whether the git changes following your mind. 

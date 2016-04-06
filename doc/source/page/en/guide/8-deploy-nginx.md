@@ -7,7 +7,7 @@ lang = "en"
 template = "guide.html"
 ```
 
-There are two ways to deploy `PuGo` contents to public.
+There are two ways to deploy `PuGo` contents to public byself, or deploy to public cloud service such as git, Amazon Cloud via `deploy` command.
 
 ### Static Website
 
@@ -50,3 +50,19 @@ location / {
 ```
 
 But not recommended. You must add correct `Cache-Header` to get higher experience,
+
+### Cloud
+
+`PuGo` support [FTP](/en/docs/deploy/ftp-sftp.html), [SFTP](/en/docs/deploy/ftp-sftp.html), [Git](/en/docs/deploy/git.html), and [Storage Service](/en/docs/deploy/cloud.html). 
+
+For example, the steps of deploying to github repository, in branch **gh-pages**:
+
+- `git clone` your repository to [dir1]. Please use `git://` or `https://username:password@repository_url.git` . (PuGo can't type in username and password when pushing now).
+
+- `git checkout gh-pages` in [dir1]
+
+- `pugo build --dest="dir2"`, build files to [dir2]
+
+- `pugo deploy git --local="dir2" --repo="dir1" --branch="gh-pages"`
+
+You can read deployment document to learn further guides.

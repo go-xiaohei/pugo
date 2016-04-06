@@ -23,3 +23,7 @@ pugo deploy aws-s3 --local="dest" --ak="ak" --sk="sk" --bucket="bucket" --region
 AWS S3 还需要 `--region` 设置 bucket 所在 region，如 `us-east-1`.
 
 使用云存储时，你需要确认 bucket 是公开的。然后你可以查询相关文档绑定域名，设置主页等。
+
+#### 注意
+
+`PuGo` 上传编译好的文件到云服务时，会将重名的文件覆盖，其他文件不会变化。因此可能你需要自己检查 bucket 中的无用文件，并自己删除。

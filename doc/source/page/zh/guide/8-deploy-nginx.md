@@ -7,7 +7,7 @@ lang = "zh"
 template = "guide.html"
 ```
 
-有两种方式部署 `PuGo` 的内容。
+有两种方式直接部署 `PuGo` 的内容，或通过 `deploy` 命令部署到其他远程服务。
 
 ### 纯静态网站
 
@@ -48,3 +48,19 @@ location / {
 ```
 
 你需要配置如 `Cache-Header` 去保证更好的静态性能。
+
+### 远程服务
+
+`PuGo` 支持发布到 [FTP](/zh/docs/deploy/ftp-sftp.html), [SFTP](/zh/docs/deploy/ftp-sftp.html), [Git](/zh/docs/deploy/git.html), 和 [Storage Service](/zh/docs/deploy/cloud.html)。
+
+例如，如下发布到 Github 项目的 **gh-pages** 分支：
+
+- `git clone` 项目到目录 [dir1]. 请使用 `git://` 或 `https://username:password@repository_url.git` 拉取。 (PuGo 目前无法在 push 时输入用户名和密码)
+
+- 在目录 [dir1] 执行 `git checkout gh-pages` 
+
+- `pugo build --dest="dir2"`， 编译内容到目录 [dir2]
+
+- `pugo deploy git --local="dir2" --repo="dir1" --branch="gh-pages"`
+
+你可以阅读部署的相关文档了解更多。

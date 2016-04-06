@@ -49,3 +49,6 @@ pugo deploy git --local="dest" --repo="repo" --message="commit {time}" --branch=
     pugo deploy --local="dest" --repo="your-repo" --branch="gh-pages"
 ```
     
+#### 注意
+
+`PuGo` 通过 git 的部署机制是，拷贝编译好的文件到 git 项目目录。重名的文件会被替换，其他文件不会受影响。因此有事可能需要关注 git 检测出的文件差异，保证是你需要的内容修改。
