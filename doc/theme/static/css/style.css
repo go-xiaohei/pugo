@@ -36,6 +36,41 @@ body {
     color: #333;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    padding: 0;
+    font-weight: bold;
+    margin: 1rem 0;
+}
+
+h1 {
+    font-size: 22px
+}
+
+h2 {
+    font-size: 20px
+}
+
+h3 {
+    font-size: 18px
+}
+
+h4 {
+    font-size: 16px
+}
+
+h5 {
+    font-size: 15px
+}
+
+h6 {
+    font-size: 14px
+}
+
 .pure-menu-heading{
     color: #333;
 }
@@ -233,14 +268,40 @@ pre > code{
 
 .article .brief{
     margin-top: 2em;
-    padding-top: 1.2em;
+    padding: 1.2em 3em;
     border-top: 1px dashed #DDD;
     margin-bottom: 2em;
-    padding-bottom: 1.2em;
     border-bottom: 1px dashed #DDD;
     font-size: 16px;
-    line-height: 30px
+    line-height: 30px;
 }
+
+.article .brief h1,
+.article .brief h2,
+.article .brief h3,
+.article .brief h4,
+.article .brief h5,
+.article .brief h6{
+    margin-left: -1rem;
+    padding-left: 1rem;
+}
+
+
+.article .brief h1,
+.article .brief h2 {
+    border-left: 4px solid rgba(0, 68, 204, .5);
+}
+
+.article .brief h3,
+.article .brief h4 {
+    border-left: 4px solid rgba(0, 68, 204, .3);
+}
+
+.article .brief h5,
+.article .brief h6 {
+    border-left: 4px solid rgba(0, 68, 204, .1);
+}
+
 
 #article-list h2.tag{
     text-align: center;

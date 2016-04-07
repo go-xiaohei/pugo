@@ -1,5 +1,5 @@
 ```toml
-title = "Install"
+title = "Install & Upgrade"
 date = "2016-02-05 15:00:00"
 slug = "en/guide/install"
 hover = "guide"
@@ -13,3 +13,6 @@ It provides `windows/386`,`windows/amd64`,`linux/386`,`linux/amd64`,`darwin/amd6
 
 The released package is zipped. Please install an unzip tool to extract, such as Winzip.
 
+#### Upgrade
+
+Just download new release file to run old contents. I will keep smooth upgrade as possible. If **something changes**, I will write the details in release note. You can follow the details to change your old contents.
