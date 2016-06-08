@@ -1,6 +1,11 @@
 package command
 
 import (
+	"net/http"
+	// pprof to profile
+	_ "net/http/pprof"
+	"time"
+
 	"github.com/Unknwon/com"
 	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo/app/builder"
@@ -52,5 +57,14 @@ func serv(c *cli.Context) {
 			s.SetPrefix(ctx.Source.Meta.Path)
 		}
 	})
-	build(newContext(c, true), true)
+
+	if c.Bool("profile") {
+		go http.ListenAndServe("localhost:6060", nil)
+		for {
+			build(newContext(c, false), false)
+			time.Sleep(time.Second)
+		}
+	} else {
+		build(newContext(c, true), true)
+	}
 }
