@@ -7,15 +7,15 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/Unknwon/com"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 	"gopkg.in/inconshreveable/log15.v2"
-	"time"
 )
 
 type AwsS3 struct {
