@@ -1,6 +1,6 @@
 package command
 
-import "github.com/codegangsta/cli"
+import "github.com/urfave/cli"
 
 var (
 	buildDestFlag = cli.StringFlag{

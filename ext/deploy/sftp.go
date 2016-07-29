@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	"github.com/Unknwon/com"
-	"github.com/codegangsta/cli"
 	"github.com/pkg/sftp"
+	"github.com/urfave/cli"
 	"golang.org/x/crypto/ssh"
 	"gopkg.in/inconshreveable/log15.v2"
 )

@@ -12,9 +12,9 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/Unknwon/com"
-	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo/app/asset"
 	"github.com/go-xiaohei/pugo/app/model"
+	"github.com/urfave/cli"
 	"gopkg.in/inconshreveable/log15.v2"
 )
 
@@ -35,10 +35,10 @@ var (
 	titleReplacer = strings.NewReplacer(" ", "-", ",", "-", ".", "-", "。", "-", "，", "-")
 )
 
-func newContent(ctx *cli.Context) {
+func newContent(ctx *cli.Context) error {
 	if len(ctx.Args()) == 0 {
 		log15.Error("need params\nusage:\n pugo new [post|page|site]")
-		return
+		return nil
 	}
 	var err error
 	switch ctx.Args()[0] {
@@ -50,11 +50,12 @@ func newContent(ctx *cli.Context) {
 		err = newPage(ctx.Args()[1:], ctx.String("to"))
 	default:
 		log15.Error("unknown params\nusage:\n pugo new [post|page|site]")
-		return
+		return nil
 	}
 	if err != nil {
 		log15.Crit("New|%s|%s", ctx.Args()[0], err.Error())
 	}
+	return nil
 }
 
 func newPost(args []string, dstDir string) error {

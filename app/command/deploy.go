@@ -1,8 +1,8 @@
 package command
 
 import (
-	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo/ext/deploy"
+	"github.com/urfave/cli"
 )
 
 var (

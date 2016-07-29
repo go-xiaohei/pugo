@@ -121,7 +121,7 @@ func TestMd5(t *testing.T) {
 
 		str, err := Md5File("md5.go")
 		So(err, ShouldBeNil)
-		So(str, ShouldEqual, "d16c46931ab9d0359ad5262aa9b4a2da")
+		So(str, ShouldEqual, "651e74ed7f68be2b642217a06fda6ec6")
 	})
 }
 

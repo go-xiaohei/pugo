@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/Unknwon/com"
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 	"golang.org/x/net/context"
 	"gopkg.in/inconshreveable/log15.v2"
 	"qiniupkg.com/api.v7/kodo"
