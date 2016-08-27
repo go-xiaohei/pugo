@@ -1,6 +1,10 @@
 package builder
 
-import "gopkg.in/inconshreveable/log15.v2"
+import (
+	"time"
+
+	"gopkg.in/inconshreveable/log15.v2"
+)
 
 type (
 	// Builder is object of Builder handlers
@@ -50,12 +54,14 @@ func After(fn Handler) {
 // the context should be prepared before building.
 func Build(ctx *Context) {
 	b.IsBuilding = true
+	t := time.Now()
 	log15.Info("Build|Start")
 	for _, h := range b.handlers {
 		if h(ctx); ctx.Err != nil {
 			log15.Crit("Build|Fail|%s", ctx.Err.Error())
 			break
 		}
+		log15.Debug("Build|Handler|%.3fms", time.Since(t).Seconds()*1e3)
 	}
 	log15.Info("Build|%d Pages", ctx.counter)
 	b.IsBuilding = false

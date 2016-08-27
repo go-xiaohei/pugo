@@ -20,7 +20,7 @@ var (
 	}
 )
 
-func docServ(c *cli.Context) {
+func docServ(c *cli.Context) error {
 	builder.After(func(ctx *builder.Context) {
 		if s == nil {
 			s = server.New(ctx.DstDir())
@@ -35,4 +35,5 @@ func docServ(c *cli.Context) {
 	buildContext.To = "doc/dest"
 	buildContext.ThemeName = "doc/theme"
 	build(buildContext, true)
+	return nil
 }

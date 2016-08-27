@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync"
 
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo/app/helper"
@@ -70,15 +71,23 @@ func ReadSource(ctx *Context) {
 	}
 	ctx.Source = NewSource(metaAll)
 
-	if ctx.Source.I18n, ctx.Err = ReadLang(ctx.srcDir); ctx.Err != nil {
-		return
-	}
-	if ctx.Source.Posts, ctx.Err = ReadPosts(ctx.srcDir); ctx.Err != nil {
-		return
-	}
-	if ctx.Source.Pages, ctx.Err = ReadPages(ctx.srcDir); ctx.Err != nil {
-		return
-	}
+	// use waitGroup
+	var wg sync.WaitGroup
+	wg.Add(3)
+
+	go func() {
+		ctx.Source.I18n, ctx.Err = ReadLang(ctx.srcDir)
+		wg.Done()
+	}()
+	go func() {
+		ctx.Source.Posts, ctx.Err = ReadPosts(ctx.srcDir)
+		wg.Done()
+	}()
+	go func() {
+		ctx.Source.Pages, ctx.Err = ReadPages(ctx.srcDir)
+		wg.Done()
+	}()
+	wg.Wait()
 }
 
 // ReadMeta read meta file in srcDir
