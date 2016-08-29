@@ -7,7 +7,6 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"sync"
 	"sync/atomic"
 	"time"
 
@@ -23,21 +22,16 @@ func Compile(ctx *Context) {
 		ctx.Err = fmt.Errorf("need sources data and theme to compile")
 		return
 	}
-	var wg sync.WaitGroup
-	wg.Add(3)
-	go func() {
+	ctx.GoGroup.Wrap("compilePosts", func() {
 		ctx.Err = compilePosts(ctx, ctx.dstDir)
-		wg.Done()
-	}()
-	go func() {
+	})
+	ctx.GoGroup.Wrap("compilePages", func() {
 		ctx.Err = compilePages(ctx, ctx.dstDir)
-		wg.Done()
-	}()
-	go func() {
+	})
+	ctx.GoGroup.Wrap("compileXML", func() {
 		ctx.Err = compileXML(ctx, ctx.dstDir)
-		wg.Done()
-	}()
-	wg.Wait()
+	})
+	ctx.GoGroup.Wait()
 }
 
 func compilePosts(ctx *Context, toDir string) error {
