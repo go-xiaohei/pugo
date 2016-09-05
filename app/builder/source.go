@@ -70,7 +70,7 @@ func ReadSource(ctx *Context) {
 	ctx.Source = NewSource(metaAll)
 
 	ctx.GoGroup.Wrap("ReadLang", func() {
-		ctx.Source.I18n, ctx.Err = ReadLang(ctx.srcDir)
+		ctx.Source.I18n = ReadLang(ctx.srcDir)
 	})
 	ctx.GoGroup.Wrap("ReadPosts", func() {
 		ctx.Source.Posts, ctx.Err = ReadPosts(ctx.srcDir)
@@ -106,13 +106,13 @@ func ReadMeta(srcDir string) (*model.MetaAll, error) {
 }
 
 // ReadLang read languages in srcDir
-func ReadLang(srcDir string) (map[string]*helper.I18n, error) {
+func ReadLang(srcDir string) map[string]*helper.I18n {
 	srcDir = filepath.Join(srcDir, "lang")
 	if !com.IsDir(srcDir) {
-		return nil, nil
+		return nil
 	}
 	langs := make(map[string]*helper.I18n)
-	err := filepath.Walk(srcDir, func(p string, fi os.FileInfo, err error) error {
+	filepath.Walk(srcDir, func(p string, fi os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -124,18 +124,20 @@ func ReadLang(srcDir string) (map[string]*helper.I18n, error) {
 			log15.Debug("Build|Load|%s", p)
 			b, err := ioutil.ReadFile(p)
 			if err != nil {
+				log15.Warn("Build|Lang|%s|%v", p, err)
 				return err
 			}
 			lang := strings.TrimSuffix(filepath.Base(p), ext)
 			i18n, err := helper.NewI18n(lang, b, ext)
 			if err != nil {
+				log15.Warn("Build|Lang|%s|%v", p, err)
 				return err
 			}
 			langs[lang] = i18n
 		}
 		return nil
 	})
-	return langs, err
+	return langs
 }
 
 // ReadPosts read posts files in srcDir/post
