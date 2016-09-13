@@ -2,7 +2,9 @@ package helper
 
 import (
 	"bytes"
+	"context"
 	"testing"
+	"time"
 
 	. "github.com/smartystreets/goconvey/convey"
 	"gopkg.in/inconshreveable/log15.v2"
@@ -145,5 +147,29 @@ func TestLog(t *testing.T) {
 		l.Debug("ABC|%s|%s|%s", "a", "b", "c")
 
 		So(buf.String(), ShouldContainSubstring, "ABC|a|b|c")
+	})
+}
+
+func TestGoWorker(t *testing.T) {
+	Convey("GoWorker", t, func() {
+		w := NewGoWorker()
+		w.Start()
+		req := &GoWorkerRequest{
+			Ctx: context.Background(),
+			Action: func(ctx context.Context) (context.Context, error) {
+				ctx = context.WithValue(ctx, "worker", "worker")
+				return ctx, nil
+			},
+		}
+		w.Send(req)
+		w.Send(req)
+		w.Send(req)
+		w.Recieve(func(res *GoWorkerResult) {
+			Convey("GoWorkerResult", t, func() {
+				So(res.Ctx.Value("worker").(string), ShouldEqual, "worker")
+			})
+		})
+		w.Stop()
+		time.Sleep(time.Second)
 	})
 }
