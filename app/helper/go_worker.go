@@ -3,6 +3,7 @@ package helper
 import (
 	"context"
 	"runtime"
+	"sync"
 	"sync/atomic"
 )
 
@@ -11,6 +12,7 @@ type GoWorker struct {
 	channels   []chan *GoWorkerRequest
 	resultChan chan *GoWorkerResult
 	step       uint32
+	wg         sync.WaitGroup
 }
 
 // GoWorkerRequest is goroutine worker task
@@ -41,11 +43,12 @@ func NewGoWorker() *GoWorker {
 // Start start goroutine tasks listening
 func (gw *GoWorker) Start() {
 	for i := range gw.channels {
+		gw.wg.Add(1)
 		go func(c chan *GoWorkerRequest) {
 			for {
 				req := <-c
 				if req.Action == nil && req.Ctx == nil {
-					return
+					break
 				}
 				//ctx = context.WithCancel()
 				//ctx = context.WithDeadline()
@@ -54,6 +57,7 @@ func (gw *GoWorker) Start() {
 				res.Ctx, res.Error = req.Action(req.Ctx)
 				gw.resultChan <- res
 			}
+			gw.wg.Done()
 		}(gw.channels[i])
 	}
 }
@@ -66,6 +70,12 @@ func (gw *GoWorker) Stop() {
 			Action: nil,
 		}
 	}
+}
+
+// StopWait stop and wait all goroutine Done
+func (gw *GoWorker) StopWait() {
+	gw.Stop()
+	gw.wg.Wait()
 }
 
 // Send send task to goroutine in order, one by one

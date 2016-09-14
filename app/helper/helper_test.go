@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"testing"
-	"time"
 
 	. "github.com/smartystreets/goconvey/convey"
 	"gopkg.in/inconshreveable/log15.v2"
@@ -169,7 +168,6 @@ func TestGoWorker(t *testing.T) {
 				So(res.Ctx.Value("worker").(string), ShouldEqual, "worker")
 			})
 		})
-		w.Stop()
-		time.Sleep(time.Second)
+		w.StopWait()
 	})
 }

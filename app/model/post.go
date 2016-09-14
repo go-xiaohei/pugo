@@ -69,6 +69,11 @@ func (p *Post) URL() string {
 	return p.postURL
 }
 
+// SourceURL get source file path of the post
+func (p *Post) SourceURL() string {
+	return filepath.ToSlash(p.fileURL)
+}
+
 // ContentHTML get html content
 func (p *Post) ContentHTML() template.HTML {
 	return template.HTML(p.contentBytes)

@@ -2,6 +2,7 @@ package builder
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -40,8 +41,12 @@ func compilePosts(ctx *Context, toDir string) error {
 		dstFile  string
 		err      error
 	)
-	for _, p := range ctx.Source.Posts {
-		dstFile = path.Join(toDir, p.URL())
+	worker := helper.NewGoWorker()
+	worker.Start()
+
+	// compile each post
+	compileFn := func(ctx *Context, p *model.Post) error {
+		dstFile := path.Join(toDir, p.URL())
 		if path.Ext(dstFile) == "" {
 			dstFile += ".html"
 		}
@@ -55,12 +60,32 @@ func compilePosts(ctx *Context, toDir string) error {
 		viewData["Hover"] = model.TreePost
 		viewData["URL"] = p.URL()
 
-		if err = compile(ctx, "post.html", viewData, dstFile); err != nil {
+		if err := compile(ctx, "post.html", viewData, dstFile); err != nil {
 			return err
 		}
 
 		ctx.Tree.Add(p.TreeURL(), model.TreePost, 0)
+		return nil
 	}
+	for _, p := range ctx.Source.Posts {
+		c := context.WithValue(context.Background(), "post", p)
+		worker.Send(&helper.GoWorkerRequest{
+			Ctx: c,
+			Action: func(c context.Context) (context.Context, error) {
+				return c, compileFn(ctx, p)
+			},
+		})
+	}
+
+	// todo: compile each post-page
+
+	worker.Recieve(func(rs *helper.GoWorkerResult) {
+		if rs.Error != nil {
+			p := rs.Ctx.Value("post").(*model.Post)
+			log15.Error("Build|%s|%s", p.SourceURL(), rs.Error.Error())
+		}
+	})
+	worker.StopWait()
 
 	// build posts
 	var (
@@ -166,6 +191,9 @@ func compilePages(ctx *Context, toDir string) error {
 		dstFile, tpl string
 		err          error
 	)
+
+	// compile each page
+
 	for _, p := range ctx.Source.Pages {
 		dstFile = filepath.Join(toDir, p.URL())
 		if path.Ext(dstFile) == "" {
