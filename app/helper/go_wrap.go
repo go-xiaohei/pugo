@@ -1,9 +1,6 @@
 package helper
 
-import (
-	"runtime"
-	"sync"
-)
+import "sync"
 
 var wg WaitGroup
 
@@ -53,7 +50,5 @@ func (w *WaitGroup) Wrap(funName string, fn func()) {
 		fn()
 		w.Done()
 		// log15.Debug("GoWrap|%s|%.1fms|%d", funName, time.Since(t).Seconds()*1000, runtime.NumGoroutine())
-		// make goroutine free
-		runtime.Gosched()
 	}()
 }

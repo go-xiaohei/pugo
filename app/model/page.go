@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"io/ioutil"
 	"path"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -32,6 +33,7 @@ type Page struct {
 
 	pageURL      string
 	treeURL      string
+	fileURL      string
 	contentBytes []byte
 	dateTime     time.Time
 	updateTime   time.Time
@@ -45,6 +47,11 @@ func (p *Page) TreeURL() string {
 // URL is page's url
 func (p *Page) URL() string {
 	return p.pageURL
+}
+
+// SourceURL get source file path of the page
+func (p *Page) SourceURL() string {
+	return filepath.ToSlash(p.fileURL)
 }
 
 // ContentHTML is page's content html
@@ -124,6 +131,7 @@ func NewPageOfMarkdown(file, slug string) (*Page, error) {
 	}
 
 	page := new(Page)
+	page.fileURL = file
 	if formatType == FormatTOML {
 		if err = toml.Unmarshal(dataSlice[1][idx:], page); err != nil {
 			return nil, err

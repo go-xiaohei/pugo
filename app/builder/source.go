@@ -69,16 +69,17 @@ func ReadSource(ctx *Context) {
 	}
 	ctx.Source = NewSource(metaAll)
 
-	ctx.GoGroup.Wrap("ReadLang", func() {
+	wg := helper.NewGoGroup("ReadStep")
+	wg.Wrap("ReadLang", func() {
 		ctx.Source.I18n = ReadLang(ctx.srcDir)
 	})
-	ctx.GoGroup.Wrap("ReadPosts", func() {
+	wg.Wrap("ReadPosts", func() {
 		ctx.Source.Posts, ctx.Err = ReadPosts(ctx.srcDir)
 	})
-	ctx.GoGroup.Wrap("ReadPages", func() {
+	wg.Wrap("ReadPages", func() {
 		ctx.Source.Pages, ctx.Err = ReadPages(ctx.srcDir)
 	})
-	ctx.GoGroup.Wait()
+	wg.Wait()
 }
 
 // ReadMeta read meta file in srcDir
@@ -125,13 +126,13 @@ func ReadLang(srcDir string) map[string]*helper.I18n {
 			b, err := ioutil.ReadFile(p)
 			if err != nil {
 				log15.Warn("Read|Lang|%s|%v", p, err)
-				return err
+				return nil
 			}
 			lang := strings.TrimSuffix(filepath.Base(p), ext)
 			i18n, err := helper.NewI18n(lang, b, ext)
 			if err != nil {
 				log15.Warn("Read|Lang|%s|%v", p, err)
-				return err
+				return nil
 			}
 			langs[lang] = i18n
 		}
@@ -159,9 +160,8 @@ func ReadPosts(srcDir string) ([]*model.Post, error) {
 			log15.Debug("Read|%s", p)
 			post, err := model.NewPostOfMarkdown(p)
 			if err != nil {
-				return err
-			}
-			if post != nil {
+				log15.Warn("Read|Post|%s|%v", p, err)
+			} else if post != nil {
 				posts = append(posts, post)
 			}
 		}
@@ -192,9 +192,8 @@ func ReadPages(srcDir string) ([]*model.Page, error) {
 			rel = strings.TrimSuffix(rel, filepath.Ext(rel))
 			page, err := model.NewPageOfMarkdown(p, filepath.ToSlash(rel))
 			if err != nil {
-				return err
-			}
-			if page != nil {
+				log15.Warn("Read|Page|%s|%v", p, err)
+			} else if page != nil {
 				pages = append(pages, page)
 			}
 		}

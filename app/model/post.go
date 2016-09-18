@@ -217,6 +217,9 @@ func (p Posts) Swap(i, j int) {
 
 // TopN get top N posts from list
 func (p Posts) TopN(i int) []*Post {
+	if i > len(p) {
+		i = len(p)
+	}
 	return p[:i]
 }
 

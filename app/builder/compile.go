@@ -30,22 +30,27 @@ func Compile(ctx *Context) {
 	// add worker result handler
 	worker.Receive(func(rs *helper.GoWorkerResult) {
 		if rs.Error != nil {
-			p := rs.Ctx.Value("post").(*model.Post)
-			log15.Error("Build|%s|%s", p.SourceURL(), rs.Error.Error())
+			if p, ok := rs.Ctx.Value("post").(*model.Post); ok {
+				log15.Error("Build|%s|%s", p.SourceURL(), rs.Error.Error())
+			}
+			if p, ok := rs.Ctx.Value("page").(*model.Page); ok {
+				log15.Error("Build|%s|%s", p.SourceURL(), rs.Error.Error())
+			}
 		}
 	})
 
 	// do compile task in goroutine
-	ctx.GoGroup.Wrap("compilePosts", func() {
+	wg := helper.NewGoGroup("BuildStep")
+	wg.Wrap("compilePosts", func() {
 		ctx.Err = compilePosts(ctx, worker, ctx.dstDir)
 	})
-	ctx.GoGroup.Wrap("compilePages", func() {
+	wg.Wrap("compilePages", func() {
 		ctx.Err = compilePages(ctx, worker, ctx.dstDir)
 	})
-	ctx.GoGroup.Wrap("compileXML", func() {
+	wg.Wrap("compileXML", func() {
 		ctx.Err = compileXML(ctx, ctx.dstDir)
 	})
-	ctx.GoGroup.Wait()
+	wg.Wait()
 
 	// wait worker
 	worker.WaitStop()
@@ -321,6 +326,7 @@ func compileXML(ctx *Context, toDir string) error {
 	}
 
 	dstFile := path.Join(toDir, ctx.Source.Meta.Path, "feed.xml")
+	os.MkdirAll(filepath.Dir(dstFile), os.ModePerm)
 	f, err := os.OpenFile(dstFile, os.O_CREATE|os.O_TRUNC|os.O_RDWR, os.ModePerm)
 	if err != nil {
 		return err

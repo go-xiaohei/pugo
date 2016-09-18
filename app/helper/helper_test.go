@@ -168,6 +168,6 @@ func TestGoWorker(t *testing.T) {
 				So(res.Ctx.Value("worker").(string), ShouldEqual, "worker")
 			})
 		})
-		w.StopWait()
+		w.WaitStop()
 	})
 }

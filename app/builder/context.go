@@ -37,8 +37,6 @@ type (
 		// Tree is url tree nodes by this context
 		Tree   *model.Tree
 		Copied *CopiedOpt
-		// Gourtine Wrapper
-		GoGroup *helper.GoGroup
 
 		time           time.Time
 		counter        int64
@@ -57,7 +55,6 @@ func NewContext(cli *cli.Context, from, to, theme string) *Context {
 		Files:     model.NewFiles(),
 		Copied:    defaultCopiedOpt(),
 		Tree:      model.NewTree(),
-		GoGroup:   helper.NewGoGroup("BuildContext"),
 	}
 }
 
