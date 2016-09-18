@@ -13,6 +13,7 @@ type GoWorker struct {
 	resultChan chan *GoWorkerResult
 	step       uint32
 	wg         sync.WaitGroup
+	isReceived bool
 }
 
 // GoWorkerRequest is goroutine worker task
@@ -72,8 +73,8 @@ func (gw *GoWorker) Stop() {
 	}
 }
 
-// StopWait stop and wait all goroutine Done
-func (gw *GoWorker) StopWait() {
+// WaitStop stop and wait all goroutine Done
+func (gw *GoWorker) WaitStop() {
 	gw.Stop()
 	gw.wg.Wait()
 }
@@ -87,10 +88,13 @@ func (gw *GoWorker) Send(req *GoWorkerRequest) {
 	atomic.AddUint32(&gw.step, 1)
 }
 
-// Recieve add result handler
-func (gw *GoWorker) Recieve(fn func(res *GoWorkerResult)) {
+// Receive add result handler
+func (gw *GoWorker) Receive(fn func(res *GoWorkerResult)) {
 	if fn == nil {
-		panic("nil GoWorker.Recieve function")
+		panic("nil GoWorker.Receive function")
+	}
+	if gw.isReceived {
+		panic("GoWorker.Receive was called")
 	}
 	go func() {
 		for {
@@ -101,6 +105,7 @@ func (gw *GoWorker) Recieve(fn func(res *GoWorkerResult)) {
 			fn(res)
 		}
 	}()
+	gw.isReceived = true
 }
 
 // Result return result channel to handle task result in manual

@@ -35,6 +35,10 @@ var (
 		Name:  "static",
 		Usage: "just serve static file, no build",
 	}
+	noServerDocFlag = cli.BoolFlag{
+		Name:  "no-server",
+		Usage: "close to serve doc files",
+	}
 	newToFlag = cli.StringFlag{
 		Name:  "to",
 		Value: "dir://source",

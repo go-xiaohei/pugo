@@ -6,6 +6,8 @@ import (
 	"sort"
 	"strings"
 
+	"gopkg.in/inconshreveable/log15.v2"
+
 	"github.com/go-xiaohei/pugo/app/model"
 )
 
@@ -60,6 +62,8 @@ func AssembleSource(ctx *Context) {
 	if ctx.Err = ctx.Theme.Load(); ctx.Err != nil {
 		return
 	}
+
+	log15.Info("Assemble|Done")
 }
 
 func newReplacer(static string) *strings.Replacer {

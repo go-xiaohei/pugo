@@ -70,13 +70,13 @@ func copyDirectory(ctx *Context, srcDir, dstDir string) error {
 		// ignore cases
 		for _, ignoreDir := range ctx.Copied.IgnoreDir {
 			if strings.HasPrefix(relPath, ignoreDir) {
-				log15.Debug("Build|Ignore|%s", p)
+				log15.Debug("Static|Ignore|%s", p)
 				return nil
 			}
 		}
 		for _, ignoreFile := range ctx.Copied.IgnoreFile {
 			if relPath == ignoreFile {
-				log15.Debug("Build|Ignore|%s", p)
+				log15.Debug("Static|Ignore|%s", p)
 				return nil
 			}
 		}
@@ -86,7 +86,7 @@ func copyDirectory(ctx *Context, srcDir, dstDir string) error {
 			hash2, _ = helper.Md5File(toFile)
 			if hash1 == hash2 {
 				ctx.Files.Add(toFile, fi.Size(), fi.ModTime(), model.FileStatic, model.OpKeep)
-				log15.Debug("Build|Keep|%s", toFile)
+				log15.Debug("Static|Keep|%s", toFile)
 				return nil
 			}
 		}
@@ -98,7 +98,7 @@ func copyDirectory(ctx *Context, srcDir, dstDir string) error {
 		}
 
 		ctx.Files.Add(toFile, fi.Size(), ctx.time, model.FileStatic, model.OpCopy)
-		log15.Debug("Build|Copy|%s", toFile)
+		log15.Debug("Static|Copy|%s", toFile)
 
 		return nil
 	})
@@ -116,7 +116,7 @@ func CopyMust(ctx *Context) error {
 				return err
 			}
 			ctx.Files.Add(toFile, 0, ctx.time, model.FileStatic, model.OpCopy)
-			log15.Debug("Build|Copy|%s", toFile)
+			log15.Debug("Static|Copy|%s", toFile)
 		}
 	}
 	return nil
@@ -157,20 +157,20 @@ func CleanCopied(ctx *Context) error {
 
 		for _, ignoreDir := range ctx.Copied.CleanIgnoreDir {
 			if strings.HasPrefix(relPath, ignoreDir) {
-				log15.Debug("Build|Ignore|%s", p)
+				log15.Debug("Static|Ignore|%s", p)
 				return nil
 			}
 		}
 		for _, ignoreFile := range ctx.Copied.CleanIgnoreFile {
 			if relPath == ignoreFile {
-				log15.Debug("Build|Ignore|%s", p)
+				log15.Debug("Static|Ignore|%s", p)
 				return nil
 			}
 		}
 		if !ctx.Files.Exist(p) {
 			os.RemoveAll(p)
 			ctx.Files.Add(p, fi.Size(), ctx.time, model.FileStatic, model.OpRemove)
-			log15.Debug("Build|Remove|%s", p)
+			log15.Debug("Static|Remove|%s", p)
 		}
 
 		return nil

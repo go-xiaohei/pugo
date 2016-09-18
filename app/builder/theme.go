@@ -2,12 +2,12 @@ package builder
 
 import (
 	"fmt"
+	"net/url"
+	"path"
 
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo/app/theme"
 	"gopkg.in/inconshreveable/log15.v2"
-	"net/url"
-	"path"
 )
 
 // ReadTheme read *Theme to *Context
@@ -21,7 +21,7 @@ func ReadTheme(ctx *Context) {
 		ctx.Err = fmt.Errorf("theme directory '%s' is missing", dir)
 		return
 	}
-	log15.Info("Build|Theme|%s", dir)
+	log15.Info("Theme|%s", dir)
 	ctx.Theme = theme.New(dir)
 	ctx.Theme.Func("url", func(str ...string) string {
 		if len(str) > 0 {

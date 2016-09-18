@@ -70,7 +70,7 @@ func newPost(args []string, dstDir string) error {
 	}
 	fileName := fileKey + ".md"
 	toFile := filepath.Join(dstDir, fmt.Sprintf("post/%d", time.Now().Year()), fileName)
-	log15.Debug("New|Post|To|%s", toFile)
+	log15.Debug("New|Post|%s", toFile)
 
 	if com.IsFile(toFile) {
 		return errors.New("File Exist")
@@ -116,7 +116,7 @@ func newPage(args []string, dstDir string) error {
 	}
 	fileName := fileKey + ".md"
 	toFile := filepath.Join(dstDir, fmt.Sprintf("page/%d", time.Now().Year()), fileName)
-	log15.Debug("New|Page|To|%s", toFile)
+	log15.Debug("New|Page|%s", toFile)
 
 	if com.IsFile(toFile) {
 		return errors.New("File Exist")

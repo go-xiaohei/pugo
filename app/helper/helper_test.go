@@ -163,7 +163,7 @@ func TestGoWorker(t *testing.T) {
 		w.Send(req)
 		w.Send(req)
 		w.Send(req)
-		w.Recieve(func(res *GoWorkerResult) {
+		w.Receive(func(res *GoWorkerResult) {
 			Convey("GoWorkerResult", t, func() {
 				So(res.Ctx.Value("worker").(string), ShouldEqual, "worker")
 			})

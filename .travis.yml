@@ -18,6 +18,7 @@ script:
   - ./pugo.exe new page "this is new page"
   - rm -rf default-dest pure-dest uno-dest
   - ./pugo.exe build --debug
+  - ./pugo.exe doc --no-server
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
