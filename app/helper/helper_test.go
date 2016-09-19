@@ -2,6 +2,7 @@ package helper
 
 import (
 	"bytes"
+	"context"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
@@ -121,7 +122,7 @@ func TestMd5(t *testing.T) {
 
 		str, err := Md5File("md5.go")
 		So(err, ShouldBeNil)
-		So(str, ShouldEqual, "d16c46931ab9d0359ad5262aa9b4a2da")
+		So(str, ShouldEqual, "651e74ed7f68be2b642217a06fda6ec6")
 	})
 }
 
@@ -145,5 +146,28 @@ func TestLog(t *testing.T) {
 		l.Debug("ABC|%s|%s|%s", "a", "b", "c")
 
 		So(buf.String(), ShouldContainSubstring, "ABC|a|b|c")
+	})
+}
+
+func TestGoWorker(t *testing.T) {
+	Convey("GoWorker", t, func() {
+		w := NewGoWorker()
+		w.Start()
+		req := &GoWorkerRequest{
+			Ctx: context.Background(),
+			Action: func(ctx context.Context) (context.Context, error) {
+				ctx = context.WithValue(ctx, "worker", "worker")
+				return ctx, nil
+			},
+		}
+		w.Send(req)
+		w.Send(req)
+		w.Send(req)
+		w.Receive(func(res *GoWorkerResult) {
+			Convey("GoWorkerResult", t, func() {
+				So(res.Ctx.Value("worker").(string), ShouldEqual, "worker")
+			})
+		})
+		w.WaitStop()
 	})
 }

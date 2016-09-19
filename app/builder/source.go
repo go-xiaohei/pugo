@@ -61,8 +61,7 @@ func ReadSource(ctx *Context) {
 	}
 
 	// read meta
-	// then read posts,
-	// then read pages
+	// then read languages,posts and pages together
 	metaAll, err := ReadMeta(ctx.srcDir)
 	if err != nil {
 		ctx.Err = err
@@ -70,15 +69,17 @@ func ReadSource(ctx *Context) {
 	}
 	ctx.Source = NewSource(metaAll)
 
-	if ctx.Source.I18n, ctx.Err = ReadLang(ctx.srcDir); ctx.Err != nil {
-		return
-	}
-	if ctx.Source.Posts, ctx.Err = ReadPosts(ctx.srcDir); ctx.Err != nil {
-		return
-	}
-	if ctx.Source.Pages, ctx.Err = ReadPages(ctx.srcDir); ctx.Err != nil {
-		return
-	}
+	wg := helper.NewGoGroup("ReadStep")
+	wg.Wrap("ReadLang", func() {
+		ctx.Source.I18n = ReadLang(ctx.srcDir)
+	})
+	wg.Wrap("ReadPosts", func() {
+		ctx.Source.Posts, ctx.Err = ReadPosts(ctx.srcDir)
+	})
+	wg.Wrap("ReadPages", func() {
+		ctx.Source.Pages, ctx.Err = ReadPages(ctx.srcDir)
+	})
+	wg.Wait()
 }
 
 // ReadMeta read meta file in srcDir
@@ -89,7 +90,7 @@ func ReadMeta(srcDir string) (*model.MetaAll, error) {
 		if !com.IsFile(metaFile) {
 			continue
 		}
-		log15.Debug("Build|Load|%s", metaFile)
+		log15.Debug("Read|%s", metaFile)
 		bytes, err := ioutil.ReadFile(metaFile)
 		if err != nil {
 			return nil, err
@@ -106,13 +107,13 @@ func ReadMeta(srcDir string) (*model.MetaAll, error) {
 }
 
 // ReadLang read languages in srcDir
-func ReadLang(srcDir string) (map[string]*helper.I18n, error) {
+func ReadLang(srcDir string) map[string]*helper.I18n {
 	srcDir = filepath.Join(srcDir, "lang")
 	if !com.IsDir(srcDir) {
-		return nil, nil
+		return nil
 	}
 	langs := make(map[string]*helper.I18n)
-	err := filepath.Walk(srcDir, func(p string, fi os.FileInfo, err error) error {
+	filepath.Walk(srcDir, func(p string, fi os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -121,21 +122,23 @@ func ReadLang(srcDir string) (map[string]*helper.I18n, error) {
 		}
 		ext := filepath.Ext(p)
 		if ext == ".toml" || ext == ".ini" {
-			log15.Debug("Build|Load|%s", p)
+			log15.Debug("Read|%s", p)
 			b, err := ioutil.ReadFile(p)
 			if err != nil {
-				return err
+				log15.Warn("Read|Lang|%s|%v", p, err)
+				return nil
 			}
 			lang := strings.TrimSuffix(filepath.Base(p), ext)
 			i18n, err := helper.NewI18n(lang, b, ext)
 			if err != nil {
-				return err
+				log15.Warn("Read|Lang|%s|%v", p, err)
+				return nil
 			}
 			langs[lang] = i18n
 		}
 		return nil
 	})
-	return langs, err
+	return langs
 }
 
 // ReadPosts read posts files in srcDir/post
@@ -154,12 +157,11 @@ func ReadPosts(srcDir string) ([]*model.Post, error) {
 			return nil
 		}
 		if filepath.Ext(p) == ".md" {
-			log15.Debug("Build|Load|%s", p)
+			log15.Debug("Read|%s", p)
 			post, err := model.NewPostOfMarkdown(p)
 			if err != nil {
-				return err
-			}
-			if post != nil {
+				log15.Warn("Read|Post|%s|%v", p, err)
+			} else if post != nil {
 				posts = append(posts, post)
 			}
 		}
@@ -185,14 +187,13 @@ func ReadPages(srcDir string) ([]*model.Page, error) {
 			return nil
 		}
 		if filepath.Ext(p) == ".md" {
-			log15.Debug("Build|Load|%s", p)
+			log15.Debug("Read|%s", p)
 			rel, _ := filepath.Rel(srcDir, p)
 			rel = strings.TrimSuffix(rel, filepath.Ext(rel))
 			page, err := model.NewPageOfMarkdown(p, filepath.ToSlash(rel))
 			if err != nil {
-				return err
-			}
-			if page != nil {
+				log15.Warn("Read|Page|%s|%v", p, err)
+			} else if page != nil {
 				pages = append(pages, page)
 			}
 		}

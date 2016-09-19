@@ -30,11 +30,13 @@ func Md5File(file string) (string, error) {
 		buff = bufio.NewReader(f)
 	}
 	for {
-		line, err := buff.ReadString('\n')
+		line, err := buff.ReadBytes('\n')
+		if len(line) > 0 {
+			h.Write(line)
+		}
 		if err != nil || io.EOF == err {
 			break
 		}
-		h.Write([]byte(line))
 	}
 	return hex.EncodeToString(h.Sum(nil)), nil
 }

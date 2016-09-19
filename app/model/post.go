@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"io/ioutil"
 	"path"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -43,6 +44,7 @@ type Post struct {
 	briefBytes   []byte
 	postURL      string
 	treeURL      string
+	fileURL      string
 }
 
 // FixURL fix path when assemble posts
@@ -65,6 +67,11 @@ func (p *Post) TreeURL() string {
 // URL get url of the post
 func (p *Post) URL() string {
 	return p.postURL
+}
+
+// SourceURL get source file path of the post
+func (p *Post) SourceURL() string {
+	return filepath.ToSlash(p.fileURL)
 }
 
 // ContentHTML get html content
@@ -111,7 +118,8 @@ func (p *Post) Updated() time.Time {
 
 func (p *Post) normalize() error {
 	if p.Slug == "" {
-		p.Slug = titleReplacer.Replace(p.Title)
+		// use filename instead of slug, do not use title
+		p.Slug = strings.TrimSuffix(filepath.Base(p.fileURL), filepath.Ext(p.fileURL))
 	}
 	var err error
 	if p.dateTime, err = parseTimeString(p.Date); err != nil {
@@ -187,6 +195,7 @@ func NewPostOfMarkdown(file string) (*Post, error) {
 			}
 		}
 	}
+	post.fileURL = file
 	post.Bytes = bytes.Trim(dataSlice[2], "\n")
 	return post, post.normalize()
 }
@@ -208,6 +217,9 @@ func (p Posts) Swap(i, j int) {
 
 // TopN get top N posts from list
 func (p Posts) TopN(i int) []*Post {
+	if i > len(p) {
+		i = len(p)
+	}
 	return p[:i]
 }
 

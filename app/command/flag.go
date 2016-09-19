@@ -1,6 +1,6 @@
 package command
 
-import "github.com/codegangsta/cli"
+import "github.com/urfave/cli"
 
 var (
 	buildDestFlag = cli.StringFlag{
@@ -34,6 +34,10 @@ var (
 	serveStaticFlag = cli.BoolFlag{
 		Name:  "static",
 		Usage: "just serve static file, no build",
+	}
+	noServerDocFlag = cli.BoolFlag{
+		Name:  "no-server",
+		Usage: "close to serve doc files",
 	}
 	newToFlag = cli.StringFlag{
 		Name:  "to",

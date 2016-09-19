@@ -5,8 +5,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo/app/builder"
+	"github.com/urfave/cli"
 	"gopkg.in/inconshreveable/log15.v2"
 )
 
@@ -23,9 +23,10 @@ var (
 			debugFlag,
 		},
 		Before: Before,
-		Action: func(ctx *cli.Context) {
+		Action: func(ctx *cli.Context) error {
 			// migrate.Init()
 			build(newContext(ctx, true), false)
+			return nil
 		},
 	}
 )

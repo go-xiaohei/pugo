@@ -4,9 +4,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo/app/helper"
 	. "github.com/smartystreets/goconvey/convey"
+	"github.com/urfave/cli"
 	"gopkg.in/inconshreveable/log15.v2"
 	"gopkg.in/inconshreveable/log15.v2/ext"
 )

@@ -1,11 +1,12 @@
 package main
 
 import (
+	"os"
 	"time"
 
-	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo/app/command"
 	"github.com/go-xiaohei/pugo/app/vars"
+	"github.com/urfave/cli"
 )
 
 //go:generate go-bindata -o=app/asset/asset.go -pkg=asset source/... theme/... doc/source/... doc/theme/...
@@ -26,5 +27,5 @@ func main() {
 		command.Version,
 	}
 	app.HideVersion = true
-	app.RunAndExitOnError()
+	app.Run(os.Args)
 }

@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/Unknwon/com"
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 	"gopkg.in/inconshreveable/log15.v2"
 )
 

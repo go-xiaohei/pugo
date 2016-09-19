@@ -1,6 +1,6 @@
 package deploy
 
-import "github.com/codegangsta/cli"
+import "github.com/urfave/cli"
 
 var (
 	methods = make(map[string]Method)

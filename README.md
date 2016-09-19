@@ -2,7 +2,7 @@
 
 [**PuGo**](http://pugo.io) is a simple and beautiful site generator built in [Go](http://golang.org).
 
-**Current: 0.10.0 (Beta) 2016.04.07**
+**Current: 0.10.5 (Beta) 2016.09.19**
 
 [![Build Status](https://travis-ci.org/go-xiaohei/pugo.svg?branch=master)](https://travis-ci.org/go-xiaohei/pugo)
 

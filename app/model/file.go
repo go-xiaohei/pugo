@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	"path/filepath"
+	"sync"
 	"time"
 
 	"github.com/go-xiaohei/pugo/app/helper"
@@ -38,7 +39,8 @@ type (
 	}
 	// Files record all relative files
 	Files struct {
-		files map[string]*File
+		locker sync.RWMutex
+		files  map[string]*File
 	}
 )
 
@@ -49,6 +51,7 @@ func NewFiles() *Files {
 	}
 }
 
+// Get File by url
 func (fs *Files) Get(url string) *File {
 	url = filepath.ToSlash(url)
 	return fs.files[url]
@@ -56,6 +59,9 @@ func (fs *Files) Get(url string) *File {
 
 // Add add file
 func (fs *Files) Add(url string, size int64, modTime time.Time, t string, op string) {
+	fs.locker.Lock()
+	defer fs.locker.Unlock()
+
 	url = filepath.ToSlash(url)
 	f := &File{
 		URL:     url,
@@ -69,6 +75,7 @@ func (fs *Files) Add(url string, size int64, modTime time.Time, t string, op str
 		f.Hash = hash
 	}
 	fs.files[url] = f
+
 }
 
 // Exist check file existing in operated files

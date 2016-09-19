@@ -1,10 +1,15 @@
 package command
 
 import (
+	"net/http"
+	// pprof to profile
+	_ "net/http/pprof"
+	"time"
+
 	"github.com/Unknwon/com"
-	"github.com/codegangsta/cli"
 	"github.com/go-xiaohei/pugo/app/builder"
 	"github.com/go-xiaohei/pugo/app/server"
+	"github.com/urfave/cli"
 	"gopkg.in/inconshreveable/log15.v2"
 )
 
@@ -28,7 +33,7 @@ var (
 	s *server.Server
 )
 
-func serv(c *cli.Context) {
+func serv(c *cli.Context) error {
 	if c.Bool("static") {
 		ctx := newContext(c, false)
 		builder.Read(ctx)
@@ -41,7 +46,7 @@ func serv(c *cli.Context) {
 		s := server.New(dstDir)
 		s.SetPrefix(ctx.Source.Meta.Path)
 		s.Run(c.String("addr"))
-		return
+		return nil
 	}
 	builder.After(func(ctx *builder.Context) {
 		if s == nil {
@@ -52,5 +57,16 @@ func serv(c *cli.Context) {
 			s.SetPrefix(ctx.Source.Meta.Path)
 		}
 	})
-	build(newContext(c, true), true)
+
+	if c.Bool("profile") {
+		go http.ListenAndServe("localhost:6060", nil)
+		for {
+			build(newContext(c, false), false)
+			time.Sleep(time.Second)
+		}
+	} else {
+		build(newContext(c, true), true)
+	}
+
+	return nil
 }
