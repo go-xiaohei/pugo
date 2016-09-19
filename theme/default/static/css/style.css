@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     font-family: "PingHei", "Lucida Grande", "Lucida Sans Unicode", Helvetica, Tahoma, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "Microsoft YaHei", STXihei, STHeiti, Heiti, SimSun, sans-serif;
 }
 
@@ -13,16 +14,21 @@ body {
 }
 
 #main {
-    margin-top: 5em;
+    margin-top: 4em;
 }
 
 #site-title {
     margin-top: 0;
     line-height: 50px;
+    float: left;
 }
 
 #site-nav {
     font-size: 1.2em;
+}
+
+#site-nav .nav{
+    float: right;
 }
 
 #site-nav .nav li a .fa {
@@ -44,6 +50,7 @@ body {
     color: #111;
 }
 
+
 /*#hero*/
 
 #hero {
@@ -57,6 +64,7 @@ body {
     border-radius: 8px;
 }
 
+
 /*#article-list*/
 
 .article {
@@ -67,6 +75,7 @@ body {
 .article .panel {
     padding-left: 30px;
     padding-right: 30px;
+    padding-bottom: 10px;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
 }
 
@@ -124,7 +133,7 @@ body {
     border-bottom: 1px dashed #DDD;
 }
 
-.article .brief > *:last-child {
+.article .brief> *:last-child {
     margin-bottom: 0 !important;
 }
 
@@ -189,8 +198,8 @@ body {
     border-bottom-color: #DDD;
 }
 
-.article .brief p > code,
-.article .brief li > code {
+.article .brief p> code,
+.article .brief li> code {
     color: #333;
     background-color: #f1f1f1;
 }
@@ -204,20 +213,20 @@ body {
     font-size: 14px;
 }
 
-.article table{
+.article table {
     width: 100%;
     margin: .5rem 1rem;
     line-height: 3rem;
 }
 
-.article td{
+.article td {
     border-top: 1px solid #DDD;
-    padding:0 .5rem;
+    padding: 0 .5rem;
 }
 
-.article th{
+.article th {
     font-weight: bold;
-    padding:0 .5rem;
+    padding: 0 .5rem;
     text-align: left;
 }
 
@@ -248,6 +257,7 @@ body {
     margin-top: -4em;
 }
 
+
 /*
 #archive-list
 */
@@ -268,6 +278,7 @@ body {
     line-height: 40px;
 }
 
+
 /*
 #footer
 */
@@ -285,4 +296,31 @@ body {
 
 #footer a {
     color: #AAA;
+}
+
+@media (max-width: 640px) {
+    #site-title {
+        text-align: center;
+        float: none;
+    }
+    #site-title sup {
+        display: none
+    }
+    #site-nav{
+        text-align: center
+    }
+    #site-nav .nav{
+        display: inline-block;
+        margin: auto;
+        float: none;
+    }
+    #main{
+        margin-top: 2em;
+    }
+    .article .header .title{
+        padding-top: .7em;
+    }
+    .article .header .meta{
+        top:1em;
+    }
 }
