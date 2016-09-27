@@ -26,6 +26,10 @@ var (
 		Name:  "watch",
 		Usage: "watch changes and rebuild files",
 	}
+	noWatchFlag = cli.BoolFlag{
+		Name:  "no-watch",
+		Usage: "do not watch changes in server",
+	}
 	addrFlag = cli.StringFlag{
 		Name:  "addr",
 		Value: "0.0.0.0:9899",

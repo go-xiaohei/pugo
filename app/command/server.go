@@ -25,6 +25,10 @@ var (
 			addrFlag,
 			serveStaticFlag,
 			debugFlag,
+			noWatchFlag,
+			cli.BoolFlag{
+				Name: "profile",
+			},
 		},
 		Before: Before,
 		Action: serv,
@@ -65,6 +69,10 @@ func serv(c *cli.Context) error {
 			time.Sleep(time.Second)
 		}
 	} else {
+		if c.Bool("no-watch") {
+			buildHangUp(newContext(c, true))
+			return nil
+		}
 		build(newContext(c, true), true)
 	}
 
