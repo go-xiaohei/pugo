@@ -100,7 +100,9 @@ func (s *Server) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 // Run run http server on addr
 func (s *Server) Run(addr string) {
 	log15.Info("Server|Start|%s", addr)
-	http.ListenAndServe(addr, s)
+	if err := http.ListenAndServe(addr, s); err != nil {
+		log15.Crit("Server|Start|%s", err.Error())
+	}
 }
 
 type responseWriter struct {

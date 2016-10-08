@@ -32,6 +32,7 @@ type Post struct {
 	Update     string   `toml:"update_date" ini:"update_date"`
 	AuthorName string   `toml:"author" ini:"author"`
 	Thumb      string   `toml:"thumb" ini:"thumb"`
+	Draft      bool     `toml:"draft" ini:"draft"`
 	TagString  []string `toml:"tags" ini:"-"`
 	Tags       []*Tag   `toml:"-" ini:"-"`
 	Author     *Author  `toml:"-" ini:"-"`
@@ -114,6 +115,11 @@ func (p *Post) Created() time.Time {
 // Updated get update time
 func (p *Post) Updated() time.Time {
 	return p.updateTime
+}
+
+// IsUpdated return true if updated time is not same to created time
+func (p *Post) IsUpdated() bool {
+	return p.updateTime.Unix() == p.dateTime.Unix()
 }
 
 func (p *Post) normalize() error {

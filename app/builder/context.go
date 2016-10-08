@@ -143,7 +143,7 @@ func (ctx *Context) parseDir() {
 		return
 	}
 	ctx.srcDir = srcDir
-	log15.Info("Build|Source|%s", srcDir)
+	log15.Info("Read|%s", srcDir)
 
 	if destDir, ctx.Err = toDir(ctx.To); ctx.Err != nil {
 		return

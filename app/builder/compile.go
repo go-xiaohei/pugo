@@ -58,6 +58,10 @@ func Compile(ctx *Context) {
 }
 
 func compilePosts(ctx *Context, w *helper.GoWorker, toDir string) error {
+	if len(ctx.Source.Posts) == 0 {
+		log15.Warn("NoPosts")
+		return nil
+	}
 
 	// compile each post
 	compilePostFn := func(ctx *Context, i int) error {
@@ -227,6 +231,10 @@ func compilePosts(ctx *Context, w *helper.GoWorker, toDir string) error {
 }
 
 func compilePages(ctx *Context, w *helper.GoWorker, toDir string) error {
+	if len(ctx.Source.Pages) == 0 {
+		log15.Warn("NoPages")
+		return nil
+	}
 
 	compileFn := func(ctx *Context, i int) error {
 		p := ctx.Source.Pages[i]

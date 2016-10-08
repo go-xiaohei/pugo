@@ -161,8 +161,11 @@ func ReadPosts(srcDir string) ([]*model.Post, error) {
 			post, err := model.NewPostOfMarkdown(p)
 			if err != nil {
 				log15.Warn("Read|Post|%s|%v", p, err)
-			} else if post != nil {
+			} else if post != nil && !post.Draft {
 				posts = append(posts, post)
+			}
+			if post.Draft == true {
+				log15.Warn("Draft|%s", p)
 			}
 		}
 		return nil
@@ -193,8 +196,11 @@ func ReadPages(srcDir string) ([]*model.Page, error) {
 			page, err := model.NewPageOfMarkdown(p, filepath.ToSlash(rel))
 			if err != nil {
 				log15.Warn("Read|Page|%s|%v", p, err)
-			} else if page != nil {
+			} else if page != nil && !page.Draft {
 				pages = append(pages, page)
+			}
+			if page.Draft == true {
+				log15.Warn("Draft|%s", p)
 			}
 		}
 		return nil

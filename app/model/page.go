@@ -30,6 +30,7 @@ type Page struct {
 	Meta       map[string]interface{} `toml:"meta" ini:"-"`
 	Sort       int                    `toml:"sort" ini:"sort"`
 	Author     *Author                `toml:"-" ini:"-"`
+	Draft      bool                   `toml:"draft" ini:"draft"`
 
 	pageURL      string
 	treeURL      string
@@ -82,6 +83,11 @@ func (p *Page) Created() time.Time {
 // Updated get update time
 func (p *Page) Updated() time.Time {
 	return p.updateTime
+}
+
+// IsUpdated return true if updated time is not same to created time
+func (p *Page) IsUpdated() bool {
+	return p.updateTime.Unix() == p.dateTime.Unix()
 }
 
 func (p *Page) normalize() error {

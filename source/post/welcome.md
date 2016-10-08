@@ -24,6 +24,9 @@ thumb = "@media/golang.png"
 
 # tags, optional
 tags = ["pugo"]
+
+# draft status, if true, not show in public
+draft = false
 ```
 
 When you read the post, `PuGo` is running successfully.
