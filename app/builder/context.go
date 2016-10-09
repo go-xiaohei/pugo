@@ -46,7 +46,7 @@ type (
 
 // NewContext create new Context with from,to and theme args
 func NewContext(cli *cli.Context, from, to, theme string) *Context {
-	return &Context{
+	c := &Context{
 		cli:       cli,
 		From:      from,
 		To:        to,
@@ -54,8 +54,9 @@ func NewContext(cli *cli.Context, from, to, theme string) *Context {
 		time:      time.Now(),
 		Files:     model.NewFiles(),
 		Copied:    defaultCopiedOpt(),
-		Tree:      model.NewTree(),
 	}
+	c.Tree = model.NewTree(c.DstDir())
+	return c
 }
 
 // View get view data to template from Context

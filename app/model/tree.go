@@ -2,6 +2,7 @@ package model
 
 import (
 	"path"
+	"path/filepath"
 	"sort"
 	"strings"
 )
@@ -21,6 +22,7 @@ type Tree struct {
 	I18n     string
 	Type     string
 	Sort     int
+	Dest     string
 	children []*Tree
 }
 
@@ -31,12 +33,13 @@ func (t treeSlice) Len() int           { return len(t) }
 func (t treeSlice) Less(i, j int) bool { return t[i].Sort < t[j].Sort }
 func (t treeSlice) Swap(i, j int)      { t[i], t[j] = t[j], t[i] }
 
-func NewTree() *Tree {
+func NewTree(dest string) *Tree {
 	return &Tree{
 		Link: "/",
 		Type: TreeIndex,
 		I18n: "tree",
 		Sort: 0,
+		Dest: dest,
 	}
 }
 
@@ -72,13 +75,15 @@ func (t *Tree) Print(prefix string) {
 	if prefix == "" {
 		prefix = "+"
 	}
-	println(prefix+":"+t.Link, t.I18n, "@"+t.Type)
+	println(prefix+"/"+t.Link, t.I18n, "@"+t.Type)
 	for _, c := range t.children {
-		c.Print(prefix + "-")
+		c.Print(prefix + "---")
 	}
 }
 
 func (t *Tree) Add(link, linkType string, s int) {
+	link = filepath.ToSlash(link)
+	link = strings.TrimPrefix(link, t.Dest)
 	link = strings.TrimSuffix(link, path.Ext(link))
 	linkData := strings.Split(strings.Trim(link, "/"), "/")
 	if len(linkData) == 0 {
