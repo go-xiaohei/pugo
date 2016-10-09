@@ -37,6 +37,7 @@ func docServ(c *cli.Context) error {
 	buildContext.From = "doc/source"
 	buildContext.To = "doc/dest"
 	buildContext.ThemeName = "doc/theme"
+	buildContext.Tree.Dest = buildContext.DstDir()
 	build(buildContext, !c.Bool("no-server"))
 	return nil
 }

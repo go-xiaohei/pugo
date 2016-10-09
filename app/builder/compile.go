@@ -84,7 +84,7 @@ func compilePosts(ctx *Context, w *helper.GoWorker, toDir string) error {
 			return err
 		}
 
-		ctx.Tree.Add(dstFile, model.TreePost, 0)
+		ctx.Tree.Add(dstFile, p.Title, model.TreePost, 0)
 		return nil
 	}
 	for i := range ctx.Source.Posts {
@@ -125,7 +125,7 @@ func compilePosts(ctx *Context, w *helper.GoWorker, toDir string) error {
 			return err
 		}
 
-		ctx.Tree.Add(dstFile, model.TreePostList, 0)
+		ctx.Tree.Add(dstFile, "", model.TreePostList, 0)
 
 		if pager.Current == 1 {
 
@@ -147,7 +147,7 @@ func compilePosts(ctx *Context, w *helper.GoWorker, toDir string) error {
 				return err
 			}
 
-			ctx.Tree.Add(dstFile, model.TreeIndex, 0)
+			ctx.Tree.Add(dstFile, "Home", model.TreeIndex, 0)
 		}
 
 		return nil
@@ -188,7 +188,7 @@ func compilePosts(ctx *Context, w *helper.GoWorker, toDir string) error {
 				if err := compile(ctx, "archive.html", viewData, dstFile); err != nil {
 					return err
 				}
-				ctx.Tree.Add(dstFile, model.TreeArchive, 0)
+				ctx.Tree.Add(dstFile, "", model.TreeArchive, 0)
 				return nil
 			}(ctx)
 		},
@@ -211,7 +211,7 @@ func compilePosts(ctx *Context, w *helper.GoWorker, toDir string) error {
 		if err := compile(ctx, "posts.html", viewData, dstFile); err != nil {
 			return err
 		}
-		ctx.Tree.Add(dstFile, model.TreePostTag, 0)
+		ctx.Tree.Add(dstFile, t, model.TreePostTag, 0)
 		return nil
 	}
 
@@ -266,7 +266,7 @@ func compilePages(ctx *Context, w *helper.GoWorker, toDir string) error {
 			return err
 		}
 
-		ctx.Tree.Add(dstFile, model.TreePage, p.Sort)
+		ctx.Tree.Add(dstFile, p.Title, model.TreePage, p.Sort)
 
 		return nil
 	}

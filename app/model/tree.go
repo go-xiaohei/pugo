@@ -8,16 +8,25 @@ import (
 )
 
 const (
-	TreeIndex    = "index"
-	TreePost     = "post"
-	TreePage     = "page"
-	TreeArchive  = "archive"
+	// TreeIndex is index page tree node
+	TreeIndex = "index"
+	// TreePost is a post node
+	TreePost = "post"
+	// TreePage is a page node
+	TreePage = "page"
+	// TreeArchive is node of archive page
+	TreeArchive = "archive"
+	// TreePostList is node of list page of posts
 	TreePostList = "post-list"
-	TreePostTag  = "post-tag"
-	TreeTag      = "tag"
+	// TreePostTag is node of list posts belongs to a tag
+	TreePostTag = "post-tag"
+	// TreeTag is node of tag page, no used now
+	TreeTag = "tag"
 )
 
+// Tree describe the position of one file in all compiled files
 type Tree struct {
+	Title    string
 	Link     string
 	I18n     string
 	Type     string
@@ -43,18 +52,23 @@ func NewTree(dest string) *Tree {
 	}
 }
 
+// Children return nodes of tree by url link
 func (t *Tree) Children(link ...string) []*Tree {
 	if len(link) == 0 {
 		return t.children
 	}
-	if t2 := t.SubTree(link[0]); t2 != nil {
+	if t2 := t.subTree(link[0]); t2 != nil {
 		return t2.children
 	}
 	return nil
 }
 
-func (t *Tree) SubTree(link string) *Tree {
-	println("sub tree", link)
+// IsValid return whether the node is compiled or not
+func (t *Tree) IsValid() bool {
+	return t.Type != ""
+}
+
+func (t *Tree) subTree(link string) *Tree {
 	link = strings.TrimSuffix(link, path.Ext(link))
 	linkData := strings.Split(strings.Trim(link, "/"), "/")
 	if len(linkData) == 0 {
@@ -65,23 +79,22 @@ func (t *Tree) SubTree(link string) *Tree {
 			if len(linkData) == 1 {
 				return c
 			}
-			return c.SubTree(strings.Join(linkData[1:], "/"))
+			return c.subTree(strings.Join(linkData[1:], "/"))
 		}
 	}
 	return nil
 }
 
+// Print print tree nodes as readable string
 func (t *Tree) Print(prefix string) {
-	if prefix == "" {
-		prefix = "+"
-	}
-	println(prefix+"/"+t.Link, t.I18n, "@"+t.Type)
+	println(prefix+"/"+t.Link, t.I18n, t.Title, "@"+t.Type)
 	for _, c := range t.children {
 		c.Print(prefix + "---")
 	}
 }
 
-func (t *Tree) Add(link, linkType string, s int) {
+// Add add tree node
+func (t *Tree) Add(link, title, linkType string, s int) {
 	link = filepath.ToSlash(link)
 	link = strings.TrimPrefix(link, t.Dest)
 	link = strings.TrimSuffix(link, path.Ext(link))
@@ -92,20 +105,21 @@ func (t *Tree) Add(link, linkType string, s int) {
 	isFind := false
 	for _, c := range t.children {
 		if c.Link == linkData[0] {
-			c.Add(strings.Join(linkData[1:], "/"), linkType, s)
+			c.Add(strings.Join(linkData[1:], "/"), title, linkType, s)
 			isFind = true
 			break
 		}
 	}
 	if !isFind {
 		tree := &Tree{
-			Link: linkData[0],
-			I18n: t.I18n + "." + linkData[0],
-			Type: linkType,
-			Sort: s,
+			Title: title,
+			Link:  linkData[0],
+			I18n:  t.I18n + "." + linkData[0],
+			Type:  linkType,
+			Sort:  s,
 		}
 		if len(linkData) > 1 {
-			tree.Add(strings.Join(linkData[1:], "/"), linkType, s)
+			tree.Add(strings.Join(linkData[1:], "/"), title, linkType, s)
 			tree.Type = ""
 		}
 		t.children = append(t.children, tree)
