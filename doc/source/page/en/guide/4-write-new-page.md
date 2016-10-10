@@ -5,6 +5,7 @@ slug = "en/guide/write-new-page"
 hover = "guide"
 lang = "en"
 template = "guide.html"
+sort = 4
 ```
 
 To create a new page, run command:

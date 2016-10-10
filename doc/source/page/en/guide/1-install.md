@@ -5,6 +5,7 @@ slug = "en/guide/install"
 hover = "guide"
 lang = "en"
 template = "guide.html"
+sort = 1
 ```
 
 `PuGo` has released in [`Github Release`](https://github.com/go-xiaohei/pugo/releases). It's better to download with your system requirement.

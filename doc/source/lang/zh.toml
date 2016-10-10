@@ -15,3 +15,7 @@
 #index
 [index]
 slogan = "简单写作，快速编译，智能发布"
+
+#guide
+[guide]
+guide = "入门"

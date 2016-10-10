@@ -50,12 +50,19 @@ func (s *Server) serveFile(w http.ResponseWriter, r *http.Request, file string) 
 func (s *Server) serveFiles(w http.ResponseWriter, r *http.Request, param string) bool {
 	ext := path.Ext(param)
 	if ext == "" || ext == "." {
+		// /xyz -> /xyz.html
 		if !strings.HasSuffix(param, "/") {
 			if s.serveFile(w, r, path.Join(s.dstDir, s.prefix, param+".html")) {
 				return true
 			}
 		}
+		// /xyz/ -> /xyz/index.html
 		if s.serveFile(w, r, path.Join(s.dstDir, s.prefix, param, "index.html")) {
+			return true
+		}
+		// /xyz/ -> /xzy.html
+		param = strings.TrimSuffix(param, "/")
+		if s.serveFile(w, r, path.Join(s.dstDir, s.prefix, param+".html")) {
 			return true
 		}
 	}

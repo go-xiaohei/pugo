@@ -5,6 +5,7 @@ slug = "en/guide/build-files"
 hover = "guide"
 lang = "en"
 template = "guide.html"
+sort = 6
 ```
 
 Use `build` command to build files:

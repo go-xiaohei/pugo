@@ -5,6 +5,7 @@ slug = "en/guide/create-new-site"
 hover = "guide"
 lang = "en"
 template = "guide.html"
+sort = 2
 ```
 
 `PuGo` packs all static assets into go source code. It can create a new site without any downloads. Run command:

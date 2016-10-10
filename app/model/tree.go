@@ -32,6 +32,7 @@ type Tree struct {
 	Type     string
 	Sort     int
 	Dest     string
+	URL      string
 	children []*Tree
 }
 
@@ -49,6 +50,7 @@ func NewTree(dest string) *Tree {
 		I18n: "tree",
 		Sort: 0,
 		Dest: dest,
+		URL:  "",
 	}
 }
 
@@ -87,7 +89,7 @@ func (t *Tree) subTree(link string) *Tree {
 
 // Print print tree nodes as readable string
 func (t *Tree) Print(prefix string) {
-	println(prefix+"/"+t.Link, t.I18n, t.Title, "@"+t.Type)
+	println(prefix+"/"+t.Link, t.I18n, t.Title, "@"+t.Type, t.URL)
 	for _, c := range t.children {
 		c.Print(prefix + "---")
 	}
@@ -96,9 +98,8 @@ func (t *Tree) Print(prefix string) {
 // Add add tree node
 func (t *Tree) Add(link, title, linkType string, s int) {
 	link = filepath.ToSlash(link)
-	link = strings.TrimPrefix(link, t.Dest)
-	link = strings.TrimSuffix(link, path.Ext(link))
-	linkData := strings.Split(strings.Trim(link, "/"), "/")
+	link = strings.TrimPrefix(link, t.Dest+"/")
+	linkData := strings.SplitN(link, "/", 2)
 	if len(linkData) == 0 {
 		return
 	}
@@ -117,10 +118,12 @@ func (t *Tree) Add(link, title, linkType string, s int) {
 			I18n:  t.I18n + "." + linkData[0],
 			Type:  linkType,
 			Sort:  s,
+			URL:   path.Join(t.URL, linkData[0]),
 		}
 		if len(linkData) > 1 {
 			tree.Add(strings.Join(linkData[1:], "/"), title, linkType, s)
 			tree.Type = ""
+			tree.Title = ""
 		}
 		t.children = append(t.children, tree)
 		sort.Sort(treeSlice(t.children))

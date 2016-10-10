@@ -15,3 +15,7 @@
 #index
 [index]
 slogan = "easy Write, fast Build, smart Deploy"
+
+#guide
+[guide]
+guide = "Guide"
