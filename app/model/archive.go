@@ -6,8 +6,24 @@ type Archive struct {
 	Posts []*Post
 }
 
+// Archives is collection of all archive sets
+type Archives struct {
+	Data    []*Archive
+	destURL string
+}
+
+// DestURL return the file that archives compile into
+func (a *Archives) DestURL() string {
+	return a.destURL
+}
+
+// SetDestURL set destURL for archives
+func (a *Archives) SetDestURL(url string) {
+	a.destURL = url
+}
+
 // NewArchive converts posts to archive
-func NewArchive(posts []*Post) []*Archive {
+func NewArchive(posts []*Post) Archives {
 	archives := []*Archive{}
 	var (
 		last, lastYear int
@@ -31,5 +47,8 @@ func NewArchive(posts []*Post) []*Archive {
 			Posts: []*Post{p},
 		})
 	}
-	return archives
+	return Archives{
+		Data:    archives,
+		destURL: "archive.html",
+	}
 }

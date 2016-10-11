@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
-	"path"
 	"path/filepath"
 	"strings"
 	"time"
@@ -33,16 +32,16 @@ type Page struct {
 	Draft      bool                   `toml:"draft" ini:"draft"`
 
 	pageURL      string
-	treeURL      string
 	fileURL      string
+	destURL      string
 	contentBytes []byte
 	dateTime     time.Time
 	updateTime   time.Time
 }
 
-// TreeURL is tree url of node
-func (p *Page) TreeURL() string {
-	return p.treeURL
+// DestURL is dest url of node
+func (p *Page) DestURL() string {
+	return p.destURL
 }
 
 // URL is page's url
@@ -65,14 +64,19 @@ func (p *Page) Content() []byte {
 	return p.contentBytes
 }
 
-// FixURL fix path when assemble posts
-func (p *Page) FixURL(prefix string) {
-	p.pageURL = path.Join(prefix, p.pageURL)
+// SetURL set path when assemble posts
+func (p *Page) SetURL(url string) {
+	p.pageURL = url
 }
 
-// FixPlaceholder fix @placeholder in post values
-func (p *Page) FixPlaceholder(hr *strings.Replacer) {
-	p.contentBytes = []byte(hr.Replace(string(p.contentBytes)))
+// SetDestURL set path when assemble posts
+func (p *Page) SetDestURL(url string) {
+	p.destURL = url
+}
+
+// SetPlaceholder fix @placeholder in post values
+func (p *Page) SetPlaceholder(htmlReplacer *strings.Replacer) {
+	p.contentBytes = []byte(htmlReplacer.Replace(string(p.contentBytes)))
 }
 
 // Created get create time
@@ -108,7 +112,6 @@ func (p *Page) normalize() error {
 	}
 	p.contentBytes = helper.Markdown(p.Bytes)
 	p.pageURL = fmt.Sprintf("/%s", p.Slug) + ".html"
-	p.treeURL = p.Slug
 	return nil
 }
 

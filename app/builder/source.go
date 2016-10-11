@@ -25,12 +25,14 @@ type (
 		Analytics *model.Analytics
 		I18n      map[string]*helper.I18n
 
-		Posts    model.Posts
-		PostPage int
-		Archive  []*model.Archive
-		Pages    model.Pages
-		Tags     map[string]*model.Tag
-		tagPosts map[string]model.Posts
+		Posts      model.Posts
+		PagePosts  map[int]*model.PagerPosts
+		IndexPosts model.PagerPosts // same to PagePosts[1]
+		PostPage   int
+		Archive    model.Archives
+		Pages      model.Pages
+		Tags       map[string]*model.Tag
+		TagPosts   map[string]*model.TagPosts
 	}
 )
 
@@ -74,10 +76,10 @@ func ReadSource(ctx *Context) {
 		ctx.Source.I18n = ReadLang(ctx.srcDir)
 	})
 	wg.Wrap("ReadPosts", func() {
-		ctx.Source.Posts, ctx.Err = ReadPosts(ctx.srcDir)
+		ctx.Source.Posts, ctx.Err = ReadPosts(ctx)
 	})
 	wg.Wrap("ReadPages", func() {
-		ctx.Source.Pages, ctx.Err = ReadPages(ctx.srcDir)
+		ctx.Source.Pages, ctx.Err = ReadPages(ctx)
 	})
 	wg.Wait()
 }
@@ -142,8 +144,8 @@ func ReadLang(srcDir string) map[string]*helper.I18n {
 }
 
 // ReadPosts read posts files in srcDir/post
-func ReadPosts(srcDir string) ([]*model.Post, error) {
-	srcDir = filepath.Join(srcDir, "post")
+func ReadPosts(ctx *Context) ([]*model.Post, error) {
+	srcDir := filepath.Join(ctx.srcDir, "post")
 	if !com.IsDir(srcDir) {
 		return nil, fmt.Errorf("posts directory '%s' is missing", srcDir)
 	}
@@ -175,8 +177,8 @@ func ReadPosts(srcDir string) ([]*model.Post, error) {
 }
 
 // ReadPages read pages files in srcDir/page
-func ReadPages(srcDir string) ([]*model.Page, error) {
-	srcDir = filepath.Join(srcDir, "page")
+func ReadPages(ctx *Context) ([]*model.Page, error) {
+	srcDir := filepath.Join(ctx.srcDir, "page")
 	if !com.IsDir(srcDir) {
 		return nil, fmt.Errorf("pages directory '%s' is missing", srcDir)
 	}

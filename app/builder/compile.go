@@ -180,7 +180,7 @@ func compilePosts(ctx *Context, w *helper.GoWorker, toDir string) error {
 				dstFile := path.Join(toDir, ctx.Source.Meta.Path, "archive.html")
 				viewData := ctx.View()
 				viewData["Title"] = fmt.Sprintf("Archive - %s", ctx.Source.Meta.Title)
-				viewData["Archives"] = ctx.Source.Archive
+				viewData["Archives"] = ctx.Source.Archive.Data
 				viewData["PostType"] = model.TreeArchive
 				viewData["PermaKey"] = "archive"
 				viewData["Hover"] = "archive"
@@ -196,7 +196,7 @@ func compilePosts(ctx *Context, w *helper.GoWorker, toDir string) error {
 
 	// compile tag posts
 	compilePostTagFn := func(ctx *Context, t string) error {
-		posts := ctx.Source.tagPosts[t]
+		posts := ctx.Source.TagPosts[t]
 		pageURL := path.Join(ctx.Source.Meta.Path, ctx.Source.Tags[t].URL)
 		dstFile := path.Join(toDir, pageURL)
 		pageKey := fmt.Sprintf("post-tag-%s", t)
@@ -216,9 +216,9 @@ func compilePosts(ctx *Context, w *helper.GoWorker, toDir string) error {
 	}
 
 	// build tag posts
-	for t := range ctx.Source.tagPosts {
+	for t := range ctx.Source.TagPosts {
 		t2 := t
-		c := context.WithValue(context.Background(), "post-tag", ctx.Source.tagPosts[t2])
+		c := context.WithValue(context.Background(), "post-tag", ctx.Source.TagPosts[t2])
 		c = context.WithValue(c, "tag", ctx.Source.Tags[t2])
 		w.Send(&helper.GoWorkerRequest{
 			Ctx: c,

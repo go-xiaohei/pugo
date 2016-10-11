@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
-	"path"
 	"path/filepath"
 	"strings"
 	"time"
@@ -44,25 +43,25 @@ type Post struct {
 	contentBytes []byte
 	briefBytes   []byte
 	postURL      string
-	treeURL      string
 	fileURL      string
+	destURL      string
 }
 
-// FixURL fix path when assemble posts
-func (p *Post) FixURL(prefix string) {
-	p.postURL = path.Join(prefix, p.postURL)
+// SetURL set path when assemble posts
+func (p *Post) SetURL(url string) {
+	p.postURL = url
 }
 
-// FixPlaceholder fix @placeholder in post values
-func (p *Post) FixPlaceholder(r, hr *strings.Replacer) {
-	p.Thumb = r.Replace(p.Thumb)
-	p.contentBytes = []byte(hr.Replace(string(p.contentBytes)))
-	p.briefBytes = []byte(hr.Replace(string(p.briefBytes)))
+// SetDestURL set dest-url
+func (p *Post) SetDestURL(url string) {
+	p.destURL = url
 }
 
-// TreeURL get tree path of the post, use to create *Tree
-func (p *Post) TreeURL() string {
-	return p.treeURL
+// SetPlaceholder fix @placeholder in post values
+func (p *Post) SetPlaceholder(stringReplacer, htmlReplacer *strings.Replacer) {
+	p.Thumb = stringReplacer.Replace(p.Thumb)
+	p.contentBytes = []byte(htmlReplacer.Replace(string(p.contentBytes)))
+	p.briefBytes = []byte(htmlReplacer.Replace(string(p.briefBytes)))
 }
 
 // URL get url of the post
@@ -73,6 +72,11 @@ func (p *Post) URL() string {
 // SourceURL get source file path of the post
 func (p *Post) SourceURL() string {
 	return filepath.ToSlash(p.fileURL)
+}
+
+// DestURL get destination file of the post after compiled
+func (p *Post) DestURL() string {
+	return filepath.ToSlash(p.destURL)
 }
 
 // ContentHTML get html content
@@ -143,7 +147,6 @@ func (p *Post) normalize() error {
 	p.briefBytes = helper.Markdown(bytes.Split(p.Bytes, postBriefSeparator)[0])
 	permaURL := fmt.Sprintf("/%d/%d/%d/%s", p.dateTime.Year(), p.dateTime.Month(), p.dateTime.Day(), p.Slug)
 	p.postURL = permaURL + ".html"
-	p.treeURL = permaURL
 	for _, t := range p.TagString {
 		p.Tags = append(p.Tags, NewTag(t))
 	}
@@ -204,37 +207,6 @@ func NewPostOfMarkdown(file string) (*Post, error) {
 	post.fileURL = file
 	post.Bytes = bytes.Trim(dataSlice[2], "\n")
 	return post, post.normalize()
-}
-
-// Posts are posts list
-type Posts []*Post
-
-// implement sort.Sort interface
-func (p Posts) Len() int {
-	return len(p)
-}
-
-func (p Posts) Less(i, j int) bool {
-	return p[i].dateTime.Unix() > p[j].dateTime.Unix()
-}
-func (p Posts) Swap(i, j int) {
-	p[i], p[j] = p[j], p[i]
-}
-
-// TopN get top N posts from list
-func (p Posts) TopN(i int) []*Post {
-	if i > len(p) {
-		i = len(p)
-	}
-	return p[:i]
-}
-
-// Range get ranged[i:j] posts from list
-func (p Posts) Range(i, j int) []*Post {
-	if i > len(p)-1 {
-		return nil
-	}
-	return p[i:j]
 }
 
 func parseTimeString(timeStr string) (time.Time, error) {
