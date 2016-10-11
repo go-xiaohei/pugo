@@ -40,6 +40,7 @@ func AssembleSource(ctx *Context) {
 		}
 		p.SetDestURL(filepath.Join(ctx.DstDir(), p.URL()))
 		p.SetPlaceholder(r, hr)
+		ctx.Tree.Add(p.DestURL(), p.Title, model.TreePost, 0)
 		if p.Author == nil {
 			p.Author = ctx.Source.Authors[p.AuthorName]
 		}
@@ -63,6 +64,7 @@ func AssembleSource(ctx *Context) {
 		}
 		p.SetDestURL(filepath.Join(ctx.DstDir(), p.URL()))
 		p.SetPlaceholder(hr)
+		ctx.Tree.Add(p.DestURL(), p.Title, model.TreePage, p.Sort)
 		if p.Author == nil {
 			p.Author = ctx.Source.Authors[p.AuthorName]
 		}
@@ -73,12 +75,14 @@ func AssembleSource(ctx *Context) {
 		sort.Sort(model.Posts(tp.Posts))
 		tp.SetDestURL(path.Join(ctx.DstDir(),
 			ctx.Source.Meta.Path, tp.Tag.URL))
+		ctx.Tree.Add(tp.DestURL(), "", model.TreePostTag, 0)
 	}
 
 	// prepare archives
 	archives := model.NewArchive(ctx.Source.Posts)
 	archives.SetDestURL(filepath.Join(ctx.DstDir(), archives.DestURL()))
 	ctx.Source.Archive = archives
+	ctx.Tree.Add(archives.DestURL(), "Archive", model.TreeArchive, 0)
 
 	// prepare paged posts
 	var (
@@ -101,6 +105,7 @@ func AssembleSource(ctx *Context) {
 		}
 		pp.SetDestURL(path.Join(ctx.DstDir(), pageURL))
 		ctx.Source.PagePosts[pager.Current] = pp
+		ctx.Tree.Add(pp.DestURL(), "", model.TreePostList, 0)
 		if pager.Current == 1 {
 			// use new object, not pp
 			pp2 := model.PagerPosts{
@@ -109,9 +114,13 @@ func AssembleSource(ctx *Context) {
 			}
 			pp2.SetDestURL(path.Join(ctx.DstDir(), "index.html"))
 			ctx.Source.IndexPosts = pp2
+			ctx.Tree.Add(path.Join(ctx.DstDir(), "index.html"), "Home", model.TreeIndex, 0)
 		}
 		page++
 	}
+
+	ctx.Tree.Add(path.Join(ctx.DstDir(), ctx.Source.Meta.Path, "feed.xml"), "Feed", model.TreeXML, 0)
+	ctx.Tree.Add(path.Join(ctx.DstDir(), ctx.Source.Meta.Path, "sitemap.xml"), "Sitemap", model.TreeXML, 0)
 
 	if ctx.Err = ctx.Theme.Load(); ctx.Err != nil {
 		return

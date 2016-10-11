@@ -22,6 +22,8 @@ const (
 	TreePostTag = "post-tag"
 	// TreeTag is node of tag page, no used now
 	TreeTag = "tag"
+	// TreeXML is xml file node
+	TreeXML = "xml"
 )
 
 // Tree describe the position of one file in all compiled files
