@@ -19,3 +19,7 @@ slogan = "easy Write, fast Build, smart Deploy"
 #guide
 [guide]
 guide = "Guide"
+
+#docs
+[doc]
+doc = "Documentation"
