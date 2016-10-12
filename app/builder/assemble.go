@@ -102,6 +102,7 @@ func AssembleSource(ctx *Context) {
 		pp := &model.PagerPosts{
 			Posts: currentPosts,
 			Pager: pager,
+			URL:   pageURL,
 		}
 		pp.SetDestURL(path.Join(ctx.DstDir(), pageURL))
 		ctx.Source.PagePosts[pager.Current] = pp

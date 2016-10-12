@@ -38,251 +38,183 @@ func Compile(ctx *Context) {
 			}
 		}
 	})
-
-	// do compile task in goroutine
-	wg := helper.NewGoGroup("BuildStep")
-	wg.Wrap("compilePosts", func() {
-		ctx.Err = compilePosts(ctx, worker, ctx.dstDir)
-	})
-	wg.Wrap("compilePages", func() {
-		ctx.Err = compilePages(ctx, worker, ctx.dstDir)
-	})
-	wg.Wrap("compileXML", func() {
-		ctx.Err = compileXML(ctx, ctx.dstDir)
-	})
-	wg.Wait()
-
-	// wait worker
+	var reqs []*helper.GoWorkerRequest
+	reqs = append(reqs, compilePosts2(ctx)...)
+	reqs = append(reqs, compileIndexPage(ctx))
+	reqs = append(reqs, compilePagePosts(ctx)...)
+	reqs = append(reqs, compileTagPosts(ctx)...)
+	reqs = append(reqs, compilePages2(ctx)...)
+	reqs = append(reqs, compileArchive(ctx))
+	for _, r := range reqs {
+		worker.Send(r)
+	}
 	worker.WaitStop()
-
+	ctx.Err = compileXML(ctx)
 }
 
-func compilePosts(ctx *Context, w *helper.GoWorker, toDir string) error {
-	if len(ctx.Source.Posts) == 0 {
+func compilePosts2(ctx *Context) []*helper.GoWorkerRequest {
+	posts := ctx.Source.Posts
+	if len(posts) == 0 {
 		log15.Warn("NoPosts")
 		return nil
 	}
+	var reqs []*helper.GoWorkerRequest
 
-	// compile each post
-	compilePostFn := func(ctx *Context, i int) error {
-		p := ctx.Source.Posts[i]
-		dstFile := path.Join(toDir, p.URL())
-		if path.Ext(dstFile) == "" {
-			dstFile += ".html"
-		}
-
-		viewData := ctx.View()
-		viewData["Title"] = p.Title + " - " + ctx.Source.Meta.Title
-		viewData["Desc"] = p.Desc
-		viewData["Post"] = p
-		viewData["PermaKey"] = p.Slug
-		viewData["PostType"] = model.TreePost
-		viewData["Hover"] = model.TreePost
-		viewData["URL"] = p.URL()
-
-		if err := compile(ctx, "post.html", viewData, dstFile); err != nil {
-			return err
-		}
-
-		ctx.Tree.Add(dstFile, p.Title, model.TreePost, 0)
-		return nil
-	}
-	for i := range ctx.Source.Posts {
-		i2 := i
-		c := context.WithValue(context.Background(), "post", ctx.Source.Posts[i2])
-		w.Send(&helper.GoWorkerRequest{
+	for _, post := range posts {
+		p2 := post
+		c := context.WithValue(context.Background(), "post", p2)
+		req := &helper.GoWorkerRequest{
 			Ctx: c,
 			Action: func(c context.Context) (context.Context, error) {
-				return c, compilePostFn(ctx, i2)
+				viewData := ctx.View()
+				viewData["Title"] = p2.Title + " - " + ctx.Source.Meta.Title
+				viewData["Desc"] = p2.Desc
+				viewData["Post"] = p2
+				viewData["PermaKey"] = p2.Slug
+				viewData["PostType"] = model.TreePost
+				viewData["Hover"] = model.TreePost
+				viewData["URL"] = p2.URL()
+				return c, compile(ctx, "post.html", viewData, p2.DestURL())
 			},
-		})
-	}
-
-	// build posts
-	var (
-		cursor = helper.NewPagerCursor(4, len(ctx.Source.Posts))
-		page   = 1
-		layout = "posts/%d"
-	)
-
-	// compile post-page
-	compilePostPageFn := func(ctx *Context, pager *helper.Pager, currentPosts []*model.Post) error {
-		pager.SetLayout(path.Join(ctx.Source.Meta.Path, "/"+layout+".html"))
-		pageURL := path.Join(ctx.Source.Meta.Path, fmt.Sprintf(layout+".html", pager.Current))
-		dstFile := path.Join(toDir, pageURL)
-
-		pageKey := fmt.Sprintf("post-page-%d", pager.Current)
-		viewData := ctx.View()
-		viewData["Title"] = fmt.Sprintf("Page %d - %s", pager.Current, ctx.Source.Meta.Title)
-		viewData["Posts"] = currentPosts
-		viewData["Pager"] = pager
-		viewData["PostType"] = model.TreePostList
-		viewData["PermaKey"] = pageKey
-		viewData["Hover"] = model.TreePostList
-		viewData["URL"] = pageURL
-
-		if err := compile(ctx, "posts.html", viewData, dstFile); err != nil {
-			return err
 		}
+		reqs = append(reqs, req)
+	}
+	return reqs
+}
 
-		ctx.Tree.Add(dstFile, "", model.TreePostList, 0)
+func compilePagePosts(ctx *Context) []*helper.GoWorkerRequest {
+	var reqs []*helper.GoWorkerRequest
+	lists := ctx.Source.PagePosts
+	for page := range lists {
+		pp := lists[page]
+		pageKey := fmt.Sprintf("post-page-%d", pp.Pager.Current)
+		c := context.WithValue(context.Background(), "post-page", pp.Posts)
+		c = context.WithValue(c, "page", pp.Pager)
+		req := &helper.GoWorkerRequest{
+			Ctx: c,
+			Action: func(c context.Context) (context.Context, error) {
+				viewData := ctx.View()
+				viewData["Title"] = fmt.Sprintf("Page %d - %s", pp.Pager.Current, ctx.Source.Meta.Title)
+				viewData["Posts"] = pp.Posts
+				viewData["Pager"] = pp.Pager
+				viewData["PostType"] = model.TreePostList
+				viewData["PermaKey"] = pageKey
+				viewData["Hover"] = model.TreePostList
+				viewData["URL"] = pp.URL
+				return c, compile(ctx, "posts.html", viewData, pp.DestURL())
+			},
+		}
+		reqs = append(reqs, req)
+	}
+	return reqs
+}
 
-		if pager.Current == 1 {
-
+func compileIndexPage(ctx *Context) *helper.GoWorkerRequest {
+	pp := ctx.Source.IndexPosts
+	c := context.WithValue(context.Background(), "post-page", pp.Posts)
+	c = context.WithValue(c, "page", pp.Pager)
+	return &helper.GoWorkerRequest{
+		Ctx: c,
+		Action: func(c context.Context) (context.Context, error) {
 			template := "index.html"
 			if ctx.Theme.Template(template) == nil {
 				template = "posts.html"
 			}
 			viewData := ctx.View()
-			viewData["Posts"] = currentPosts
-			viewData["Pager"] = pager
+			viewData["Posts"] = pp.Posts
+			viewData["Pager"] = pp.Pager
 			viewData["PostType"] = model.TreeIndex
 			viewData["PermaKey"] = model.TreeIndex
 			viewData["Hover"] = model.TreeIndex
 			viewData["URL"] = path.Join(ctx.Source.Meta.Path, "index.html")
-
-			dstFile = path.Join(toDir, ctx.Source.Meta.Path, "index.html")
-
-			if err := compile(ctx, template, viewData, dstFile); err != nil {
-				return err
-			}
-
-			ctx.Tree.Add(dstFile, "Home", model.TreeIndex, 0)
-		}
-
-		return nil
-	}
-
-	for {
-		pager := cursor.Page(page)
-		if pager == nil {
-			ctx.Source.PostPage = page - 1
-			break
-		}
-		currentPosts := ctx.Source.Posts[pager.Begin:pager.End]
-		c := context.WithValue(context.Background(), "post-page", currentPosts)
-		c = context.WithValue(c, "page", page)
-		w.Send(&helper.GoWorkerRequest{
-			Ctx: c,
-			Action: func(c context.Context) (context.Context, error) {
-				return c, compilePostPageFn(ctx, pager, currentPosts)
-			},
-		})
-		page++
-	}
-
-	// build archive
-	c := context.WithValue(context.Background(), "Archives", ctx.Source.Archive)
-	w.Send(&helper.GoWorkerRequest{
-		Ctx: c,
-		Action: func(c context.Context) (context.Context, error) {
-			return c, func(ctx *Context) error {
-				dstFile := path.Join(toDir, ctx.Source.Meta.Path, "archive.html")
-				viewData := ctx.View()
-				viewData["Title"] = fmt.Sprintf("Archive - %s", ctx.Source.Meta.Title)
-				viewData["Archives"] = ctx.Source.Archive.Data
-				viewData["PostType"] = model.TreeArchive
-				viewData["PermaKey"] = "archive"
-				viewData["Hover"] = "archive"
-				viewData["URL"] = path.Join(ctx.Source.Meta.Path, "archive")
-				if err := compile(ctx, "archive.html", viewData, dstFile); err != nil {
-					return err
-				}
-				ctx.Tree.Add(dstFile, "", model.TreeArchive, 0)
-				return nil
-			}(ctx)
+			return c, compile(ctx, template, viewData, pp.DestURL())
 		},
-	})
-
-	// compile tag posts
-	compilePostTagFn := func(ctx *Context, t string) error {
-		posts := ctx.Source.TagPosts[t]
-		pageURL := path.Join(ctx.Source.Meta.Path, ctx.Source.Tags[t].URL)
-		dstFile := path.Join(toDir, pageURL)
-		pageKey := fmt.Sprintf("post-tag-%s", t)
-		viewData := ctx.View()
-		viewData["Title"] = fmt.Sprintf("%s - %s", t, ctx.Source.Meta.Title)
-		viewData["Posts"] = posts
-		viewData["Tag"] = ctx.Source.Tags[t]
-		viewData["PostType"] = model.TreePostTag
-		viewData["PermaKey"] = pageKey
-		viewData["Hover"] = model.TreePostTag
-		viewData["URL"] = pageURL
-		if err := compile(ctx, "posts.html", viewData, dstFile); err != nil {
-			return err
-		}
-		ctx.Tree.Add(dstFile, t, model.TreePostTag, 0)
-		return nil
 	}
-
-	// build tag posts
-	for t := range ctx.Source.TagPosts {
-		t2 := t
-		c := context.WithValue(context.Background(), "post-tag", ctx.Source.TagPosts[t2])
-		c = context.WithValue(c, "tag", ctx.Source.Tags[t2])
-		w.Send(&helper.GoWorkerRequest{
-			Ctx: c,
-			Action: func(c context.Context) (context.Context, error) {
-				return c, compilePostTagFn(ctx, t2)
-			},
-		})
-	}
-	return nil
 }
 
-func compilePages(ctx *Context, w *helper.GoWorker, toDir string) error {
-	if len(ctx.Source.Pages) == 0 {
-		log15.Warn("NoPages")
-		return nil
-	}
-
-	compileFn := func(ctx *Context, i int) error {
-		p := ctx.Source.Pages[i]
-		dstFile := filepath.Join(toDir, p.URL())
-		if path.Ext(dstFile) == "" {
-			dstFile += ".html"
-		}
-
-		viewData := ctx.View()
-		viewData["Title"] = p.Title + " - " + ctx.Source.Meta.Title
-		viewData["Desc"] = p.Desc
-		viewData["Page"] = p
-		viewData["PermaKey"] = p.Slug
-		viewData["PostType"] = model.TreePage
-		viewData["Hover"] = p.NavHover
-		viewData["URL"] = p.URL()
-		if p.Lang != "" {
-			viewData["Lang"] = p.Lang
-			if i18n, ok := ctx.Source.I18n[p.Lang]; ok {
-				viewData["I18n"] = i18n
-			}
-		}
-
-		tpl := "page.html"
-		if p.Template != "" {
-			tpl = p.Template
-		}
-		if err := compile(ctx, tpl, viewData, dstFile); err != nil {
-			return err
-		}
-
-		ctx.Tree.Add(dstFile, p.Title, model.TreePage, p.Sort)
-
-		return nil
-	}
-
-	for i := range ctx.Source.Pages {
-		i2 := i
-		c := context.WithValue(context.Background(), "page", ctx.Source.Pages[i2])
-		w.Send(&helper.GoWorkerRequest{
+func compileTagPosts(ctx *Context) []*helper.GoWorkerRequest {
+	var reqs []*helper.GoWorkerRequest
+	lists := ctx.Source.TagPosts
+	for t := range lists {
+		tp := lists[t]
+		c := context.WithValue(context.Background(), "post-tag", tp.Posts)
+		c = context.WithValue(c, "tag", tp.Tag)
+		req := &helper.GoWorkerRequest{
 			Ctx: c,
 			Action: func(c context.Context) (context.Context, error) {
-				return c, compileFn(ctx, i2)
+				pageURL := path.Join(ctx.Source.Meta.Path, tp.Tag.URL)
+				pageKey := fmt.Sprintf("post-tag-%s", t)
+				viewData := ctx.View()
+				viewData["Title"] = fmt.Sprintf("%s - %s", t, ctx.Source.Meta.Title)
+				viewData["Posts"] = tp.Posts
+				viewData["Tag"] = tp.Tag
+				viewData["PostType"] = model.TreePostTag
+				viewData["PermaKey"] = pageKey
+				viewData["Hover"] = model.TreePostTag
+				viewData["URL"] = pageURL
+				return c, compile(ctx, "posts.html", viewData, tp.DestURL())
 			},
-		})
+		}
+		reqs = append(reqs, req)
 	}
+	return reqs
+}
 
-	return nil
+func compilePages2(ctx *Context) []*helper.GoWorkerRequest {
+	pages := ctx.Source.Pages
+	if len(pages) == 0 {
+		log15.Warn("MoPages")
+		return nil
+	}
+	var reqs []*helper.GoWorkerRequest
+	for _, page := range pages {
+		p := page
+		c := context.WithValue(context.Background(), "page", p)
+		req := &helper.GoWorkerRequest{
+			Ctx: c,
+			Action: func(c context.Context) (context.Context, error) {
+				viewData := ctx.View()
+				viewData["Title"] = p.Title + " - " + ctx.Source.Meta.Title
+				viewData["Desc"] = p.Desc
+				viewData["Page"] = p
+				viewData["PermaKey"] = p.Slug
+				viewData["PostType"] = model.TreePage
+				viewData["Hover"] = p.NavHover
+				viewData["URL"] = p.URL()
+				if p.Lang != "" {
+					viewData["Lang"] = p.Lang
+					if i18n, ok := ctx.Source.I18n[p.Lang]; ok {
+						viewData["I18n"] = i18n
+					}
+				}
+				tpl := "page.html"
+				if p.Template != "" {
+					tpl = p.Template
+				}
+				return c, compile(ctx, tpl, viewData, p.DestURL())
+			},
+		}
+		reqs = append(reqs, req)
+	}
+	return reqs
+}
+
+func compileArchive(ctx *Context) *helper.GoWorkerRequest {
+	archive := ctx.Source.Archive
+	c := context.WithValue(context.Background(), "Archives", archive.Data)
+	return &helper.GoWorkerRequest{
+		Ctx: c,
+		Action: func(c context.Context) (context.Context, error) {
+			viewData := ctx.View()
+			viewData["Title"] = fmt.Sprintf("Archive - %s", ctx.Source.Meta.Title)
+			viewData["Archives"] = archive.Data
+			viewData["PostType"] = model.TreeArchive
+			viewData["PermaKey"] = "archive"
+			viewData["Hover"] = "archive"
+			viewData["URL"] = path.Join(ctx.Source.Meta.Path, "archive")
+			return c, compile(ctx, "archive.html", viewData, archive.DestURL())
+		},
+	}
 }
 
 func compile(ctx *Context, file string, viewData map[string]interface{}, destFile string) error {
@@ -301,7 +233,8 @@ func compile(ctx *Context, file string, viewData map[string]interface{}, destFil
 	return nil
 }
 
-func compileXML(ctx *Context, toDir string) error {
+func compileXML(ctx *Context) error {
+	toDir := ctx.DstDir()
 	now := time.Now()
 	feed := &feeds.Feed{
 		Title:       ctx.Source.Meta.Title,

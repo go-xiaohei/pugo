@@ -55,6 +55,7 @@ type PagerPosts struct {
 	Posts
 	Pager   *helper.Pager
 	destURL string
+	URL     string
 }
 
 // SetDestURL set destUrl to paged post list
