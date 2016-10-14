@@ -21,6 +21,14 @@ func ShouldMetaFiles() map[FormatType]string {
 	}
 }
 
+// ShouldPostMetaFiles return all filenames of meta file for posts
+func ShouldPostMetaFiles() map[FormatType]string {
+	return map[FormatType]string{
+		FormatTOML: "post.toml",
+		FormatINI:  "post.ini",
+	}
+}
+
 // ShouldFormatExtension return all extensions of all formats
 func ShouldFormatExtension() map[FormatType]string {
 	return map[FormatType]string{

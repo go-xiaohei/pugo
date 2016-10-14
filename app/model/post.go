@@ -154,7 +154,7 @@ func (p *Post) normalize() error {
 }
 
 // NewPostOfMarkdown create new post from markdown file
-func NewPostOfMarkdown(file string) (*Post, error) {
+func NewPostOfMarkdown(file string, post *Post) (*Post, error) {
 	fileBytes, err := ioutil.ReadFile(file)
 	if err != nil {
 		return nil, err
@@ -162,50 +162,44 @@ func NewPostOfMarkdown(file string) (*Post, error) {
 	if len(fileBytes) < 3 {
 		return nil, fmt.Errorf("post content is too less")
 	}
-	dataSlice := bytes.SplitN(fileBytes, postBlockSeparator, 3)
-	if len(dataSlice) != 3 {
-		return nil, fmt.Errorf("post need front-matter block and markdown block")
-	}
 
-	idx := getFirstBreakByte(dataSlice[1])
-	if idx == 0 {
-		return nil, fmt.Errorf("post need front-matter block and markdown block")
-	}
+	if post == nil {
+		dataSlice := bytes.SplitN(fileBytes, postBlockSeparator, 3)
+		if len(dataSlice) != 3 {
+			return nil, fmt.Errorf("post need front-matter block and markdown block")
+		}
 
-	formatType := detectFormat(string(dataSlice[1][:idx]))
-	if formatType == 0 {
-		return nil, fmt.Errorf("post front-matter block is unrecognized")
-	}
+		idx := getFirstBreakByte(dataSlice[1])
+		if idx == 0 {
+			return nil, fmt.Errorf("post need front-matter block and markdown block")
+		}
 
-	post := new(Post)
-	if formatType == FormatTOML {
-		if err = toml.Unmarshal(dataSlice[1][idx:], post); err != nil {
-			return nil, err
+		formatType := detectFormat(string(dataSlice[1][:idx]))
+		if formatType == 0 {
+			return nil, fmt.Errorf("post front-matter block is unrecognized")
 		}
-	}
-	if formatType == FormatINI {
-		iniObj, err := ini.Load(dataSlice[1][idx:])
-		if err != nil {
-			return nil, err
-		}
-		section := iniObj.Section("DEFAULT")
-		if err = section.MapTo(post); err != nil {
-			return nil, err
-		}
-		tagStr := section.Key("tags").Value()
-		if tagStr != "" {
-			post.TagString = strings.Split(tagStr, ",")
-		}
-		authorEmail := section.Key("author_email").Value()
-		if authorEmail != "" {
-			post.Author, err = newAuthorFromIniSection(section)
-			if err != nil {
+
+		post = new(Post)
+		if formatType == FormatTOML {
+			if err = toml.Unmarshal(dataSlice[1][idx:], post); err != nil {
 				return nil, err
 			}
 		}
+		if formatType == FormatINI {
+			iniObj, err := ini.Load(dataSlice[1][idx:])
+			if err != nil {
+				return nil, err
+			}
+			section := iniObj.Section("DEFAULT")
+			if err = newPostFromIniSection(section, post); err != nil {
+				return nil, err
+			}
+		}
+		post.Bytes = bytes.Trim(dataSlice[2], "\n")
+	} else {
+		post.Bytes = bytes.Trim(fileBytes, "\n")
 	}
 	post.fileURL = file
-	post.Bytes = bytes.Trim(dataSlice[2], "\n")
 	return post, post.normalize()
 }
 

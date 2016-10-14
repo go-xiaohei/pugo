@@ -122,6 +122,7 @@ func ReadLang(srcDir string) map[string]*helper.I18n {
 		if fi.IsDir() {
 			return nil
 		}
+		p = filepath.ToSlash(p)
 		ext := filepath.Ext(p)
 		if ext == ".toml" || ext == ".ini" {
 			log15.Debug("Read|%s", p)
@@ -150,17 +151,35 @@ func ReadPosts(ctx *Context) ([]*model.Post, error) {
 		return nil, fmt.Errorf("posts directory '%s' is missing", srcDir)
 	}
 
+	// try load post.toml or post.ini to read total meta file
+	var (
+		err      error
+		postMeta = make(map[string]*model.Post)
+	)
+	for t, f := range model.ShouldPostMetaFiles() {
+		file := filepath.Join(srcDir, f)
+		if !com.IsFile(file) {
+			continue
+		}
+		postMeta, err = model.NewPostsFrontMatter(file, t)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	var posts []*model.Post
-	err := filepath.Walk(srcDir, func(p string, fi os.FileInfo, err error) error {
+	err = filepath.Walk(srcDir, func(p string, fi os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 		if fi.IsDir() {
 			return nil
 		}
+		p = filepath.ToSlash(p)
 		if filepath.Ext(p) == ".md" {
-			log15.Debug("Read|%s", p)
-			post, err := model.NewPostOfMarkdown(p)
+			metaKey := strings.TrimPrefix(p, filepath.ToSlash(srcDir+"/"))
+			log15.Debug("Read|%s|%v", p, postMeta[metaKey] != nil)
+			post, err := model.NewPostOfMarkdown(p, postMeta[metaKey])
 			if err != nil {
 				log15.Warn("Read|Post|%s|%v", p, err)
 			} else if post != nil && !post.Draft {
@@ -191,6 +210,7 @@ func ReadPages(ctx *Context) ([]*model.Page, error) {
 		if fi.IsDir() {
 			return nil
 		}
+		p = filepath.ToSlash(p)
 		if filepath.Ext(p) == ".md" {
 			log15.Debug("Read|%s", p)
 			rel, _ := filepath.Rel(srcDir, p)
