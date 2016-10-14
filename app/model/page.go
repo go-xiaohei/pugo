@@ -116,7 +116,7 @@ func (p *Page) normalize() error {
 }
 
 // NewPageOfMarkdown create new page from markdown file
-func NewPageOfMarkdown(file, slug string) (*Page, error) {
+func NewPageOfMarkdown(file, slug string, page *Page) (*Page, error) {
 	fileBytes, err := ioutil.ReadFile(file)
 	if err != nil {
 		return nil, err
@@ -124,56 +124,46 @@ func NewPageOfMarkdown(file, slug string) (*Page, error) {
 	if len(fileBytes) < 3 {
 		return nil, fmt.Errorf("page content is too less")
 	}
-	dataSlice := bytes.SplitN(fileBytes, postBlockSeparator, 3)
-	if len(dataSlice) != 3 {
-		return nil, fmt.Errorf("page need front-matter block and markdown block")
-	}
-
-	idx := getFirstBreakByte(dataSlice[1])
-	if idx == 0 {
-		return nil, fmt.Errorf("page need front-matter block and markdown block")
-	}
-
-	formatType := detectFormat(string(dataSlice[1][:idx]))
-	if formatType == 0 {
-		return nil, fmt.Errorf("page front-matter block is unrecognized")
-	}
-
-	page := new(Page)
-	page.fileURL = file
-	if formatType == FormatTOML {
-		if err = toml.Unmarshal(dataSlice[1][idx:], page); err != nil {
-			return nil, err
+	if page == nil {
+		dataSlice := bytes.SplitN(fileBytes, postBlockSeparator, 3)
+		if len(dataSlice) != 3 {
+			return nil, fmt.Errorf("page need front-matter block and markdown block")
 		}
-	}
-	if formatType == FormatINI {
-		iniObj, err := ini.Load(dataSlice[1][idx:])
-		if err != nil {
-			return nil, err
+
+		idx := getFirstBreakByte(dataSlice[1])
+		if idx == 0 {
+			return nil, fmt.Errorf("page need front-matter block and markdown block")
 		}
-		section := iniObj.Section("DEFAULT")
-		if err = section.MapTo(page); err != nil {
-			return nil, err
+
+		formatType := detectFormat(string(dataSlice[1][:idx]))
+		if formatType == 0 {
+			return nil, fmt.Errorf("page front-matter block is unrecognized")
 		}
-		authorEmail := section.Key("author_email").Value()
-		if authorEmail != "" {
-			page.Author, err = newAuthorFromIniSection(section)
-			if err != nil {
+
+		page = new(Page)
+		if formatType == FormatTOML {
+			if err = toml.Unmarshal(dataSlice[1][idx:], page); err != nil {
 				return nil, err
 			}
 		}
-		metaData := iniObj.Section("meta").KeysHash()
-		if len(metaData) > 0 {
-			page.Meta = make(map[string]interface{})
-			for k, v := range metaData {
-				page.Meta[k] = v
+		if formatType == FormatINI {
+			iniObj, err := ini.Load(dataSlice[1][idx:])
+			if err != nil {
+				return nil, err
+			}
+			if err = newPageFromIniObject(iniObj, page, "DEFAULT", "meta"); err != nil {
+				return nil, err
 			}
 		}
+
+		page.Bytes = bytes.Trim(dataSlice[2], "\n")
+	} else {
+		page.Bytes = bytes.Trim(fileBytes, "\n")
 	}
+	page.fileURL = file
 	if page.Slug == "" {
 		page.Slug = slug
 	}
-	page.Bytes = bytes.Trim(dataSlice[2], "\n")
 	return page, page.normalize()
 }
 

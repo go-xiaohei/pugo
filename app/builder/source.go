@@ -202,8 +202,23 @@ func ReadPages(ctx *Context) ([]*model.Page, error) {
 		return nil, fmt.Errorf("pages directory '%s' is missing", srcDir)
 	}
 
+	var (
+		err      error
+		pageMeta = make(map[string]*model.Page)
+	)
+	for t, f := range model.ShouldPageMetaFiles() {
+		file := filepath.Join(srcDir, f)
+		if !com.IsFile(file) {
+			continue
+		}
+		pageMeta, err = model.NewPagesFrontMatter(file, t)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	var pages []*model.Page
-	err := filepath.Walk(srcDir, func(p string, fi os.FileInfo, err error) error {
+	err = filepath.Walk(srcDir, func(p string, fi os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -212,10 +227,11 @@ func ReadPages(ctx *Context) ([]*model.Page, error) {
 		}
 		p = filepath.ToSlash(p)
 		if filepath.Ext(p) == ".md" {
-			log15.Debug("Read|%s", p)
 			rel, _ := filepath.Rel(srcDir, p)
 			rel = strings.TrimSuffix(rel, filepath.Ext(rel))
-			page, err := model.NewPageOfMarkdown(p, filepath.ToSlash(rel))
+			metaKey := strings.TrimPrefix(p, filepath.ToSlash(srcDir+"/"))
+			log15.Debug("Read|%s|%v", p, pageMeta[metaKey] != nil)
+			page, err := model.NewPageOfMarkdown(p, filepath.ToSlash(rel), pageMeta[metaKey])
 			if err != nil {
 				log15.Warn("Read|Page|%s|%v", p, err)
 			} else if page != nil && !page.Draft {

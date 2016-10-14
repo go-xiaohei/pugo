@@ -43,6 +43,36 @@ func NewPostsFrontMatter(file string, t FormatType) (map[string]*Post, error) {
 	return metas, nil
 }
 
+// NewPagesFrontMatter parse page meta file to create page data
+func NewPagesFrontMatter(file string, t FormatType) (map[string]*Page, error) {
+	metas := make(map[string]*Page)
+
+	if t == FormatTOML {
+		// todo : format toml
+	}
+
+	if t == FormatINI {
+		iniObj, err := ini.Load(file)
+		if err != nil {
+			return nil, err
+		}
+		for _, s := range iniObj.SectionStrings() {
+			if s == "DEFAULT" {
+				continue
+			}
+			if strings.HasSuffix(s, ".meta") {
+				continue
+			}
+			page := new(Page)
+			if err = newPageFromIniObject(iniObj, page, s, s+".meta"); err != nil {
+				return nil, err
+			}
+			metas[s] = page
+		}
+	}
+	return metas, nil
+}
+
 func newPostFromIniSection(section *ini.Section, post *Post) error {
 	var err error
 	if err = section.MapTo(post); err != nil {
@@ -57,6 +87,29 @@ func newPostFromIniSection(section *ini.Section, post *Post) error {
 		post.Author, err = newAuthorFromIniSection(section)
 		if err != nil {
 			return err
+		}
+	}
+	return nil
+}
+
+func newPageFromIniObject(iniObj *ini.File, page *Page, sectionName, metaSectionName string) error {
+	var err error
+	section := iniObj.Section(sectionName)
+	if err = section.MapTo(page); err != nil {
+		return err
+	}
+	authorEmail := section.Key("author_email").Value()
+	if authorEmail != "" {
+		page.Author, err = newAuthorFromIniSection(section)
+		if err != nil {
+			return err
+		}
+	}
+	metaData := iniObj.Section(metaSectionName).KeysHash()
+	if len(metaData) > 0 {
+		page.Meta = make(map[string]interface{})
+		for k, v := range metaData {
+			page.Meta[k] = v
 		}
 	}
 	return nil
