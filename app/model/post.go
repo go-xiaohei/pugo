@@ -123,7 +123,7 @@ func (p *Post) Updated() time.Time {
 
 // IsUpdated return true if updated time is not same to created time
 func (p *Post) IsUpdated() bool {
-	return p.updateTime.Unix() == p.dateTime.Unix()
+	return p.updateTime.Unix() != p.dateTime.Unix()
 }
 
 func (p *Post) normalize() error {

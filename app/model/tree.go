@@ -45,6 +45,7 @@ func (t treeSlice) Len() int           { return len(t) }
 func (t treeSlice) Less(i, j int) bool { return t[i].Sort < t[j].Sort }
 func (t treeSlice) Swap(i, j int)      { t[i], t[j] = t[j], t[i] }
 
+// NewTree create new tree node records with dest prefix string
 func NewTree(dest string) *Tree {
 	return &Tree{
 		Link: "/",

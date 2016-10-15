@@ -6,6 +6,7 @@ type Comment struct {
 	Duoshuo string `toml:"duoshuo" ini:"duoshuo"`
 }
 
+// IsOK return the comment setting is valid
 func (c *Comment) IsOK() bool {
 	return c.Disqus != "" || c.Duoshuo != ""
 }
