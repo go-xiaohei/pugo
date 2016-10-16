@@ -22,7 +22,7 @@ func AssembleSource(ctx *Context) {
 		return
 	}
 
-	ctx.Source.Nav.FixURL(ctx.Source.Meta.Path)
+	ctx.Source.Nav.SetPrefix(ctx.Source.Meta.Path)
 	ctx.Source.Tags = make(map[string]*model.Tag)
 	ctx.Source.TagPosts = make(map[string]*model.TagPosts)
 	ctx.Source.PagePosts = make(map[int]*model.PagerPosts)

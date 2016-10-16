@@ -38,8 +38,8 @@ func (n *Nav) TrLink(i18n *helper.I18n) string {
 	return "/" + path.Join(i18n.Lang, n.Link)
 }
 
-// FixURL fix url path of all navigation items
-func (ng NavGroup) FixURL(prefix string) {
+// SetPrefix fix url path of all navigation items with prefix
+func (ng NavGroup) SetPrefix(prefix string) {
 	for _, n := range ng {
 		if n.IsRemote {
 			continue

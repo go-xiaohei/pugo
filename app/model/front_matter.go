@@ -48,7 +48,13 @@ func NewPagesFrontMatter(file string, t FormatType) (map[string]*Page, error) {
 	metas := make(map[string]*Page)
 
 	if t == FormatTOML {
-		// todo : format toml
+		data, err := ioutil.ReadFile(file)
+		if err != nil {
+			return nil, err
+		}
+		if err = toml.Unmarshal(data, &metas); err != nil {
+			return nil, err
+		}
 	}
 
 	if t == FormatINI {
@@ -57,17 +63,18 @@ func NewPagesFrontMatter(file string, t FormatType) (map[string]*Page, error) {
 			return nil, err
 		}
 		for _, s := range iniObj.SectionStrings() {
-			if s == "DEFAULT" {
+			s2 := strings.Trim(s, `"`)
+			if s2 == "DEFAULT" {
 				continue
 			}
-			if strings.HasSuffix(s, ".meta") {
+			if strings.HasSuffix(s2, ".meta") {
 				continue
 			}
 			page := new(Page)
-			if err = newPageFromIniObject(iniObj, page, s, s+".meta"); err != nil {
+			if err = newPageFromIniObject(iniObj, page, s, `"`+s2+`.meta"`); err != nil {
 				return nil, err
 			}
-			metas[s] = page
+			metas[s2] = page
 		}
 	}
 	return metas, nil

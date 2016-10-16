@@ -91,7 +91,7 @@ func (p *Page) Updated() time.Time {
 
 // IsUpdated return true if updated time is not same to created time
 func (p *Page) IsUpdated() bool {
-	return p.updateTime.Unix() == p.dateTime.Unix()
+	return p.updateTime.Unix() != p.dateTime.Unix()
 }
 
 func (p *Page) normalize() error {
