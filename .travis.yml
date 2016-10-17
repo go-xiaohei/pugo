@@ -8,7 +8,6 @@ sudo: false
 
 before_install:
   - go get -t -v ./...
-  - go get github.com/smartystreets/goconvey
   - go get golang.org/x/tools/cmd/cover
   - go get github.com/jteeuwen/go-bindata/...
 
@@ -20,9 +19,8 @@ script:
   - ./pugo.exe build --theme="theme/uno" --dest="uno-test"
   - ./pugo.exe new post "this is new post"
   - ./pugo.exe new page "this is new page"
-  - ./pugo.exe build --debug
   - ./pugo.exe doc --no-server
-  - ./test.sh
+  - ./go.test.sh
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
