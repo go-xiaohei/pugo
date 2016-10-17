@@ -82,3 +82,8 @@ func (pg *Pager) NextURL() string {
 	}
 	return ""
 }
+
+// URL returns page current url
+func (pg *Pager) URL() string {
+	return fmt.Sprintf(pg.layout, pg.Current)
+}

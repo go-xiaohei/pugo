@@ -107,7 +107,7 @@ func TestModelPostMeta(t *testing.T) {
 	})
 }
 
-func TestModePostWrong(t *testing.T) {
+func TestModelPostWrong(t *testing.T) {
 	Convey("ParsePostWrong", t, func() {
 		Convey("ParseWrongTime", func() {
 			_, err := NewPostOfMarkdown("testdata/post/post_wrong.md", nil)

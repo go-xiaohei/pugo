@@ -30,7 +30,7 @@ func (p Posts) Range(i, j int) []*Post {
 	if i > len(p)-1 {
 		return nil
 	}
-	return p[i:j]
+	return p[i : j+1]
 }
 
 // TagPosts are list of posts belongs to a tag
