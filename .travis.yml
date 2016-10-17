@@ -12,6 +12,7 @@ before_install:
   - go get github.com/jteeuwen/go-bindata/...
 
 script:
+  - ./go.test.sh
   - go generate -x
   - go build -o pugo.exe pugo.go 
   - ./pugo.exe build --theme="theme/default" --dest="default-dest"
@@ -20,7 +21,6 @@ script:
   - ./pugo.exe new post "this is new post"
   - ./pugo.exe new page "this is new page"
   - ./pugo.exe doc --no-server
-  - ./go.test.sh
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
