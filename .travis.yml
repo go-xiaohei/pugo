@@ -9,9 +9,12 @@ sudo: false
 script:
   - go get github.com/smartystreets/goconvey
   - go get golang.org/x/tools/cmd/cover
-  - go test -cover ./...
+  - go get github.com/mattn/goveralls
+  - go get github.com/jteeuwen/go-bindata/...
+  - go generate -x
   - go build -o pugo.exe pugo.go 
-  - ./pugo.exe build --theme="theme/default" --dest="default-dest" --debug
+  - go test -short -v ./...
+  - ./pugo.exe build --theme="theme/default" --dest="default-dest"
   - ./pugo.exe build --theme="theme/pure" --dest="pure-dest"
   - ./pugo.exe build --theme="theme/uno" --dest="uno-test"
   - ./pugo.exe new post "this is new post"
@@ -21,4 +24,4 @@ script:
   - ./pugo.exe doc --no-server
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - goveralls -coverprofile=coverage.out -service=travis-ci
