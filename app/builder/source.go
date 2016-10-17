@@ -72,16 +72,24 @@ func ReadSource(ctx *Context) {
 	ctx.Source = NewSource(metaAll)
 
 	wg := helper.NewGoGroup("ReadStep")
-	wg.Wrap("ReadLang", func() {
+	wg.Wrap("ReadLang", func() error {
 		ctx.Source.I18n = ReadLang(ctx.srcDir)
+		return nil
 	})
-	wg.Wrap("ReadPosts", func() {
-		ctx.Source.Posts, ctx.Err = ReadPosts(ctx)
+	wg.Wrap("ReadPosts", func() error {
+		var err error
+		ctx.Source.Posts, err = ReadPosts(ctx)
+		return err
 	})
-	wg.Wrap("ReadPages", func() {
-		ctx.Source.Pages, ctx.Err = ReadPages(ctx)
+	wg.Wrap("ReadPages", func() error {
+		var err error
+		ctx.Source.Pages, err = ReadPages(ctx)
+		return err
 	})
 	wg.Wait()
+	if len(wg.Errors()) > 0 {
+		ctx.Err = wg.Errors()[0]
+	}
 }
 
 // ReadMeta read meta file in srcDir

@@ -1,6 +1,7 @@
 package builder
 
 import (
+	"io/ioutil"
 	"os"
 	"testing"
 
@@ -16,6 +17,7 @@ func init() {
 }
 
 func TestBuildSimple(t *testing.T) {
+	log15.Root().SetHandler(log15.StreamHandler(ioutil.Discard, helper.LogfmtFormat()))
 	Convey("Build Simple", t, func() {
 		ctx := NewContext(&cli.Context{}, "../../source", "../../dest", "../../theme/default")
 		ShouldBeTrue(ctx.IsValid())
