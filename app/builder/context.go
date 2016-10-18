@@ -3,6 +3,7 @@ package builder
 import (
 	"errors"
 	"fmt"
+	"path"
 	"strings"
 	"sync/atomic"
 	"time"
@@ -111,10 +112,49 @@ func (ctx *Context) Again() {
 	atomic.StoreInt64(&ctx.counter, 0)
 }
 
-// SrcDir get src dir after build once
+// SrcDir get src dir
 func (ctx *Context) SrcDir() string {
 	ctx.parseDir()
 	return ctx.srcDir
+}
+
+// SrcPostDir get post dir in src
+func (ctx *Context) SrcPostDir() string {
+	ctx.parseDir()
+	if ctx.Source != nil && ctx.Source.Build != nil && ctx.Source.Build.PostDir != "" {
+		return path.Join(ctx.srcDir, ctx.Source.Build.PostDir)
+	}
+	return path.Join(ctx.srcDir, "post")
+}
+
+// SrcPageDir get page dir in src
+func (ctx *Context) SrcPageDir() string {
+	ctx.parseDir()
+	if ctx.Source != nil && ctx.Source.Build != nil && ctx.Source.Build.PageDir != "" {
+		return path.Join(ctx.srcDir, ctx.Source.Build.PageDir)
+	}
+	return path.Join(ctx.srcDir, "page")
+}
+
+// SrcLangDir get language dir in src
+func (ctx *Context) SrcLangDir() string {
+	ctx.parseDir()
+	if ctx.Source != nil && ctx.Source.Build != nil && ctx.Source.Build.LangDir != "" {
+		return path.Join(ctx.srcDir, ctx.Source.Build.LangDir)
+	}
+	return path.Join(ctx.srcDir, "lang")
+}
+
+// SrcThemeDir get theme dir in src
+func (ctx *Context) SrcThemeDir() string {
+	ctx.parseDir()
+	if ctx.ThemeName != "" {
+		return ctx.ThemeName
+	}
+	if ctx.Source != nil && ctx.Source.Build != nil && ctx.Source.Build.ThemeDir != "" {
+		return ctx.Source.Build.ThemeDir
+	}
+	return "theme/default"
 }
 
 // DstDir get destination directory after build once

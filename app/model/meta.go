@@ -30,6 +30,7 @@ type (
 		AuthorGroup AuthorGroup `toml:"author"`
 		Comment     *Comment    `toml:"comment"`
 		Analytics   *Analytics  `toml:"analytics"`
+		Build       *Build      `toml:"build"`
 	}
 )
 
@@ -102,7 +103,7 @@ func newMetaAllFromINI(data []byte) (*MetaAll, error) {
 	}
 	metaAll.AuthorGroup = authorGroup
 
-	// read comment and analytics
+	// read comment and analytics and build settings
 	cmt := new(Comment)
 	if err := iniObj.Section("comment").MapTo(cmt); err != nil {
 		return nil, err
@@ -111,8 +112,13 @@ func newMetaAllFromINI(data []byte) (*MetaAll, error) {
 	if err := iniObj.Section("analytics").MapTo(cmt); err != nil {
 		return nil, err
 	}
+	build := new(Build)
+	if err := iniObj.Section("build").MapTo(build); err != nil {
+		return nil, err
+	}
 	metaAll.Comment = cmt
 	metaAll.Analytics = any
+	metaAll.Build = build
 
 	if err = metaAll.Normalize(); err != nil {
 		return nil, err

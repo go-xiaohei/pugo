@@ -14,6 +14,10 @@ import (
 	"gopkg.in/inconshreveable/log15.v2"
 )
 
+var (
+	errMetaFileMissing = fmt.Errorf("meta file is missing")
+)
+
 type (
 	// Source include all sources data
 	Source struct {
@@ -23,6 +27,7 @@ type (
 		Authors   map[string]*model.Author
 		Comment   *model.Comment
 		Analytics *model.Analytics
+		Build     *model.Build
 		I18n      map[string]*helper.I18n
 
 		Posts      model.Posts
@@ -47,6 +52,7 @@ func NewSource(all *model.MetaAll) *Source {
 		Comment:   all.Comment,
 		Analytics: all.Analytics,
 		Authors:   make(map[string]*model.Author),
+		Build:     all.Build,
 	}
 	for _, a := range all.AuthorGroup {
 		s.Authors[a.Name] = a
@@ -64,7 +70,7 @@ func ReadSource(ctx *Context) {
 
 	// read meta
 	// then read languages,posts and pages together
-	metaAll, err := ReadMeta(ctx.srcDir)
+	metaAll, err := ReadSecondMeta(ctx.srcDir)
 	if err != nil {
 		ctx.Err = err
 		return
@@ -73,7 +79,7 @@ func ReadSource(ctx *Context) {
 
 	wg := helper.NewGoGroup("ReadStep")
 	wg.Wrap("ReadLang", func() error {
-		ctx.Source.I18n = ReadLang(ctx.srcDir)
+		ctx.Source.I18n = ReadLang(ctx.SrcLangDir())
 		return nil
 	})
 	wg.Wrap("ReadPosts", func() error {
@@ -92,8 +98,8 @@ func ReadSource(ctx *Context) {
 	}
 }
 
-// ReadMeta read meta file in srcDir
-func ReadMeta(srcDir string) (*model.MetaAll, error) {
+// ReadSecondMeta read meta file in srcDir
+func ReadSecondMeta(srcDir string) (*model.MetaAll, error) {
 	var metaFile string
 	for t, f := range model.ShouldMetaFiles() {
 		metaFile = filepath.Join(srcDir, f)
@@ -113,12 +119,11 @@ func ReadMeta(srcDir string) (*model.MetaAll, error) {
 			return meta, nil
 		}
 	}
-	return nil, fmt.Errorf("meta file is missing")
+	return nil, errMetaFileMissing
 }
 
 // ReadLang read languages in srcDir
 func ReadLang(srcDir string) map[string]*helper.I18n {
-	srcDir = filepath.Join(srcDir, "lang")
 	if !com.IsDir(srcDir) {
 		return nil
 	}
@@ -154,7 +159,7 @@ func ReadLang(srcDir string) map[string]*helper.I18n {
 
 // ReadPosts read posts files in srcDir/post
 func ReadPosts(ctx *Context) ([]*model.Post, error) {
-	srcDir := filepath.Join(ctx.srcDir, "post")
+	srcDir := ctx.SrcPostDir()
 	if !com.IsDir(srcDir) {
 		return nil, fmt.Errorf("posts directory '%s' is missing", srcDir)
 	}
@@ -205,7 +210,7 @@ func ReadPosts(ctx *Context) ([]*model.Post, error) {
 
 // ReadPages read pages files in srcDir/page
 func ReadPages(ctx *Context) ([]*model.Page, error) {
-	srcDir := filepath.Join(ctx.srcDir, "page")
+	srcDir := ctx.SrcPageDir()
 	if !com.IsDir(srcDir) {
 		return nil, fmt.Errorf("pages directory '%s' is missing", srcDir)
 	}

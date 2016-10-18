@@ -76,3 +76,8 @@ duoshuo = ""
 google = ""
 # baidu analytics, need hash-code in hm.js?hash-code
 baidu = ""
+
+[build]
+post_dir = "post"
+page_dir = "page"
+theme_dir = "theme/default"
