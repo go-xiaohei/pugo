@@ -25,6 +25,10 @@ type (
 	NavGroup []*Nav
 )
 
+var (
+	errNavInvalid = errors.New("Nav's title or link is blank")
+)
+
 // Tr print nav title with i18n helper
 func (n *Nav) Tr(i18n *helper.I18n) string {
 	return i18n.Tr("nav." + n.I18n)
@@ -51,7 +55,7 @@ func (ng NavGroup) SetPrefix(prefix string) {
 func (ng NavGroup) normalize() error {
 	for _, n := range ng {
 		if n.Link == "" || n.Title == "" {
-			return errors.New("Nav's title or link is blank")
+			return errNavInvalid
 		}
 		if u, _ := url.Parse(n.Link); u != nil && u.Host != "" {
 			n.IsRemote = true

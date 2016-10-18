@@ -52,6 +52,14 @@ func TestMetaRead(t *testing.T) {
 						meta.NavGroup.SetPrefix("abc")
 						So(meta.NavGroup[0].Link, ShouldEqual, "abc/guide.html")
 						So(meta.NavGroup[0].TrLink(i18n), ShouldEqual, "/en/abc/guide.html")
+						So(meta.NavGroup[3].TrLink(i18n), ShouldEqual, "https://github.com/go-xiaohei/pugo")
+					})
+
+					Convey("NavError", func() {
+						ng := make(NavGroup, 0)
+						ng = append(ng, &Nav{})
+						err := ng.normalize()
+						So(err, ShouldEqual, errNavInvalid)
 					})
 				})
 			}
@@ -79,5 +87,21 @@ func TestMetaRead(t *testing.T) {
 				})
 			}
 		}
+	})
+
+	Convey("ParseMetaError", t, func() {
+		_, err := NewMetaAll([]byte("abc"), 0)
+		So(err, ShouldEqual, errMetaUnsupport)
+
+		meta := &Meta{}
+		err = meta.normalize()
+		So(err, ShouldEqual, errMetaInvalid)
+
+		meta2 := &Meta{
+			Title:  "pugo",
+			Domain: "pugo.io",
+		}
+		err = meta2.normalize()
+		So(err, ShouldBeNil)
 	})
 }

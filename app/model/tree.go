@@ -62,8 +62,11 @@ func (t *Tree) Children(link ...string) []*Tree {
 	if len(link) == 0 {
 		return t.children
 	}
+	if len(link) == 1 && link[0] == "" {
+		return t.children
+	}
 	if t2 := t.subTree(link[0]); t2 != nil {
-		return t2.children
+		return t2
 	}
 	return nil
 }
@@ -73,16 +76,21 @@ func (t *Tree) IsValid() bool {
 	return t.Type != ""
 }
 
-func (t *Tree) subTree(link string) *Tree {
-	link = strings.TrimSuffix(link, path.Ext(link))
+func (t *Tree) subTree(link string) []*Tree {
+	//link = strings.TrimSuffix(link, path.Ext(link))
 	linkData := strings.Split(strings.Trim(link, "/"), "/")
 	if len(linkData) == 0 {
 		return nil
 	}
+	if len(linkData) == 1 && linkData[0] == "" {
+		return t.children
+	}
 	for _, c := range t.children {
 		if c.Link == linkData[0] {
 			if len(linkData) == 1 {
-				return c
+				if path.Ext(linkData[0]) != "" {
+					return []*Tree{c}
+				}
 			}
 			return c.subTree(strings.Join(linkData[1:], "/"))
 		}

@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"fmt"
 	"net/url"
 	"path"
@@ -34,6 +35,11 @@ type (
 	}
 )
 
+var (
+	errMetaUnsupport = errors.New("meta file format is unsupported")
+	errMetaInvalid   = errors.New("meta title and (root or domain) cant be blank")
+)
+
 // NewMetaAll parse bytes with correct FormatType
 func NewMetaAll(data []byte, format FormatType) (*MetaAll, error) {
 	var err error
@@ -50,7 +56,7 @@ func NewMetaAll(data []byte, format FormatType) (*MetaAll, error) {
 	case FormatINI:
 		return newMetaAllFromINI(data)
 	}
-	return nil, fmt.Errorf("unsupported meta file format")
+	return nil, errMetaUnsupport
 }
 
 func newMetaAllFromINI(data []byte) (*MetaAll, error) {
@@ -135,7 +141,7 @@ func (m *Meta) DomainURL(link string) string {
 
 func (m *Meta) normalize() error {
 	if (m.Root == "" && m.Domain == "") || m.Title == "" {
-		return fmt.Errorf("meta title and (root or domain) cant be blank")
+		return errMetaInvalid
 	}
 	if m.Root == "" && m.Domain != "" {
 		m.Root = "http://" + m.Domain + "/"

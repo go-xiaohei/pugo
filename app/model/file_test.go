@@ -15,6 +15,7 @@ func TestFile(t *testing.T) {
 		files.Add("xyz.html", 456, time.Now(), FileStatic, OpRemove)
 
 		So(files.Get("xyz.html"), ShouldNotBeNil)
+		So(files.Exist("xyz.html"), ShouldBeFalse)
 		So(files.Exist("xyz.jpg"), ShouldBeFalse)
 		So(files.All(), ShouldHaveLength, 2)
 	})

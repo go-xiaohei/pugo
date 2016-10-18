@@ -112,6 +112,9 @@ func TestModelPostWrong(t *testing.T) {
 		Convey("ParseWrongTime", func() {
 			_, err := NewPostOfMarkdown("testdata/post/post_wrong.md", nil)
 			So(err.Error(), ShouldContainSubstring, "empty time")
+
+			_, err = parseTimeString("")
+			So(err.Error(), ShouldEqual, "empty time string")
 		})
 
 		Convey("ParseWrongFrontMatter", func() {
