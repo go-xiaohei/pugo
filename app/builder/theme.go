@@ -36,4 +36,7 @@ func ReadTheme(ctx *Context) {
 	ctx.Theme.Func("fullUrl", func(str ...string) string {
 		return ctx.Source.Meta.Root + path.Join(str...)
 	})
+	if err := ctx.Theme.Validate(); err != nil {
+		log15.Warn("Theme|%s|%s", dir, err.Error())
+	}
 }

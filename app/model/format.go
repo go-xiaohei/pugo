@@ -37,6 +37,14 @@ func ShouldPageMetaFiles() map[FormatType]string {
 	}
 }
 
+// ShouldThemeMetaFiles return all filenames of meta file for theme
+func ShouldThemeMetaFiles() map[FormatType]string {
+	return map[FormatType]string{
+		FormatTOML: "theme.toml",
+		FormatINI:  "theme.ini",
+	}
+}
+
 // ShouldFormatExtension return all extensions of all formats
 func ShouldFormatExtension() map[FormatType]string {
 	return map[FormatType]string{

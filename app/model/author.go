@@ -16,6 +16,7 @@ type (
 		URL     string `toml:"url" ini:"url"`
 		Avatar  string `toml:"avatar" ini:"avatar"`
 		Bio     string `toml:"bio" ini:"bio"`
+		Repo    string `toml:"repo" ini:"repo"` // github repository
 		IsOwner bool   // must be the first author
 	}
 	// AuthorGroup is collection of Authors

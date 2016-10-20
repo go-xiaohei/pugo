@@ -13,16 +13,24 @@ import (
 	"regexp"
 	"strings"
 	"sync"
+
+	"github.com/Unknwon/com"
+	"github.com/go-xiaohei/pugo/app/model"
 )
 
 var (
 	reDefineTag   = regexp.MustCompile("{{ ?define \"([^\"]*)\" ?\"?([a-zA-Z0-9]*)?\"? ?}}")
 	reTemplateTag = regexp.MustCompile("{{ ?template \"([^\"]*)\" ?([^ ]*)? ?}}")
+
+	errThemeMetaMissing = errors.New("need add theme meta file")
 )
 
 type (
 	// Theme object, maintains a sort of templates for whole site data
 	Theme struct {
+		Meta       *Meta
+		metaFile   string
+		metaError  error
 		dir        string
 		lock       sync.Mutex
 		funcMap    template.FuncMap
@@ -75,12 +83,34 @@ func New(dir string) *Theme {
 		}
 		return template.HTML(string(buf.Bytes()))
 	}
+	theme.parseMeta()
 	return theme
+}
+
+func (th *Theme) parseMeta() {
+	for t, f := range model.ShouldThemeMetaFiles() {
+		file := filepath.Join(th.dir, f)
+		if !com.IsFile(f) {
+			continue
+		}
+		data, err := ioutil.ReadFile(file)
+		if err != nil {
+			th.metaError = err
+			return
+		}
+		th.Meta, th.metaError = NewMeta(data, t)
+		return
+	}
 }
 
 // Func add template func to theme
 func (th *Theme) Func(key string, fn interface{}) {
 	th.funcMap[key] = fn
+}
+
+// Funcs return all template functions
+func (th *Theme) Funcs() template.FuncMap {
+	return th.funcMap
 }
 
 // Load loads templates
@@ -235,6 +265,17 @@ func (th *Theme) Static() string {
 // Template gets template by name
 func (th *Theme) Template(name string) *template.Template {
 	return th.templates[name]
+}
+
+// Validate check theme meta is valid or not
+func (th *Theme) Validate() error {
+	if th.metaFile == "" {
+		return errThemeMetaMissing
+	}
+	if th.metaError != nil {
+		return th.metaError
+	}
+	return nil
 }
 
 func generateTemplateName(base, path string) string {
