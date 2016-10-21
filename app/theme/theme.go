@@ -16,13 +16,17 @@ import (
 
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo/app/model"
+	"github.com/go-xiaohei/pugo/app/vars"
+	"github.com/mcuadros/go-version"
+	"gopkg.in/inconshreveable/log15.v2"
 )
 
 var (
 	reDefineTag   = regexp.MustCompile("{{ ?define \"([^\"]*)\" ?\"?([a-zA-Z0-9]*)?\"? ?}}")
 	reTemplateTag = regexp.MustCompile("{{ ?template \"([^\"]*)\" ?([^ ]*)? ?}}")
 
-	errThemeMetaMissing = errors.New("need add theme meta file")
+	errThemeMetaMissing     = errors.New("need add theme meta file")
+	errThemeOutdatedVersion = errors.New("theme need newer PuGo version")
 )
 
 type (
@@ -89,8 +93,8 @@ func New(dir string) *Theme {
 
 func (th *Theme) parseMeta() {
 	for t, f := range model.ShouldThemeMetaFiles() {
-		file := filepath.Join(th.dir, f)
-		if !com.IsFile(f) {
+		file := path.Join(th.dir, f)
+		if !com.IsFile(file) {
 			continue
 		}
 		data, err := ioutil.ReadFile(file)
@@ -99,6 +103,10 @@ func (th *Theme) parseMeta() {
 			return
 		}
 		th.Meta, th.metaError = NewMeta(data, t)
+		if th.Meta != nil {
+			th.metaFile = file
+			log15.Debug("Theme|%s", file)
+		}
 		return
 	}
 }
@@ -274,6 +282,13 @@ func (th *Theme) Validate() error {
 	}
 	if th.metaError != nil {
 		return th.metaError
+	}
+	if th.Meta != nil {
+		if th.Meta.MinVersion != "" {
+			if version.Compare(vars.Version, th.Meta.MinVersion, "<") {
+				return errThemeOutdatedVersion
+			}
+		}
 	}
 	return nil
 }

@@ -1,0 +1,17 @@
+name = "Pure Theme"
+license = "Creative Commons Attribution 4.0 International"
+license_url = "https://creativecommons.org/licenses/by/4.0/"
+desc = "pure-css based theme of PuGo"
+url = "https://github.com/go-xiaohei/pugo"
+tags = ["purecss","simple","left-sidebar"]
+min_version = "0.10.0"
+
+[[author]]
+    name = "fuxiaohei"
+    url = "http://fuxiaohei.me"
+    repo = "https://github.com/fuxiaohei"
+
+[[ref]]
+    name = "purecss"
+    url = "http://purecss.io/"
+    repo = "https://github.com/yahoo/pure/"
