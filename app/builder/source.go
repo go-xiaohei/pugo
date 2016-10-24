@@ -83,7 +83,7 @@ func ReadSource(ctx *Context) {
 		return nil
 	})
 	wg.Wrap("ReadPosts", func() error {
-		if ctx.Source.Build.DisablePost {
+		if ctx.Source.Build != nil && ctx.Source.Build.DisablePost {
 			return nil
 		}
 		var err error
@@ -91,7 +91,7 @@ func ReadSource(ctx *Context) {
 		return err
 	})
 	wg.Wrap("ReadPages", func() error {
-		if ctx.Source.Build.DisablePage {
+		if ctx.Source.Build != nil && ctx.Source.Build.DisablePage {
 			return nil
 		}
 		var err error
