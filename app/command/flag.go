@@ -15,7 +15,7 @@ var (
 	}
 	buildThemeFlag = cli.StringFlag{
 		Name:  "theme",
-		Value: "theme/default",
+		Value: "source/theme/default",
 		Usage: "theme to use (located in flag directory)",
 	}
 	debugFlag = cli.BoolFlag{

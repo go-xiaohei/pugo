@@ -2,22 +2,20 @@ package builder
 
 import (
 	"io/ioutil"
-	"os"
 	"testing"
 
 	"github.com/go-xiaohei/pugo/app/helper"
 	. "github.com/smartystreets/goconvey/convey"
 	"github.com/urfave/cli"
 	"gopkg.in/inconshreveable/log15.v2"
-	"gopkg.in/inconshreveable/log15.v2/ext"
 )
 
 func init() {
-	log15.Root().SetHandler(log15.LvlFilterHandler(log15.LvlDebug, ext.FatalHandler(log15.StreamHandler(os.Stderr, helper.LogfmtFormat()))))
+	//log15.Root().SetHandler(log15.LvlFilterHandler(log15.LvlDebug, ext.FatalHandler(log15.StreamHandler(os.Stderr, helper.LogfmtFormat()))))
+	log15.Root().SetHandler(log15.StreamHandler(ioutil.Discard, helper.LogfmtFormat()))
 }
 
 func TestBuildSimple(t *testing.T) {
-	log15.Root().SetHandler(log15.StreamHandler(ioutil.Discard, helper.LogfmtFormat()))
 	Convey("Build Simple", t, func() {
 		ctx := NewContext(&cli.Context{}, "../../source", "../../dest", "../../theme/default")
 		ShouldBeTrue(ctx.IsValid())

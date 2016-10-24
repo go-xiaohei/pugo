@@ -154,7 +154,7 @@ func (ctx *Context) SrcThemeDir() string {
 	if ctx.Source != nil && ctx.Source.Build != nil && ctx.Source.Build.ThemeDir != "" {
 		return ctx.Source.Build.ThemeDir
 	}
-	return "theme/default"
+	return "source/theme/default"
 }
 
 // DstDir get destination directory after build once

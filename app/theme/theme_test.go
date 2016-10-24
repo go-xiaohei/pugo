@@ -1,13 +1,20 @@
 package theme
 
 import (
+	"io/ioutil"
 	"testing"
 
+	"github.com/go-xiaohei/pugo/app/helper"
 	. "github.com/smartystreets/goconvey/convey"
+	"gopkg.in/inconshreveable/log15.v2"
 )
 
+func init() {
+	log15.Root().SetHandler(log15.StreamHandler(ioutil.Discard, helper.LogfmtFormat()))
+}
+
 func TestTheme(t *testing.T) {
-	theme := New("../../theme/default")
+	theme := New("../../source/theme/default")
 
 	Convey("LoadTheme", t, func() {
 		err := theme.Load()
@@ -23,7 +30,7 @@ func TestTheme(t *testing.T) {
 }
 
 func TestThemeMeta(t *testing.T) {
-	theme := New("../../theme/uno")
+	theme := New("../../source/theme/uno")
 
 	Convey("LoadTheme", t, func() {
 		err := theme.Load()
