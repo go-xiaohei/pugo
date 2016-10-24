@@ -163,6 +163,7 @@ func ReadPosts(ctx *Context) ([]*model.Post, error) {
 	if !com.IsDir(srcDir) {
 		return nil, fmt.Errorf("posts directory '%s' is missing", srcDir)
 	}
+	log15.Info("Read|Posts|%s", srcDir)
 
 	// try load post.toml or post.ini to read total meta file
 	var (
@@ -214,6 +215,7 @@ func ReadPages(ctx *Context) ([]*model.Page, error) {
 	if !com.IsDir(srcDir) {
 		return nil, fmt.Errorf("pages directory '%s' is missing", srcDir)
 	}
+	log15.Info("Read|Pages|%s", srcDir)
 
 	var (
 		err      error

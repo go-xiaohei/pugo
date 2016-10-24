@@ -55,7 +55,6 @@ func After(fn Handler) {
 func Build(ctx *Context) {
 	b.IsBuilding = true
 	t := time.Now()
-	log15.Info("Build|Start")
 	for i, h := range b.handlers {
 		if h(ctx); ctx.Err != nil {
 			log15.Crit("Build|Fail|%s", ctx.Err.Error())

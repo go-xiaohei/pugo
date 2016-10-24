@@ -50,6 +50,7 @@ func Compile(ctx *Context) {
 	}
 	worker.WaitStop()
 	ctx.Err = compileXML(ctx)
+	log15.Info("Compile|Done")
 }
 
 func compilePosts2(ctx *Context) []*helper.GoWorkerRequest {
