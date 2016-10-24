@@ -124,7 +124,7 @@ func newPage(args []string, dstDir string) error {
 
 	page := &model.Page{
 		Title:    strings.Join(args, " "),
-		Slug:     fileKey,
+		Slug:     fmt.Sprintf("%d-%s", time.Now().Year(), fileKey),
 		Desc:     strings.Join(args, " "),
 		Date:     time.Now().Format("2006-01-02 15:04:05"),
 		Update:   time.Now().Format("2006-01-02 15:04:05"),

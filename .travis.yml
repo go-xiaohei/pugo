@@ -15,9 +15,9 @@ before_install:
 script:
   - go generate -x
   - go build -o pugo.exe pugo.go 
-  - ./pugo.exe build --theme="theme/default" --dest="default-dest"
-  - ./pugo.exe build --theme="theme/pure" --dest="pure-dest"
-  - ./pugo.exe build --theme="theme/uno" --dest="uno-test"
+  - ./pugo.exe build --theme="source/theme/default" --dest="default-dest"
+  - ./pugo.exe build --theme="source/theme/pure" --dest="pure-dest"
+  - ./pugo.exe build --theme="source/theme/uno" --dest="uno-test"
   - ./pugo.exe new post "this is new post"
   - ./pugo.exe new page "this is new page"
   - ./pugo.exe doc --no-server
