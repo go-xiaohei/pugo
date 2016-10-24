@@ -78,6 +78,13 @@ google = ""
 baidu = ""
 
 [build]
+# disable_post disable to read & compile post data
+disable_post = false
+# disable_page disable to read & compile page data
+disable_page = false
+# post_dir set posts directory
 post_dir = "post"
+# page_dir set pages directory
 page_dir = "page"
+# theme_dir set default theme directory, it is based on source directory, not same to --theme (directly dirname)
 theme_dir = "theme/default"

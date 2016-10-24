@@ -2,6 +2,9 @@ package model
 
 // Build is settings for builder in meta file
 type Build struct {
+	DisablePost bool `toml:"disable_post" ini:"disable_post"`
+	DisablePage bool `toml:"disable_page" ini:"disable_page"`
+
 	PostDir  string `toml:"post_dir" ini:"post_dir"`
 	PageDir  string `toml:"page_dir" ini:"page_dir"`
 	ThemeDir string `toml:"theme_dir" ini:"theme_dir"`

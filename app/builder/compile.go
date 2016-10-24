@@ -49,7 +49,14 @@ func Compile(ctx *Context) {
 		worker.Send(r)
 	}
 	worker.WaitStop()
-	ctx.Err = compileXML(ctx)
+	if ctx.Err = compileRSS(ctx); ctx.Err != nil {
+		log15.Info("Compile|Done")
+		return
+	}
+	if ctx.Err = compileSitemap(ctx); ctx.Err != nil {
+		log15.Info("Compile|Done")
+		return
+	}
 	log15.Info("Compile|Done")
 }
 
@@ -234,7 +241,8 @@ func compile(ctx *Context, file string, viewData map[string]interface{}, destFil
 	return nil
 }
 
-func compileXML(ctx *Context) error {
+func compileRSS(ctx *Context) error {
+	// todo : should compile RSS if no posts ?
 	toDir := ctx.DstDir()
 	now := time.Now()
 	feed := &feeds.Feed{
@@ -280,7 +288,12 @@ func compileXML(ctx *Context) error {
 	ctx.Files.Add(dstFile, 0, ctx.time, model.FileCompiled, model.OpCompiled)
 	log15.Debug("Build|%s", dstFile)
 	atomic.AddInt64(&ctx.counter, 1)
+	return nil
+}
 
+func compileSitemap(ctx *Context) error {
+	toDir := ctx.DstDir()
+	now := time.Now()
 	var buf bytes.Buffer
 	buf.WriteString(`<?xml version="1.0" encoding="UTF-8"?>`)
 	buf.WriteString(`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`)
@@ -334,9 +347,9 @@ func compileXML(ctx *Context) error {
 	}
 
 	buf.WriteString("</urlset>")
-	dstFile = path.Join(toDir, ctx.Source.Meta.Path, "sitemap.xml")
+	dstFile := path.Join(toDir, ctx.Source.Meta.Path, "sitemap.xml")
 	os.MkdirAll(path.Dir(dstFile), os.ModePerm)
-	if err = ioutil.WriteFile(dstFile, buf.Bytes(), os.ModePerm); err != nil {
+	if err := ioutil.WriteFile(dstFile, buf.Bytes(), os.ModePerm); err != nil {
 		return err
 	}
 	ctx.Files.Add(dstFile, 0, ctx.time, model.FileCompiled, model.OpCompiled)
