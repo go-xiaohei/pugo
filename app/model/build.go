@@ -7,6 +7,6 @@ type Build struct {
 
 	PostDir  string `toml:"post_dir" ini:"post_dir"`
 	PageDir  string `toml:"page_dir" ini:"page_dir"`
-	ThemeDir string `toml:"theme_dir" ini:"theme_dir"`
 	LangDir  string `toml:"lang_dir" ini:"lang_dir"`
+	MediaDir string `toml:"media_dir" ini:"media_dir"`
 }

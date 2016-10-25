@@ -28,7 +28,7 @@ var (
 			ReadTheme,
 			AssembleSource,
 			Compile,
-			Copy,
+			Sync,
 		},
 	}
 	b2 = &Builder{

@@ -235,7 +235,7 @@ func compile(ctx *Context, file string, viewData map[string]interface{}, destFil
 	if err := ctx.Theme.Execute(f, file, viewData); err != nil {
 		return err
 	}
-	ctx.Files.Add(destFile, 0, ctx.time, model.FileCompiled, model.OpCompiled)
+	ctx.Sync.SetSynced(destFile)
 	log15.Debug("Build|%s", filepath.ToSlash(destFile))
 	atomic.AddInt64(&ctx.counter, 1)
 	return nil
@@ -285,7 +285,7 @@ func compileRSS(ctx *Context) error {
 	if err = feed.WriteRss(f); err != nil {
 		return err
 	}
-	ctx.Files.Add(dstFile, 0, ctx.time, model.FileCompiled, model.OpCompiled)
+	ctx.Sync.SetSynced(dstFile)
 	log15.Debug("Build|%s", dstFile)
 	atomic.AddInt64(&ctx.counter, 1)
 	return nil
@@ -352,7 +352,7 @@ func compileSitemap(ctx *Context) error {
 	if err := ioutil.WriteFile(dstFile, buf.Bytes(), os.ModePerm); err != nil {
 		return err
 	}
-	ctx.Files.Add(dstFile, 0, ctx.time, model.FileCompiled, model.OpCompiled)
+	ctx.Sync.SetSynced(dstFile)
 	log15.Debug("Build|%s", dstFile)
 	atomic.AddInt64(&ctx.counter, 1)
 	return nil

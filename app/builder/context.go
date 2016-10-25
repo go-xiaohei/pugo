@@ -11,6 +11,7 @@ import (
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/go-xiaohei/pugo/app/model"
+	"github.com/go-xiaohei/pugo/app/sync"
 	"github.com/go-xiaohei/pugo/app/theme"
 	"github.com/go-xiaohei/pugo/app/vars"
 	"github.com/urfave/cli"
@@ -33,11 +34,10 @@ type (
 		Source *Source
 		// Theme is theme object, use to render templates
 		Theme *theme.Theme
-		// Files is generated files in by this context
-		Files *model.Files
 		// Tree is url tree nodes by this context
-		Tree   *model.Tree
-		Copied *CopiedOpt
+		Tree *model.Tree
+		// Sync is file syncer
+		Sync *sync.Syncer
 
 		time           time.Time
 		counter        int64
@@ -53,10 +53,9 @@ func NewContext(cli *cli.Context, from, to, theme string) *Context {
 		To:        to,
 		ThemeName: theme,
 		time:      time.Now(),
-		Files:     model.NewFiles(),
-		Copied:    defaultCopiedOpt(),
 	}
 	c.Tree = model.NewTree(c.DstDir())
+	c.Sync = sync.NewSyncer(c.DstDir())
 	return c
 }
 
@@ -145,16 +144,13 @@ func (ctx *Context) SrcLangDir() string {
 	return path.Join(ctx.srcDir, "lang")
 }
 
-// SrcThemeDir get theme dir in src
-func (ctx *Context) SrcThemeDir() string {
+// SrcMediaDir get media dir in src
+func (ctx *Context) SrcMediaDir() string {
 	ctx.parseDir()
-	if ctx.ThemeName != "" {
-		return ctx.ThemeName
+	if ctx.Source != nil && ctx.Source.Build != nil && ctx.Source.Build.MediaDir != "" {
+		return path.Join(ctx.srcDir, ctx.Source.Build.MediaDir)
 	}
-	if ctx.Source != nil && ctx.Source.Build != nil && ctx.Source.Build.ThemeDir != "" {
-		return ctx.Source.Build.ThemeDir
-	}
-	return "source/theme/default"
+	return path.Join(ctx.srcDir, "media")
 }
 
 // DstDir get destination directory after build once

@@ -86,5 +86,5 @@ disable_page = false
 post_dir = "post"
 # page_dir set pages directory
 page_dir = "page"
-# theme_dir set default theme directory, it is based on source directory, not same to --theme (directly dirname)
-theme_dir = "theme/default"
+# media dir set media directory, based on source directory
+media_dir = "media"
