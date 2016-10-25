@@ -106,10 +106,18 @@ func (s *Syncer) SetSynced(file string) {
 }
 
 // Clear clean all non-synced file in s.dir
-func (s *Syncer) Clear() error {
+func (s *Syncer) Clear(opt *DirOption) error {
 	return filepath.Walk(s.dir, func(p string, info os.FileInfo, err error) error {
 		if info.IsDir() {
 			return nil
+		}
+		relFile, _ := filepath.Rel(s.dir, p)
+		if opt != nil && len(opt.Ignore) > 0 {
+			for _, ignore := range opt.Ignore {
+				if strings.HasPrefix(relFile, ignore) {
+					return nil
+				}
+			}
 		}
 		p = filepath.ToSlash(p)
 		if s.syncedFiles[p] {

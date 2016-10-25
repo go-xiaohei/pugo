@@ -46,7 +46,8 @@ func Sync(ctx *Context) {
 	if ctx.Err = ctx.Sync.SyncDir(ctx.SrcMediaDir(), opt); ctx.Err != nil {
 		return
 	}
-	if ctx.Err = ctx.Sync.Clear(); ctx.Err != nil {
+	opt.Ignore = []string{".git"}
+	if ctx.Err = ctx.Sync.Clear(opt); ctx.Err != nil {
 		return
 	}
 }
