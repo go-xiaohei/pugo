@@ -3,6 +3,7 @@ package sync
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"github.com/Unknwon/com"
@@ -17,6 +18,7 @@ type Syncer struct {
 	syncedFiles map[string]bool
 }
 
+// NewSyncer create a sync object to sync file to dir
 func NewSyncer(dir string) *Syncer {
 	return &Syncer{
 		dir:         dir,
@@ -34,18 +36,26 @@ func (s *Syncer) Sync() error {
 	return nil
 }
 
+// DirOption set options when sync directory
 type DirOption struct {
 	Filter func(string) bool
 	Prefix string
+	Ignore []string
 }
 
 // SyncDir sync directory files to syncer's directory
 func (s *Syncer) SyncDir(dir string, opt *DirOption) error {
+	if !com.IsDir(dir) {
+		return nil
+	}
 	var (
 		relFile string
 		dstFile string
 	)
 	return filepath.Walk(dir, func(p string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
 		if info.IsDir() {
 			return nil
 		}
@@ -55,8 +65,17 @@ func (s *Syncer) SyncDir(dir string, opt *DirOption) error {
 			}
 		}
 		relFile, _ = filepath.Rel(dir, p)
-		if opt != nil && opt.Prefix != "" {
-			relFile = filepath.Join(opt.Prefix, relFile)
+		if opt != nil {
+			if len(opt.Ignore) > 0 {
+				for _, ignore := range opt.Ignore {
+					if strings.HasPrefix(relFile, ignore) {
+						return nil
+					}
+				}
+			}
+			if opt.Prefix != "" {
+				relFile = filepath.Join(opt.Prefix, relFile)
+			}
 		}
 		dstFile = filepath.Join(s.dir, relFile)
 		if com.IsFile(dstFile) {
@@ -78,6 +97,7 @@ func (s *Syncer) SyncDir(dir string, opt *DirOption) error {
 	})
 }
 
+// SetSynced set file as synced file
 func (s *Syncer) SetSynced(file string) {
 	file = filepath.ToSlash(file)
 	s.syncLock.Lock()
@@ -85,6 +105,7 @@ func (s *Syncer) SetSynced(file string) {
 	s.syncLock.Unlock()
 }
 
+// Clear clean all non-synced file in s.dir
 func (s *Syncer) Clear() error {
 	return filepath.Walk(s.dir, func(p string, info os.FileInfo, err error) error {
 		if info.IsDir() {
