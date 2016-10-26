@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Unknwon/com"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -109,11 +110,15 @@ func TestModelPostMeta(t *testing.T) {
 
 func TestModelPostWrong(t *testing.T) {
 	Convey("ParsePostWrong", t, func() {
+		Convey("ParseNoTime", func() {
+			file := "testdata/post/post_wrong.md"
+			p, err := NewPostOfMarkdown(file, nil)
+			So(err, ShouldBeNil)
+			t, _ := com.FileMTime(file)
+			So(p.dateTime.Unix(), ShouldEqual, t)
+		})
 		Convey("ParseWrongTime", func() {
-			_, err := NewPostOfMarkdown("testdata/post/post_wrong.md", nil)
-			So(err.Error(), ShouldContainSubstring, "empty time")
-
-			_, err = parseTimeString("")
+			_, err := parseTimeString("")
 			So(err.Error(), ShouldEqual, "empty time string")
 		})
 

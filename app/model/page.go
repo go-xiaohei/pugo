@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/BurntSushi/toml"
+	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo/app/helper"
 	"gopkg.in/ini.v1"
 )
@@ -99,8 +100,10 @@ func (p *Page) normalize() error {
 		p.Template = "page.html"
 	}
 	var err error
-	if p.dateTime, err = parseTimeString(p.Date); err != nil {
-		return err
+	if p.Date != "" {
+		if p.dateTime, err = parseTimeString(p.Date); err != nil {
+			return err
+		}
 	}
 	if p.Update == "" {
 		p.Update = p.Date
@@ -163,6 +166,10 @@ func NewPageOfMarkdown(file, slug string, page *Page) (*Page, error) {
 	page.fileURL = file
 	if page.Slug == "" {
 		page.Slug = slug
+	}
+	if page.Date == "" {
+		t, _ := com.FileMTime(file)
+		page.dateTime = time.Unix(t, 0)
 	}
 	return page, page.normalize()
 }

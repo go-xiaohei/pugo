@@ -185,6 +185,8 @@ func ReadPosts(ctx *Context) ([]*model.Post, error) {
 		if err != nil {
 			return nil, err
 		}
+		log15.Debug("Read|PostMeta|%s", file)
+		break
 	}
 
 	var posts []*model.Post
@@ -236,6 +238,8 @@ func ReadPages(ctx *Context) ([]*model.Page, error) {
 		if err != nil {
 			return nil, err
 		}
+		log15.Debug("Read|PageMeta|%s", file)
+		break
 	}
 
 	var pages []*model.Page

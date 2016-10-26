@@ -32,10 +32,13 @@ func Compile(ctx *Context) {
 		if rs.Error != nil {
 			if p, ok := rs.Ctx.Value("post").(*model.Post); ok {
 				log15.Error("Build|%s|%s", p.SourceURL(), rs.Error.Error())
+				return
 			}
 			if p, ok := rs.Ctx.Value("page").(*model.Page); ok {
 				log15.Error("Build|%s|%s", p.SourceURL(), rs.Error.Error())
+				return
 			}
+			log15.Error("Build|%v", rs.Error)
 		}
 	})
 	var reqs []*helper.GoWorkerRequest

@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/BurntSushi/toml"
+	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo/app/helper"
 	"gopkg.in/ini.v1"
 )
@@ -132,8 +133,10 @@ func (p *Post) normalize() error {
 		p.Slug = strings.TrimSuffix(filepath.Base(p.fileURL), filepath.Ext(p.fileURL))
 	}
 	var err error
-	if p.dateTime, err = parseTimeString(p.Date); err != nil {
-		return err
+	if p.Date != "" {
+		if p.dateTime, err = parseTimeString(p.Date); err != nil {
+			return err
+		}
 	}
 	if p.Update == "" {
 		p.Update = p.Date
@@ -200,6 +203,10 @@ func NewPostOfMarkdown(file string, post *Post) (*Post, error) {
 		post.Bytes = bytes.Trim(fileBytes, "\n")
 	}
 	post.fileURL = file
+	if post.Date == "" {
+		t, _ := com.FileMTime(file)
+		post.dateTime = time.Unix(t, 0)
+	}
 	return post, post.normalize()
 }
 
