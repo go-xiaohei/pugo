@@ -12,8 +12,10 @@ const (
 	TreeIndex = "index"
 	// TreePost is a post node
 	TreePost = "post"
-	// TreePage is a page node
+	// TreePage is a page node with content
 	TreePage = "page"
+	// TreePageNode is a empty page as tree node, not read page
+	TreePageNode = "page-node"
 	// TreeArchive is node of archive page
 	TreeArchive = "archive"
 	// TreePostList is node of list page of posts
@@ -24,6 +26,8 @@ const (
 	TreeTag = "tag"
 	// TreeXML is xml file node
 	TreeXML = "xml"
+	// TreeDir is a directory node, use to mark directory
+	TreeDir = "dir"
 )
 
 // Tree describe the position of one file in all compiled files
@@ -57,7 +61,7 @@ func NewTree(dest string) *Tree {
 	}
 }
 
-// Children return nodes of tree by url link
+// Children return nodes of tree by url link in next child level, not all chilrens in all levels
 func (t *Tree) Children(link ...string) []*Tree {
 	if len(link) == 0 {
 		return t.children
@@ -69,6 +73,21 @@ func (t *Tree) Children(link ...string) []*Tree {
 		return t2
 	}
 	return nil
+}
+
+// Dirs returns nodes of dir nodes by link
+func (t *Tree) Dirs(link ...string) []*Tree {
+	children := t.Children(link...)
+	if len(children) == 0 {
+		return nil
+	}
+	dirs := []*Tree{}
+	for _, c := range children {
+		if c.Type == TreeDir {
+			dirs = append(dirs, c)
+		}
+	}
+	return dirs
 }
 
 // IsValid return whether the node is compiled or not
@@ -117,8 +136,14 @@ func (t *Tree) Add(link, title, linkType string, s int) {
 	isFind := false
 	for _, c := range t.children {
 		if c.Link == linkData[0] {
-			c.Add(strings.Join(linkData[1:], "/"), title, linkType, s)
 			isFind = true
+			if linkType == TreePageNode && len(linkData) == 2 && linkData[1] == "" {
+				c.Type = linkType
+				c.Title = title
+				c.Sort = s
+			} else {
+				c.Add(strings.Join(linkData[1:], "/"), title, linkType, s)
+			}
 			break
 		}
 	}
@@ -132,11 +157,18 @@ func (t *Tree) Add(link, title, linkType string, s int) {
 			URL:   path.Join(t.URL, linkData[0]),
 		}
 		if len(linkData) > 1 {
-			tree.Add(strings.Join(linkData[1:], "/"), title, linkType, s)
-			tree.Type = ""
+			tree.Type = TreeDir
 			tree.Title = ""
+			if linkType == TreePageNode {
+				tree.Type = linkType
+				tree.Title = title
+				tree.Sort = s
+			}
+			if linkData[1] != "" {
+				tree.Add(strings.Join(linkData[1:], "/"), title, linkType, s)
+			}
 		}
 		t.children = append(t.children, tree)
-		sort.Sort(treeSlice(t.children))
 	}
+	sort.Sort(treeSlice(t.children))
 }

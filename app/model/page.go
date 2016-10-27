@@ -31,6 +31,7 @@ type Page struct {
 	Sort       int                    `toml:"sort" ini:"sort"`
 	Author     *Author                `toml:"-" ini:"-"`
 	Draft      bool                   `toml:"draft" ini:"draft"`
+	Node       bool                   `toml:"node" ini:"node"`
 
 	pageURL      string
 	fileURL      string
@@ -114,12 +115,19 @@ func (p *Page) normalize() error {
 		}
 	}
 	p.contentBytes = helper.Markdown(p.Bytes)
-	p.pageURL = fmt.Sprintf("/%s", p.Slug) + ".html"
+	p.pageURL = "/" + p.Slug
+	if !p.Node {
+		p.pageURL = fmt.Sprintf("/%s", p.Slug) + ".html"
+	}
 	return nil
 }
 
 // NewPageOfMarkdown create new page from markdown file
 func NewPageOfMarkdown(file, slug string, page *Page) (*Page, error) {
+	// page-node need not read file
+	if page != nil && page.Node == true {
+		return page, nil
+	}
 	fileBytes, err := ioutil.ReadFile(file)
 	if err != nil {
 		return nil, err
@@ -158,8 +166,9 @@ func NewPageOfMarkdown(file, slug string, page *Page) (*Page, error) {
 				return nil, err
 			}
 		}
-
-		page.Bytes = bytes.Trim(dataSlice[2], "\n")
+		if page.Node == false {
+			page.Bytes = bytes.Trim(dataSlice[2], "\n")
+		}
 	} else {
 		page.Bytes = bytes.Trim(fileBytes, "\n")
 	}
@@ -167,7 +176,7 @@ func NewPageOfMarkdown(file, slug string, page *Page) (*Page, error) {
 	if page.Slug == "" {
 		page.Slug = slug
 	}
-	if page.Date == "" {
+	if page.Date == "" && page.Node == false { // page-node need not time
 		t, _ := com.FileMTime(file)
 		page.dateTime = time.Unix(t, 0)
 	}

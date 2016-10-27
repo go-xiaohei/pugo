@@ -243,6 +243,11 @@ func ReadPages(ctx *Context) ([]*model.Page, error) {
 	}
 
 	var pages []*model.Page
+	for _, page := range pageMeta {
+		if page.Node {
+			pages = append(pages, page)
+		}
+	}
 	err = filepath.Walk(srcDir, func(p string, fi os.FileInfo, err error) error {
 		if err != nil {
 			return err

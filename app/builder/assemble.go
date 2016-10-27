@@ -64,7 +64,11 @@ func AssembleSource(ctx *Context) {
 		}
 		p.SetDestURL(filepath.Join(ctx.DstDir(), p.URL()))
 		p.SetPlaceholder(hr)
-		ctx.Tree.Add(p.DestURL(), p.Title, model.TreePage, p.Sort)
+		treeType := model.TreePage
+		if p.Node {
+			treeType = model.TreePageNode
+		}
+		ctx.Tree.Add(p.DestURL(), p.Title, treeType, p.Sort)
 		if p.Author == nil {
 			p.Author = ctx.Source.Authors[p.AuthorName]
 		}

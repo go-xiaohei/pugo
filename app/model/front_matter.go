@@ -77,6 +77,15 @@ func NewPagesFrontMatter(file string, t FormatType) (map[string]*Page, error) {
 			metas[s2] = page
 		}
 	}
+
+	for _, page := range metas {
+		if page.Node {
+			if err := page.normalize(); err != nil {
+				return nil, err
+			}
+		}
+	}
+
 	return metas, nil
 }
 

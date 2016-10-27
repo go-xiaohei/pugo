@@ -14,6 +14,22 @@ func TestTree(t *testing.T) {
 	tree.Add("/abc/123/xyz.html", "abc-123-xyz", TreePost, 2)
 	tree.Add("/abc/123/456.html", "abc-123-456", TreePost, 2)
 
+	tree.Add("/666/abc.html", "666-abc", TreePage, 1)
+	tree.Add("/666/def.html", "666-def", TreePage, 2)
+	tree.Add("/666/hij.html", "666-hij", TreePage, 3)
+	tree.Add("/666/klmn.html", "666-klmn", TreePage, 4)
+	tree.Add("/666/opq.html", "666-opq", TreePage, 5)
+
+	tree.Add("/c9c/rst.html", "c9c-rst", TreePage, 5)
+	tree.Add("/c9c/uvw.html", "c9c-uvw", TreePage, 5)
+	tree.Add("/c9c/", "c9c", TreePageNode, 0)
+
+	tree.Add("/clc/", "clc", TreePageNode, 0)
+	tree.Add("/clc/rst.html", "clc-rst", TreePage, 7)
+	tree.Add("/clc/uvw.html", "clc-uvw", TreePage, 9)
+
+	tree.Print("")
+
 	Convey("Tree", t, func() {
 		children := tree.Children("abc")
 		So(children, ShouldHaveLength, 3)
@@ -24,5 +40,8 @@ func TestTree(t *testing.T) {
 		So(children[2].Link, ShouldEqual, "123")
 		children2 := children[2].Children("xyz.html")
 		So(children2, ShouldHaveLength, 1)
+
+		dirs := tree.Dirs("")
+		So(dirs, ShouldHaveLength, 2)
 	})
 }

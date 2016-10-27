@@ -42,11 +42,11 @@ func Compile(ctx *Context) {
 		}
 	})
 	var reqs []*helper.GoWorkerRequest
-	reqs = append(reqs, compilePosts2(ctx)...)
+	reqs = append(reqs, compilePosts(ctx)...)
 	reqs = append(reqs, compileIndexPage(ctx))
 	reqs = append(reqs, compilePagePosts(ctx)...)
 	reqs = append(reqs, compileTagPosts(ctx)...)
-	reqs = append(reqs, compilePages2(ctx)...)
+	reqs = append(reqs, compilePages(ctx)...)
 	reqs = append(reqs, compileArchive(ctx))
 	for _, r := range reqs {
 		worker.Send(r)
@@ -63,7 +63,7 @@ func Compile(ctx *Context) {
 	log15.Info("Compile|Done")
 }
 
-func compilePosts2(ctx *Context) []*helper.GoWorkerRequest {
+func compilePosts(ctx *Context) []*helper.GoWorkerRequest {
 	posts := ctx.Source.Posts
 	if len(posts) == 0 {
 		log15.Warn("NoPosts")
@@ -171,7 +171,7 @@ func compileTagPosts(ctx *Context) []*helper.GoWorkerRequest {
 	return reqs
 }
 
-func compilePages2(ctx *Context) []*helper.GoWorkerRequest {
+func compilePages(ctx *Context) []*helper.GoWorkerRequest {
 	pages := ctx.Source.Pages
 	if len(pages) == 0 {
 		log15.Warn("MoPages")
@@ -184,6 +184,9 @@ func compilePages2(ctx *Context) []*helper.GoWorkerRequest {
 		req := &helper.GoWorkerRequest{
 			Ctx: c,
 			Action: func(c context.Context) (context.Context, error) {
+				if p.Node {
+					return c, nil
+				}
 				viewData := ctx.View()
 				viewData["Title"] = p.Title + " - " + ctx.Source.Meta.Title
 				viewData["Desc"] = p.Desc

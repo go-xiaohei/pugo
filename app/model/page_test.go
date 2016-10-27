@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"path"
 	"testing"
 	"time"
@@ -80,7 +81,26 @@ func TestModelPageMeta(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(p.Content(), ShouldHaveLength, 2110)
 				So(p.Meta, ShouldContainKey, "key3")
+
+				Convey("PageNodeInMeta", func() {
+					So(pages, ShouldContainKey, "page/node")
+					So(pages["page/node"].Node, ShouldBeTrue)
+					So(pages["page/node"].Content(), ShouldHaveLength, 0)
+				})
 			}
 		}
+	})
+}
+
+func TestModePageNode(t *testing.T) {
+	Convey("ParsePageNode", t, func() {
+		p, err := NewPageOfMarkdown("testdata/page/page_node.md", "page/page_node", nil)
+		if err != nil {
+			So(err, ShouldNotBeNil)
+			return
+		}
+		So(p.Title, ShouldEqual, "PageNode")
+		fmt.Println(string(p.Content()))
+		So(p.Content(), ShouldHaveLength, 0)
 	})
 }
