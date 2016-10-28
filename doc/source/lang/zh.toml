@@ -23,3 +23,7 @@ guide = "入门"
 #docs
 [doc]
 doc = "文档"
+command = "命令"
+data = "数据"
+template = "模板"
+deployment = "部署"

@@ -9,34 +9,24 @@
 					<div class="pure-menu">
 						<ul class="pure-menu-list doc-nav">
 							<li class="pure-menu-item"><a href="/{{.Lang}}/docs.html" class="pure-menu-link">{{.I18n.Tr "doc.doc"}}</a></li>
-                            {{range .Tree.Children (print .Lang "/docs")}}
-                                {{if .IsValid}}
+                            {{range .Tree.Pages (print .Lang "/docs")}}
                                 <li class="pure-menu-item"><a href="/{{print $.Lang "/docs/" .Link}}" class="pure-menu-link">{{.Title}}</a></li>
-                                {{end}}
                             {{end}}
-							<li class="pure-menu-heading" data-li="li-1" data-prefix="{{.Lang}}/docs/cmd">Command</li>
-                            {{range .Tree.Children (print .Lang "/docs/cmd")}}
-                                {{if .IsValid}}
+							<li class="pure-menu-heading" data-li="li-1" data-prefix="{{.Lang}}/docs/cmd">{{.I18n.Tr "doc.command"}}</li>
+                            {{range .Tree.Pages (print .Lang "/docs/cmd")}}
                                 <li class="pure-menu-item li-1"><a href="/{{print $.Lang "/docs/cmd/" .Link}}" class="pure-menu-link">{{.Title}}</a></li>
-                                {{end}}
                             {{end}}
-							<li class="pure-menu-heading" data-li="li-2" data-prefix="{{.Lang}}/docs/cnt">Data</li>
-                            {{range .Tree.Children (print .Lang "/docs/cnt")}}
-                                {{if .IsValid}}
+							<li class="pure-menu-heading" data-li="li-2" data-prefix="{{.Lang}}/docs/cnt">{{.I18n.Tr "doc.data"}}</li>
+                            {{range .Tree.Pages (print .Lang "/docs/cnt")}}
                                 <li class="pure-menu-item li-2"><a href="/{{print $.Lang "/docs/cnt/" .Link}}" class="pure-menu-link">{{.Title}}</a></li>
-                                {{end}}
                             {{end}}
-							<li class="pure-menu-heading" data-li="li-3" data-prefix="{{.Lang}}/docs/tpl">Template</li>
-                            {{range .Tree.Children (print .Lang "/docs/tpl")}}
-                                {{if .IsValid}}
+							<li class="pure-menu-heading" data-li="li-3" data-prefix="{{.Lang}}/docs/tpl">{{.I18n.Tr "doc.template"}}</li>
+                            {{range .Tree.Pages (print .Lang "/docs/tpl")}}
                                 <li class="pure-menu-item li-3"><a href="/{{print $.Lang "/docs/tpl/" .Link}}" class="pure-menu-link">{{.Title}}</a></li>
-                                {{end}}
                             {{end}}
-							<li class="pure-menu-heading" data-li="li-4" data-prefix="{{.Lang}}/docs/deploy">Deployment</li>
-                            {{range .Tree.Children (print .Lang "/docs/deploy")}}
-                                {{if .IsValid}}
+							<li class="pure-menu-heading" data-li="li-4" data-prefix="{{.Lang}}/docs/deploy">{{.I18n.Tr "doc.deployment"}}</li>
+                            {{range .Tree.Pages (print .Lang "/docs/deploy")}}
                                 <li class="pure-menu-item li-4"><a href="/{{print $.Lang "/docs/deploy/" .Link}}" class="pure-menu-link">{{.Title}}</a></li>
-                                {{end}}
                             {{end}}
 						</ul>
 					</div>

@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Unknwon/com"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -52,8 +53,8 @@ func TestModelPageIni(t *testing.T) {
 		}
 		So(p.Title, ShouldEqual, "Welcome")
 
-		So(p.Date, ShouldEqual, "2016-03-25 12:20")
-		So(p.Created().Format("2006-01-02 15:04"), ShouldEqual, "2016-03-25 12:20")
+		t, _ := com.FileMTime("testdata/page/page_ini.md")
+		So(p.Created().Unix(), ShouldEqual, t)
 		So(p.IsUpdated(), ShouldEqual, false)
 		So(p.Meta, ShouldContainKey, "key")
 	})
@@ -70,7 +71,7 @@ func TestModelPageMeta(t *testing.T) {
 
 				p, err := NewPageOfMarkdown("testdata/page/page_ini.md", "page/page_ini", pages["page_ini.md"])
 				So(err, ShouldBeNil)
-				So(p.Content(), ShouldHaveLength, 2117)
+				So(p.Content(), ShouldHaveLength, 2136)
 				So(p.Meta, ShouldContainKey, "key2")
 			}
 			if t == FormatTOML {
@@ -102,5 +103,19 @@ func TestModePageNode(t *testing.T) {
 		So(p.Title, ShouldEqual, "PageNode")
 		fmt.Println(string(p.Content()))
 		So(p.Content(), ShouldHaveLength, 0)
+	})
+}
+
+func TestModelPageWrong(t *testing.T) {
+	Convey("ParseWrongFrontMatter", t, func() {
+		// page can parse post data
+		_, err := NewPageOfMarkdown("testdata/post/post_wrong2.md", "post_wrong2.md", nil)
+		So(err.Error(), ShouldContainSubstring, "unrecognized")
+
+		_, err = NewPageOfMarkdown("testdata/post/post_wrong3.md", "post_wrong3.md", nil)
+		So(err.Error(), ShouldContainSubstring, "need front-matter")
+
+		_, err = NewPageOfMarkdown("testdata/page/page_wrong.md", "page_wrong.md", nil)
+		So(err.Error(), ShouldContainSubstring, "page content is too less")
 	})
 }

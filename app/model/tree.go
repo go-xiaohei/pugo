@@ -90,6 +90,53 @@ func (t *Tree) Dirs(link ...string) []*Tree {
 	return dirs
 }
 
+// Nodes return nodes of page-node by link
+func (t *Tree) Nodes(link ...string) []*Tree {
+	children := t.Children(link...)
+	if len(children) == 0 {
+		return nil
+	}
+	nodes := []*Tree{}
+	for _, c := range children {
+		if c.Type == TreePageNode {
+			nodes = append(nodes, c)
+		}
+	}
+	sort.Sort(treeSlice(nodes))
+	return nodes
+}
+
+// Pages return nodes of page by link
+func (t *Tree) Pages(link ...string) []*Tree {
+	children := t.Children(link...)
+	if len(children) == 0 {
+		return nil
+	}
+	nodes := []*Tree{}
+	for _, c := range children {
+		if c.Type == TreePage {
+			nodes = append(nodes, c)
+		}
+	}
+	sort.Sort(treeSlice(nodes))
+	return nodes
+}
+
+// Posts return nodes of post by link
+func (t *Tree) Posts(link ...string) []*Tree {
+	children := t.Children(link...)
+	if len(children) == 0 {
+		return nil
+	}
+	nodes := []*Tree{}
+	for _, c := range children {
+		if c.Type == TreePost {
+			nodes = append(nodes, c)
+		}
+	}
+	return nodes
+}
+
 // IsValid return whether the node is compiled or not
 func (t *Tree) IsValid() bool {
 	return t.Type != ""

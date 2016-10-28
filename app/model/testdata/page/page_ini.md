@@ -1,7 +1,7 @@
 ```ini
 title = "Welcome"
 desc = "welcome to try pugo site generator"
-date = "2016-03-25 12:20"
+# date = "2016-03-25 12:20" no need datatime
 author = "pugo"
 author_email = "fuxiaohei@example.com"
 author_url = "http://example.com"

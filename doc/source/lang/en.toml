@@ -23,3 +23,7 @@ guide = "Guide"
 #docs
 [doc]
 doc = "Documentation"
+command = "Command"
+data = "Data"
+template = "Template"
+deployment = "Deployment"
