@@ -4,6 +4,7 @@ date = "2016-02-04 15:00:00"
 hover = "showcases"
 lang = "zh"
 template = "page.html"
+json = "page/showcase.json"
 ```
 
 - [fuxiaohei.me](http://fuxiaohei.me), 我 , PuGo的作者

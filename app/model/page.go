@@ -32,6 +32,8 @@ type Page struct {
 	Author     *Author                `toml:"-" ini:"-"`
 	Draft      bool                   `toml:"draft" ini:"draft"`
 	Node       bool                   `toml:"node" ini:"node"`
+	JSONFile   string                 `toml:"json" ini:"json"`
+	JSON       *JSON                  `toml:"-" ini:"-"`
 
 	pageURL      string
 	fileURL      string
@@ -181,6 +183,23 @@ func NewPageOfMarkdown(file, slug string, page *Page) (*Page, error) {
 		page.dateTime = time.Unix(t, 0)
 	}
 	return page, page.normalize()
+}
+
+// LoadJSON load json if the file is setting
+func (p *Page) LoadJSON(dir string) error {
+	if p.JSONFile == "" {
+		return nil
+	}
+	file := filepath.Join(dir, p.JSONFile)
+	if !com.IsFile(file) {
+		return fmt.Errorf("page json file '%s' is missing", p.JSONFile)
+	}
+	data, err := ioutil.ReadFile(file)
+	if err != nil {
+		return err
+	}
+	p.JSON = NewJSON(data)
+	return nil
 }
 
 // Pages means pages list

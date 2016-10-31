@@ -4,5 +4,5 @@ title = "0.10.0 Released - Major Release"
 slug = "0-10-0-release"
 date = "2016-03-25 00:00:00"
 author = "pugo"
-tags = "pugo,release,stable"
+tags = ["pugo","release","stable"]
 

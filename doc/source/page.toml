@@ -1,4 +1,4 @@
-[zh/index.html]
+["zh/index.html"]
 
 title = "PuGo - 简单写作，快速编译，智能发布"
 date = "2016-02-04 15:00:00"
@@ -6,6 +6,5 @@ hover = ""
 lang = "zh"
 template = "index.html"
 
-[zh/index.html.meta]
-
+["zh/index.html".meta]
 key = "valuexyz"

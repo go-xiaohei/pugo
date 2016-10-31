@@ -177,7 +177,7 @@ func ReadPosts(ctx *Context) ([]*model.Post, error) {
 		postMeta = make(map[string]*model.Post)
 	)
 	for t, f := range model.ShouldPostMetaFiles() {
-		file := filepath.Join(srcDir, f)
+		file := filepath.Join(ctx.SrcDir(), f)
 		if !com.IsFile(file) {
 			continue
 		}
@@ -231,7 +231,7 @@ func ReadPages(ctx *Context) ([]*model.Page, error) {
 		pageMeta = make(map[string]*model.Page)
 	)
 	for t, f := range model.ShouldPageMetaFiles() {
-		file := filepath.Join(srcDir, f)
+		file := filepath.Join(ctx.SrcDir(), f)
 		if !com.IsFile(file) {
 			continue
 		}
@@ -271,6 +271,13 @@ func ReadPages(ctx *Context) ([]*model.Page, error) {
 			}
 			if page.Draft == true {
 				log15.Warn("Draft|%s", p)
+			}
+			if err = page.LoadJSON(ctx.SrcDir()); err != nil {
+				log15.Warn("Read|Page|JSON|%s|%s", page.JSONFile, err.Error())
+			} else {
+				if page.JSONFile != "" {
+					log15.Debug("Read|Page|JSON|%s", page.JSONFile)
+				}
 			}
 		}
 		return nil
