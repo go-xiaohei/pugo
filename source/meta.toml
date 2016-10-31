@@ -76,3 +76,15 @@ duoshuo = ""
 google = ""
 # baidu analytics, need hash-code in hm.js?hash-code
 baidu = ""
+
+[build]
+# disable_post disable to read & compile post data
+disable_post = false
+# disable_page disable to read & compile page data
+disable_page = false
+# post_dir set posts directory
+post_dir = "post"
+# page_dir set pages directory
+page_dir = "page"
+# media dir set media directory, based on source directory
+media_dir = "media"

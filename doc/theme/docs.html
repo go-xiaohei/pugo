@@ -1,22 +1,45 @@
 {{template "meta.html" .}}
+
 <body>
-{{template "header.html" .}}
-<div id="main" class="{{.PostType}} pugo-{{.PermaKey}}">
-    <div class="wrapper">
-       <div class="pure-g">
-           <div class="pure-u-1-4">
-               {{Include "embed" .I18n.Lang "docs_sidebar.html" .}}         
-           </div>
-           <div class="pure-u-3-4 guide-page">
-               {{with .Page}}
-               <h1 class="title">{{.Title}}</h1>
-               <div class="content">
-                   {{.ContentHTML}}
-               </div>
-               {{end}}
-               {{template "embed/comment.html" .}}
-           </div>
-       </div>
-    </div>
-</div>
-{{template "footer.html" .}}
+	{{template "header.html" .}}
+	<div id="main" class="{{.PostType}} pugo-{{.PermaKey}}">
+		<div class="wrapper">
+			<div class="pure-g">
+				<div class="pure-u-1-4">
+					<div class="pure-menu">
+						<ul class="pure-menu-list doc-nav">
+							<li class="pure-menu-item"><a href="/{{.Lang}}/docs.html" class="pure-menu-link">{{.I18n.Tr "doc.doc"}}</a></li>
+                            {{range .Tree.Pages (print .Lang "/docs")}}
+                                <li class="pure-menu-item"><a href="/{{print $.Lang "/docs/" .Link}}" class="pure-menu-link">{{.Title}}</a></li>
+                            {{end}}
+							<li class="pure-menu-heading" data-li="li-1" data-prefix="{{.Lang}}/docs/cmd">{{.I18n.Tr "doc.command"}}</li>
+                            {{range .Tree.Pages (print .Lang "/docs/cmd")}}
+                                <li class="pure-menu-item li-1"><a href="/{{print $.Lang "/docs/cmd/" .Link}}" class="pure-menu-link">{{.Title}}</a></li>
+                            {{end}}
+							<li class="pure-menu-heading" data-li="li-2" data-prefix="{{.Lang}}/docs/cnt">{{.I18n.Tr "doc.data"}}</li>
+                            {{range .Tree.Pages (print .Lang "/docs/cnt")}}
+                                <li class="pure-menu-item li-2"><a href="/{{print $.Lang "/docs/cnt/" .Link}}" class="pure-menu-link">{{.Title}}</a></li>
+                            {{end}}
+							<li class="pure-menu-heading" data-li="li-3" data-prefix="{{.Lang}}/docs/tpl">{{.I18n.Tr "doc.template"}}</li>
+                            {{range .Tree.Pages (print .Lang "/docs/tpl")}}
+                                <li class="pure-menu-item li-3"><a href="/{{print $.Lang "/docs/tpl/" .Link}}" class="pure-menu-link">{{.Title}}</a></li>
+                            {{end}}
+							<li class="pure-menu-heading" data-li="li-4" data-prefix="{{.Lang}}/docs/deploy">{{.I18n.Tr "doc.deployment"}}</li>
+                            {{range .Tree.Pages (print .Lang "/docs/deploy")}}
+                                <li class="pure-menu-item li-4"><a href="/{{print $.Lang "/docs/deploy/" .Link}}" class="pure-menu-link">{{.Title}}</a></li>
+                            {{end}}
+						</ul>
+					</div>
+				</div>
+				<div class="pure-u-3-4 guide-page">
+					{{with .Page}}
+					<h1 class="title">{{.Title}}</h1>
+					<div class="content">
+						{{.ContentHTML}}
+					</div>
+					{{end}} {{template "embed/comment.html" .}}
+				</div>
+			</div>
+		</div>
+	</div>
+	{{template "footer.html" .}}

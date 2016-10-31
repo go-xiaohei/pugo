@@ -1,22 +1,28 @@
 {{template "meta.html" .}}
 <body>
-{{template "header.html" .}}
-<div id="main" class="{{.PostType}} pugo-{{.PermaKey}}">
-    <div class="wrapper">
-       <div class="pure-g">
-           <div class="pure-u-1-4">
-               {{Include "embed" .I18n.Lang "guide_sidebar.html" .}}         
-           </div>
-           <div class="pure-u-3-4 guide-page">
-               {{with .Page}}
-               <h1 class="title">{{.Title}}</h1>
-               <div class="content">
-                   {{.ContentHTML}}
-               </div>
-               {{end}}
-               {{template "embed/comment.html" .}}
-           </div>
-       </div>
-    </div>
-</div>
-{{template "footer.html" .}}
+	{{template "header.html" .}}
+	<div id="main" class="{{.PostType}} pugo-{{.PermaKey}}">
+		<div class="wrapper">
+			<div class="pure-g">
+				<div class="pure-u-1-4">
+					<div class="pure-menu">
+						<ul class="pure-menu-list guide-nav">
+							<li class="pure-menu-heading">{{.I18n.Tr "guide.guide"}}</li>
+							{{range .Tree.Children (print .Lang "/guide")}}
+							<li class="pure-menu-item"><a href="/{{.URL}}" class="pure-menu-link">{{.Title}}</a></li>
+							{{end}}
+						</ul>
+					</div>
+				</div>
+				<div class="pure-u-3-4 guide-page">
+					{{with .Page}}
+					<h1 class="title">{{.Title}}</h1>
+					<div class="content">
+						{{.ContentHTML}}
+					</div>
+					{{end}} {{template "embed/comment.html" .}}
+				</div>
+			</div>
+		</div>
+	</div>
+	{{template "footer.html" .}}

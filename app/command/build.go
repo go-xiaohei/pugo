@@ -57,3 +57,11 @@ func build(ctx *builder.Context, mustWatch bool) {
 		log15.Info("Watch|Close")
 	}
 }
+
+func buildHangUp(ctx *builder.Context) {
+	signalChan := make(chan os.Signal)
+	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
+	builder.Build(ctx)
+	<-signalChan
+	log15.Info("Close")
+}

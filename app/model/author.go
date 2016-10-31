@@ -16,15 +16,21 @@ type (
 		URL     string `toml:"url" ini:"url"`
 		Avatar  string `toml:"avatar" ini:"avatar"`
 		Bio     string `toml:"bio" ini:"bio"`
+		Repo    string `toml:"repo" ini:"repo"` // github repository
 		IsOwner bool   // must be the first author
 	}
 	// AuthorGroup is collection of Authors
 	AuthorGroup []*Author
 )
 
+var (
+	errAuthorInvalid    = errors.New("author must have name")
+	errAuthorGroupEmpty = errors.New("must add an author")
+)
+
 func (a *Author) normalize() error {
 	if a.Name == "" {
-		return errors.New("author must have name")
+		return errAuthorInvalid
 	}
 	if a.Nick == "" {
 		a.Nick = a.Name
@@ -37,7 +43,7 @@ func (a *Author) normalize() error {
 
 func (ag AuthorGroup) normalize() error {
 	if len(ag) == 0 {
-		return errors.New("Must add an author")
+		return errAuthorGroupEmpty
 	}
 	ag[0].IsOwner = true
 	for _, a := range ag {

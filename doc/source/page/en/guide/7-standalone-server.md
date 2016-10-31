@@ -5,6 +5,7 @@ slug = "en/guide/standalone-server"
 hover = "guide"
 lang = "en"
 template = "guide.html"
+sort = 7
 ```
 
 Use `server` command to run built-in server in `PuGo`:

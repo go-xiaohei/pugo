@@ -115,5 +115,17 @@ func I18nDataFromINI(data []byte) (map[string]map[string]string, error) {
 		}
 		maps[k2[0]][k2[1]] = v
 	}
+	for _, s := range iniObj.Sections() {
+		if s.Name() == "DEFAULT" {
+			continue
+		}
+		if m, ok := maps[s.Name()]; ok {
+			for k, v := range s.KeysHash() {
+				m[k] = v
+			}
+		} else {
+			maps[s.Name()] = s.KeysHash()
+		}
+	}
 	return maps, nil
 }

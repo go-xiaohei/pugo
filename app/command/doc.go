@@ -3,6 +3,7 @@ package command
 import (
 	"github.com/go-xiaohei/pugo/app/builder"
 	"github.com/go-xiaohei/pugo/app/server"
+	"github.com/go-xiaohei/pugo/app/sync"
 	"github.com/urfave/cli"
 )
 
@@ -37,6 +38,8 @@ func docServ(c *cli.Context) error {
 	buildContext.From = "doc/source"
 	buildContext.To = "doc/dest"
 	buildContext.ThemeName = "doc/theme"
+	buildContext.Tree.Dest = buildContext.DstDir()
+	buildContext.Sync = sync.NewSyncer(buildContext.DstDir())
 	build(buildContext, !c.Bool("no-server"))
 	return nil
 }

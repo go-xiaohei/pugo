@@ -2,7 +2,6 @@ package helper
 
 import (
 	"bytes"
-	"context"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
@@ -18,65 +17,6 @@ func TestGravatar(t *testing.T) {
 		url2 := Gravatar("fuxiaohei@vip.qq.com", 0)
 		targetURL = "https://www.gravatar.com/avatar/f72f7454ce9d710baa506394f68f4132?size=80"
 		So(url2, ShouldEqual, targetURL)
-	})
-}
-
-var (
-	i18nBytes = []byte(`[meta]
-title = "Title"
-subtitle = "Subtitle"
-link = "Link%s"
-
-[nav]
-home = "Home"
-archive = "Archive"
-about = "About"
-source = "Source"`)
-)
-
-func TestI18n(t *testing.T) {
-	Convey("I18n", t, func() {
-		i18n, err := NewI18n("en", i18nBytes, ".toml")
-		So(err, ShouldBeNil)
-
-		Convey("Tr", func() {
-			tr := i18n.Tr("meta.title")
-			So(tr, ShouldEqual, "Title")
-
-			tr = i18n.Tr("meta.xxx")
-			So(tr, ShouldEqual, "meta.xxx")
-
-			tr = i18n.Tr("a.b.c")
-			So(tr, ShouldEqual, "a.b.c")
-		})
-
-		Convey("Trf", func() {
-			tr := i18n.Trf("meta.link", "abc")
-			So(tr, ShouldEqual, "Linkabc")
-		})
-
-		Convey("UnmashalFail", func() {
-			b := []byte(`abc="abc"`)
-			_, err := NewI18n("en", b, ".toml")
-			So(err, ShouldNotBeNil)
-		})
-
-		Convey("Empty", func() {
-			i18n := NewI18nEmpty()
-			So(i18n.values, ShouldHaveLength, 0)
-
-			tr := i18n.Tr("meta.title")
-			So(tr, ShouldEqual, "meta.title")
-		})
-
-		Convey("Lang", func() {
-			en := "en-US"
-			codes := LangCode(en)
-			So(codes, ShouldHaveLength, 3)
-			So(codes, ShouldContain, "en-US")
-			So(codes, ShouldContain, "en-us")
-			So(codes, ShouldContain, "en")
-		})
 	})
 }
 
@@ -146,28 +86,5 @@ func TestLog(t *testing.T) {
 		l.Debug("ABC|%s|%s|%s", "a", "b", "c")
 
 		So(buf.String(), ShouldContainSubstring, "ABC|a|b|c")
-	})
-}
-
-func TestGoWorker(t *testing.T) {
-	Convey("GoWorker", t, func() {
-		w := NewGoWorker()
-		w.Start()
-		req := &GoWorkerRequest{
-			Ctx: context.Background(),
-			Action: func(ctx context.Context) (context.Context, error) {
-				ctx = context.WithValue(ctx, "worker", "worker")
-				return ctx, nil
-			},
-		}
-		w.Send(req)
-		w.Send(req)
-		w.Send(req)
-		w.Receive(func(res *GoWorkerResult) {
-			Convey("GoWorkerResult", t, func() {
-				So(res.Ctx.Value("worker").(string), ShouldEqual, "worker")
-			})
-		})
-		w.WaitStop()
 	})
 }

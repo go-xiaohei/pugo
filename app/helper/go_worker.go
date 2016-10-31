@@ -77,6 +77,7 @@ func (gw *GoWorker) Stop() {
 func (gw *GoWorker) WaitStop() {
 	gw.Stop()
 	gw.wg.Wait()
+	gw.resultChan <- nil // close result channel goroutine
 }
 
 // Send send task to goroutine in order, one by one

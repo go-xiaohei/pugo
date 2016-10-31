@@ -5,6 +5,7 @@ slug = "en/guide/write-new-post"
 hover = "guide"
 lang = "en"
 template = "guide.html"
+sort = 3
 ```
 
 To create a new post, run command:

@@ -124,7 +124,7 @@ func newPage(args []string, dstDir string) error {
 
 	page := &model.Page{
 		Title:    strings.Join(args, " "),
-		Slug:     fileKey,
+		Slug:     fmt.Sprintf("%d-%s", time.Now().Year(), fileKey),
 		Desc:     strings.Join(args, " "),
 		Date:     time.Now().Format("2006-01-02 15:04:05"),
 		Update:   time.Now().Format("2006-01-02 15:04:05"),
@@ -158,21 +158,16 @@ func newPage(args []string, dstDir string) error {
 
 func newSite(onlyDoc bool) error {
 	log15.Info("New|Extract|Assets")
-	dirs := []string{"source", "theme", "doc"}
+	dirs := []string{"source"}
+	if onlyDoc {
+		dirs = []string{"doc"}
+	}
 	isSuccess := true
 
 	var (
-		err       error
-		isExtract = true
+		err error
 	)
 	for _, dir := range dirs {
-		isExtract = (dir != "doc")
-		if onlyDoc {
-			isExtract = (dir == "doc")
-		}
-		if !isExtract {
-			continue
-		}
 		log15.Info("New|Extract|Directory|%s", dir)
 		if err = asset.RestoreAssets("./", dir); err != nil {
 			isSuccess = false

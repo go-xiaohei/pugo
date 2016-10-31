@@ -1,0 +1,18 @@
+<header id="header">
+    <div class="container">
+        <div class="header clearfix">
+            <h3 id="site-title">
+                <a href="{{.Path}}/">{{.Meta.Title}} <sup>{{.Meta.Subtitle}}</sup></a>
+            </h3>
+            <nav id="site-nav">
+                <ul class="nav nav-inverse nav-pills">{{range .Nav}}
+                    <li role="presentation" class="{{if eq .Hover $.Hover}}active{{end}}">
+                        <a href="{{.Link}}" {{if .IsBlank}} target="_blank" {{end}}>{{if .Icon}}
+                            <i class="{{.Icon}}"></i>{{end}}{{.Tr $.I18n}}
+                        </a>
+                    </li>{{end}}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>

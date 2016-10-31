@@ -1,0 +1,326 @@
+html,
+body {
+    font-family: "PingHei", "Lucida Grande", "Lucida Sans Unicode", Helvetica, Tahoma, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "Microsoft YaHei", STXihei, STHeiti, Heiti, SimSun, sans-serif;
+}
+
+pre code {
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', "Microsoft Yahei", Helvetica, Arial, sans-serif;
+}
+
+body {
+    padding-top: 24px;
+    /*background: url("../img/bg.jpg") no-repeat top center;*/
+    background-color: #FCFCFC;
+}
+
+#main {
+    margin-top: 4em;
+}
+
+#site-title {
+    margin-top: 0;
+    line-height: 50px;
+    float: left;
+}
+
+#site-nav {
+    font-size: 1.2em;
+}
+
+#site-nav .nav{
+    float: right;
+}
+
+#site-nav .nav li a .fa {
+    margin-right: 6px;
+}
+
+#site-title sup {
+    font-size: 0.5em;
+    padding-left: 4px;
+    color: #888;
+}
+
+#site-title a {
+    color: #555;
+    text-decoration: none;
+}
+
+#site-title a:hover {
+    color: #111;
+}
+
+
+/*#hero*/
+
+#hero {
+    padding: 5em 5em 6em 5em;
+}
+
+#hero-image {
+    padding: 6px;
+    background-color: #FFF;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+}
+
+
+/*#article-list*/
+
+.article {
+    margin-bottom: 7em;
+    position: relative;
+}
+
+.article .panel {
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-bottom: 10px;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+.article .panel:hover {
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.2), 0 4px 16px 0 rgba(0, 0, 0, 0.19);
+}
+
+.article .header {
+    position: relative;
+    margin-bottom: 12px;
+    border-bottom: 1px dashed #DDD;
+}
+
+.article .header .title {
+    padding-right: 78px;
+    line-height: 1.5;
+}
+
+.article .header a {
+    color: #444;
+}
+
+.article .header a:hover {
+    color: #0a6ebd;
+    text-decoration: none;
+}
+
+.article .header .meta {
+    position: absolute;
+    top: -10px;
+    right: 0;
+}
+
+.article .meta .date {
+    color: #CCC;
+}
+
+.article .meta .date .month {
+    font-size: 3em;
+}
+
+.article .meta .date .day {
+    vertical-align: top;
+    font-size: 1.3em;
+    text-decoration: underline;
+    margin-top: .6em;
+    display: inline-block;
+}
+
+.article .brief {
+    line-height: 1.75;
+    font-size: 16px;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #DDD;
+}
+
+.article .brief> *:last-child {
+    margin-bottom: 0 !important;
+}
+
+.article .brief h1 {
+    font-size: 26px;
+    border-bottom: 1px dashed #DDD;
+    padding-bottom: 11.5px;
+}
+
+.article .brief h2 {
+    font-size: 24px;
+    border-bottom: 1px dashed #DDD;
+    padding-bottom: 11.5px;
+    margin-top: 18px;
+}
+
+.article .brief h3 {
+    font-size: 22px;
+    border-bottom: 1px dashed #DDD;
+    padding-bottom: 11.5px;
+    margin-top: 18px;
+}
+
+.article .brief h4 {
+    font-size: 20px;
+    border-bottom: 1px dashed #DDD;
+    padding-bottom: 11.5px;
+    margin-top: 18px;
+}
+
+.article .brief h5,
+.article .brief h6 {
+    font-size: 18px;
+}
+
+.article .brief h1,
+.article .brief h2,
+.article .brief h3,
+.article .brief h4,
+.article .brief h5,
+.article .brief h6 {
+    font-weight: 700;
+}
+
+.article .brief img {
+    max-width: 100%;
+}
+
+.article-pager .btn {
+    font-size: 1.8em;
+    margin: 0 1em;
+}
+
+.article .brief pre code {
+    font-size: 14px;
+}
+
+.article .brief pre {
+    box-shadow: none !important;
+    border-top-color: #DDD;
+    border-right-color: #DDD;
+    border-bottom-color: #DDD;
+}
+
+.article .brief p> code,
+.article .brief li> code {
+    color: #333;
+    background-color: #f1f1f1;
+}
+
+.article .aside .tag {
+    margin-right: 1em;
+    font-size: 14px;
+}
+
+.article .aside .stat {
+    font-size: 14px;
+}
+
+.article table {
+    width: 100%;
+    margin: .5rem 1rem;
+    line-height: 3rem;
+}
+
+.article td {
+    border-top: 1px solid #DDD;
+    padding: 0 .5rem;
+}
+
+.article th {
+    font-weight: bold;
+    padding: 0 .5rem;
+    text-align: left;
+}
+
+#article-single .aside {
+    padding-top: 8px;
+    border-bottom: 1px dashed #DDD;
+    padding-bottom: 18px;
+    margin-bottom: 18px;
+}
+
+#article-single .brief {
+    margin-bottom: 40px;
+}
+
+#article-list .aside {
+    padding-bottom: 24px;
+}
+
+#article-list h2.tag {
+    margin: 0 auto 30px auto;
+}
+
+#page-single .article {
+    margin-bottom: 0;
+}
+
+#comment {
+    margin-top: -4em;
+}
+
+
+/*
+#archive-list
+*/
+
+#archive-list .panel {
+    padding: 2em 3em;
+}
+
+.archive .date {
+    margin-right: 1em;
+    font-size: .8em;
+    color: #BBB;
+    display: inline-block;
+    width: 3em;
+}
+
+.archive h4 {
+    line-height: 40px;
+}
+
+
+/*
+#footer
+*/
+
+#footer {
+    font-size: 16px;
+    color: #CCC;
+    margin-top: 6em;
+    margin-bottom: 2em;
+}
+
+#footer p {
+    margin-bottom: .2em;
+}
+
+#footer a {
+    color: #AAA;
+}
+
+@media (max-width: 640px) {
+    #site-title {
+        text-align: center;
+        float: none;
+    }
+    #site-title sup {
+        display: none
+    }
+    #site-nav{
+        text-align: center
+    }
+    #site-nav .nav{
+        display: inline-block;
+        margin: auto;
+        float: none;
+    }
+    #main{
+        margin-top: 2em;
+    }
+    .article .header .title{
+        padding-top: .7em;
+    }
+    .article .header .meta{
+        top:1em;
+    }
+}

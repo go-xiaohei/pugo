@@ -13,16 +13,28 @@ import (
 	"regexp"
 	"strings"
 	"sync"
+
+	"github.com/Unknwon/com"
+	"github.com/go-xiaohei/pugo/app/model"
+	"github.com/go-xiaohei/pugo/app/vars"
+	"github.com/mcuadros/go-version"
+	"gopkg.in/inconshreveable/log15.v2"
 )
 
 var (
 	reDefineTag   = regexp.MustCompile("{{ ?define \"([^\"]*)\" ?\"?([a-zA-Z0-9]*)?\"? ?}}")
 	reTemplateTag = regexp.MustCompile("{{ ?template \"([^\"]*)\" ?([^ ]*)? ?}}")
+
+	errThemeMetaMissing     = errors.New("need add theme meta file")
+	errThemeOutdatedVersion = errors.New("theme need newer PuGo version")
 )
 
 type (
 	// Theme object, maintains a sort of templates for whole site data
 	Theme struct {
+		Meta       *Meta
+		metaFile   string
+		metaError  error
 		dir        string
 		lock       sync.Mutex
 		funcMap    template.FuncMap
@@ -75,12 +87,38 @@ func New(dir string) *Theme {
 		}
 		return template.HTML(string(buf.Bytes()))
 	}
+	theme.parseMeta()
 	return theme
+}
+
+func (th *Theme) parseMeta() {
+	for t, f := range model.ShouldThemeMetaFiles() {
+		file := path.Join(th.dir, f)
+		if !com.IsFile(file) {
+			continue
+		}
+		data, err := ioutil.ReadFile(file)
+		if err != nil {
+			th.metaError = err
+			return
+		}
+		th.Meta, th.metaError = NewMeta(data, t)
+		if th.Meta != nil {
+			th.metaFile = file
+			log15.Debug("Theme|%s", file)
+		}
+		return
+	}
 }
 
 // Func add template func to theme
 func (th *Theme) Func(key string, fn interface{}) {
 	th.funcMap[key] = fn
+}
+
+// Funcs return all template functions
+func (th *Theme) Funcs() template.FuncMap {
+	return th.funcMap
 }
 
 // Load loads templates
@@ -235,6 +273,24 @@ func (th *Theme) Static() string {
 // Template gets template by name
 func (th *Theme) Template(name string) *template.Template {
 	return th.templates[name]
+}
+
+// Validate check theme meta is valid or not
+func (th *Theme) Validate() error {
+	if th.metaFile == "" {
+		return errThemeMetaMissing
+	}
+	if th.metaError != nil {
+		return th.metaError
+	}
+	if th.Meta != nil {
+		if th.Meta.MinVersion != "" {
+			if version.Compare(vars.Version, th.Meta.MinVersion, "<") {
+				return errThemeOutdatedVersion
+			}
+		}
+	}
+	return nil
 }
 
 func generateTemplateName(base, path string) string {

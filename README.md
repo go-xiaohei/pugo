@@ -1,31 +1,28 @@
-# PuGo
+# Pugo
 
-[**PuGo**](http://pugo.io) is a simple and beautiful site generator built in [Go](http://golang.org).
+[![Travis](https://img.shields.io/travis/go-xiaohei/pugo.svg)](https://travis-ci.org/go-xiaohei/pugo)
+[![Codecov](https://img.shields.io/codecov/c/github/go-xiaohei/pugo.svg)](https://codecov.io/gh/go-xiaohei/pugo)
+[![GoDoc](https://godoc.org/github.com/go-xiaohei/pugo?status.svg)](https://godoc.org/github.com/go-xiaohei/pugo)
+[![Go Report Card](https://goreportcard.com/badge/github.com/go-xiaohei/pugo)](https://goreportcard.com/report/github.com/go-xiaohei/pugo)
+
+a simple and fast static site generator by [Golang](https://golang.org).
 
 **Current: 0.10.5 (Beta) 2016.09.19**
 
-[![Build Status](https://travis-ci.org/go-xiaohei/pugo.svg?branch=master)](https://travis-ci.org/go-xiaohei/pugo)
+# Features
 
-### Overview
+`Pugo` is a simple and fast static website generator. It renders `markdown` contents to `html` files with simple options. `Pugo` is designed to blog or simple contents website.
 
-`PuGo` is a static website generator in [Go](http://golang.org). It builds `markdown` contents to static html files fast and simply. It can use to build blog, documentation, and etc.
+`Pugo` provides `windows`, `linux` and `macOS` pre-built binaries. It can be compiled by golang for other operating system. 
 
-### Cross-platform
+**Full Documentation is available in [pugo.io](http://pugo.io)**
 
-Thanks to Go, `PuGo` can run in linux, windows and MacOSX. I test it in windows/amd64, linux/amd64 and darwin/amd64.
+# Install
 
-### Getting Started
+Suggest to use `Pugo` binaries directly. They have no dependencies.
 
-You can download and read documentations when you getting started with `PuGo` from [http://pugo.io](http://pugo.io).
+# Contribute
 
-
-### Thanks
-
-Thanks to
-
-- [wuwen.org](http://wuwen.org) , the author of Gogs
-- [lunny.info](http://lunny.info) , the author of xorm
-
-**note**
-
-The old `pugo` dynamic blog engine based on `tidb` is deprecated in [old_project](https://github.com/go-xiaohei/pugo/tree/old_project).
+- If any problem when using Pugo, add new issue
+- If suggestion, add new issue with description of details for new idea
+- If submit new patch, add new pull request for master branch

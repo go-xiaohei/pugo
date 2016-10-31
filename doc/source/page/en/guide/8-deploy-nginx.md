@@ -5,6 +5,7 @@ slug = "en/guide/deploy-nginx"
 hover = "guide"
 lang = "en"
 template = "guide.html"
+sort = 8
 ```
 
 There are two ways to deploy `PuGo` contents to public byself, or deploy to public cloud service such as git, Amazon Cloud via `deploy` command.

@@ -3,6 +3,7 @@ package builder
 import (
 	"errors"
 	"fmt"
+	"path"
 	"strings"
 	"sync/atomic"
 	"time"
@@ -10,6 +11,7 @@ import (
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/go-xiaohei/pugo/app/model"
+	"github.com/go-xiaohei/pugo/app/sync"
 	"github.com/go-xiaohei/pugo/app/theme"
 	"github.com/go-xiaohei/pugo/app/vars"
 	"github.com/urfave/cli"
@@ -32,11 +34,10 @@ type (
 		Source *Source
 		// Theme is theme object, use to render templates
 		Theme *theme.Theme
-		// Files is generated files in by this context
-		Files *model.Files
 		// Tree is url tree nodes by this context
-		Tree   *model.Tree
-		Copied *CopiedOpt
+		Tree *model.Tree
+		// Sync is file syncer
+		Sync *sync.Syncer
 
 		time           time.Time
 		counter        int64
@@ -46,16 +47,16 @@ type (
 
 // NewContext create new Context with from,to and theme args
 func NewContext(cli *cli.Context, from, to, theme string) *Context {
-	return &Context{
+	c := &Context{
 		cli:       cli,
 		From:      from,
 		To:        to,
 		ThemeName: theme,
 		time:      time.Now(),
-		Files:     model.NewFiles(),
-		Copied:    defaultCopiedOpt(),
-		Tree:      model.NewTree(),
 	}
+	c.Tree = model.NewTree(c.DstDir())
+	c.Sync = sync.NewSyncer(c.DstDir())
+	return c
 }
 
 // View get view data to template from Context
@@ -110,10 +111,46 @@ func (ctx *Context) Again() {
 	atomic.StoreInt64(&ctx.counter, 0)
 }
 
-// SrcDir get src dir after build once
+// SrcDir get src dir
 func (ctx *Context) SrcDir() string {
 	ctx.parseDir()
 	return ctx.srcDir
+}
+
+// SrcPostDir get post dir in src
+func (ctx *Context) SrcPostDir() string {
+	ctx.parseDir()
+	if ctx.Source != nil && ctx.Source.Build != nil && ctx.Source.Build.PostDir != "" {
+		return path.Join(ctx.srcDir, ctx.Source.Build.PostDir)
+	}
+	return path.Join(ctx.srcDir, "post")
+}
+
+// SrcPageDir get page dir in src
+func (ctx *Context) SrcPageDir() string {
+	ctx.parseDir()
+	if ctx.Source != nil && ctx.Source.Build != nil && ctx.Source.Build.PageDir != "" {
+		return path.Join(ctx.srcDir, ctx.Source.Build.PageDir)
+	}
+	return path.Join(ctx.srcDir, "page")
+}
+
+// SrcLangDir get language dir in src
+func (ctx *Context) SrcLangDir() string {
+	ctx.parseDir()
+	if ctx.Source != nil && ctx.Source.Build != nil && ctx.Source.Build.LangDir != "" {
+		return path.Join(ctx.srcDir, ctx.Source.Build.LangDir)
+	}
+	return path.Join(ctx.srcDir, "lang")
+}
+
+// SrcMediaDir get media dir in src
+func (ctx *Context) SrcMediaDir() string {
+	ctx.parseDir()
+	if ctx.Source != nil && ctx.Source.Build != nil && ctx.Source.Build.MediaDir != "" {
+		return path.Join(ctx.srcDir, ctx.Source.Build.MediaDir)
+	}
+	return path.Join(ctx.srcDir, "media")
 }
 
 // DstDir get destination directory after build once
@@ -143,7 +180,7 @@ func (ctx *Context) parseDir() {
 		return
 	}
 	ctx.srcDir = srcDir
-	log15.Info("Build|Source|%s", srcDir)
+	log15.Info("Read|%s", srcDir)
 
 	if destDir, ctx.Err = toDir(ctx.To); ctx.Err != nil {
 		return

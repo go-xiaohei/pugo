@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"fmt"
 	"net/url"
 	"path"
@@ -30,7 +31,13 @@ type (
 		AuthorGroup AuthorGroup `toml:"author"`
 		Comment     *Comment    `toml:"comment"`
 		Analytics   *Analytics  `toml:"analytics"`
+		Build       *Build      `toml:"build"`
 	}
+)
+
+var (
+	errMetaUnsupport = errors.New("meta file format is unsupported")
+	errMetaInvalid   = errors.New("meta title and (root or domain) cant be blank")
 )
 
 // NewMetaAll parse bytes with correct FormatType
@@ -49,7 +56,7 @@ func NewMetaAll(data []byte, format FormatType) (*MetaAll, error) {
 	case FormatINI:
 		return newMetaAllFromINI(data)
 	}
-	return nil, fmt.Errorf("unsupported meta file format")
+	return nil, errMetaUnsupport
 }
 
 func newMetaAllFromINI(data []byte) (*MetaAll, error) {
@@ -102,7 +109,7 @@ func newMetaAllFromINI(data []byte) (*MetaAll, error) {
 	}
 	metaAll.AuthorGroup = authorGroup
 
-	// read comment and analytics
+	// read comment and analytics and build settings
 	cmt := new(Comment)
 	if err := iniObj.Section("comment").MapTo(cmt); err != nil {
 		return nil, err
@@ -111,8 +118,13 @@ func newMetaAllFromINI(data []byte) (*MetaAll, error) {
 	if err := iniObj.Section("analytics").MapTo(cmt); err != nil {
 		return nil, err
 	}
+	build := new(Build)
+	if err := iniObj.Section("build").MapTo(build); err != nil {
+		return nil, err
+	}
 	metaAll.Comment = cmt
 	metaAll.Analytics = any
+	metaAll.Build = build
 
 	if err = metaAll.Normalize(); err != nil {
 		return nil, err
@@ -129,7 +141,7 @@ func (m *Meta) DomainURL(link string) string {
 
 func (m *Meta) normalize() error {
 	if (m.Root == "" && m.Domain == "") || m.Title == "" {
-		return fmt.Errorf("meta title and (root or domain) cant be blank")
+		return errMetaInvalid
 	}
 	if m.Root == "" && m.Domain != "" {
 		m.Root = "http://" + m.Domain + "/"

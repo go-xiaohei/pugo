@@ -5,6 +5,7 @@ slug = "en/guide/add-comment-system"
 hover = "guide"
 lang = "en"
 template = "guide.html"
+sort = 5
 ```
 
 `PuGo` supports [Disqus](#) and [Duoshuo](#) comment systems. Just config it in `meta.toml`.

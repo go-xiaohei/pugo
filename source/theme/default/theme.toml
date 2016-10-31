@@ -1,0 +1,12 @@
+name = "PuGo Default"
+license = "Creative Commons Attribution 4.0 International"
+license_url = "https://creativecommons.org/licenses/by/4.0/"
+desc = "a default theme of PuGo"
+url = "https://github.com/go-xiaohei/pugo"
+tags = ["simple","light","default"]
+min_version = "0.10.0"
+
+[[author]]
+    name = "fuxiaohei"
+    url = "http://fuxiaohei.me"
+    repo = "https://github.com/fuxiaohei"

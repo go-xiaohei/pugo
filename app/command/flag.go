@@ -15,7 +15,7 @@ var (
 	}
 	buildThemeFlag = cli.StringFlag{
 		Name:  "theme",
-		Value: "theme/default",
+		Value: "source/theme/default",
 		Usage: "theme to use (located in flag directory)",
 	}
 	debugFlag = cli.BoolFlag{
@@ -25,6 +25,10 @@ var (
 	buildWatchFlag = cli.BoolFlag{
 		Name:  "watch",
 		Usage: "watch changes and rebuild files",
+	}
+	noWatchFlag = cli.BoolFlag{
+		Name:  "no-watch",
+		Usage: "do not watch changes in server",
 	}
 	addrFlag = cli.StringFlag{
 		Name:  "addr",
