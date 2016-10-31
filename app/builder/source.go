@@ -204,6 +204,7 @@ func ReadPosts(ctx *Context) ([]*model.Post, error) {
 			post, err := model.NewPostOfMarkdown(p, postMeta[metaKey])
 			if err != nil {
 				log15.Warn("Read|Post|%s|%v", p, err)
+				return nil
 			} else if post != nil && !post.Draft {
 				posts = append(posts, post)
 			}
@@ -264,6 +265,7 @@ func ReadPages(ctx *Context) ([]*model.Page, error) {
 			page, err := model.NewPageOfMarkdown(p, filepath.ToSlash(rel), pageMeta[metaKey])
 			if err != nil {
 				log15.Warn("Read|Page|%s|%v", p, err)
+				return nil
 			} else if page != nil && !page.Draft {
 				pages = append(pages, page)
 			}
