@@ -37,7 +37,7 @@ func Sync(ctx *Context) {
 		ignoreFiles = append(ignoreFiles, f)
 	}
 	opt.Ignore = ignoreFiles
-	opt.Prefix, _ = filepath.Rel(ctx.SrcDir(), ctx.SrcPageDir())
+	opt.Prefix = ""
 	if ctx.Err = ctx.Sync.SyncDir(ctx.SrcPageDir(), opt); ctx.Err != nil {
 		return
 	}

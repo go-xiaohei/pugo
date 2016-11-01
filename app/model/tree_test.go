@@ -41,6 +41,17 @@ func TestTree(t *testing.T) {
 		children2 := children[2].Children("xyz.html")
 		So(children2, ShouldHaveLength, 1)
 
+		Convey("TreeChild", func() {
+			c := tree.Child("/abc/xyz.html")
+			So(c, ShouldNotBeNil)
+			c2 := tree.Child("/abc/zzz.html")
+			So(c2, ShouldBeNil)
+
+			c3 := tree.Child("/clc")
+			So(c3, ShouldNotBeNil)
+			So(c3.Type, ShouldEqual, TreePageNode)
+		})
+
 		Convey("TreeDirs", func() {
 			dirs := tree.Dirs("")
 			So(dirs, ShouldHaveLength, 2)
@@ -64,6 +75,13 @@ func TestTree(t *testing.T) {
 		Convey("TreePosts", func() {
 			posts := tree.Posts("/abc/123")
 			So(posts, ShouldHaveLength, 2)
+		})
+
+		Convey("TreeParents", func() {
+			c := tree.Child("/abc/123/456.html")
+			So(c, ShouldNotBeNil)
+			So(c.Parents(), ShouldHaveLength, 3)
+			So(c.FullURL(), ShouldEqual, "/abc/123/456.html")
 		})
 
 	})

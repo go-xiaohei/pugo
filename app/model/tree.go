@@ -40,6 +40,7 @@ type Tree struct {
 	Dest     string
 	URL      string
 	children []*Tree
+	parent   *Tree
 }
 
 type treeSlice []*Tree
@@ -59,6 +60,16 @@ func NewTree(dest string) *Tree {
 		Dest: dest,
 		URL:  "",
 	}
+}
+
+// FullURL return full url of this node from top
+func (t *Tree) FullURL() string {
+	parents := t.Parents()
+	u := ""
+	for _, p := range parents {
+		u = path.Join(u, p.Link)
+	}
+	return path.Join(u, t.Link)
 }
 
 // Children return nodes of tree by url link in next child level, not all chilrens in all levels
@@ -106,6 +117,26 @@ func (t *Tree) Nodes(link ...string) []*Tree {
 	return nodes
 }
 
+// Child return the node by link,
+// if not exist, return nil
+func (t *Tree) Child(link ...string) *Tree {
+	if len(link) == 0 || link[0] == "" {
+		return t
+	}
+	if isSameURL(t.URL, link[0]) {
+		return t
+	}
+	for _, c := range t.children {
+		if isSameURL(c.URL, link[0]) {
+			return c
+		}
+		if c2 := c.Child(link[0]); c2 != nil {
+			return c2
+		}
+	}
+	return nil
+}
+
 // Pages return nodes of page by link
 func (t *Tree) Pages(link ...string) []*Tree {
 	children := t.Children(link...)
@@ -140,6 +171,29 @@ func (t *Tree) Posts(link ...string) []*Tree {
 // IsValid return whether the node is compiled or not
 func (t *Tree) IsValid() bool {
 	return t.Type != ""
+}
+
+// Parent return parent node of this node
+func (t *Tree) Parent() *Tree {
+	return t.parent
+}
+
+// Parents return all parents of the node,
+// begin at top
+func (t *Tree) Parents() []*Tree {
+	var t2 = t.Parent()
+	if t2 == nil {
+		return []*Tree{}
+	}
+	res := []*Tree{t2}
+	for {
+		t2 = t2.Parent()
+		if t2 == nil {
+			break
+		}
+		res = append([]*Tree{t2}, res...)
+	}
+	return res
 }
 
 func (t *Tree) subTree(link string) []*Tree {
@@ -196,12 +250,13 @@ func (t *Tree) Add(link, title, linkType string, s int) {
 	}
 	if !isFind {
 		tree := &Tree{
-			Title: title,
-			Link:  linkData[0],
-			I18n:  t.I18n + "." + linkData[0],
-			Type:  linkType,
-			Sort:  s,
-			URL:   path.Join(t.URL, linkData[0]),
+			Title:  title,
+			Link:   linkData[0],
+			I18n:   t.I18n + "." + linkData[0],
+			Type:   linkType,
+			Sort:   s,
+			URL:    path.Join(t.URL, linkData[0]),
+			parent: t,
 		}
 		if len(linkData) > 1 {
 			tree.Type = TreeDir
@@ -218,4 +273,13 @@ func (t *Tree) Add(link, title, linkType string, s int) {
 		t.children = append(t.children, tree)
 	}
 	sort.Sort(treeSlice(t.children))
+}
+
+func isSameURL(url1, url2 string) bool {
+	if url1 == url2 {
+		return true
+	}
+	url1 = strings.Trim(url1, "/")
+	url2 = strings.Trim(url2, "/")
+	return url1 == url2
 }
