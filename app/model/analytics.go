@@ -4,4 +4,5 @@ package model
 type Analytics struct {
 	Google string `toml:"google" ini:"google"`
 	Baidu  string `toml:"baidu" ini:"baidu"`
+	Cnzz   string `toml:"cnzz" ini:"cnzz"`
 }
