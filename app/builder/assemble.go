@@ -11,6 +11,7 @@ import (
 
 	"github.com/go-xiaohei/pugo/app/helper"
 	"github.com/go-xiaohei/pugo/app/model"
+	"github.com/go-xiaohei/pugo/app/sync"
 )
 
 // AssembleSource assemble some extra data in Source,
@@ -21,6 +22,8 @@ func AssembleSource(ctx *Context) {
 		ctx.Err = fmt.Errorf("need sources data and theme to assemble")
 		return
 	}
+
+	ctx.Sync = sync.NewSyncer(path.Join(ctx.DstDir(), ctx.Source.Meta.Path))
 
 	ctx.Source.Nav.SetPrefix(ctx.Source.Meta.Path)
 	ctx.Source.Tags = make(map[string]*model.Tag)
@@ -84,7 +87,7 @@ func AssembleSource(ctx *Context) {
 
 	// prepare archives
 	archives := model.NewArchive(ctx.Source.Posts)
-	archives.SetDestURL(filepath.Join(ctx.DstDir(), archives.DestURL()))
+	archives.SetDestURL(filepath.Join(ctx.DstDir(), ctx.Source.Meta.Path, archives.DestURL()))
 	ctx.Source.Archive = archives
 	ctx.Tree.Add(archives.DestURL(), "Archive", model.TreeArchive, 0)
 
@@ -117,7 +120,7 @@ func AssembleSource(ctx *Context) {
 				Posts: currentPosts,
 				Pager: pager,
 			}
-			pp2.SetDestURL(path.Join(ctx.DstDir(), "index.html"))
+			pp2.SetDestURL(path.Join(ctx.DstDir(), ctx.Source.Meta.Path, "index.html"))
 			ctx.Source.IndexPosts = pp2
 			ctx.Tree.Add(path.Join(ctx.DstDir(), "index.html"), "Home", model.TreeIndex, 0)
 		}

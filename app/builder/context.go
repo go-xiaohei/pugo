@@ -55,7 +55,7 @@ func NewContext(cli *cli.Context, from, to, theme string) *Context {
 		time:      time.Now(),
 	}
 	c.Tree = model.NewTree(c.DstDir())
-	c.Sync = sync.NewSyncer(c.DstDir())
+	// c.Sync = sync.NewSyncer(c.DstDir())
 	return c
 }
 
