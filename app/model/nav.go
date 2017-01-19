@@ -16,10 +16,10 @@ type (
 		OriginTitle string `toml:"-" ini:"-"`
 		IsBlank     bool   `toml:"blank" ini:"blank"`
 		Icon        string `toml:"icon" ini:"icon"`
-		IconClass   string `toml:"icon" ini:"icon"` // deprecated, old icon field name
 		Hover       string `toml:"hover" ini:"hover"`
 		I18n        string `toml:"i18n" ini:"i18n"`
 		IsRemote    bool   `toml:"-" ini:"-"`
+		// IconClass   string `toml:"icon" ini:"icon"` // deprecated, old icon field name
 	}
 	// NavGroup is group if items of navigation
 	NavGroup []*Nav
