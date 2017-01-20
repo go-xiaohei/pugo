@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
+	"io"
 	"io/ioutil"
 	"path/filepath"
 	"strings"
@@ -13,6 +14,7 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/Unknwon/com"
 	"github.com/go-xiaohei/pugo/app/helper"
+	"golang.org/x/net/html"
 	"gopkg.in/ini.v1"
 )
 
@@ -25,17 +27,18 @@ var (
 
 // Post contain all fields of a post content
 type Post struct {
-	Title      string   `toml:"title" ini:"title"`
-	Slug       string   `toml:"slug" ini:"slug"`
-	Desc       string   `toml:"desc" ini:"desc"`
-	Date       string   `toml:"date" ini:"date"`
-	Update     string   `toml:"update_date" ini:"update_date"`
-	AuthorName string   `toml:"author" ini:"author"`
-	Thumb      string   `toml:"thumb" ini:"thumb"`
-	Draft      bool     `toml:"draft" ini:"draft"`
-	TagString  []string `toml:"tags" ini:"-"`
-	Tags       []*Tag   `toml:"-" ini:"-"`
-	Author     *Author  `toml:"-" ini:"-"`
+	Title      string       `toml:"title" ini:"title"`
+	Slug       string       `toml:"slug" ini:"slug"`
+	Desc       string       `toml:"desc" ini:"desc"`
+	Date       string       `toml:"date" ini:"date"`
+	Update     string       `toml:"update_date" ini:"update_date"`
+	AuthorName string       `toml:"author" ini:"author"`
+	Thumb      string       `toml:"thumb" ini:"thumb"`
+	Draft      bool         `toml:"draft" ini:"draft"`
+	TagString  []string     `toml:"tags" ini:"-"`
+	Tags       []*Tag       `toml:"-" ini:"-"`
+	Author     *Author      `toml:"-" ini:"-"`
+	Index      []*PostIndex `toml:"-" ini:"-"`
 
 	dateTime   time.Time
 	updateTime time.Time
@@ -153,6 +156,7 @@ func (p *Post) normalize() error {
 	for _, t := range p.TagString {
 		p.Tags = append(p.Tags, NewTag(t))
 	}
+	p.Index = newPostIndexs(bytes.NewReader(p.contentBytes))
 	return nil
 }
 
@@ -232,6 +236,150 @@ func getFirstBreakByte(data []byte) int {
 		if v == 10 {
 			return i
 		}
+	}
+	return 0
+}
+
+// PostIndex is index of post
+type PostIndex struct {
+	Level    int
+	Title    string
+	Archor   string
+	Children []*PostIndex
+	Link     string
+	Parent   *PostIndex
+}
+
+// Print prints post indexs friendly
+func (p *PostIndex) Print() {
+	fmt.Println(strings.Repeat("#", p.Level), p)
+	for _, c := range p.Children {
+		c.Print()
+	}
+}
+
+func newPostIndexs(r io.Reader) []*PostIndex {
+	var (
+		z = html.NewTokenizer(r)
+
+		currentLevel    int
+		currentText     string
+		currentLinkText string
+		currentArchor   string
+		nodeDeep        int
+
+		indexs []*PostIndex
+	)
+	for {
+		token := z.Next()
+		if token == html.ErrorToken {
+			break
+		}
+		if token == html.EndTagToken {
+			if nodeDeep == 1 && currentLevel > 0 {
+				indexs = append(indexs, &PostIndex{
+					Level:  currentLevel,
+					Title:  currentText,
+					Link:   currentLinkText,
+					Archor: currentArchor,
+				})
+				currentLevel = 0
+				currentText = ""
+				currentLinkText = ""
+				currentArchor = ""
+			}
+			nodeDeep--
+			continue
+		}
+		if token == html.StartTagToken {
+			name, hasAttr := z.TagName()
+			lv := parsePostIndexLevel(name)
+
+			if lv > 0 {
+				currentLevel = lv
+				if hasAttr {
+					for {
+						k, v, isMore := z.TagAttr()
+						if bytes.Equal(k, []byte("id")) {
+							currentArchor = string(v)
+						}
+						if !isMore {
+							break
+						}
+					}
+				}
+			}
+			nodeDeep++
+
+			if currentLevel > 0 && string(name) == "a" {
+				if hasAttr {
+					for {
+						k, v, isMore := z.TagAttr()
+						if bytes.Equal(k, []byte("href")) {
+							currentLinkText = string(v)
+						}
+						if !isMore {
+							break
+						}
+					}
+				}
+			}
+		}
+		if token == html.TextToken && currentLevel > 0 {
+			currentText += string(z.Text())
+		}
+	}
+	indexs = assemblePostIndex(indexs)
+	return indexs
+}
+
+func assemblePostIndex(indexList []*PostIndex) []*PostIndex {
+	var (
+		list    []*PostIndex
+		lastIdx int
+		lastN   *PostIndex
+	)
+	for i, n := range indexList {
+		if i == 0 {
+			list = append(list, n)
+			lastIdx = 0
+			continue
+		}
+		lastN = list[lastIdx]
+		if lastN.Level < n.Level {
+			n.Parent = lastN
+			lastN.Children = append(lastN.Children, n)
+		} else {
+			list = append(list, n)
+			lastIdx++
+		}
+	}
+	for _, n := range list {
+		if len(n.Children) > 1 {
+			n.Children = assemblePostIndex(n.Children)
+		}
+	}
+	return list
+}
+
+func parsePostIndexLevel(name []byte) int {
+	if bytes.Equal(name, []byte("h1")) {
+		return 1
+	}
+	if bytes.Equal(name, []byte("h2")) {
+		return 2
+	}
+	if bytes.Equal(name, []byte("h3")) {
+		return 3
+	}
+	if bytes.Equal(name, []byte("h4")) {
+		return 4
+	}
+	if bytes.Equal(name, []byte("h5")) {
+		return 5
+	}
+	if bytes.Equal(name, []byte("h6")) {
+		return 6
 	}
 	return 0
 }
