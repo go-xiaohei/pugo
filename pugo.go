@@ -12,7 +12,12 @@ import (
 //go:generate go-bindata -o=app/asset/asset.go -pkg=asset source/... doc/source/... doc/theme/...
 //go:generate gofmt -w -s .
 
+var (
+	commit string
+)
+
 func main() {
+	vars.Commit = commit
 	app := cli.NewApp()
 	app.Name = vars.Name
 	app.Usage = vars.Desc

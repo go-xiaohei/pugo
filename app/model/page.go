@@ -34,6 +34,7 @@ type Page struct {
 	Node       bool                   `toml:"node" ini:"node"`
 	JSONFile   string                 `toml:"json" ini:"json"`
 	JSON       *JSON                  `toml:"-" ini:"-"`
+	Index      []*PostIndex           `toml:"-" ini:"-"`
 
 	pageURL      string
 	fileURL      string
@@ -121,6 +122,7 @@ func (p *Page) normalize() error {
 	if !p.Node {
 		p.pageURL = fmt.Sprintf("/%s", p.Slug) + ".html"
 	}
+	p.Index = newPostIndexs(bytes.NewReader(p.contentBytes))
 	return nil
 }
 
