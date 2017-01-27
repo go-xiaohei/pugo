@@ -92,8 +92,12 @@ func AssembleSource(ctx *Context) {
 	ctx.Tree.Add(archives.DestURL(), "Archive", model.TreeArchive, 0)
 
 	// prepare paged posts
+	pageSize := 4
+	if ctx.Source.Build != nil && ctx.Source.Build.PostPageSize > 0 {
+		pageSize = ctx.Source.Build.PostPageSize
+	}
 	var (
-		cursor = helper.NewPagerCursor(4, len(ctx.Source.Posts))
+		cursor = helper.NewPagerCursor(pageSize, len(ctx.Source.Posts))
 		page   = 1
 		layout = "posts/%d"
 	)
