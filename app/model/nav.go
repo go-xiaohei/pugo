@@ -39,7 +39,19 @@ func (n *Nav) TrLink(i18n *helper.I18n) string {
 	if n.IsRemote {
 		return n.Link
 	}
+	if n.I18n == "" {
+		return n.Link
+	}
 	return "/" + path.Join(i18n.Lang, n.Link)
+}
+
+// TrTitle print nav title with i18n value.
+// If i18n="", use Nav.Title
+func (n *Nav) TrTitle(i18n *helper.I18n) string {
+	if n.I18n == "" {
+		return n.Title
+	}
+	return i18n.Tr("nav." + n.I18n)
 }
 
 // SetPrefix fix url path of all navigation items with prefix

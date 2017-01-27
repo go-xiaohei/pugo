@@ -64,12 +64,20 @@ func NewTree(dest string) *Tree {
 
 // FullURL return full url of this node from top
 func (t *Tree) FullURL() string {
+	if t.Type == TreePageNode {
+		return "#"
+	}
 	parents := t.Parents()
 	u := ""
 	for _, p := range parents {
 		u = path.Join(u, p.Link)
 	}
 	return path.Join(u, t.Link)
+}
+
+// HasChildren return true if Tree's children is not empty
+func (t *Tree) HasChildren() bool {
+	return len(t.children) > 0
 }
 
 // Children return nodes of tree by url link in next child level, not all chilrens in all levels
@@ -242,7 +250,15 @@ func (t *Tree) Add(link, title, linkType string, s int) {
 				c.Type = linkType
 				c.Title = title
 				c.Sort = s
-			} else {
+				break
+			}
+			if linkType == TreePageNode && len(linkData) == 1 && linkData[0] == link {
+				c.Type = linkType
+				c.Title = title
+				c.Sort = s
+				break
+			}
+			if len(linkData) > 1 {
 				c.Add(strings.Join(linkData[1:], "/"), title, linkType, s)
 			}
 			break

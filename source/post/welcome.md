@@ -33,7 +33,7 @@ When you read the post, `PuGo` is running successfully.
 
 This post is generated from file `source/welcome.md`. You can learn it and try to write your own article with following guide.
 
-#### Front-Matter
+#### [Front-Matter](http://baidu.com)
 
 Post's front-matter, including title, author etc, are created by first code section with block **\`\`\`toml ..... \`\`\`**:
 

@@ -26,30 +26,31 @@ lang = "en"
 
 
 [[nav]]
-link = "/"
-title = "Home"
-i18n = "home"
-# set nav to active status
-hover = "index"
-blank = false
+link = "/guide"
+title = "Guide"
+i18n = "guide"
+hover = "guide"
+blank = true
 
 [[nav]]
-link = "/archive"
-title = "Archive"
-i18n = "archive"
-hover = "archive"
+link = "/docs"
+title = "Docs"
+i18n = "docs"
+hover = "docs"
+blank = true
 
 [[nav]]
-link = "/about"
-title = "About"
-i18n = "about"
-hover = "about"
+link = "http://godoc.org/github.com/go-xiaohei/pugo"
+title = "API"
+i18n = "api"
+hover = "api"
+blank = true
 
 [[nav]]
-link = "http://pugo.io"
-title = "Source"
-i18n = "source"
-# browser open in new tab
+link = "/news"
+title = "News"
+i18n = "news"
+hover = "news"
 blank = true
 
 [[author]]
