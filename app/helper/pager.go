@@ -17,8 +17,13 @@ type (
 		Next    int
 		Current int
 		Pages   int
+		All     int
 
 		layout string
+	}
+	PagerItem struct {
+		Page int
+		Link string
 	}
 )
 
@@ -51,6 +56,7 @@ func (pg *PagerCursor) Page(i int) *Pager {
 		Next:    i + 1,
 		Current: i,
 		Pages:   pg.pages,
+		All:     pg.all,
 	}
 	end := begin + pg.size
 	if end >= pg.all {
@@ -86,4 +92,17 @@ func (pg *Pager) NextURL() string {
 // URL returns page current url
 func (pg *Pager) URL() string {
 	return fmt.Sprintf(pg.layout, pg.Current)
+}
+
+// PageItems returns each page item in this pager
+func (pg *Pager) PageItems() []*PagerItem {
+	var items []*PagerItem
+	for i := 1; i <= pg.Pages; i++ {
+		item := &PagerItem{
+			Page: i,
+			Link: fmt.Sprintf(pg.layout, i),
+		}
+		items = append(items, item)
+	}
+	return items
 }

@@ -18,7 +18,7 @@ func (p Posts) Swap(i, j int) {
 }
 
 // TopN get top N posts from list
-func (p Posts) TopN(i int) []*Post {
+func (p Posts) TopN(i int) Posts {
 	if i > len(p) {
 		i = len(p)
 	}
@@ -26,7 +26,7 @@ func (p Posts) TopN(i int) []*Post {
 }
 
 // Range get ranged[i:j] posts from list
-func (p Posts) Range(i, j int) []*Post {
+func (p Posts) Range(i, j int) Posts {
 	if i > len(p)-1 {
 		return nil
 	}
