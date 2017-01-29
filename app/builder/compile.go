@@ -2,7 +2,6 @@ package builder
 
 import (
 	"bytes"
-	"context"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -25,33 +24,24 @@ func Compile(ctx *Context) {
 	}
 
 	// init worker in this progress
-	worker := helper.NewGoWorker()
-	worker.Start()
-	// add worker result handler
-	worker.Receive(func(rs *helper.GoWorkerResult) {
-		if rs.Error != nil {
-			if p, ok := rs.Ctx.Value("post").(*model.Post); ok {
-				log15.Error("Build|%s|%s", p.SourceURL(), rs.Error.Error())
-				return
-			}
-			if p, ok := rs.Ctx.Value("page").(*model.Page); ok {
-				log15.Error("Build|%s|%s", p.SourceURL(), rs.Error.Error())
-				return
-			}
-			log15.Error("Build|%v", rs.Error)
-		}
-	})
-	var reqs []*helper.GoWorkerRequest
+	w := helper.NewWorker(0)
+
+	var reqs []helper.WorkerFunc
 	reqs = append(reqs, compilePosts(ctx)...)
 	reqs = append(reqs, compileIndexPage(ctx))
 	reqs = append(reqs, compilePagePosts(ctx)...)
 	reqs = append(reqs, compileTagPosts(ctx)...)
 	reqs = append(reqs, compilePages(ctx)...)
 	reqs = append(reqs, compileArchive(ctx))
-	for _, r := range reqs {
-		worker.Send(r)
+
+	for _, fn := range reqs {
+		w.AddFunc(fn)
 	}
-	worker.WaitStop()
+	w.RunOnce()
+	for _, err := range w.Errors() {
+		log15.Error("Build|%s", err.Error())
+	}
+
 	if ctx.Err = compileRSS(ctx); ctx.Err != nil {
 		log15.Info("Compile|Done")
 		return
@@ -63,171 +53,168 @@ func Compile(ctx *Context) {
 	log15.Info("Compile|Done")
 }
 
-func compilePosts(ctx *Context) []*helper.GoWorkerRequest {
+func compilePosts(ctx *Context) []helper.WorkerFunc {
 	posts := ctx.Source.Posts
 	if len(posts) == 0 {
 		log15.Warn("NoPosts")
 		return nil
 	}
-	var reqs []*helper.GoWorkerRequest
-
+	var fns []helper.WorkerFunc
 	for _, post := range posts {
 		p2 := post
-		c := context.WithValue(context.Background(), "post", p2)
-		req := &helper.GoWorkerRequest{
-			Ctx: c,
-			Action: func(c context.Context) (context.Context, error) {
-				viewData := ctx.View()
-				viewData["Title"] = p2.Title + " - " + ctx.Source.Meta.Title
-				viewData["Desc"] = p2.Desc
-				viewData["Post"] = p2
-				viewData["PermaKey"] = p2.Slug
-				viewData["PostType"] = model.TreePost
-				viewData["Hover"] = model.TreePost
-				viewData["URL"] = p2.URL()
-				return c, compile(ctx, "post.html", viewData, p2.DestURL())
-			},
+		fn := func() error {
+			viewData := ctx.View()
+			viewData["Title"] = p2.Title + " - " + ctx.Source.Meta.Title
+			viewData["Desc"] = p2.Desc
+			viewData["Post"] = p2
+			viewData["PermaKey"] = p2.Slug
+			viewData["PostType"] = model.TreePost
+			viewData["Hover"] = model.TreePost
+			viewData["URL"] = p2.URL()
+			err := compile(ctx, "post.html", viewData, p2.DestURL())
+			if err != nil {
+				err = fmt.Errorf("%s|%s", p2.SourceURL(), err.Error())
+			}
+			return err
 		}
-		reqs = append(reqs, req)
+		fns = append(fns, fn)
 	}
-	return reqs
+	return fns
 }
 
-func compilePagePosts(ctx *Context) []*helper.GoWorkerRequest {
-	var reqs []*helper.GoWorkerRequest
+func compilePagePosts(ctx *Context) []helper.WorkerFunc {
+	var fns []helper.WorkerFunc
 	lists := ctx.Source.PagePosts
 	for page := range lists {
 		pp := lists[page]
 		pageKey := fmt.Sprintf("post-page-%d", pp.Pager.Current)
-		c := context.WithValue(context.Background(), "post-page", pp.Posts)
-		c = context.WithValue(c, "page", pp.Pager)
-		req := &helper.GoWorkerRequest{
-			Ctx: c,
-			Action: func(c context.Context) (context.Context, error) {
-				viewData := ctx.View()
-				viewData["Title"] = fmt.Sprintf("Page %d - %s", pp.Pager.Current, ctx.Source.Meta.Title)
-				viewData["Posts"] = pp.Posts
-				viewData["Pager"] = pp.Pager
-				viewData["PostType"] = model.TreePostList
-				viewData["PermaKey"] = pageKey
-				viewData["Hover"] = model.TreePostList
-				viewData["URL"] = pp.URL
-				return c, compile(ctx, "posts.html", viewData, pp.DestURL())
-			},
-		}
-		reqs = append(reqs, req)
-	}
-	return reqs
-}
-
-func compileIndexPage(ctx *Context) *helper.GoWorkerRequest {
-	pp := ctx.Source.IndexPosts
-	c := context.WithValue(context.Background(), "post-page", pp.Posts)
-	c = context.WithValue(c, "page", pp.Pager)
-	return &helper.GoWorkerRequest{
-		Ctx: c,
-		Action: func(c context.Context) (context.Context, error) {
-			template := "index.html"
-			if ctx.Theme.Template(template) == nil {
-				template = "posts.html"
-			}
+		fn := func() error {
 			viewData := ctx.View()
+			viewData["Title"] = fmt.Sprintf("Page %d - %s", pp.Pager.Current, ctx.Source.Meta.Title)
 			viewData["Posts"] = pp.Posts
 			viewData["Pager"] = pp.Pager
-			viewData["PostType"] = model.TreeIndex
-			viewData["PermaKey"] = model.TreeIndex
-			viewData["Hover"] = model.TreeIndex
-			viewData["URL"] = path.Join(ctx.Source.Meta.Path, "index.html")
-			return c, compile(ctx, template, viewData, pp.DestURL())
-		},
+			viewData["PostType"] = model.TreePostList
+			viewData["PermaKey"] = pageKey
+			viewData["Hover"] = model.TreePostList
+			viewData["URL"] = pp.URL
+			err := compile(ctx, "posts.html", viewData, pp.DestURL())
+			if err != nil {
+				err = fmt.Errorf("%s|%s", pageKey, err.Error())
+			}
+			return err
+		}
+		fns = append(fns, fn)
 	}
+	return fns
 }
 
-func compileTagPosts(ctx *Context) []*helper.GoWorkerRequest {
-	var reqs []*helper.GoWorkerRequest
+func compileIndexPage(ctx *Context) helper.WorkerFunc {
+	pp := ctx.Source.IndexPosts
+	fn := func() error {
+		template := "index.html"
+		if ctx.Theme.Template(template) == nil {
+			template = "posts.html"
+		}
+		viewData := ctx.View()
+		viewData["Posts"] = pp.Posts
+		viewData["Pager"] = pp.Pager
+		viewData["PostType"] = model.TreeIndex
+		viewData["PermaKey"] = model.TreeIndex
+		viewData["Hover"] = model.TreeIndex
+		viewData["URL"] = path.Join(ctx.Source.Meta.Path, "index.html")
+		err := compile(ctx, template, viewData, pp.DestURL())
+		if err != nil {
+			err = fmt.Errorf("index.html|%s", err.Error())
+		}
+		return err
+	}
+	return fn
+}
+
+func compileTagPosts(ctx *Context) []helper.WorkerFunc {
+	var fns []helper.WorkerFunc
 	lists := ctx.Source.TagPosts
 	for t := range lists {
 		tp := lists[t]
-		c := context.WithValue(context.Background(), "post-tag", tp.Posts)
-		c = context.WithValue(c, "tag", tp.Tag)
-		req := &helper.GoWorkerRequest{
-			Ctx: c,
-			Action: func(c context.Context) (context.Context, error) {
-				pageURL := path.Join(ctx.Source.Meta.Path, tp.Tag.URL)
-				pageKey := fmt.Sprintf("post-tag-%s", t)
-				viewData := ctx.View()
-				viewData["Title"] = fmt.Sprintf("%s - %s", t, ctx.Source.Meta.Title)
-				viewData["Posts"] = tp.Posts
-				viewData["Tag"] = tp.Tag
-				viewData["PostType"] = model.TreePostTag
-				viewData["PermaKey"] = pageKey
-				viewData["Hover"] = model.TreePostTag
-				viewData["URL"] = pageURL
-				return c, compile(ctx, "posts.html", viewData, tp.DestURL())
-			},
+		fn := func() error {
+			pageURL := path.Join(ctx.Source.Meta.Path, tp.Tag.URL)
+			pageKey := fmt.Sprintf("post-tag-%s", t)
+			viewData := ctx.View()
+			viewData["Title"] = fmt.Sprintf("%s - %s", t, ctx.Source.Meta.Title)
+			viewData["Posts"] = tp.Posts
+			viewData["Tag"] = tp.Tag
+			viewData["PostType"] = model.TreePostTag
+			viewData["PermaKey"] = pageKey
+			viewData["Hover"] = model.TreePostTag
+			viewData["URL"] = pageURL
+			err := compile(ctx, "posts.html", viewData, tp.DestURL())
+			if err != nil {
+				err = fmt.Errorf("%s|%s", pageKey, err.Error())
+			}
+			return err
 		}
-		reqs = append(reqs, req)
+		fns = append(fns, fn)
 	}
-	return reqs
+	return fns
 }
 
-func compilePages(ctx *Context) []*helper.GoWorkerRequest {
+func compilePages(ctx *Context) []helper.WorkerFunc {
 	pages := ctx.Source.Pages
 	if len(pages) == 0 {
 		log15.Warn("MoPages")
 		return nil
 	}
-	var reqs []*helper.GoWorkerRequest
+	var fns []helper.WorkerFunc
 	for _, page := range pages {
 		p := page
-		c := context.WithValue(context.Background(), "page", p)
-		req := &helper.GoWorkerRequest{
-			Ctx: c,
-			Action: func(c context.Context) (context.Context, error) {
-				if p.Node {
-					return c, nil
+		fn := func() error {
+			if p.Node {
+				return nil
+			}
+			viewData := ctx.View()
+			viewData["Title"] = p.Title + " - " + ctx.Source.Meta.Title
+			viewData["Desc"] = p.Desc
+			viewData["Page"] = p
+			viewData["PermaKey"] = p.Slug
+			viewData["PostType"] = model.TreePage
+			viewData["Hover"] = p.NavHover
+			viewData["URL"] = p.URL()
+			if p.Lang != "" {
+				viewData["Lang"] = p.Lang
+				if i18n, ok := ctx.Source.I18n[p.Lang]; ok {
+					viewData["I18n"] = i18n
 				}
-				viewData := ctx.View()
-				viewData["Title"] = p.Title + " - " + ctx.Source.Meta.Title
-				viewData["Desc"] = p.Desc
-				viewData["Page"] = p
-				viewData["PermaKey"] = p.Slug
-				viewData["PostType"] = model.TreePage
-				viewData["Hover"] = p.NavHover
-				viewData["URL"] = p.URL()
-				if p.Lang != "" {
-					viewData["Lang"] = p.Lang
-					if i18n, ok := ctx.Source.I18n[p.Lang]; ok {
-						viewData["I18n"] = i18n
-					}
-				}
-				tpl := "page.html"
-				if p.Template != "" {
-					tpl = p.Template
-				}
-				return c, compile(ctx, tpl, viewData, p.DestURL())
-			},
+			}
+			tpl := "page.html"
+			if p.Template != "" {
+				tpl = p.Template
+			}
+			err := compile(ctx, tpl, viewData, p.DestURL())
+			if err != nil {
+				err = fmt.Errorf("%s|%s", p.SourceURL(), err.Error())
+			}
+			return err
 		}
-		reqs = append(reqs, req)
+		fns = append(fns, fn)
 	}
-	return reqs
+	return fns
 }
 
-func compileArchive(ctx *Context) *helper.GoWorkerRequest {
+func compileArchive(ctx *Context) helper.WorkerFunc {
 	archive := ctx.Source.Archive
-	c := context.WithValue(context.Background(), "Archives", archive.Data)
-	return &helper.GoWorkerRequest{
-		Ctx: c,
-		Action: func(c context.Context) (context.Context, error) {
-			viewData := ctx.View()
-			viewData["Title"] = fmt.Sprintf("Archive - %s", ctx.Source.Meta.Title)
-			viewData["Archives"] = archive.Data
-			viewData["PostType"] = model.TreeArchive
-			viewData["PermaKey"] = "archive"
-			viewData["Hover"] = "archive"
-			viewData["URL"] = path.Join(ctx.Source.Meta.Path, "archive")
-			return c, compile(ctx, "archive.html", viewData, archive.DestURL())
-		},
+	return func() error {
+		viewData := ctx.View()
+		viewData["Title"] = fmt.Sprintf("Archive - %s", ctx.Source.Meta.Title)
+		viewData["Archives"] = archive.Data
+		viewData["PostType"] = model.TreeArchive
+		viewData["PermaKey"] = "archive"
+		viewData["Hover"] = "archive"
+		viewData["URL"] = path.Join(ctx.Source.Meta.Path, "archive")
+		err := compile(ctx, "archive.html", viewData, archive.DestURL())
+		if err != nil {
+			err = fmt.Errorf("archive.html|%s", err.Error())
+		}
+		return err
 	}
 }
 

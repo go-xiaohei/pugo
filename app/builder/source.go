@@ -77,30 +77,39 @@ func ReadSource(ctx *Context) {
 	}
 	ctx.Source = NewSource(metaAll)
 
-	wg := helper.NewGoGroup("ReadStep")
-	wg.Wrap("ReadLang", func() error {
+	w := helper.NewWorker(0)
+	w.AddFunc(func() error {
 		ctx.Source.I18n = ReadLang(ctx.SrcLangDir())
 		return nil
 	})
-	wg.Wrap("ReadPosts", func() error {
+	w.AddFunc(func() error {
 		if ctx.Source.Build != nil && ctx.Source.Build.DisablePost {
 			return nil
 		}
 		var err error
 		ctx.Source.Posts, err = ReadPosts(ctx)
+		if err != nil {
+			err = fmt.Errorf("ReadPosts|%s", err.Error())
+		}
 		return err
 	})
-	wg.Wrap("ReadPages", func() error {
+	w.AddFunc(func() error {
 		if ctx.Source.Build != nil && ctx.Source.Build.DisablePage {
 			return nil
 		}
 		var err error
 		ctx.Source.Pages, err = ReadPages(ctx)
+		if err != nil {
+			err = fmt.Errorf("ReadPages|%s", err.Error())
+		}
 		return err
 	})
-	wg.Wait()
-	if len(wg.Errors()) > 0 {
-		ctx.Err = wg.Errors()[0]
+	w.RunOnce()
+	if len(w.Errors()) > 0 {
+		for _, err := range w.Errors() {
+			log15.Error("Read|%s", err.Error())
+		}
+		ctx.Err = w.Errors()[0]
 	}
 }
 
