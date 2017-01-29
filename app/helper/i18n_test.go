@@ -19,6 +19,7 @@ about = "About"
 source = "Source"`)
 
 	i18nIniBytes = []byte(`
+"abc" = "123"
 "meta.link" = "Link%s"
 
 [meta]
@@ -81,6 +82,18 @@ func TestI18n(t *testing.T) {
 			So(i18n.Trim("/en/abc.html"), ShouldEqual, "abc.html")
 			So(i18n.Trim("/xyz.html"), ShouldEqual, "xyz.html")
 		})
+
+		Convey("Unknown", func() {
+			i18n, err := NewI18n("zh", i18nIniBytes, ".json")
+			So(i18n, ShouldBeNil)
+			So(err, ShouldEqual, ErrI18nUnknownExt)
+		})
+
+		Convey("ErrorData", func() {
+			i18n, err := NewI18n("en", []byte("abc"), ".toml")
+			So(i18n, ShouldBeNil)
+			So(err, ShouldNotBeNil)
+		})
 	})
 }
 
@@ -100,5 +113,11 @@ func TestI18nIni(t *testing.T) {
 
 		tr = i18n.Trf("meta.link", "xyz")
 		So(tr, ShouldEqual, "Linkxyz")
+
+		Convey("ErrorIniData", func() {
+			i18n, err := NewI18n("en", []byte("abc"), ".ini")
+			So(i18n, ShouldBeNil)
+			So(err, ShouldNotBeNil)
+		})
 	})
 }

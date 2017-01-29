@@ -1,11 +1,16 @@
 package helper
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
 	"github.com/BurntSushi/toml"
 	"gopkg.in/ini.v1"
+)
+
+var (
+	ErrI18nUnknownExt = errors.New("unknown i18n ext")
 )
 
 // I18n object
@@ -57,7 +62,7 @@ func NewI18n(lang string, data []byte, ext string) (*I18n, error) {
 		}
 		return &I18n{Lang: lang, values: maps}, nil
 	}
-	return nil, nil
+	return nil, ErrI18nUnknownExt
 }
 
 // NewI18nEmpty creates new empty i18n object,
