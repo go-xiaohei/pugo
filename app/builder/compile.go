@@ -161,7 +161,7 @@ func compileTagPosts(ctx *Context) []helper.WorkerFunc {
 func compilePages(ctx *Context) []helper.WorkerFunc {
 	pages := ctx.Source.Pages
 	if len(pages) == 0 {
-		log15.Warn("MoPages")
+		log15.Warn("NoPages")
 		return nil
 	}
 	var fns []helper.WorkerFunc
