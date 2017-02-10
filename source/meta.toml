@@ -77,6 +77,8 @@ duoshuo = ""
 google = ""
 # baidu analytics, need hash-code in hm.js?hash-code
 baidu = ""
+# Tencent Analytics, need your_sid in http://tajs.qq.com/stats?sId?SId=your_sid
+tencent = ""
 
 [build]
 # disable_post disable to read & compile post data

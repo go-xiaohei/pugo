@@ -26,4 +26,7 @@
     document.write(unescape("%3Cspan id='cnzz_stat_icon_{{.Analytics.Cnzz}}'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s11.cnzz.com/stat.php%3Fid%3D{{.Analytics.Cnzz}}' type='text/javascript'%3E%3C/script%3E"));
     </script>
     {{end}}
+    {{if .Analytics.Tencent}}
+	<script type="text/javascript" src="http://tajs.qq.com/stats?sId={{.Analytics.Tencent}}" charset="UTF-8"></script>
+    {{end}}
 {{end}}
