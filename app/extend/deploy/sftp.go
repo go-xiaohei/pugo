@@ -111,14 +111,14 @@ func (s *Sftp) Create(ctx *cli.Context) (Method, error) {
 }
 
 func (s *Sftp) Do() error {
+	log15.Debug("SFTP|%s|Connect", s.Host)
 	if err := s.connect(); err != nil {
 		return err
 	}
 	defer s.sftpClient.Close()
 	defer s.sshClient.Close()
-	log15.Debug("SFTP|%s|Connect", s.Host)
-	makeSftpDir(s.sftpClient, getRecursiveDirs(s.Directory))
-	log15.Debug("SFTP|UploadAll")
+
+	log15.Debug("SFTP|UploadAll%s", s.Local)
 	return s.UploadAll(s.Local)
 }
 
@@ -145,33 +145,36 @@ func (s *Sftp) UploadAll(local string) error {
 		rel, _ := filepath.Rel(local, p)
 		rel = filepath.ToSlash(rel)
 
-		makeSftpDir(s.sftpClient, getRecursiveDirs(filepath.Dir(rel)))
+		remotePath := path.Join(s.Directory, rel)
+
+		//check and create remote dir if needed
+		if info.Mode().IsDir() {
+			if _, err := s.sftpClient.Stat(remotePath); err == nil {
+				return nil
+			}
+
+			if err := s.sftpClient.Mkdir(remotePath); err != nil {
+				return fmt.Errorf("SFTP|Fail|create remote dir %s: %s", remotePath, err)
+			}
+
+			return nil
+		}
 
 		// upload file
 		f, err := os.Open(p)
 		if err != nil {
-			return err
+			return fmt.Errorf("SFTP|Fail|open remote file %s: %s", remotePath, err)
 		}
 		defer f.Close()
-		f2, err := s.sftpClient.Create(path.Join(s.Directory, rel))
+		f2, err := s.sftpClient.Create(remotePath)
 		if err != nil {
-			return err
+			return fmt.Errorf("SFTP|Fail|create remote file %s: %s", remotePath, err)
 		}
 		defer f2.Close()
 		if _, err = io.Copy(f2, f); err != nil {
-			return err
+			return fmt.Errorf("SFTP|Fail|upload file content %s: %s", remotePath, err)
 		}
 		log15.Debug("SFTP|Stor|%s", p)
 		return nil
 	})
-}
-
-// make sftp directories
-func makeSftpDir(client *sftp.Client, dirs []string) error {
-	for i := len(dirs) - 1; i >= 0; i-- {
-		if err := client.Mkdir(dirs[i]); err != nil {
-			return err
-		}
-	}
-	return nil
 }
