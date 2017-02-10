@@ -77,6 +77,7 @@ func (ctx *Context) View() map[string]interface{} {
 		"Base":      strings.TrimRight(ctx.Source.Meta.Path, "/"),
 		"Root":      strings.TrimRight(ctx.Source.Meta.Root, "/"),
 	}
+	m["CopyrightYear"] = time.Now().Format("2006")
 	if ctx.Source.Meta.Language == "" {
 		m["I18n"] = ctx.Source.I18n["en"]
 		if m["I18n"] == nil {
