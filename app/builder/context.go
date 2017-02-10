@@ -40,7 +40,7 @@ type (
 		Sync *sync.Syncer
 
 		time           time.Time
-		counter        int64
+		counter        int32
 		srcDir, dstDir string
 	}
 )
@@ -108,7 +108,7 @@ func (ctx *Context) Duration() float64 {
 // Again reset some fields in context to rebuild
 func (ctx *Context) Again() {
 	ctx.time = time.Now()
-	atomic.StoreInt64(&ctx.counter, 0)
+	atomic.StoreInt32(&ctx.counter, 0)
 }
 
 // SrcDir get src dir

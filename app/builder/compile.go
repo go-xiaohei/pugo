@@ -230,7 +230,7 @@ func compile(ctx *Context, file string, viewData map[string]interface{}, destFil
 	}
 	ctx.Sync.SetSynced(destFile)
 	log15.Debug("Build|%s", filepath.ToSlash(destFile))
-	atomic.AddInt64(&ctx.counter, 1)
+	atomic.AddInt32(&ctx.counter, 1)
 	return nil
 }
 
@@ -280,7 +280,7 @@ func compileRSS(ctx *Context) error {
 	}
 	ctx.Sync.SetSynced(dstFile)
 	log15.Debug("Build|%s", dstFile)
-	atomic.AddInt64(&ctx.counter, 1)
+	atomic.AddInt32(&ctx.counter, 1)
 	return nil
 }
 
@@ -347,6 +347,6 @@ func compileSitemap(ctx *Context) error {
 	}
 	ctx.Sync.SetSynced(dstFile)
 	log15.Debug("Build|%s", dstFile)
-	atomic.AddInt64(&ctx.counter, 1)
+	atomic.AddInt32(&ctx.counter, 1)
 	return nil
 }

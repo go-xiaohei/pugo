@@ -10,13 +10,13 @@ import (
 )
 
 func TestWorker(t *testing.T) {
-	var a int64 = 1
+	var a int32 = 1
 	normalFn := func() error {
-		atomic.AddInt64(&a, 1)
+		atomic.AddInt32(&a, 1)
 		return nil
 	}
 	errorFn := func() error {
-		atomic.AddInt64(&a, 1)
+		atomic.AddInt32(&a, 1)
 		return errors.New("error")
 	}
 
