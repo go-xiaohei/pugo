@@ -3,9 +3,11 @@ package deploy
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	"github.com/Unknwon/com"
@@ -22,8 +24,21 @@ type Sftp struct {
 	Directory string
 	Local     string
 
+	KeySigner ssh.Signer
+
 	sshClient  *ssh.Client
 	sftpClient *sftp.Client
+}
+
+func userHomeDir() string {
+	if runtime.GOOS == "windows" {
+		home := os.Getenv("HOMEDRIVE") + os.Getenv("HOMEPATH")
+		if home == "" {
+			home = os.Getenv("USERPROFILE")
+		}
+		return home
+	}
+	return os.Getenv("HOME")
 }
 
 // Command return sftp deploy command
@@ -36,6 +51,7 @@ func (s *Sftp) Command() cli.Command {
 			cli.StringFlag{Name: "user", Usage: "ssh account name"},
 			cli.StringFlag{Name: "password", Usage: "ssh account password"},
 			cli.StringFlag{Name: "host", Usage: "ssh server address"},
+			cli.StringFlag{Name: "pkey", Value: userHomeDir() + "/.ssh/id_rsa", Usage: "ssh private key"},
 			cli.StringFlag{Name: "directory", Usage: "sftp directory"},
 		},
 		Action: func(ctx *cli.Context) {
@@ -74,6 +90,20 @@ func (s *Sftp) Create(ctx *cli.Context) (Method, error) {
 	if s2.User == "" || s2.Password == "" {
 		log15.Warn("SFTP|No user or password")
 	}
+	if s2.Directory == "" {
+		s2.Directory = s2.Local
+	}
+
+	keyBytes, err := ioutil.ReadFile(ctx.String("pkey"))
+	if err != nil {
+		log15.Warn("SFTP|Fail to read ssh private key")
+	}
+
+	s2.KeySigner, err = ssh.ParsePrivateKey(keyBytes)
+	if err != nil {
+		log15.Warn("SFTP|Fail to parse ssh private key")
+	}
+
 	if strings.HasPrefix(s2.Directory, "/~") {
 		s2.Directory = strings.TrimPrefix(s2.Directory, "/~/")
 	}
@@ -97,6 +127,7 @@ func (s *Sftp) connect() error {
 		User: s.User,
 		Auth: []ssh.AuthMethod{
 			ssh.Password(s.Password),
+			ssh.PublicKeys(s.KeySigner),
 		},
 	}
 	client, err := ssh.Dial("tcp", s.Host, conf)
