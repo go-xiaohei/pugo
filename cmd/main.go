@@ -20,6 +20,7 @@ func main() {
 	}
 	app.Commands = []*cli.Command{
 		commands.Version,
+		commands.Build,
 	}
 	if err := app.Run(os.Args); err != nil {
 		panic(err)
