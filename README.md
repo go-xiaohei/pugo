@@ -1,3 +1,5 @@
+new version is moved to [https://github.com/fuxiaohei/pugo](https://github.com/fuxiaohei/pugo)
+
 # Pugo
 
 [![Travis](https://img.shields.io/travis/go-xiaohei/pugo.svg)](https://travis-ci.org/go-xiaohei/pugo)
